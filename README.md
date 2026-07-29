@@ -1,6 +1,18 @@
-# Awesome OpenAPI Specs [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+<h1 align="center">Awesome OpenAPI Specs</h1>
 
-A curated directory of official API specifications for popular business and developer platforms. Browse by familiar use case, then use the linked OpenAPI JSON or YAML files with automation, integrations, documentation, testing, and MCP tools.
+<p align="center">
+  <strong>Official API specifications, organized around what you want to build.</strong>
+</p>
+
+<p align="center">
+  <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
+  <img alt="43 verified specifications" src="https://img.shields.io/badge/specifications-43-13795b">
+  <img alt="10 categories" src="https://img.shields.io/badge/categories-10-2563eb">
+  <img alt="OpenAPI 2.0, 3.0, and 3.1" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1-6ba539">
+  <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
+</p>
+
+Discover official API specifications from products and platforms people already use. Evaluate integration possibilities, connect automation tools, generate API clients, or build against a documented interface with confidence. Every entry links to a provider-maintained OpenAPI file or specification repository.
 
 Created and maintained by [0mcp.io](https://0mcp.io).
 
@@ -8,10 +20,11 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 
 - [Sales and Marketing](#sales-and-marketing)
 - [Productivity](#productivity)
+- [AI](#ai)
 - [Payments](#payments)
 - [Finance](#finance)
 - [Communication](#communication)
-- [AI and Data](#ai-and-data)
+- [Data](#data)
 - [Identity](#identity)
 - [Developer Tools](#developer-tools)
 - [Cloud and Infrastructure](#cloud-and-infrastructure)
@@ -20,25 +33,39 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 
 ## Sales and Marketing
 
-Official OpenAPI definitions for sales engagement, outreach, and marketing platforms.
-
-| Provider  | OpenAPI spec                                                              | Format | Version | Tags                          |
-| --------- | ------------------------------------------------------------------------- | ------ | ------- | ----------------------------- |
-| SendPilot | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml) | YAML   | 3.0     | `official` `sales-engagement` |
+| Provider  | OpenAPI spec                                                                           | Format | Version | Tags                          |
+| --------- | -------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------- |
+| Intercom  | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                | YAML   | 3.0     | `official` `customer-messaging` |
+| Klaviyo   | [API specification](https://github.com/klaviyo/openapi)                                | JSON   | 3.0     | `official` `marketing`          |
+| Mailchimp | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec) | JSON | 2.0 | `official` `marketing` |
+| SendPilot | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)              | YAML   | 3.0     | `official` `sales-engagement`   |
 
 ## Productivity
 
-Official OpenAPI definitions for work management, content, and business platforms.
+| Provider     | OpenAPI spec                                                                                         | Format     | Version | Tags                            |
+| ------------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------- |
+| Asana        | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
+| Box          | [API specification](https://github.com/box/box-openapi)                                              | JSON, YAML | 3.0     | `official` `content-management` |
+| ClickUp      | [API specification](https://developer.clickup.com/openapi/clickup-api-v2-reference.json)             | JSON       | 3.1     | `official` `project-management` |
+| Dropbox Sign | [API specification](https://github.com/hellosign/hellosign-openapi)                                  | YAML       | 3.0     | `official` `e-signature`        |
+| Figma        | [REST API specification](https://github.com/figma/rest-api-spec)                                     | YAML       | 3.1     | `official` `design`             |
+| HubSpot      | [Public API specification collection](https://github.com/HubSpot/HubSpot-public-api-spec-collection) | JSON       | 3.0     | `official` `crm`                |
+| Miro         | [Developer Platform specification](https://github.com/miroapp/api-clients/blob/main/packages/generator/spec.json) | JSON | 3.0 | `official` `collaboration` |
+| Trello       | [REST API specification](https://developer.atlassian.com/cloud/trello/swagger.v3.json)                | JSON       | 3.0     | `official` `project-management` |
 
-| Provider | OpenAPI spec                                                                                         | Format     | Version | Tags                            |
-| -------- | ---------------------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------- |
-| Asana    | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
-| Box      | [API specification](https://github.com/box/box-openapi)                                              | JSON, YAML | 3.0     | `official` `content-management` |
-| HubSpot  | [Public API specification collection](https://github.com/HubSpot/HubSpot-public-api-spec-collection) | JSON       | 3.0     | `official` `crm`                |
+## AI
+
+| Provider     | OpenAPI spec                                                                  | Format     | Version | Tags                          |
+| ------------ | ----------------------------------------------------------------------------- | ---------- | ------- | ----------------------------- |
+| AssemblyAI   | [API specification](https://www.assemblyai.com/docs/openapi.json)             | JSON       | 3.1     | `official` `speech-ai`        |
+| Cohere       | [API specification](https://github.com/cohere-ai/cohere-developer-experience) | YAML       | 3.1     | `official` `ai`               |
+| Composio     | [Platform API specification](https://backend.composio.dev/api/v3/openapi.json) | JSON       | 3.0     | `official` `agent-tools`      |
+| ElevenLabs   | [API specification](https://api.elevenlabs.io/openapi.json)                   | JSON       | 3.1     | `official` `voice-ai`         |
+| Exa          | [Public API specification](https://api.exa.ai/openapi.json)                   | JSON       | 3.1     | `official` `ai-search`        |
+| OpenAI       | [JSON and YAML specifications](https://github.com/openai/openai-openapi)      | JSON, YAML | 3.1     | `official` `ai`               |
+| Unstructured | [Platform API specification](https://platform.unstructuredapp.io/openapi.json) | JSON      | 3.1     | `official` `ai-data-platform` |
 
 ## Payments
-
-Official OpenAPI definitions for payment processing platforms.
 
 | Provider | OpenAPI spec                                                                        | Format     | Version | Tags                                |
 | -------- | ----------------------------------------------------------------------------------- | ---------- | ------- | ----------------------------------- |
@@ -50,8 +77,6 @@ Official OpenAPI definitions for payment processing platforms.
 
 ## Finance
 
-Official OpenAPI definitions for banking, accounting, and financial data APIs.
-
 | Provider | OpenAPI spec                                                             | Format | Version | Tags                    |
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
@@ -59,29 +84,22 @@ Official OpenAPI definitions for banking, accounting, and financial data APIs.
 
 ## Communication
 
-Official OpenAPI definitions for messaging, collaboration, and communications APIs.
-
 | Provider | OpenAPI spec                                                          | Format     | Version | Tags                                     |
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
 | Slack    | [Web API specifications](https://github.com/slackapi/slack-api-specs) | JSON, YAML | 2.0     | `official` `collaboration` `open-source` |
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 
-## AI and Data
+## Data
 
-Official OpenAPI definitions for AI platforms, search engines, and databases.
-
-| Provider    | OpenAPI spec                                                                           | Format     | Version | Tags                                       |
-| ----------- | -------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------------------ |
+| Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
+| ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
-| OpenAI      | [JSON and YAML specifications](https://github.com/openai/openai-openapi)               | JSON, YAML | 3.1     | `official` `ai`                            |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | Qdrant      | [REST API specification](https://github.com/qdrant/qdrant/tree/master/docs/redoc)      | YAML       | 3.0     | `official` `open-source` `vector-database` |
 | Typesense   | [Specification repository](https://github.com/typesense/typesense-api-spec)            | YAML       | 3.0     | `official` `open-source` `search`          |
 | Weaviate    | [REST API specification](https://github.com/weaviate/weaviate/tree/main/openapi-specs) | YAML       | 3.0     | `official` `open-source` `vector-database` |
 
 ## Identity
-
-Official OpenAPI definitions for authentication, authorization, and identity management.
 
 | Provider | OpenAPI spec                                                                         | Format     | Version | Tags                                |
 | -------- | ------------------------------------------------------------------------------------ | ---------- | ------- | ----------------------------------- |
@@ -91,8 +109,6 @@ Official OpenAPI definitions for authentication, authorization, and identity man
 
 ## Developer Tools
 
-Official OpenAPI definitions for observability, dashboards, and software development platforms.
-
 | Provider      | OpenAPI spec                                                                                  | Format | Version | Tags                                     |
 | ------------- | --------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------- |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
@@ -100,8 +116,6 @@ Official OpenAPI definitions for observability, dashboards, and software develop
 | Sentry        | [API schema](https://github.com/getsentry/sentry-api-schema)                                  | JSON   | 3.0     | `official` `observability` `open-source` |
 
 ## Cloud and Infrastructure
-
-Official OpenAPI definitions for cloud platforms, container systems, and infrastructure APIs.
 
 | Provider     | OpenAPI spec                                                                                           | Format | Version  | Tags                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------ | ------ | -------- | --------------------------------------------- |
@@ -118,7 +132,7 @@ The `official` tag means the provider publishes or maintains the linked source. 
 
 Links point to official repositories or directories when a provider publishes multiple API definitions or generated variants. Each provider retains ownership of its API definitions, trademarks, and licenses.
 
-Last reviewed: July 29, 2026.
+Last reviewed: July 30, 2026.
 
 ## Contributing
 
