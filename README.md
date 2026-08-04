@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="43 verified specifications" src="https://img.shields.io/badge/specifications-43-13795b">
+  <img alt="54 verified specifications" src="https://img.shields.io/badge/specifications-54-13795b">
   <img alt="10 categories" src="https://img.shields.io/badge/categories-10-2563eb">
   <img alt="OpenAPI 2.0, 3.0, and 3.1" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -33,12 +33,23 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 
 ## Sales and Marketing
 
-| Provider  | OpenAPI spec                                                                           | Format | Version | Tags                          |
-| --------- | -------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------- |
-| Intercom  | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                | YAML   | 3.0     | `official` `customer-messaging` |
-| Klaviyo   | [API specification](https://github.com/klaviyo/openapi)                                | JSON   | 3.0     | `official` `marketing`          |
-| Mailchimp | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec) | JSON | 2.0 | `official` `marketing` |
-| SendPilot | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)              | YAML   | 3.0     | `official` `sales-engagement`   |
+| Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
+| Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
+| Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
+| DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
+| Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
+| Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
+| Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
+| LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
+| Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
+| Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
+| People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
+| Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
+| Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
+| SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
+| Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
 
 ## Productivity
 
@@ -132,7 +143,7 @@ The `official` tag means the provider publishes or maintains the linked source. 
 
 Links point to official repositories or directories when a provider publishes multiple API definitions or generated variants. Each provider retains ownership of its API definitions, trademarks, and licenses.
 
-Last reviewed: July 30, 2026.
+Last reviewed: August 4, 2026.
 
 ## Contributing
 
