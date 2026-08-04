@@ -6,8 +6,8 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="90 verified specifications" src="https://img.shields.io/badge/specifications-90-13795b">
-  <img alt="12 categories" src="https://img.shields.io/badge/categories-12-2563eb">
+  <img alt="113 verified specifications" src="https://img.shields.io/badge/specifications-113-13795b">
+  <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, and 3.1" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
 </p>
@@ -30,6 +30,20 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 - [Identity](#identity)
 - [Developer Tools](#developer-tools)
 - [Cloud and Infrastructure](#cloud-and-infrastructure)
+- [E-commerce and Retail](#e-commerce-and-retail)
+- [Customer Support and Helpdesk](#customer-support-and-helpdesk)
+- [Accounting, ERP and Billing](#accounting-erp-and-billing)
+- [Logistics, Shipping and Transportation](#logistics-shipping-and-transportation)
+- [Travel and Hospitality](#travel-and-hospitality)
+- [Healthcare and Life Sciences](#healthcare-and-life-sciences)
+- [Education](#education)
+- [Government and Public Data](#government-and-public-data)
+- [Social Media and Online Communities](#social-media-and-online-communities)
+- [Media and Entertainment](#media-and-entertainment)
+- [Content Management and CMS](#content-management-and-cms)
+- [Maps, Geolocation and Local Services](#maps-geolocation-and-local-services)
+- [Security and Compliance](#security-and-compliance)
+- [Real Estate](#real-estate)
 - [Legend](#legend)
 - [Maintainer](#maintainer)
 
@@ -183,11 +197,106 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Kubernetes   | [Generated OpenAPI definitions](https://github.com/kubernetes/kubernetes/tree/master/api/openapi-spec) | JSON   | 2.0      | `official` `containers` `open-source`         |
 | Vercel       | [OpenAPI specification](https://openapi.vercel.sh/)                                                    | JSON   | 3.0.3    | `official` `platform` `deployment` `cloud` `developer-platform` |
 
+## E-commerce and Retail
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Amazon | [Selling Partner API models](https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json) | JSON | 2.0 | `official` `commerce` `retail` |
+| eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
+| Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
+
+## Customer Support and Helpdesk
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| HelpDesk.com | [API specification](https://api.helpdesk.com/docs) | JSON | 3.0.3 | `official` `customer-support` `ticketing` |
+| Zoho Desk | [OpenAPI specification repository](https://github.com/zoho/zohodesk-oas) | JSON | 3.1.0 | `official` `customer-support` `helpdesk` |
+
+## Accounting, ERP and Billing
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Chargebee | [Product Catalog v2 API specification](https://raw.githubusercontent.com/chargebee/openapi/main/spec/chargebee_api_v2_pc_v2_spec.yaml) | YAML | 3.1.0 | `official` `billing` `subscriptions` |
+
+## Logistics, Shipping and Transportation
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| ShipEngine | [OpenAPI downloads](https://docs.shipstation.com/apis/shipengine/openapi/downloads) | JSON, YAML | 3.x | `official` `shipping` `carriers` |
+| Shippo | [Shipping API specification](https://docs.goshippo.com/spec/shippoapi/public-api.yaml) | YAML | 3.1.0 | `official` `shipping` `labels` `tracking` |
+
+## Travel and Hospitality
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
+| Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
+
+## Healthcare and Life Sciences
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Foundation Health | [API documentation and OpenAPI specification](https://docs.foundationhealth.com/) | JSON, YAML | 3.0.2 | `official` `healthcare` `pharmacy` |
+| Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
+
+## Education
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Open Education API | [Open Education API specification](https://raw.githubusercontent.com/open-education-api/specification/main/oeapi.yaml) | YAML | 3.1.1 | `official` `education` `open-source` |
+
+## Government and Public Data
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
+
+## Social Media and Online Communities
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
+
+## Media and Entertainment
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
+
+## Content Management and CMS
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| ApostropheCMS | [Core REST API specification](https://raw.githubusercontent.com/apostrophecms/apostrophecms-openapi/main/apostrophecms-openapi.yaml) | YAML | 3.1.0 | `official` `cms` `open-source` `archived` |
+
+## Maps, Geolocation and Local Services
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+
+## Security and Compliance
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
+| OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
+
+## Real Estate
+
+| Provider | OpenAPI spec | Format | Version | Tags |
+| --- | --- | --- | --- | --- |
+| Buildium | [Property management API specification](https://developer.buildium.com/) | JSON, YAML | 3.x | `official` `property-management` `accounting` |
+| REA Group | [Listing Export API specification](https://partner.realestate.com.au/listing-export/explore/) | JSON, YAML | 3.x | `official` `property-listings` `real-estate` |
+
 ## Legend
 
 **Format** identifies the machine-readable files published by the provider. **Version** identifies the OpenAPI or Swagger specification version, not the provider's API version.
 
 The `official` tag means the provider publishes or maintains the linked source. The `open-source` tag means the implementation or specification accepts community development under an open-source license.
+
+The `3.x` value is used for official download pages or multi-file repositories where the current document's exact top-level version is not stable or is not exposed by the provider page. Inspect the downloaded file before code generation. The `archived` tag marks an official read-only source that should be checked against the provider's current documentation.
 
 Links point to official repositories or directories when a provider publishes multiple API definitions or generated variants. Each provider retains ownership of its API definitions, trademarks, and licenses.
 
