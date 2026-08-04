@@ -17,7 +17,6 @@ Discover official API specifications from products and platforms people already 
 Created and maintained by [0mcp.io](https://0mcp.io).
 
 ## Contents
-
 - [Sales and Marketing](#sales-and-marketing)
 - [CRM](#crm)
 - [HRM and HRIS](#hrm-and-hris)
@@ -48,7 +47,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 - [Maintainer](#maintainer)
 
 ## Sales and Marketing
-
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
@@ -69,7 +67,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
 
 ## CRM
-
 | Provider  | OpenAPI spec                                                                                         | Format | Version | Tags                                                       |
 | --------- | ---------------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------------------------- |
 | Attio     | [API specification](https://api.attio.com/openapi/api)                                               | JSON   | 3.1.0   | `official` `crm`                                           |
@@ -82,7 +79,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Zoho CRM  | [OpenAPI specifications](https://github.com/zoho/crm-oas)                                             | JSON   | 3.1.0   | `official` `crm`                                           |
 
 ## HRM and HRIS
-
 | Provider  | OpenAPI spec                                                                                  | Format     | Version  | Tags                                                        |
 | --------- | --------------------------------------------------------------------------------------------- | ---------- | -------- | ----------------------------------------------------------- |
 | Deel      | [REST API specification](https://api.letsdeel.com/openapi/rest/definitions)                    | JSON       | 3.0.1    | `official` `hris` `payroll` `global-employment` `enterprise` |
@@ -96,7 +92,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Workday   | [REST API Explorer](https://developer.workday.com/rest-api-explorer)                            | JSON, YAML | 2.0, 3.0 | `official` `hris` `payroll` `recruiting` `enterprise`      |
 
 ## Productivity
-
 | Provider     | OpenAPI spec                                                                                         | Format     | Version | Tags                            |
 | ------------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------- |
 | Asana        | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
@@ -111,7 +106,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Trello       | [REST API specification](https://developer.atlassian.com/cloud/trello/swagger.v3.json)                | JSON       | 3.0     | `official` `project-management` |
 
 ## AI
-
 | Provider     | OpenAPI spec                                                                  | Format     | Version | Tags                          |
 | ------------ | ----------------------------------------------------------------------------- | ---------- | ------- | ----------------------------- |
 | AssemblyAI   | [API specification](https://www.assemblyai.com/docs/openapi.json)             | JSON       | 3.1     | `official` `speech-ai`        |
@@ -125,7 +119,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Unstructured | [Platform API specification](https://platform.unstructuredapp.io/openapi.json) | JSON      | 3.1     | `official` `ai-data-platform` |
 
 ## Payments
-
 | Provider | OpenAPI spec                                                                        | Format     | Version | Tags                                |
 | -------- | ----------------------------------------------------------------------------------- | ---------- | ------- | ----------------------------------- |
 | Adyen    | [API specifications](https://github.com/Adyen/adyen-openapi)                        | JSON       | 3.1     | `official` `payments`               |
@@ -137,7 +130,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | SumUp    | [API specification](https://github.com/sumup/sumup-openapi)                         | YAML       | 3.0     | `official` `payments` `open-source` |
 
 ## Finance
-
 | Provider | OpenAPI spec                                                             | Format | Version | Tags                    |
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
@@ -146,7 +138,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Xero     | [Accounting API specifications](https://github.com/XeroAPI/Xero-OpenAPI) | YAML   | 3.0     | `official` `accounting` |
 
 ## Communication
-
 | Provider | OpenAPI spec                                                          | Format     | Version | Tags                                     |
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
 | Discord  | [API specification](https://github.com/discord/discord-api-spec)      | JSON       | 3.1     | `official` `platform` `messaging` `community` `public-preview` |
@@ -155,7 +146,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 
 ## Data
-
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
 | ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
@@ -167,7 +157,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Weaviate    | [REST API specification](https://github.com/weaviate/weaviate/tree/main/openapi-specs) | YAML       | 3.0     | `official` `open-source` `vector-database` |
 
 ## Identity
-
 | Provider | OpenAPI spec                                                                         | Format     | Version | Tags                                |
 | -------- | ------------------------------------------------------------------------------------ | ---------- | ------- | ----------------------------------- |
 | Clerk    | [API specifications](https://github.com/clerk/openapi-specs)                         | JSON       | 3.0     | `official` `authentication`         |
@@ -177,7 +166,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Stytch   | [API specification](https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml) | YAML | 3.0.3 | `official` `focused` `authentication` `passkeys` `b2c` `b2b` |
 
 ## Developer Tools
-
 | Provider      | OpenAPI spec                                                                                  | Format | Version | Tags                                     |
 | ------------- | --------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------- |
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
@@ -187,7 +175,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Sentry        | [API schema](https://github.com/getsentry/sentry-api-schema)                                  | JSON   | 3.0     | `official` `observability` `open-source` |
 
 ## Cloud and Infrastructure
-
 | Provider     | OpenAPI spec                                                                                           | Format | Version  | Tags                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------ | ------ | -------- | --------------------------------------------- |
 | Cloudflare   | [API schemas](https://github.com/cloudflare/api-schemas)                                               | YAML   | 3.0      | `official` `cloud` `open-source`              |
@@ -198,7 +185,6 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Vercel       | [OpenAPI specification](https://openapi.vercel.sh/)                                                    | JSON   | 3.0.3    | `official` `platform` `deployment` `cloud` `developer-platform` |
 
 ## E-commerce and Retail
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Amazon | [Selling Partner API models](https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json) | JSON | 2.0 | `official` `commerce` `retail` |
@@ -206,92 +192,78 @@ Created and maintained by [0mcp.io](https://0mcp.io).
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
 
 ## Customer Support and Helpdesk
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | HelpDesk.com | [API specification](https://api.helpdesk.com/docs) | JSON | 3.0.3 | `official` `customer-support` `ticketing` |
 | Zoho Desk | [OpenAPI specification repository](https://github.com/zoho/zohodesk-oas) | JSON | 3.1.0 | `official` `customer-support` `helpdesk` |
 
 ## Accounting, ERP and Billing
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Chargebee | [Product Catalog v2 API specification](https://raw.githubusercontent.com/chargebee/openapi/main/spec/chargebee_api_v2_pc_v2_spec.yaml) | YAML | 3.1.0 | `official` `billing` `subscriptions` |
 
 ## Logistics, Shipping and Transportation
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | ShipEngine | [OpenAPI downloads](https://docs.shipstation.com/apis/shipengine/openapi/downloads) | JSON, YAML | 3.x | `official` `shipping` `carriers` |
 | Shippo | [Shipping API specification](https://docs.goshippo.com/spec/shippoapi/public-api.yaml) | YAML | 3.1.0 | `official` `shipping` `labels` `tracking` |
 
 ## Travel and Hospitality
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
 
 ## Healthcare and Life Sciences
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Foundation Health | [API documentation and OpenAPI specification](https://docs.foundationhealth.com/) | JSON, YAML | 3.0.2 | `official` `healthcare` `pharmacy` |
 | Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
 
 ## Education
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Open Education API | [Open Education API specification](https://raw.githubusercontent.com/open-education-api/specification/main/oeapi.yaml) | YAML | 3.1.1 | `official` `education` `open-source` |
 
 ## Government and Public Data
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
 
 ## Social Media and Online Communities
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
 ## Media and Entertainment
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
 
 ## Content Management and CMS
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | ApostropheCMS | [Core REST API specification](https://raw.githubusercontent.com/apostrophecms/apostrophecms-openapi/main/apostrophecms-openapi.yaml) | YAML | 3.1.0 | `official` `cms` `open-source` `archived` |
 
 ## Maps, Geolocation and Local Services
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
 
 ## Security and Compliance
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 
 ## Real Estate
-
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Buildium | [Property management API specification](https://developer.buildium.com/) | JSON, YAML | 3.x | `official` `property-management` `accounting` |
 | REA Group | [Listing Export API specification](https://partner.realestate.com.au/listing-export/explore/) | JSON, YAML | 3.x | `official` `property-listings` `real-estate` |
 
 ## Legend
-
 **Format** identifies the machine-readable files published by the provider. **Version** identifies the OpenAPI or Swagger specification version, not the provider's API version.
 
 The `official` tag means the provider publishes or maintains the linked source. The `open-source` tag means the implementation or specification accepts community development under an open-source license.
@@ -303,9 +275,7 @@ Links point to official repositories or directories when a provider publishes mu
 Last reviewed: August 4, 2026.
 
 ## Contributing
-
 Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the acceptance criteria and pull request format.
 
 ## Maintainer
-
 0mcp.io creates and maintains Awesome OpenAPI Specs. This curated list is dedicated to the public domain under [CC0 1.0 Universal](LICENSE). Linked OpenAPI documents remain subject to their respective owners' licenses and terms.
