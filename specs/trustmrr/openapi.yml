@@ -1,0 +1,618 @@
+openapi: 3.2.1
+info:
+  title: TrustMRR API
+  version: 1.0.0
+  description: |-
+    OpenAPI description of the documented TrustMRR v1 read API. Revenue and
+    asking-price amounts are USD cents. Requests require a TrustMRR API key.
+
+    TrustMRR's API Acceptable Use Policy prohibits bulk export and systematic
+    reconstruction of its database; public display, republication, or AI use
+    may require prior written permission. The API guide includes an example
+    that iterates through all pages, but that example does not override the
+    current Terms of Service.
+  termsOfService: https://trustmrr.com/terms
+  externalDocs:
+    description: Official API documentation
+    url: https://trustmrr.com/docs/api
+servers:
+  - url: https://trustmrr.com/api/v1
+    description: TrustMRR API v1
+security:
+  - TrustMRRBearer: []
+tags:
+  - name: Startups
+    description: Search verified startup profiles and retrieve full details.
+paths:
+  /startups:
+    get:
+      operationId: listStartups
+      tags: [Startups]
+      summary: List and filter startups
+      description: Returns a paginated list of startups with verified revenue.
+      externalDocs:
+        description: List startups endpoint documentation
+        url: https://trustmrr.com/docs/api/list-startups
+      parameters:
+        - name: page
+          in: query
+          description: One-based page number. No overall record-count ceiling is documented.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of startups per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+            default: 10
+        - name: sort
+          in: query
+          description: >-
+            Sort order. Defaults to revenue-desc, or best-deal when onSale=true.
+          schema:
+            type: string
+            enum:
+              - revenue-desc
+              - revenue-asc
+              - price-desc
+              - price-asc
+              - multiple-asc
+              - multiple-desc
+              - growth-desc
+              - growth-asc
+              - listed-desc
+              - listed-asc
+              - best-deal
+        - name: onSale
+          in: query
+          description: Filter by sale status; omit to include both listed and unlisted startups.
+          schema:
+            type: boolean
+        - name: category
+          in: query
+          description: Filter by startup category.
+          schema:
+            $ref: '#/components/schemas/Category'
+        - name: xHandle
+          in: query
+          description: Filter by the founder's X handle, without the @ symbol.
+          schema:
+            type: string
+        - name: teamSize
+          in: query
+          description: >-
+            Founder-provided team-size range. Startups without a known team size
+            are excluded. Encode 51+ as %2B when constructing a URL manually.
+          schema:
+            type: string
+            enum: ['1', '2-5', '6-10', '11-25', '26-50', '51+']
+        - name: fundingStatus
+          in: query
+          description: Filter by funding type; startups without a known status are excluded.
+          schema:
+            type: string
+            enum: [bootstrapped, vc-funded]
+        - name: minRevenue
+          in: query
+          description: Minimum last-30-days revenue in USD cents.
+          schema:
+            type: integer
+            format: int64
+        - name: maxRevenue
+          in: query
+          description: Maximum last-30-days revenue in USD cents.
+          schema:
+            type: integer
+            format: int64
+        - name: minMrr
+          in: query
+          description: Minimum monthly recurring revenue in USD cents.
+          schema:
+            type: integer
+            format: int64
+        - name: maxMrr
+          in: query
+          description: Maximum monthly recurring revenue in USD cents.
+          schema:
+            type: integer
+            format: int64
+        - name: minGrowth
+          in: query
+          description: Minimum 30-day revenue growth as a decimal; 0.1 means 10% growth.
+          schema:
+            type: number
+        - name: maxGrowth
+          in: query
+          description: Maximum 30-day revenue growth as a decimal; 0.5 means 50% growth.
+          schema:
+            type: number
+        - name: minPrice
+          in: query
+          description: Minimum asking price in USD cents.
+          schema:
+            type: integer
+            format: int64
+        - name: maxPrice
+          in: query
+          description: Maximum asking price in USD cents.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: A page of startups and pagination metadata.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/RateLimitLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/RateLimitReset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartupListResponse'
+              examples:
+                page:
+                  summary: First page of startup results
+                  value:
+                    data:
+                      - name: ShipFast
+                        slug: shipfast
+                        revenue:
+                          last30Days: 4250000
+                          mrr: 180000
+                          total: 98000000
+                        onSale: true
+                    meta:
+                      total: 142
+                      page: 1
+                      limit: 10
+                      hasMore: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /startups/{slug}:
+    get:
+      operationId: getStartup
+      tags: [Startups]
+      summary: Get a startup by slug
+      description: Returns the full startup profile and detail fields.
+      externalDocs:
+        description: Get startup endpoint documentation
+        url: https://trustmrr.com/docs/api/get-startup
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: URL-friendly startup identifier from the list endpoint.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The full startup profile.
+          headers:
+            X-RateLimit-Limit:
+              $ref: '#/components/headers/RateLimitLimit'
+            X-RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimitRemaining'
+            X-RateLimit-Reset:
+              $ref: '#/components/headers/RateLimitReset'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartupResponse'
+              examples:
+                details:
+                  summary: Startup profile with detail fields
+                  value:
+                    data:
+                      name: ShipFast
+                      slug: shipfast
+                      description: The NextJS boilerplate with all you need to build your SaaS, AI tool, or any other web app. From idea to production in 5 minutes.
+                      revenue:
+                        last30Days: 4250000
+                        mrr: 180000
+                        total: 98000000
+                      startupInsights:
+                        businessType: B2B
+                        teamSize: 2-5
+                        fundingStatus: bootstrapped
+                      techStack:
+                        - slug: nextjs
+                          category: framework
+                      cofounders:
+                        - xHandle: marc_louvion
+                          xName: Marc Lou
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    TrustMRRBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: TrustMRR API key (tmrr_...)
+      description: Create an API key in the TrustMRR developer dashboard.
+  headers:
+    RateLimitLimit:
+      description: Maximum requests allowed in the current rate-limit window (10 standard or 60 premium).
+      schema:
+        type: integer
+    RateLimitRemaining:
+      description: Requests remaining in the current rate-limit window.
+      schema:
+        type: integer
+    RateLimitReset:
+      description: Unix timestamp when the current rate-limit window resets.
+      schema:
+        type: integer
+        format: int64
+  responses:
+    BadRequest:
+      description: Invalid or missing request parameters.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: The API key is missing or invalid.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: API access is disabled under the Acceptable Use Policy.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The requested resource does not exist.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: Rate limit exceeded. Check the rate-limit headers before retrying.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: An unexpected server error occurred.
+      headers:
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/RateLimitLimit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/RateLimitRemaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/RateLimitReset'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    Category:
+      type: string
+      enum:
+        - ai
+        - saas
+        - developer-tools
+        - fintech
+        - marketing
+        - ecommerce
+        - productivity
+        - design-tools
+        - no-code
+        - analytics
+        - crypto-web3
+        - education
+        - health-fitness
+        - social-media
+        - content-creation
+        - sales
+        - customer-support
+        - recruiting
+        - real-estate
+        - travel
+        - legal
+        - security
+        - iot-hardware
+        - green-tech
+        - entertainment
+        - games
+        - community
+        - news-magazines
+        - utilities
+        - marketplace
+        - mobile-apps
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message.
+      additionalProperties: true
+    StartupListResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StartupSummary'
+        meta:
+          $ref: '#/components/schemas/Pagination'
+      additionalProperties: true
+    StartupResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/StartupDetail'
+      additionalProperties: true
+    Pagination:
+      type: object
+      required: [total, page, limit, hasMore]
+      properties:
+        total:
+          type: integer
+          description: Total number of matching startups.
+        page:
+          type: integer
+          description: Current one-based page number.
+        limit:
+          type: integer
+          description: Maximum startups returned on this page (up to 10).
+        hasMore:
+          type: boolean
+          description: Whether another page of results is available.
+      additionalProperties: true
+    Revenue:
+      type: object
+      required: [last30Days, mrr, total]
+      properties:
+        last30Days:
+          type: integer
+          format: int64
+          description: Verified revenue over the last 30 days, in USD cents.
+        mrr:
+          type: integer
+          format: int64
+          description: Monthly recurring revenue, in USD cents.
+        total:
+          type: integer
+          format: int64
+          description: Total available revenue, in USD cents.
+      additionalProperties: true
+    StartupSummary:
+      type: object
+      description: Startup fields returned by the list endpoint.
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+          description: URL-friendly identifier for the detail endpoint.
+        icon:
+          type: [string, 'null']
+          format: uri
+          description: URL to the startup icon or logo.
+        description:
+          type: [string, 'null']
+          description: Description truncated to 200 characters in list results.
+        website:
+          type: [string, 'null']
+          format: uri
+          description: Startup website URL.
+        country:
+          type: [string, 'null']
+          description: ISO 3166-1 alpha-2 country code.
+          minLength: 2
+          maxLength: 2
+        foundedDate:
+          type: [string, 'null']
+          format: date-time
+          description: Founding date; the API example represents this as an ISO 8601 timestamp.
+        category:
+          anyOf:
+            - $ref: '#/components/schemas/Category'
+            - type: 'null'
+        paymentProvider:
+          type: string
+          enum: [stripe, lemonsqueezy, polar, revenuecat, dodopayment, paddle, superwall, creem]
+          description: Payment provider used for revenue verification.
+        targetAudience:
+          type: [string, 'null']
+          enum: [b2b, b2c, both, null]
+        revenue:
+          $ref: '#/components/schemas/Revenue'
+        customers:
+          type: integer
+          description: Total customer count.
+        activeSubscriptions:
+          type: integer
+          description: Number of currently active subscriptions.
+        askingPrice:
+          type: [integer, 'null']
+          format: int64
+          description: Asking price, when listed for sale, in USD cents.
+        profitMarginLast30Days:
+          type: [number, 'null']
+          minimum: 0
+          maximum: 100
+          description: Profit margin over the last 30 days, as a percentage from 0 to 100.
+        growth30d:
+          type: [number, 'null']
+          description: >-
+            Revenue growth over the last 30 days. TrustMRR's guide describes
+            examples such as 24 meaning 24%, while its example payload uses
+            0.12; the documented scale is inconsistent.
+        growthMRR30d:
+          type: [number, 'null']
+          description: MRR growth over the last 30 days, as a percentage.
+        multiple:
+          type: [number, 'null']
+          description: Asking price divided by annualized revenue.
+        rank:
+          type: [integer, 'null']
+          description: Hourly updated revenue rank among active startups; 1 is highest.
+        visitorsLast30Days:
+          type: [integer, 'null']
+          description: Total website visitors over the last 30 days.
+        googleSearchImpressionsLast30Days:
+          type: [integer, 'null']
+          description: Google search result impressions over the last 30 days, when Search Console is connected.
+        revenuePerVisitor:
+          type: [number, 'null']
+          description: Last-30-days revenue divided by last-30-days visitors.
+        onSale:
+          type: boolean
+          description: Whether the startup is currently listed for sale.
+        firstListedForSaleAt:
+          type: [string, 'null']
+          format: date-time
+          description: Timestamp when the startup was first listed for sale.
+        xHandle:
+          type: [string, 'null']
+          description: Founder's X handle without the @ symbol.
+      additionalProperties: true
+    StartupDetail:
+      allOf:
+        - $ref: '#/components/schemas/StartupSummary'
+        - type: object
+          description: Additional fields returned by the detail endpoint.
+          properties:
+            description:
+              type: [string, 'null']
+              description: Full startup description; unlike list results, it is not truncated.
+            domainRating:
+              type: [number, 'null']
+              minimum: 0
+              maximum: 100
+              description: Ahrefs Domain Rating on a 0-100 scale, when available.
+            founderMessage:
+              type: [string, 'null']
+              description: Founder-provided message; returned when the startup is on sale.
+            xFollowerCount:
+              type: [integer, 'null']
+              description: Number of X followers.
+            isMerchantOfRecord:
+              type: boolean
+              description: Whether the startup uses a merchant of record.
+            startupInsights:
+              type: object
+              description: Public founder-edited startup insights when available.
+              properties:
+                valueProposition:
+                  type: [string, 'null']
+                problemSolved:
+                  type: [string, 'null']
+                pricingModel:
+                  type: [string, 'null']
+                targetPersona:
+                  type: [string, 'null']
+                businessType:
+                  type: [string, 'null']
+                  enum: [B2B, B2C, Both, Unknown, null]
+                teamSize:
+                  type: [string, 'null']
+                  enum: ['1', '2-5', '6-10', '11-25', '26-50', '51+', null]
+                fundingStatus:
+                  type: [string, 'null']
+                  enum: [bootstrapped, vc-funded, null]
+                estimatedUserCount:
+                  type: [integer, 'null']
+              additionalProperties: true
+            techStack:
+              type: array
+              description: Technologies used by the startup.
+              items:
+                type: object
+                properties:
+                  slug:
+                    type: string
+                  category:
+                    type: string
+                additionalProperties: true
+            marketingChannels:
+              type: array
+              description: Marketing channels used to acquire customers.
+              items:
+                type: object
+                properties:
+                  slug:
+                    type: string
+                  category:
+                    type: string
+                additionalProperties: true
+            cofounders:
+              type: array
+              items:
+                type: object
+                properties:
+                  xHandle:
+                    type: string
+                  xName:
+                    type: [string, 'null']
+                additionalProperties: true
+          additionalProperties: true

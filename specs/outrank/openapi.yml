@@ -1,0 +1,1064 @@
+openapi: 3.2.1
+info:
+  title: Outrank REST API
+  summary: Organization-scoped API for Outrank products, keywords, articles, Search Console, billing, and usage.
+  version: 0.1.0
+  description: |
+    OpenAPI description of the endpoints listed in Outrank's public REST API reference.
+
+    Requests use JSON and an organization-scoped bearer API key. The API reference does not publish
+    field-level request and response schemas for every operation; open schemas below mark those
+    undocumented contracts without inventing fields. Query parameters and request fields are included
+    where exposed by Outrank's official CLI (see the [CLI package](https://www.npmjs.com/package/outrank-cli)).
+
+    Rate limits are 120 requests per minute and 10,000 requests per day per API key. Outrank states
+    that responses include X-RateLimit-* headers; the reference does not enumerate their exact names.
+  externalDocs:
+    description: Outrank REST API documentation
+    url: https://www.outrank.so/docs/api
+servers:
+  - url: https://www.outrank.so/api/agent/v1
+    description: Outrank production API
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+    description: Verify API key identity and organization.
+  - name: Products
+    description: Manage websites in the organization.
+  - name: Keywords
+    description: Generate, list, schedule, and manage keywords.
+  - name: Articles
+    description: Generate, retrieve, replace, and publish articles.
+  - name: Search Console
+    description: Connect Google Search Console and inspect performance.
+  - name: Billing & Usage
+    description: Inspect subscription and usage or manage billing.
+paths:
+  /auth/whoami:
+    get:
+      tags: [Auth]
+      operationId: getCurrentIdentity
+      summary: Verify the API key
+      description: Returns the user, organization, and remaining article credits associated with the key.
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products:
+    get:
+      tags: [Products]
+      operationId: listProducts
+      summary: List products
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Limit100'
+        - $ref: '#/components/parameters/Cursor'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags: [Products]
+      operationId: createProduct
+      summary: Create a product
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Products]
+      operationId: getProduct
+      summary: Get a product
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags: [Products]
+      operationId: updateProduct
+      summary: Update a product
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/pause:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Products]
+      operationId: pauseProduct
+      summary: Pause a product
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/resume:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Products]
+      operationId: resumeProduct
+      summary: Resume a product
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords:
+    get:
+      tags: [Keywords]
+      operationId: listKeywords
+      summary: List keywords
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          required: false
+          description: Search query.
+          schema:
+            type: string
+        - name: article_type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: article_subtype
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: scheduled_from
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: scheduled_to
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search_volume_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: search_volume_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: difficulty_min
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: difficulty_max
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - $ref: '#/components/parameters/Limit100'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/generate:
+    post:
+      tags: [Keywords]
+      operationId: generateKeywords
+      summary: Generate keywords
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/suggest:
+    post:
+      tags: [Keywords]
+      operationId: suggestKeywords
+      summary: Suggest keywords
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/bulk-process:
+    post:
+      tags: [Keywords]
+      operationId: bulkProcessKeywords
+      summary: Bulk process keywords
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/bulk-reschedule:
+    post:
+      tags: [Keywords]
+      operationId: bulkRescheduleKeywords
+      summary: Bulk reschedule keywords
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/bulk-delete:
+    post:
+      tags: [Keywords]
+      operationId: bulkDeleteKeywords
+      summary: Bulk delete keywords
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /keywords/export:
+    get:
+      tags: [Keywords]
+      operationId: exportKeywords
+      summary: Export keywords
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles:
+    get:
+      tags: [Articles]
+      operationId: listArticles
+      summary: List articles
+      parameters:
+        - name: product_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: title
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: content
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: slug
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: created_from
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: created_to
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: scheduled_from
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: scheduled_to
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sort_by
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: sort_order
+          in: query
+          required: false
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Limit100'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/precreate:
+    post:
+      tags: [Articles]
+      operationId: precreateArticle
+      summary: Precreate an article for a keyword
+      requestBody:
+        $ref: '#/components/requestBodies/ArticleGeneration'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/generate:
+    post:
+      tags: [Articles]
+      operationId: generateArticle
+      summary: Generate an article for a keyword
+      requestBody:
+        $ref: '#/components/requestBodies/ArticleGeneration'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Articles]
+      operationId: getArticle
+      summary: Get an article
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/{id}/content:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Articles]
+      operationId: getArticleContent
+      summary: Get article content
+      parameters:
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/{id}/replace:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Articles]
+      operationId: replaceArticle
+      summary: Replace an article
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/{id}/retry-publish:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Articles]
+      operationId: retryArticlePublish
+      summary: Retry publishing an article
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /articles/bulk-replace:
+    post:
+      tags: [Articles]
+      operationId: bulkReplaceArticles
+      summary: Bulk replace articles
+      requestBody:
+        $ref: '#/components/requestBodies/UndocumentedJsonObject'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/gsc:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Search Console]
+      operationId: getSearchConsoleConnection
+      summary: Get the Search Console connection
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/gsc/connect:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Search Console]
+      operationId: connectSearchConsole
+      summary: Connect Search Console
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/gsc/performance:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Search Console]
+      operationId: getSearchConsolePerformance
+      summary: Get Search Console performance
+      parameters:
+        - name: months
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 16
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/gsc/cannibalization:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Search Console]
+      operationId: getSearchConsoleCannibalization
+      summary: Get Search Console cannibalization data
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /products/{id}/gsc/url-inspection:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    post:
+      tags: [Search Console]
+      operationId: inspectSearchConsoleUrl
+      summary: Inspect a URL in Search Console
+      requestBody:
+        $ref: '#/components/requestBodies/SearchConsoleUrlInspection'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /subscription/status:
+    get:
+      tags: ["Billing & Usage"]
+      operationId: getSubscriptionStatus
+      summary: Get subscription status
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /usage/stats:
+    get:
+      tags: ["Billing & Usage"]
+      operationId: getUsageStats
+      summary: Get usage statistics
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /billing/portal-url:
+    get:
+      tags: ["Billing & Usage"]
+      operationId: getBillingPortalUrl
+      summary: Get the billing portal URL
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+  /billing/purchase-products:
+    post:
+      tags: ["Billing & Usage"]
+      operationId: purchaseProducts
+      summary: Quote or purchase additional products
+      description: The official CLI sends a quote request without confirm_charge_cents, then sends a confirmed purchase with that value and an idempotency key.
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          description: Stable key used by the official CLI to make purchase retries idempotent.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseProductsRequest'
+      responses:
+        '2XX':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The official CLI handles this response as a quote result; quote details are returned in the error object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '5XX':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Outrank API key (prefix outr_live_)
+      description: Create keys in the Outrank dashboard. Keys are scoped to one organization and shown only once.
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: Product or article identifier.
+      schema:
+        type: string
+    Limit100:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of results to return.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    Offset:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 0
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Opaque pagination cursor.
+      schema:
+        type: string
+  requestBodies:
+    UndocumentedJsonObject:
+      required: true
+      description: JSON object body; the public API reference does not document the supported fields for this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/OpenJsonObject'
+    ArticleGeneration:
+      required: true
+      description: Request body used by the official CLI to precreate or generate an article.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [keyword_id]
+            properties:
+              keyword_id:
+                type: string
+                description: Identifier of the keyword for which to create the article.
+            additionalProperties: true
+    SearchConsoleUrlInspection:
+      required: true
+      description: Request body fields exposed by the official CLI.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [inspection_url]
+            properties:
+              inspection_url:
+                type: string
+                description: URL to inspect.
+              language_code:
+                type: string
+                description: Optional language code.
+            additionalProperties: true
+  responses:
+    Success:
+      description: Successful response. The reference does not specify the success status code or response fields for this operation. Includes Outrank rate-limit headers.
+      content:
+        application/json:
+          schema: {}
+    BadRequest:
+      description: Invalid request body or query parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing, malformed, expired, or revoked API key.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: The organization's plan does not support the operation or access to the resource is unavailable.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: The resource does not exist or belongs to another organization.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Rate limit exceeded. Honor Retry-After before retrying.
+      headers:
+        Retry-After:
+          description: How long to wait before retrying.
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ServerError:
+      description: Transient server error. Retry idempotent calls with backoff.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    OpenJsonObject:
+      type: object
+      description: Open object schema used where the published API reference omits request fields.
+      additionalProperties: true
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          description: Error details; the reference does not publish its fields.
+          additionalProperties: true
+      additionalProperties: true
+    PurchaseProductsRequest:
+      type: object
+      required: [additional_products]
+      properties:
+        additional_products:
+          type: integer
+          minimum: 1
+          maximum: 30
+          description: Integer range accepted by the official CLI; the public reference does not define its semantics.
+        confirm_charge_cents:
+          type: integer
+          minimum: 0
+          description: Confirmed charge amount in cents for the purchase flow.
+      additionalProperties: true

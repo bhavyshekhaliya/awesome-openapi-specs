@@ -1,0 +1,2947 @@
+openapi: 3.2.1
+info:
+  title: DataFast API
+  version: 1.0.0
+  description: 'OpenAPI description of the documented DataFast REST API v1. Website endpoints use the
+    /api/v1 base path; account administration endpoints are under /api/v1/admin. All requests use a Bearer
+    token: df_ website API keys are scoped to one website, while dft_ account tokens require the relevant
+    permission and websiteId on website-scoped routes. Keep tokens secret.'
+externalDocs:
+  description: Official DataFast API documentation
+  url: https://datafa.st/docs/api
+servers:
+- url: https://datafa.st/api/v1
+  description: DataFast API v1
+security:
+- DataFastBearer: []
+tags:
+- name: Analytics
+  description: Website analytics and realtime reporting.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/analytics
+- name: Breakdowns
+  description: Analytics grouped by page, source, location, device, campaign, and related dimensions.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/breakdowns
+- name: Visitors
+  description: Search visitors and inspect their recorded journeys.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/visitors
+- name: Social mentions
+  description: Search stored X and Reddit mentions.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/mentions
+- name: Identity
+  description: Link anonymous visitors to known product users.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/identity
+- name: Goals
+  description: Analyze custom goals, write goal events, and manage display customizations.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/goals
+- name: Payments
+  description: Send and delete payment events.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/payments
+- name: Bot traffic
+  description: Read and manage Bot traffic analytics and settings.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/website/bot-traffic
+- name: Account
+  description: Read and update the authenticated account profile.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account/account
+- name: Websites
+  description: Create and manage websites and website settings.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account/websites
+- name: API keys
+  description: Manage account tokens and website API keys.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account/access-tokens
+- name: Funnels
+  description: Manage funnels and retrieve funnel analytics.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account
+- name: Notes
+  description: List, create, update, and delete manual chart notes.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account/notes
+- name: Alerts
+  description: Manage alerts and alert history.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account
+- name: Team
+  description: List team members and manage invitations.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account/team
+- name: Integrations
+  description: Read integration status and connect or disconnect providers.
+  externalDocs:
+    description: Official DataFast documentation
+    url: https://datafa.st/docs/api/account
+paths:
+  /analytics/timeseries:
+    get:
+      operationId: getAnalyticsTimeseries
+      tags:
+      - Analytics
+      summary: Get time-series analytics
+      description: Returns time-bucketed metrics. Supply startAt and endAt together.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/FieldsRequired'
+      - $ref: '#/components/parameters/Interval'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/overview:
+    get:
+      operationId: getAnalyticsOverview
+      tags:
+      - Analytics
+      summary: Get aggregate analytics
+      description: Returns aggregate metrics for a date range, or all time when dates are omitted.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/metadata:
+    get:
+      operationId: getAnalyticsMetadata
+      tags:
+      - Analytics
+      summary: Get website metadata
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/MetadataFields'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/realtime:
+    get:
+      operationId: getRealtimeVisitors
+      tags:
+      - Analytics
+      summary: Get realtime visitors
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/realtime/map:
+    get:
+      operationId: getRealtimeMap
+      tags:
+      - Analytics
+      summary: Get realtime map
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/funnels/{funnelId}:
+    parameters:
+    - name: funnelId
+      in: path
+      required: true
+      description: Funnel ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getFunnelAnalytics
+      tags:
+      - Funnels
+      summary: Get funnel analytics
+      description: Returns step-by-step conversion analytics for an active funnel. Date bounds must be
+        paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/goals:
+    get:
+      operationId: analyzeGoals
+      tags:
+      - Goals
+      summary: Analyze custom goals
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/goals/properties:
+    get:
+      operationId: getGoalProperties
+      tags:
+      - Goals
+      summary: Get custom goal properties
+      description: Discover property names for a custom goal, or compare completions by value. eventName
+        is required.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/EventName'
+      - $ref: '#/components/parameters/PropertyName'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Limit1000'
+      - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/bot-traffic:
+    get:
+      operationId: getBotTrafficSummary
+      tags:
+      - Bot traffic
+      summary: Get Bot traffic summary
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/BotInterval'
+      - $ref: '#/components/parameters/BotCategory'
+      - $ref: '#/components/parameters/Verification'
+      - $ref: '#/components/parameters/Company'
+      - $ref: '#/components/parameters/CrawlerId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/bot-traffic/pages:
+    get:
+      operationId: getBotTrafficPages
+      tags:
+      - Bot traffic
+      summary: Get requested pages
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/BotInterval'
+      - $ref: '#/components/parameters/BotCategory'
+      - $ref: '#/components/parameters/Verification'
+      - $ref: '#/components/parameters/Company'
+      - $ref: '#/components/parameters/CrawlerId'
+      - $ref: '#/components/parameters/PageSearch'
+      - $ref: '#/components/parameters/BotPageLimit'
+      - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/pages:
+    get:
+      operationId: getPageAnalytics
+      tags:
+      - Breakdowns
+      summary: Get page analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/exit-clicks:
+    get:
+      operationId: getExitClickAnalytics
+      tags:
+      - Breakdowns
+      summary: Get exit-click analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/referrers:
+    get:
+      operationId: getReferrerAnalytics
+      tags:
+      - Breakdowns
+      summary: Get referrer analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/countries:
+    get:
+      operationId: getCountryAnalytics
+      tags:
+      - Breakdowns
+      summary: Get country analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/regions:
+    get:
+      operationId: getRegionAnalytics
+      tags:
+      - Breakdowns
+      summary: Get region analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/cities:
+    get:
+      operationId: getCityAnalytics
+      tags:
+      - Breakdowns
+      summary: Get city analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/devices:
+    get:
+      operationId: getDeviceAnalytics
+      tags:
+      - Breakdowns
+      summary: Get device analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/browsers:
+    get:
+      operationId: getBrowserAnalytics
+      tags:
+      - Breakdowns
+      summary: Get browser analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/operating-systems:
+    get:
+      operationId: getOperatingSystemAnalytics
+      tags:
+      - Breakdowns
+      summary: Get operating-system analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/campaigns:
+    get:
+      operationId: getCampaignAnalytics
+      tags:
+      - Breakdowns
+      summary: Get campaign analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /analytics/hostnames:
+    get:
+      operationId: getHostnameAnalytics
+      tags:
+      - Breakdowns
+      summary: Get hostname analytics
+      description: Returns analytics grouped by this dimension. Date bounds must be paired.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/AnalyticsLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Fields'
+      - $ref: '#/components/parameters/FilterCountry'
+      - $ref: '#/components/parameters/FilterRegion'
+      - $ref: '#/components/parameters/FilterCity'
+      - $ref: '#/components/parameters/FilterDevice'
+      - $ref: '#/components/parameters/FilterBrowser'
+      - $ref: '#/components/parameters/FilterOs'
+      - $ref: '#/components/parameters/FilterPage'
+      - $ref: '#/components/parameters/FilterEntryPage'
+      - $ref: '#/components/parameters/FilterHostname'
+      - $ref: '#/components/parameters/FilterGoal'
+      - $ref: '#/components/parameters/FilterVisitCount'
+      - $ref: '#/components/parameters/FilterReferrer'
+      - $ref: '#/components/parameters/FilterRef'
+      - $ref: '#/components/parameters/FilterSource'
+      - $ref: '#/components/parameters/FilterVia'
+      - $ref: '#/components/parameters/FilterUtmSource'
+      - $ref: '#/components/parameters/FilterUtmMedium'
+      - $ref: '#/components/parameters/FilterUtmCampaign'
+      - $ref: '#/components/parameters/FilterUtmTerm'
+      - $ref: '#/components/parameters/FilterUtmContent'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /visitors:
+    get:
+      operationId: listVisitors
+      tags:
+      - Visitors
+      summary: List visitors
+      description: Search lightweight visitor rows; use Get visitor to retrieve a visitor journey.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/VisitorLimit'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/VisitedPage'
+      - $ref: '#/components/parameters/VisitedPageContains'
+      - $ref: '#/components/parameters/CompletedGoal'
+      - $ref: '#/components/parameters/Country'
+      - $ref: '#/components/parameters/Device'
+      - $ref: '#/components/parameters/Browser'
+      - $ref: '#/components/parameters/UtmCampaign'
+      - $ref: '#/components/parameters/IsCustomer'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /visitors/{datafast_visitor_id}:
+    parameters:
+    - name: datafast_visitor_id
+      in: path
+      required: true
+      description: DataFast visitor UUID.
+      schema:
+        type: string
+    get:
+      operationId: getVisitor
+      tags:
+      - Visitors
+      summary: Get visitor
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /mentions:
+    get:
+      operationId: listMentions
+      tags:
+      - Social mentions
+      summary: List social mentions
+      description: Search stored X and Reddit mentions. This endpoint does not start a new search.
+      x-required-permission: analytics:read
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Query'
+      - $ref: '#/components/parameters/Limit1000'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Order'
+      - $ref: '#/components/parameters/Platform'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /identify:
+    post:
+      operationId: identifyVisitor
+      tags:
+      - Identity
+      summary: Identify a visitor
+      description: Links a DataFast visitor to a user ID. Additional top-level fields are shallow-merged
+        into profile metadata.
+      x-required-permission: identify:write
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdentifyRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /goals:
+    post:
+      operationId: createGoal
+      tags:
+      - Goals
+      summary: Create a custom goal event
+      description: Requires goals:write for account tokens where applicable.
+      x-required-permission: goals:write
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteGoals
+      tags:
+      - Goals
+      summary: Delete custom goal events
+      description: Provide at least one filter. A time-range deletion requires both start and end.
+      x-required-permission: goals:write
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/VisitorId'
+      - $ref: '#/components/parameters/GoalName'
+      - $ref: '#/components/parameters/Start'
+      - $ref: '#/components/parameters/End'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /payments:
+    post:
+      operationId: createPayment
+      tags:
+      - Payments
+      summary: Create a payment event
+      description: Requires payments:write for account tokens where applicable.
+      x-required-permission: payments:write
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/PaymentCreated'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deletePayments
+      tags:
+      - Payments
+      summary: Delete payment events
+      description: Delete by transaction, visitor, or range. start/end are deprecated aliases.
+      x-required-permission: payments:write
+      parameters:
+      - $ref: '#/components/parameters/WebsiteId'
+      - $ref: '#/components/parameters/TransactionId'
+      - $ref: '#/components/parameters/VisitorId'
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Start'
+      - $ref: '#/components/parameters/End'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/account:
+    get:
+      operationId: getAccount
+      tags:
+      - Account
+      summary: Get account profile
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    put:
+      operationId: updateAccount
+      tags:
+      - Account
+      summary: Update account profile
+      description: Requires analytics:read for account tokens where applicable.
+      x-required-permission: analytics:read
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAccountRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/access-tokens:
+    get:
+      operationId: listAccessTokens
+      tags:
+      - API keys
+      summary: List account tokens
+      description: Requires api-keys:read for account tokens where applicable.
+      x-required-permission: api-keys:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createAccessToken
+      tags:
+      - API keys
+      summary: Create account token
+      description: The raw token is returned only once; store it securely.
+      x-required-permission: api-keys:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccessTokenRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/access-tokens/{tokenId}:
+    parameters:
+    - name: tokenId
+      in: path
+      required: true
+      description: Account token ObjectId.
+      schema:
+        type: string
+    delete:
+      operationId: deleteAccessToken
+      tags:
+      - API keys
+      summary: Revoke account token
+      description: Requires api-keys:write for account tokens where applicable.
+      x-required-permission: api-keys:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites:
+    get:
+      operationId: listWebsites
+      tags:
+      - Websites
+      summary: List websites
+      description: Requires websites:read for account tokens where applicable.
+      x-required-permission: websites:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createWebsite
+      tags:
+      - Websites
+      summary: Create website
+      description: Requires websites:write for account tokens where applicable.
+      x-required-permission: websites:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebsiteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getWebsite
+      tags:
+      - Websites
+      summary: Get website settings
+      description: Requires settings:read for account tokens where applicable.
+      x-required-permission: settings:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    put:
+      operationId: updateWebsite
+      tags:
+      - Websites
+      summary: Update website settings
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebsiteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteWebsite
+      tags:
+      - Websites
+      summary: Delete website
+      description: Website deletion is dashboard-only; this documented endpoint always returns 403.
+      x-required-permission: websites:write
+      responses:
+        '403':
+          $ref: '#/components/responses/ApiError'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/apikeys:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listWebsiteApiKeys
+      tags:
+      - API keys
+      summary: List website API keys
+      description: Requires api-keys:read for account tokens where applicable.
+      x-required-permission: api-keys:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createWebsiteApiKey
+      tags:
+      - API keys
+      summary: Create website API key
+      description: Creates a website-scoped df_ key. The raw key is returned only once.
+      x-required-permission: api-keys:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedResourceRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/apikeys/{apiKeyId}:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    - name: apiKeyId
+      in: path
+      required: true
+      description: Website API key ObjectId.
+      schema:
+        type: string
+    put:
+      operationId: rollWebsiteApiKey
+      tags:
+      - API keys
+      summary: Roll website API key
+      description: The replacement raw key is returned only once.
+      x-required-permission: api-keys:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteWebsiteApiKey
+      tags:
+      - API keys
+      summary: Revoke website API key
+      description: Requires api-keys:write for account tokens where applicable.
+      x-required-permission: api-keys:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/goals:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listTrackedGoals
+      tags:
+      - Goals
+      summary: List tracked goals
+      description: Requires settings:read for account tokens where applicable.
+      x-required-permission: settings:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/goals/customizations:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listGoalCustomizations
+      tags:
+      - Goals
+      summary: List goal customizations
+      description: Requires goals:read for account tokens where applicable.
+      x-required-permission: goals:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    patch:
+      operationId: updateGoalCustomization
+      tags:
+      - Goals
+      summary: Update goal customization
+      description: Requires goals:write for account tokens where applicable.
+      x-required-permission: goals:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateGoalCustomizationRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteGoalCustomization
+      tags:
+      - Goals
+      summary: Reset goal customization
+      description: Requires goals:write for account tokens where applicable.
+      x-required-permission: goals:write
+      parameters:
+      - $ref: '#/components/parameters/GoalNameRequired'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/funnels:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listFunnels
+      tags:
+      - Funnels
+      summary: List funnels
+      description: Requires funnels:read for account tokens where applicable.
+      x-required-permission: funnels:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createFunnel
+      tags:
+      - Funnels
+      summary: Create funnel
+      description: Requires funnels:write for account tokens where applicable.
+      x-required-permission: funnels:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFunnelRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/funnels/{funnelId}:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    - name: funnelId
+      in: path
+      required: true
+      description: Funnel ObjectId.
+      schema:
+        type: string
+    put:
+      operationId: updateFunnel
+      tags:
+      - Funnels
+      summary: Update funnel
+      description: Requires funnels:write for account tokens where applicable.
+      x-required-permission: funnels:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFunnelRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteFunnel
+      tags:
+      - Funnels
+      summary: Delete funnel
+      description: Soft-deletes a funnel.
+      x-required-permission: funnels:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/notes:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listNotes
+      tags:
+      - Notes
+      summary: List manual notes
+      description: Requires notes:read for account tokens where applicable.
+      x-required-permission: notes:read
+      parameters:
+      - $ref: '#/components/parameters/StartAt'
+      - $ref: '#/components/parameters/EndAt'
+      - $ref: '#/components/parameters/Timezone'
+      - $ref: '#/components/parameters/Query'
+      - $ref: '#/components/parameters/Limit1000'
+      - $ref: '#/components/parameters/Offset'
+      - $ref: '#/components/parameters/Order'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createNote
+      tags:
+      - Notes
+      summary: Create manual note
+      description: idempotencyKey prevents duplicate retries while the note exists.
+      x-required-permission: notes:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateNoteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '201':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/notes/{noteId}:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    - name: noteId
+      in: path
+      required: true
+      description: Manual note ObjectId.
+      schema:
+        type: string
+    put:
+      operationId: updateNote
+      tags:
+      - Notes
+      summary: Update manual note
+      description: Requires notes:write for account tokens where applicable.
+      x-required-permission: notes:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNoteRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteNote
+      tags:
+      - Notes
+      summary: Delete manual note
+      description: Requires notes:write for account tokens where applicable.
+      x-required-permission: notes:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/alerts:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listAlerts
+      tags:
+      - Alerts
+      summary: List alerts
+      description: Requires alerts:read for account tokens where applicable.
+      x-required-permission: alerts:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createAlert
+      tags:
+      - Alerts
+      summary: Create alert
+      description: Requires alerts:write for account tokens where applicable.
+      x-required-permission: alerts:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/alerts/{alertId}:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    - name: alertId
+      in: path
+      required: true
+      description: Alert ObjectId.
+      schema:
+        type: string
+    put:
+      operationId: updateAlert
+      tags:
+      - Alerts
+      summary: Update alert
+      description: Requires alerts:write for account tokens where applicable.
+      x-required-permission: alerts:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlertRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteAlert
+      tags:
+      - Alerts
+      summary: Delete alert
+      description: Requires alerts:write for account tokens where applicable.
+      x-required-permission: alerts:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/alerts/history:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getAlertHistory
+      tags:
+      - Alerts
+      summary: Get alert history
+      description: Requires alerts:read for account tokens where applicable.
+      x-required-permission: alerts:read
+      parameters:
+      - $ref: '#/components/parameters/AlertId'
+      - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/team:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: listTeamMembers
+      tags:
+      - Team
+      summary: List team members
+      description: Requires team:read for account tokens where applicable.
+      x-required-permission: team:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: inviteTeamMember
+      tags:
+      - Team
+      summary: Invite team member
+      description: Inviting a member requires the website owner role.
+      x-required-permission: team:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InviteTeamMemberRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: removeTeamMember
+      tags:
+      - Team
+      summary: Remove team member
+      description: Removing a member requires the website owner role. Owners cannot remove themselves.
+      x-required-permission: team:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveTeamMemberRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getIntegrations
+      tags:
+      - Integrations
+      summary: Get integration status
+      description: Requires settings:read for account tokens where applicable.
+      x-required-permission: settings:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/stripe:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    post:
+      operationId: connectStripe
+      tags:
+      - Integrations
+      summary: Connect Stripe
+      description: Provider credentials are stored securely and are not returned by status endpoints.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectStripeRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: disconnectStripe
+      tags:
+      - Integrations
+      summary: Disconnect Stripe
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/lemonsqueezy:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    post:
+      operationId: connectLemonsqueezy
+      tags:
+      - Integrations
+      summary: Connect Lemonsqueezy
+      description: Provider credentials are stored securely and are not returned by status endpoints.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectLemonSqueezyRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: disconnectLemonsqueezy
+      tags:
+      - Integrations
+      summary: Disconnect Lemonsqueezy
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/polar:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    post:
+      operationId: connectPolar
+      tags:
+      - Integrations
+      summary: Connect Polar
+      description: Provider credentials are stored securely and are not returned by status endpoints.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectPolarRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: disconnectPolar
+      tags:
+      - Integrations
+      summary: Disconnect Polar
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/paddle:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    post:
+      operationId: connectPaddle
+      tags:
+      - Integrations
+      summary: Connect Paddle
+      description: Provider credentials are stored securely and are not returned by status endpoints.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConnectPaddleRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: disconnectPaddle
+      tags:
+      - Integrations
+      summary: Disconnect Paddle
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    patch:
+      operationId: resyncPaddlePayments
+      tags:
+      - Integrations
+      summary: Queue Paddle payment resync
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/shopify:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    delete:
+      operationId: disconnectShopify
+      tags:
+      - Integrations
+      summary: Disconnect Shopify
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/integrations/woocommerce:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    delete:
+      operationId: disconnectWooCommerce
+      tags:
+      - Integrations
+      summary: Disconnect WooCommerce
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/bot-traffic/usage:
+    get:
+      operationId: getBotTrafficUsage
+      tags:
+      - Bot traffic
+      summary: Get Bot traffic account usage
+      description: Account-wide usage endpoint; the token must have access to all websites.
+      x-required-permission: analytics:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/bot-traffic/settings:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getBotTrafficSettings
+      tags:
+      - Bot traffic
+      summary: Get Bot traffic settings
+      description: Requires settings:read for account tokens where applicable.
+      x-required-permission: settings:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    patch:
+      operationId: updateBotTrafficSettings
+      tags:
+      - Bot traffic
+      summary: Update Bot traffic settings
+      description: Requires settings:write for account tokens where applicable.
+      x-required-permission: settings:write
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBotTrafficSettingsRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /admin/websites/{websiteId}/bot-traffic/token:
+    parameters:
+    - name: websiteId
+      in: path
+      required: true
+      description: Website ObjectId.
+      schema:
+        type: string
+    get:
+      operationId: getBotTrafficTokenStatus
+      tags:
+      - Bot traffic
+      summary: Get Bot traffic token status
+      description: Requires settings:read for account tokens where applicable.
+      x-required-permission: settings:read
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      operationId: createBotTrafficToken
+      tags:
+      - Bot traffic
+      summary: Create Bot traffic request-auth token
+      description: The full request-authentication token is returned only once.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    put:
+      operationId: rotateBotTrafficToken
+      tags:
+      - Bot traffic
+      summary: Rotate Bot traffic request-auth token
+      description: Rotation immediately invalidates the previous token.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      operationId: deleteBotTrafficToken
+      tags:
+      - Bot traffic
+      summary: Delete Bot traffic request-auth token
+      description: Deleting the token also turns authentication enforcement off.
+      x-required-permission: settings:write
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        default:
+          $ref: '#/components/responses/ApiError'
+components:
+  securitySchemes:
+    DataFastBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: df_ website key or dft_ account token
+      description: 'Send Authorization: Bearer <token>. Never expose tokens in browser code or public
+        repositories.'
+  parameters:
+    WebsiteId:
+      name: websiteId
+      in: query
+      description: Website ObjectId. Required with dft_ account tokens; inferred from df_ website keys.
+      schema:
+        type: string
+    StartAt:
+      name: startAt
+      in: query
+      description: Inclusive start bound, as YYYY-MM-DD or an ISO 8601 timestamp. Supply with endAt.
+      schema:
+        type: string
+    EndAt:
+      name: endAt
+      in: query
+      description: Inclusive end bound, as YYYY-MM-DD or an ISO 8601 timestamp. Supply with startAt.
+      schema:
+        type: string
+    Start:
+      name: start
+      in: query
+      description: Start bound for event deletion. Deprecated for payments; use startAt.
+      schema:
+        type: string
+    End:
+      name: end
+      in: query
+      description: End bound for event deletion. Deprecated for payments; use endAt.
+      schema:
+        type: string
+    Timezone:
+      name: timezone
+      in: query
+      description: IANA timezone. Defaults to the website timezone.
+      schema:
+        type: string
+        example: America/New_York
+    Fields:
+      name: fields
+      in: query
+      description: Comma-separated response fields. Omit to return all supported fields.
+      schema:
+        type: string
+    FieldsRequired:
+      name: fields
+      in: query
+      description: Comma-separated metrics to return. Required for time series.
+      schema:
+        type: string
+      required: true
+    MetadataFields:
+      name: fields
+      in: query
+      description: 'Metadata fields: domain, timezone, name, logo, kpiColorScheme, kpi, currency.'
+      schema:
+        type: string
+    Interval:
+      name: interval
+      in: query
+      description: Time-series bucket interval.
+      schema:
+        type: string
+        enum:
+        - hour
+        - day
+        - week
+        - month
+      required: true
+    BotInterval:
+      name: interval
+      in: query
+      description: Bot traffic time-series bucket interval.
+      schema:
+        type: string
+        enum:
+        - hour
+        - day
+        - week
+        - month
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of results to return.
+      schema:
+        type: integer
+        minimum: 1
+    AnalyticsLimit:
+      name: limit
+      in: query
+      description: Maximum number of analytics rows (1–1000).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 100
+    VisitorLimit:
+      name: limit
+      in: query
+      description: Maximum number of visitor rows (1–250).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 250
+    Limit1000:
+      name: limit
+      in: query
+      description: Page size (1–1000).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 100
+    BotPageLimit:
+      name: limit
+      in: query
+      description: Requested-page page size (1–100).
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    Offset:
+      name: offset
+      in: query
+      description: Number of results to skip.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    Order:
+      name: order
+      in: query
+      description: Sort order.
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: desc
+    Platform:
+      name: platform
+      in: query
+      description: Filter mentions by platform.
+      schema:
+        type: string
+        enum:
+        - x
+        - reddit
+    Query:
+      name: q
+      in: query
+      description: Case-insensitive text search, up to 200 characters.
+      schema:
+        type: string
+        maxLength: 200
+    EventName:
+      name: eventName
+      in: query
+      description: Exact custom goal name. Required to query custom goal properties.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 64
+      required: true
+    PropertyName:
+      name: propertyName
+      in: query
+      description: Exact case-sensitive custom goal property name.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 200
+    AlertId:
+      name: alertId
+      in: query
+      description: Filter history to one alert.
+      schema:
+        type: string
+    VisitorId:
+      name: datafast_visitor_id
+      in: query
+      description: DataFast visitor UUID.
+      schema:
+        type: string
+    GoalName:
+      name: goalName
+      in: query
+      description: Normalized custom goal name.
+      schema:
+        type: string
+        maxLength: 64
+    TransactionId:
+      name: transaction_id
+      in: query
+      description: Unique transaction ID from the payment provider.
+      schema:
+        type: string
+    BotCategory:
+      name: category
+      in: query
+      description: Bot traffic category.
+      schema:
+        type: string
+        enum:
+        - all
+        - answer_fetch
+        - search_index
+        - training
+        - ai_crawler
+    Verification:
+      name: verification
+      in: query
+      description: Bot request verification status.
+      schema:
+        type: string
+        enum:
+        - all
+        - ip_verified
+        - user_agent_only
+    Company:
+      name: company
+      in: query
+      description: Exact company name returned by the API.
+      schema:
+        type: string
+    CrawlerId:
+      name: crawlerId
+      in: query
+      description: Exact crawler ID returned by the API.
+      schema:
+        type: string
+    PageSearch:
+      name: pageSearch
+      in: query
+      description: Filter requested pages by page path.
+      schema:
+        type: string
+    VisitedPage:
+      name: visitedPage
+      in: query
+      description: Filter visitors by exact page path.
+      schema:
+        type: string
+    VisitedPageContains:
+      name: visitedPageContains
+      in: query
+      description: Filter visitors by a page path substring.
+      schema:
+        type: string
+    CompletedGoal:
+      name: completedGoal
+      in: query
+      description: Filter visitors who completed this goal.
+      schema:
+        type: string
+    Country:
+      name: country
+      in: query
+      description: Filter visitors by country.
+      schema:
+        type: string
+    Device:
+      name: device
+      in: query
+      description: Filter visitors by device.
+      schema:
+        type: string
+    Browser:
+      name: browser
+      in: query
+      description: Filter visitors by browser.
+      schema:
+        type: string
+    UtmCampaign:
+      name: utm_campaign
+      in: query
+      description: Filter visitors by UTM campaign.
+      schema:
+        type: string
+    IsCustomer:
+      name: isCustomer
+      in: query
+      description: Filter visitors by customer status.
+      schema:
+        type: boolean
+    FilterCountry:
+      name: filter_country
+      in: query
+      description: 'Country filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterRegion:
+      name: filter_region
+      in: query
+      description: 'Region or state filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterCity:
+      name: filter_city
+      in: query
+      description: 'City filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterDevice:
+      name: filter_device
+      in: query
+      description: 'Device filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterBrowser:
+      name: filter_browser
+      in: query
+      description: 'Browser filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterOs:
+      name: filter_os
+      in: query
+      description: 'Operating-system filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterPage:
+      name: filter_page
+      in: query
+      description: 'Page path filter; page filters also support contains. Prefix values with is: or is_not:
+        where supported.'
+      schema:
+        type: string
+    FilterEntryPage:
+      name: filter_entry_page
+      in: query
+      description: 'Entry-page path filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterHostname:
+      name: filter_hostname
+      in: query
+      description: 'Hostname filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterGoal:
+      name: filter_goal
+      in: query
+      description: 'Completed custom-goal filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterVisitCount:
+      name: filter_visit_count
+      in: query
+      description: 'Visitor session count; supports is, is_not, gte, and lte. Prefix values with is: or
+        is_not: where supported.'
+      schema:
+        type: string
+    FilterReferrer:
+      name: filter_referrer
+      in: query
+      description: 'Referrer filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterRef:
+      name: filter_ref
+      in: query
+      description: 'ref URL-parameter filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterSource:
+      name: filter_source
+      in: query
+      description: 'source URL-parameter filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterVia:
+      name: filter_via
+      in: query
+      description: 'via URL-parameter filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterUtmSource:
+      name: filter_utm_source
+      in: query
+      description: 'UTM source filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterUtmMedium:
+      name: filter_utm_medium
+      in: query
+      description: 'UTM medium filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterUtmCampaign:
+      name: filter_utm_campaign
+      in: query
+      description: 'UTM campaign filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterUtmTerm:
+      name: filter_utm_term
+      in: query
+      description: 'UTM term filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    FilterUtmContent:
+      name: filter_utm_content
+      in: query
+      description: 'UTM content filter. Prefix values with is: or is_not: where supported.'
+      schema:
+        type: string
+    GoalNameRequired:
+      name: goalName
+      in: query
+      description: Goal name whose display customization will be reset.
+      schema:
+        type: string
+        maxLength: 64
+      required: true
+  responses:
+    Success:
+      description: Successful DataFast response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SuccessEnvelope'
+    ApiError:
+      description: API error. Common status codes include 400, 401, 403, 404, 409, 429, 500, and 504.
+      content:
+        application/json:
+          schema:
+            oneOf:
+            - $ref: '#/components/schemas/ErrorEnvelope'
+            - $ref: '#/components/schemas/PlainError'
+            - $ref: '#/components/schemas/RateLimitError'
+    PaymentCreated:
+      description: Payment recorded. This endpoint does not use the standard success envelope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PaymentCreated'
+  schemas:
+    SuccessEnvelope:
+      type: object
+      required:
+      - status
+      - data
+      properties:
+        status:
+          type: string
+          const: success
+        data:
+          description: Endpoint-specific data. DataFast returns an object or array depending on the endpoint.
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        meta:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    Pagination:
+      type: object
+      properties:
+        limit:
+          type: integer
+        offset:
+          type: integer
+        total:
+          type: integer
+        hasMore:
+          type: boolean
+      additionalProperties: true
+    ErrorEnvelope:
+      type: object
+      required:
+      - status
+      - error
+      properties:
+        status:
+          type: string
+          const: error
+        error:
+          type: object
+          required:
+          - code
+          - message
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+    PlainError:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      additionalProperties: true
+    RateLimitError:
+      type: object
+      required:
+      - error
+      - message
+      - limit
+      - remaining
+      - reset
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        limit:
+          type: integer
+        remaining:
+          type: integer
+        reset:
+          type: integer
+          description: Unix timestamp when the limit resets.
+      additionalProperties: true
+    UpdateAccountRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+    CreateAccessTokenRequest:
+      type: object
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+          description: Dashboard label.
+        permissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum:
+            - analytics:read
+            - goals:read
+            - goals:write
+            - payments:read
+            - payments:write
+            - identify:write
+            - websites:read
+            - websites:write
+            - settings:read
+            - settings:write
+            - api-keys:read
+            - api-keys:write
+            - funnels:read
+            - funnels:write
+            - alerts:read
+            - alerts:write
+            - team:read
+            - team:write
+            - notes:read
+            - notes:write
+            - '*'
+        websiteIds:
+          type: array
+          items:
+            type: string
+          description: An empty array means all websites available to the caller.
+      additionalProperties: false
+    CreateWebsiteRequest:
+      type: object
+      required:
+      - domain
+      - timezone
+      properties:
+        domain:
+          type: string
+          description: Tracked domain without a URL scheme.
+        timezone:
+          type: string
+          description: IANA timezone.
+        name:
+          type: string
+      additionalProperties: true
+    UpdateWebsiteRequest:
+      type: object
+      minProperties: 1
+      properties:
+        domain:
+          type: string
+        name:
+          type:
+          - string
+          - 'null'
+        timezone:
+          type: string
+        currency:
+          type: string
+        kpi:
+          type:
+          - string
+          - 'null'
+        kpiColorScheme:
+          type: string
+        revenueMetric:
+          type: string
+        isCookieless:
+          type: boolean
+        includeRenewalRevenue:
+          type: boolean
+        allowedHostnames:
+          type: array
+          items:
+            type: string
+        excludedIps:
+          type: array
+          items:
+            type: string
+        excludedPaths:
+          type: array
+          items:
+            type: string
+        excludedCountries:
+          type: array
+          items:
+            type: string
+        excludedHostnames:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    NamedResourceRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+    UpdateGoalCustomizationRequest:
+      type: object
+      minProperties: 1
+      properties:
+        goalName:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+      additionalProperties: true
+    PageviewFunnelStep:
+      type: object
+      required:
+      - name
+      - type
+      - url
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          const: pageview
+        url:
+          type: string
+      additionalProperties: true
+    GoalFunnelStep:
+      type: object
+      required:
+      - name
+      - type
+      - goalName
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          const: goal
+        goalName:
+          type: string
+      additionalProperties: true
+    FunnelStep:
+      oneOf:
+      - $ref: '#/components/schemas/PageviewFunnelStep'
+      - $ref: '#/components/schemas/GoalFunnelStep'
+    CreateFunnelRequest:
+      type: object
+      required:
+      - name
+      - steps
+      properties:
+        name:
+          type: string
+          minLength: 1
+        steps:
+          type: array
+          minItems: 2
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/FunnelStep'
+      additionalProperties: true
+    UpdateFunnelRequest:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+        steps:
+          type: array
+          minItems: 2
+          maxItems: 8
+          items:
+            $ref: '#/components/schemas/FunnelStep'
+      additionalProperties: true
+    CreateNoteRequest:
+      type: object
+      required:
+      - text
+      - timestamp
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp or YYYY-MM-DD in website timezone.
+        idempotencyKey:
+          type: string
+          minLength: 1
+          maxLength: 128
+          pattern: ^[A-Za-z0-9._:-]+$
+      additionalProperties: false
+    UpdateNoteRequest:
+      type: object
+      minProperties: 1
+      properties:
+        text:
+          type: string
+          minLength: 1
+          maxLength: 500
+        timestamp:
+          type: string
+          description: ISO 8601 timestamp or YYYY-MM-DD in website timezone.
+      additionalProperties: false
+    AlertRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        trigger:
+          type: object
+          additionalProperties: true
+        template:
+          type: object
+          additionalProperties: true
+        isEnabled:
+          type: boolean
+      additionalProperties: true
+    InviteTeamMemberRequest:
+      type: object
+      required:
+      - email
+      - role
+      properties:
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum:
+          - viewer
+          - member
+      additionalProperties: false
+    RemoveTeamMemberRequest:
+      type: object
+      required:
+      - userId
+      properties:
+        userId:
+          type: string
+      additionalProperties: false
+    ConnectStripeRequest:
+      type: object
+      required:
+      - stripeRak
+      properties:
+        stripeRak:
+          type: string
+          writeOnly: true
+      additionalProperties: true
+    ConnectLemonSqueezyRequest:
+      type: object
+      required:
+      - lemonsqueezyApiKey
+      - lemonsqueezyStoreId
+      properties:
+        lemonsqueezyApiKey:
+          type: string
+          writeOnly: true
+        lemonsqueezyStoreId:
+          type: string
+      additionalProperties: true
+    ConnectPolarRequest:
+      type: object
+      required:
+      - polarAccessToken
+      - polarOrgId
+      properties:
+        polarAccessToken:
+          type: string
+          writeOnly: true
+        polarOrgId:
+          type: string
+      additionalProperties: true
+    ConnectPaddleRequest:
+      type: object
+      required:
+      - paddleApiKey
+      properties:
+        paddleApiKey:
+          type: string
+          writeOnly: true
+      additionalProperties: true
+    UpdateBotTrafficSettingsRequest:
+      type: object
+      minProperties: 1
+      properties:
+        disableCompanies:
+          type: array
+          items:
+            type: string
+        enableCompanies:
+          type: array
+          items:
+            type: string
+        disableCrawlerIds:
+          type: array
+          items:
+            type: string
+        enableCrawlerIds:
+          type: array
+          items:
+            type: string
+        excludedCrawlerIds:
+          type: array
+          items:
+            type: string
+        verifiedOnly:
+          type: boolean
+        requireAuthToken:
+          type: boolean
+        hiddenCrawlers:
+          type: array
+          items:
+            type: string
+        hideDashboardCard:
+          type: boolean
+        groupBy:
+          type: string
+        pageFilterIds:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    IdentifyRequest:
+      type: object
+      required:
+      - user_id
+      - datafast_visitor_id
+      properties:
+        user_id:
+          type: string
+          maxLength: 255
+        datafast_visitor_id:
+          type: string
+          format: uuid
+      additionalProperties: true
+      description: Additional top-level fields are shallow-merged into profile metadata. Do not send secrets.
+    CreateGoalRequest:
+      type: object
+      required:
+      - datafast_visitor_id
+      - name
+      properties:
+        datafast_visitor_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          description: Names are normalized to lowercase; identify is reserved.
+        description:
+          type: string
+        metadata:
+          type: object
+          maxProperties: 10
+          additionalProperties:
+            type: string
+            maxLength: 255
+      additionalProperties: false
+    CreatePaymentRequest:
+      type: object
+      required:
+      - amount
+      - currency
+      - transaction_id
+      properties:
+        amount:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        transaction_id:
+          type: string
+          minLength: 1
+        datafast_visitor_id:
+          type: string
+        email:
+          type: string
+          format: email
+        customer_email:
+          type: string
+          format: email
+        name:
+          type: string
+        customer_name:
+          type: string
+        customer_id:
+          type: string
+        renewal:
+          type: boolean
+        refunded:
+          type: boolean
+        is_free_trial:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+      additionalProperties: true
+    PaymentCreated:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+        transaction_id:
+          type: string
+      additionalProperties: true
+      description: Payment create responses use plain JSON, without the status/data envelope.

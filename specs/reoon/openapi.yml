@@ -1,0 +1,432 @@
+openapi: 3.2.1
+info:
+  title: Reoon Email Verifier API
+  version: 1.0.0
+  description: |-
+    OpenAPI description of Reoon Email Verifier's documented API v1.
+    The API key is sent in the query string for GET operations and in the JSON
+    body when creating a bulk task, as required by Reoon's API.
+externalDocs:
+  description: Official Reoon Email Verifier API documentation
+  url: https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/
+servers:
+  - url: https://emailverifier.reoon.com/api/v1
+    description: Reoon Email Verifier API v1
+tags:
+  - name: Email verification
+    description: Verify one email address in quick or power mode.
+  - name: Bulk verification
+    description: Create bulk verification tasks and retrieve their progress or results.
+  - name: Account
+    description: Check remaining verification credits.
+paths:
+  /verify:
+    get:
+      operationId: verifyEmail
+      tags: [Email verification]
+      summary: Verify one email address
+      description: >-
+        Quick mode is the default and checks syntax, disposable status, MX and
+        related signals without checking whether the individual inbox exists.
+        Power mode performs deeper checks and can take from seconds to over a
+        minute. Reoon advises against continuously using this endpoint with
+        more than five concurrent threads; use the bulk API for larger lists.
+      security:
+        - ReoonApiKey: []
+      parameters:
+        - name: email
+          in: query
+          required: true
+          description: Email address to verify.
+          schema:
+            type: string
+        - name: mode
+          in: query
+          description: Verification depth. Omit to use quick mode.
+          schema:
+            type: string
+            enum: [quick, power]
+            default: quick
+      responses:
+        '200':
+          description: Verification result. Available fields vary by mode.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/QuickEmailVerificationResult'
+                  - $ref: '#/components/schemas/PowerEmailVerificationResult'
+              examples:
+                quick:
+                  summary: Quick mode result
+                  value:
+                    email: jhon123@gmail.com
+                    status: valid
+                    username: jhon123
+                    domain: gmail.com
+                    is_valid_syntax: true
+                    is_disposable: false
+                    is_role_account: false
+                    mx_accepts_mail: true
+                    is_spamtrap: false
+                    is_free_email: true
+                    mx_records:
+                      - gmail-smtp-in.l.google.com
+                      - alt1.gmail-smtp-in.l.google.com
+                      - alt2.gmail-smtp-in.l.google.com
+                      - alt3.gmail-smtp-in.l.google.com
+                      - alt4.gmail-smtp-in.l.google.com
+                    verification_mode: quick
+                power:
+                  summary: Power mode result
+                  value:
+                    email: jhon123@gmail.com
+                    status: safe
+                    overall_score: 98
+                    username: jhon123
+                    domain: gmail.com
+                    is_safe_to_send: true
+                    is_valid_syntax: true
+                    is_disposable: false
+                    is_role_account: false
+                    can_connect_smtp: true
+                    has_inbox_full: false
+                    is_catch_all: false
+                    is_deliverable: true
+                    is_disabled: false
+                    is_spamtrap: false
+                    is_free_email: true
+                    mx_accepts_mail: true
+                    mx_records:
+                      - gmail-smtp-in.l.google.com
+                      - alt1.gmail-smtp-in.l.google.com
+                      - alt2.gmail-smtp-in.l.google.com
+                      - alt3.gmail-smtp-in.l.google.com
+                      - alt4.gmail-smtp-in.l.google.com
+                    verification_mode: power
+  /create-bulk-verification-task/:
+    post:
+      operationId: createBulkVerificationTask
+      tags: [Bulk verification]
+      summary: Create a bulk verification task
+      description: >-
+        Submits up to 50,000 email addresses for asynchronous verification in
+        power mode. Reoon removes duplicate addresses before processing. The
+        API key must be included in the JSON body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBulkTaskRequest'
+            example:
+              name: Spring leads
+              emails: [user@example.com, person@example.net]
+              key: YOUR_API_KEY
+      responses:
+        '201':
+          description: Bulk task created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBulkTaskResponse'
+              example:
+                status: success
+                task_id: 40676
+                count_submitted: 2
+                count_duplicates_removed: 0
+                count_rejected_emails: 0
+                count_processing: 2
+        default:
+          description: Reoon returned an API-level error. The HTTP status is not specified in the documentation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /get-result-bulk-verification-task/:
+    get:
+      operationId: getBulkVerificationTaskResult
+      tags: [Bulk verification]
+      summary: Get bulk task progress or results
+      description: >-
+        Returns task progress while verification is running and email results
+        when they are ready. Reoon's formal request URL uses `task_id`; one
+        Python example in its documentation uses `task-id` instead.
+      security:
+        - ReoonApiKey: []
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          description: Task ID returned by the bulk task creation operation.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Task progress, completed results, or an API-level error.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BulkTaskResult'
+                  - $ref: '#/components/schemas/ApiError'
+              examples:
+                completed:
+                  summary: Completed task with results keyed by email
+                  value:
+                    task_id: '40676'
+                    name: Spring leads
+                    status: completed
+                    count_total: 2
+                    count_checked: 2
+                    progress_percentage: 100
+                    results:
+                      jhon200@outlook.com:
+                        email: jhon200@outlook.com
+                        status: safe
+                        is_safe_to_send: true
+                        is_valid_syntax: true
+                        is_disposable: false
+                        is_role_account: false
+                        can_connect_smtp: true
+                        has_inbox_full: false
+                        is_catch_all: false
+                        is_deliverable: true
+                        is_disabled: false
+                        is_spamtrap: false
+                        mx_accepts_mail: true
+                        mx_records: [outlook-com.olc.protection.outlook.com]
+                        username: jhon200
+                        domain: outlook.com
+                running:
+                  summary: Task still processing
+                  value:
+                    task_id: '40676'
+                    name: Spring leads
+                    status: running
+                    count_total: 2
+                    count_checked: 1
+                    progress_percentage: 50
+                apiError:
+                  summary: API-level error
+                  value:
+                    status: error
+                    reason: Task not found
+  /check-account-balance/:
+    get:
+      operationId: checkAccountBalance
+      tags: [Account]
+      summary: Check remaining credits
+      description: Returns the account's API status and remaining daily and instant credits.
+      security:
+        - ReoonApiKey: []
+      responses:
+        '200':
+          description: Current account balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountBalance'
+              example:
+                api_status: active
+                remaining_daily_credits: 150
+                remaining_instant_credits: 5000
+                status: success
+components:
+  securitySchemes:
+    ReoonApiKey:
+      type: apiKey
+      in: query
+      name: key
+      description: >-
+        Used by GET operations. Bulk task creation instead requires `key` in its
+        JSON request body.
+  schemas:
+    EmailVerificationResult:
+      type: object
+      required: [email, status]
+      description: >-
+        Fields differ by verification mode. Quick status values are valid,
+        invalid, disposable, and spamtrap. Power status values are safe,
+        invalid, disabled, disposable, inbox_full, catch_all, role_account,
+        spamtrap, and unknown.
+      properties:
+        email:
+          type: string
+        status:
+          type: string
+          enum: [valid, invalid, disposable, spamtrap, safe, disabled, inbox_full, catch_all, role_account, unknown]
+        overall_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Power mode score out of 100.
+        username:
+          type: string
+        domain:
+          type: string
+        is_safe_to_send:
+          type: boolean
+        is_valid_syntax:
+          type: boolean
+        is_disposable:
+          type: boolean
+        is_role_account:
+          type: boolean
+        can_connect_smtp:
+          type: boolean
+        has_inbox_full:
+          type: boolean
+        is_catch_all:
+          type: boolean
+        is_deliverable:
+          type: boolean
+        is_disabled:
+          type: boolean
+        is_spamtrap:
+          anyOf:
+            - type: boolean
+            - type: string
+              enum: ['None']
+        is_free_email:
+          type: boolean
+        mx_accepts_mail:
+          type: boolean
+        mx_records:
+          type: array
+          items:
+            type: string
+        verification_mode:
+          type: string
+          enum: [quick, power]
+      additionalProperties: true
+    QuickEmailVerificationResult:
+      allOf:
+        - $ref: '#/components/schemas/EmailVerificationResult'
+        - type: object
+          required: [verification_mode]
+          properties:
+            status:
+              type: string
+              enum: [valid, invalid, disposable, spamtrap]
+            verification_mode:
+              type: string
+              const: quick
+    PowerEmailVerificationResult:
+      allOf:
+        - $ref: '#/components/schemas/EmailVerificationResult'
+        - type: object
+          required: [verification_mode]
+          properties:
+            status:
+              type: string
+              enum: [safe, invalid, disabled, disposable, inbox_full, catch_all, role_account, spamtrap, unknown]
+            verification_mode:
+              type: string
+              const: power
+    BulkEmailVerificationResult:
+      allOf:
+        - $ref: '#/components/schemas/EmailVerificationResult'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [safe, invalid, disabled, disposable, inbox_full, catch_all, role_account, spamtrap, unknown]
+    CreateBulkTaskRequest:
+      type: object
+      required: [emails, key]
+      properties:
+        name:
+          type: string
+          maxLength: 25
+          description: Optional task name, up to 25 characters.
+        emails:
+          type: array
+          maxItems: 50000
+          description: >-
+            Email addresses to verify. Malformed addresses are rejected and
+            included in count_rejected_emails rather than processed.
+          items:
+            type: string
+        key:
+          type: string
+          format: password
+          writeOnly: true
+          description: Active Reoon API key.
+    CreateBulkTaskResponse:
+      type: object
+      required: [status, task_id, count_submitted, count_duplicates_removed, count_rejected_emails, count_processing]
+      properties:
+        status:
+          type: string
+          const: success
+        task_id:
+          type: integer
+          description: Unique ID to use when retrieving task results.
+        count_submitted:
+          type: integer
+        count_duplicates_removed:
+          type: integer
+        count_rejected_emails:
+          type: integer
+        count_processing:
+          type: integer
+      additionalProperties: true
+    BulkTaskResult:
+      type: object
+      required: [task_id, status]
+      properties:
+        task_id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          description: Known values include waiting, running, completed, file_not_found, and file_loading_error; other values may be returned.
+        count_total:
+          type: integer
+        count_checked:
+          type: integer
+        progress_percentage:
+          type: number
+          minimum: 0
+          maximum: 100
+        results:
+          description: >-
+            Reoon's prose describes an array, while its worked example is an
+            object keyed by email address. Both documented shapes are accepted.
+          oneOf:
+            - type: array
+              items:
+                $ref: '#/components/schemas/BulkEmailVerificationResult'
+            - type: object
+              additionalProperties:
+                $ref: '#/components/schemas/BulkEmailVerificationResult'
+      additionalProperties: true
+    AccountBalance:
+      type: object
+      required: [api_status, remaining_daily_credits, remaining_instant_credits, status]
+      properties:
+        api_status:
+          type: string
+        remaining_daily_credits:
+          type: integer
+          minimum: 0
+        remaining_instant_credits:
+          type: integer
+          minimum: 0
+        status:
+          type: string
+          const: success
+      additionalProperties: true
+    ApiError:
+      type: object
+      required: [status, reason]
+      properties:
+        status:
+          type: string
+          const: error
+        reason:
+          type: string
+          description: Human-readable description of the API error.
+      additionalProperties: true
