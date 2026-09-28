@@ -125,6 +125,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Replicate    | [OpenAPI specification](https://api.replicate.com/openapi.json)               | JSON       | 3.1     | `official` `platform` `model-hosting` `inference` `ai-platform` |
 | RunDossier   | [API specification](https://rundossier.com/api/v1/openapi.json)               | JSON       | 3.1.0   | `official` `ai` `research-automation` |
 | Sonz AI      | [API specification](https://api.sonz.ai/docs/openapi.yaml)                    | YAML       | 3.1     | `official` `ai` `agent-platform` |
+| TypeSafe AI  | [API specification](https://api.typesafe.ai/openapi.json)                    | JSON       | 3.1.0   | `official` `ai` `inference` |
 | Unstructured | [Platform API specification](https://platform.unstructuredapp.io/openapi.json) | JSON      | 3.1     | `official` `ai-data-platform` |
 
 ## Payments
