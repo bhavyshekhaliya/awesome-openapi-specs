@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="148 specifications" src="https://img.shields.io/badge/specifications-148-13795b">
+  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -265,6 +265,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Post Bridge | [API specification](https://api.post-bridge.com/openapi.json) | JSON | 3.0.0 | `official` `social-media` `scheduling` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
