@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="193 specifications" src="https://img.shields.io/badge/specifications-193-13795b">
+  <img alt="194 specifications" src="https://img.shields.io/badge/specifications-194-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -316,6 +316,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
 | Open Library | [Community specification](specs/open-library/openapi.yml); [Search API docs](https://openlibrary.org/dev/docs/api/search) | YAML | 3.1.0 | `community-maintained` `focused` `books` `catalog` |
 | PokéAPI | [REST API specification](https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml) | YAML | 3.1.0 | `official` `open-source` `gaming` `public-data` |
+| Sonarr | [API specification](https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json) | JSON | 3.0.1 | `official` `open-source` `media-management` `self-hosted` |
 
 ## Content Management and CMS
 | Provider | OpenAPI spec | Format | Version | Tags |
