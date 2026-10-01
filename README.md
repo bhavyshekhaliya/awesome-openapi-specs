@@ -144,6 +144,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Adyen    | [API specifications](https://github.com/Adyen/adyen-openapi)                        | JSON       | 3.1     | `official` `payments`               |
 | Dodo Payments | [OpenAPI specification](https://raw.githubusercontent.com/dodopayments/dodo-docs/main/openapi/openapi.documented.yml) | YAML | 3.1.0 | `official` `payments` `merchant-of-record` `subscriptions` |
 | Mollie   | [API specification](https://github.com/mollie/openapi)                              | YAML       | 3.0     | `official` `payments` `open-source` |
+| Open Payments | [Community specification](specs/openpayments/openapi.yml) · [source docs](https://docs.openpayments.io/docs/quickstart_pis) | YAML | 3.0.3 | `community-maintained` `focused` `payments` `open-banking` |
 | Paddle   | [API specification](https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/main/v1/openapi.yaml) | YAML | 3.1.0 | `official` `billing` `subscriptions` `merchant-of-record` |
 | Paystack | [API specification](https://raw.githubusercontent.com/PaystackOSS/openapi/main/dist/paystack.yaml) | YAML       | 3.0.1   | `official` `focused` `payments` `checkout` `fintech` |
 | PayPal   | [REST API specifications](https://github.com/paypal/paypal-rest-api-specifications) | JSON       | 3.0     | `official` `payments`               |
