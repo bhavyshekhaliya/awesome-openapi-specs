@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+  title: ServiceNow Table API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for the JSON endpoints of the
+    ServiceNow Table API. Table names, record fields, and access controls vary
+    by instance. This specification covers the default unversioned endpoints
+    and common query parameters; it omits instance-specific table schemas,
+    versioned URLs, XML responses, less common query parameters, and other
+    ServiceNow APIs.
+  externalDocs:
+    description: ServiceNow Table API reference
+    url: https://www.servicenow.com/docs/r/api-reference/rest-apis/c_TableAPI.html
+servers:
+  - url: https://{instance}/api/now
+    description: Your ServiceNow instance
+    variables:
+      instance:
+        default: instance.servicenow.com
+        description: Replace with your instance hostname.
+security:
+  - basicAuth: []
+paths:
+  /table/{tableName}:
+    parameters:
+      - name: tableName
+        in: path
+        required: true
+        description: Name of the table to access, such as incident or asset.
+        schema:
+          type: string
+    get:
+      operationId: listTableRecords
+      summary: Retrieve records from a table
+      description: The calling user must have sufficient roles to access the table data.
+      parameters:
+        - $ref: '#/components/parameters/SysparmQuery'
+        - $ref: '#/components/parameters/SysparmDisplayValue'
+        - $ref: '#/components/parameters/SysparmExcludeReferenceLink'
+        - $ref: '#/components/parameters/SysparmFields'
+        - $ref: '#/components/parameters/SysparmLimit'
+        - $ref: '#/components/parameters/SysparmNoCount'
+        - $ref: '#/components/parameters/SysparmOffset'
+        - $ref: '#/components/parameters/SysparmQueryNoDomain'
+        - $ref: '#/components/parameters/SysparmView'
+      responses:
+        '200':
+          description: Records returned from the table.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordListResponse'
+    post:
+      operationId: createTableRecord
+      summary: Insert a record into a table
+      description: Inserts one record. Multiple-record insertion is not supported by this method.
+      parameters:
+        - $ref: '#/components/parameters/SysparmDisplayValue'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableRecord'
+      responses:
+        '201':
+          description: Record created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+        '400':
+          description: The request is malformed or has an unsupported type.
+        '404':
+          description: The requested item was not found.
+  /table/{tableName}/{sys_id}:
+    parameters:
+      - name: tableName
+        in: path
+        required: true
+        description: Name of the table containing the record.
+        schema:
+          type: string
+      - name: sys_id
+        in: path
+        required: true
+        description: Identifier of the record.
+        schema:
+          type: string
+    get:
+      operationId: getTableRecord
+      summary: Retrieve a record
+      description: The calling user must have sufficient roles to access the record.
+      parameters:
+        - $ref: '#/components/parameters/SysparmDisplayValue'
+        - $ref: '#/components/parameters/SysparmExcludeReferenceLink'
+        - $ref: '#/components/parameters/SysparmFields'
+        - $ref: '#/components/parameters/SysparmQueryNoDomain'
+        - $ref: '#/components/parameters/SysparmView'
+      responses:
+        '200':
+          description: Record returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+        '404':
+          description: The requested item was not found.
+    patch:
+      operationId: updateTableRecord
+      summary: Update fields on a record
+      description: Updates the record with the name-value pairs in the request body.
+      parameters:
+        - $ref: '#/components/parameters/SysparmDisplayValue'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableRecord'
+      responses:
+        '200':
+          description: Record updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+        '400':
+          description: The request is malformed or has an unsupported type.
+        '404':
+          description: The requested item was not found.
+    put:
+      operationId: replaceTableRecord
+      summary: Update a record
+      description: Updates the record with the request body.
+      parameters:
+        - $ref: '#/components/parameters/SysparmDisplayValue'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TableRecord'
+      responses:
+        '200':
+          description: Record updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordResponse'
+        '400':
+          description: The request is malformed or has an unsupported type.
+        '404':
+          description: The requested item was not found.
+    delete:
+      operationId: deleteTableRecord
+      summary: Delete a record
+      description: Deletes the specified record from the table.
+      responses:
+        '204':
+          description: Record deleted; the response has no body.
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  parameters:
+    SysparmQuery:
+      name: sysparm_query
+      in: query
+      description: Encoded query used to filter the result set.
+      schema:
+        type: string
+    SysparmDisplayValue:
+      name: sysparm_display_value
+      in: query
+      description: Select whether responses contain actual values, display values, or both.
+      schema:
+        type: string
+        enum: ['false', 'true', all]
+        default: 'false'
+    SysparmExcludeReferenceLink:
+      name: sysparm_exclude_reference_link
+      in: query
+      description: Exclude Table API links for reference fields.
+      schema:
+        type: boolean
+        default: false
+    SysparmFields:
+      name: sysparm_fields
+      in: query
+      description: Comma-separated field names to return; invalid fields are ignored.
+      schema:
+        type: string
+    SysparmLimit:
+      name: sysparm_limit
+      in: query
+      description: Maximum number of records to return. The documented default is 10000.
+      schema:
+        type: integer
+        default: 10000
+    SysparmNoCount:
+      name: sysparm_no_count
+      in: query
+      description: Whether to skip the query that counts rows in the table.
+      schema:
+        type: boolean
+        default: false
+    SysparmOffset:
+      name: sysparm_offset
+      in: query
+      description: Starting record index used to paginate results; negative values are not supported.
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    SysparmQueryNoDomain:
+      name: sysparm_query_no_domain
+      in: query
+      description: >-
+        Include records outside the logged-in user's configured domains. Available
+        only to system administrators or users with the query_no_domain_table_api role.
+      schema:
+        type: boolean
+        default: false
+    SysparmView:
+      name: sysparm_view
+      in: query
+      description: UI view that determines which fields are returned.
+      schema:
+        type: string
+        enum: [desktop, mobile, both]
+  schemas:
+    TableRecord:
+      type: object
+      description: Table-specific field names and values; fields depend on the selected table and instance.
+      additionalProperties: true
+    RecordResponse:
+      type: object
+      required: [result]
+      properties:
+        result:
+          $ref: '#/components/schemas/TableRecord'
+      additionalProperties: false
+    RecordListResponse:
+      type: object
+      required: [result]
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/TableRecord'
+      additionalProperties: false

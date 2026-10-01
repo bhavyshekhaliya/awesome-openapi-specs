@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="171 specifications" src="https://img.shields.io/badge/specifications-171-13795b">
+  <img alt="172 specifications" src="https://img.shields.io/badge/specifications-172-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -243,6 +243,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | HelpDesk.com | [API specification](https://api.helpdesk.com/docs) | JSON | 3.0.3 | `official` `customer-support` `ticketing` |
+| ServiceNow | [Community specification](specs/servicenow/openapi.yml); [Table API docs](https://www.servicenow.com/docs/r/api-reference/rest-apis/c_TableAPI.html) | YAML | 3.1.0 | `community-maintained` `focused` `itsm` `workflow` |
 | Zoho Desk | [OpenAPI specification repository](https://github.com/zoho/zohodesk-oas) | JSON | 3.1.0 | `official` `customer-support` `helpdesk` |
 
 ## Accounting, ERP and Billing
