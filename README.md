@@ -314,6 +314,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
+| OpenTripMap API | [Official OpenAPI specification](https://dev.opentripmap.org/openapi.en.json) · [API docs](https://dev.opentripmap.org/product) · [free plan](https://dev.opentripmap.org/price) | JSON | 3.0.0 | `official` `travel` `points-of-interest` `open-data` |
 
 ## Healthcare and Life Sciences
 | Provider | OpenAPI spec | Format | Version | Tags |
