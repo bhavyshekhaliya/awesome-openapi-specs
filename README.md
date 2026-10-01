@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="226 specifications" src="https://img.shields.io/badge/specifications-226-13795b">
+  <img alt="227 specifications" src="https://img.shields.io/badge/specifications-227-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -318,6 +318,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | NCEI Space Weather Portal | [API specification](https://www.ncei.noaa.gov/cloud-access/space-weather-portal/api/v1/static/openapi/openapi-spot.yaml) | JSON | 3.0.0 | `official` `government` `space-weather` `public-data` |
 | NLR Transportation Laws and Incentives | [API specification](https://developer.nlr.gov/docs/transportation/transportation-incentives-laws-v1/spec.yml) | YAML | 2.0 | `official` `government` `energy` `transportation` `public-data` |
 | Open-Meteo | [API specifications](https://github.com/open-meteo/open-meteo/tree/main/openapi) | YAML | 3.1.0 | `official` `open-source` `weather` `public-data` |
+| Police API (data.police.uk) | [Community specification](specs/data-police-uk/openapi.yml); [official API docs](https://data.police.uk/docs/) | YAML | 3.1.0 | `community-maintained` `focused` `crime-data` `public-data` `government` |
 | REST Countries | [Community specification](specs/rest-countries/openapi.yml) · [Countries API docs](https://restcountries.com/docs/countries) | YAML | 3.1.0 | `community-maintained` `focused` `country-data` `public-data` |
 | U.S. Census Bureau | [Community specification](specs/us-census-bureau/openapi.yml) · [Census Data API guide](https://www.census.gov/data/developers/guidance/api-user-guide.html) | YAML | 3.1.0 | `community-maintained` `focused` `government` `public-data` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
