@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="170 specifications" src="https://img.shields.io/badge/specifications-170-13795b">
+  <img alt="171 specifications" src="https://img.shields.io/badge/specifications-171-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -124,6 +124,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | ElevenLabs   | [API specification](https://api.elevenlabs.io/openapi.json)                   | JSON       | 3.1     | `official` `voice-ai`         |
 | Exa          | [Public API specification](https://api.exa.ai/openapi.json)                   | JSON       | 3.1     | `official` `ai-search`        |
 | Firecrawl    | [v2 API specification](https://raw.githubusercontent.com/firecrawl/firecrawl-docs/main/v1/api-reference/v2-openapi.json) | JSON | 3.0.0 | `official` `web-data` `scraping` `ai` |
+| Groq         | [Community specification](specs/groq/openapi.yml) · [source docs](https://console.groq.com/docs/api-reference) | YAML | 3.1.0 | `community-maintained` `focused` `ai` `inference` |
 | Hugging Face | [Hub API specification](https://huggingface.co/.well-known/openapi.json)      | JSON       | 3.1.0   | `official` `ai` `model-hub`   |
 | Mistral AI   | [API specification](https://raw.githubusercontent.com/mistralai/platform-docs-public/main/openapi.yaml) | YAML | 3.1.0 | `official` `ai` `inference` |
 | OpenAI       | [JSON and YAML specifications](https://github.com/openai/openai-openapi)      | JSON, YAML | 3.1     | `official` `ai`               |
