@@ -56,6 +56,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
+| KlickTipp        | [API specification](https://developers.klicktipp.com/_bundle/management-api.json?download=) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
