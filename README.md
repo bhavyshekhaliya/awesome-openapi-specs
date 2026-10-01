@@ -300,6 +300,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | ShipEngine | [OpenAPI downloads](https://docs.shipstation.com/apis/shipengine/openapi/downloads) | JSON, YAML | 3.x | `official` `shipping` `carriers` |
 | Shippo | [Shipping API specification](https://docs.goshippo.com/spec/shippoapi/public-api.yaml) | YAML | 3.1.0 | `official` `shipping` `labels` `tracking` |
+| Transport for NSW Trip Planner API | [Community specification](specs/transport-for-nsw/openapi.yml) · [Trip Planner API manual](https://opendata.transport.nsw.gov.au/sites/default/files/2026-04/trip-planner-api-manual-opendataproduction-v3.3.pdf) · [API access and limits](https://opendata.transport.nsw.gov.au/developers/api-basics) | YAML | 3.1.0 | `community-maintained` `transit` `trip-planning` `public-data` |
 
 ## Travel and Hospitality
 | Provider | OpenAPI spec | Format | Version | Tags |
