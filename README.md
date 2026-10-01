@@ -266,6 +266,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Hootsuite | [REST API specification](https://apidocs.hootsuite.com/docs/api/swagger.yaml) | YAML | 2.0 | `official` `social-media-management` `analytics` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
