@@ -393,6 +393,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | CIRCL Hashlookup | [API specification](https://hashlookup.circl.lu/swagger.json) · [API documentation](https://hashlookup.circl.lu/) | JSON | 2.0 | `official` `security` `hash-lookup` `public-data` |
 | CyCAT | [API specification](https://api.cycat.org/swagger.json) · [API documentation](https://www.cycat.org/services/) | JSON | 2.0 | `official` `cybersecurity` `threat-intelligence` `public-data` |
 | MISP | [API specification](https://raw.githubusercontent.com/MISP/MISP/develop/app/webroot/doc/openapi.yaml); [API documentation](https://misp-project.org/documentation/) | YAML | 3.0.0 | `official` `open-source` `self-hosted` `threat-intelligence` |
+| Netlas | [Official OpenAPI 3.0 specification](https://cdn.netlas.io/netlas-openapi-3.0.json); [API reference](https://docs.netlas.io/api-reference/) | JSON | 3.0.3 | `official` `security` `osint` `internet-assets` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 | Permit.io | [Cloud API specification](https://api.permit.io/v2/openapi.json) | JSON | 3.1.0 | `official` `authorization` `policy-engine` `permissions` |
 | Tailscale | [API documentation and OpenAPI download](https://tailscale.com/api) | JSON | 3.x | `official` `networking` `zero-trust` `vpn` |
