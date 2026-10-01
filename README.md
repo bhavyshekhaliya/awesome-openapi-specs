@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="169 specifications" src="https://img.shields.io/badge/specifications-169-13795b">
+  <img alt="170 specifications" src="https://img.shields.io/badge/specifications-170-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -205,6 +205,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
 | Convex        | [Management API specification](https://api.convex.dev/v1/openapi.json)                         | JSON   | 3.1.0   | `official` `backend` `developer-platform` `beta` |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
+| Elastic (Kibana) | [Kibana API specification](https://raw.githubusercontent.com/elastic/kibana/main/oas_docs/output/kibana.yaml) | YAML | 3.0.3 | `official` `observability` `analytics` `work-in-progress` |
 | Grafana       | [HTTP API specification](https://github.com/grafana/grafana/blob/main/public/api-merged.json) | JSON   | 2.0     | `official` `observability` `open-source` |
 | Inngest       | [REST API v2 specification](https://api-docs.inngest.com/api-specs/v2.json)                     | JSON   | 3.0.3   | `official` `serverless-workflows` `background-jobs` |
 | LaunchDarkly  | [REST API specification](https://app.launchdarkly.com/api/v2/openapi.json)                      | JSON   | 3.0.3   | `official` `feature-management` `experimentation` |
