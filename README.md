@@ -58,6 +58,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
+| Luma             | [API specification](https://public-api.luma.com/openapi.json) | JSON | 3.1.0 | `official` `event-marketing` |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
