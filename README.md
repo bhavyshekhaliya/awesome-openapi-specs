@@ -240,6 +240,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Okta     | [Management API specification](https://github.com/okta/okta-management-openapi-spec) | JSON, YAML | 3.0     | `official` `identity`               |
 | Ory      | [API specifications](https://github.com/ory/sdk/tree/master/spec)                    | JSON       | 3.0     | `official` `identity` `open-source` |
 | Stytch   | [API specification](https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml) | YAML | 3.0.3 | `official` `focused` `authentication` `passkeys` `b2c` `b2b` |
+| Telefónica Open Gateway Number Verification | [Official OpenAPI specification](https://github.com/Telefonica/opengateway-developers-website/tree/main/v2/catalog/numberverification) · [API docs](https://developers.opengateway.telefonica.com/v1/docs/numberverification) | YAML | 3.0.3 | `official` `identity` `telecommunications` `fraud-prevention` |
 | WorkOS   | [API specification](https://github.com/workos/openapi-spec/blob/main/spec/open-api-spec.yaml) | YAML | 3.1.1 | `official` `identity` `authentication` `enterprise-sso` |
 
 ## Developer Tools
