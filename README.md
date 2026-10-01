@@ -66,6 +66,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
+| SendPulse | [Bulk Email](https://api.sendpulse.com/.well-known/openapi/bulk-email.yaml) ? [SMS](https://api.sendpulse.com/.well-known/openapi/sms.yaml) ? [CRM](https://api.sendpulse.com/.well-known/openapi/crm.yaml) ? [Chatbots](https://api.sendpulse.com/.well-known/openapi/chatbots.yaml) ? [all 18 APIs index](https://api.sendpulse.com/.well-known/openapi/index.yaml) | YAML | 3.1.2 (service specs); 3.1.0 (index) | `official` `email-marketing` `automation` `sms` |
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
 
 ## CRM
