@@ -298,6 +298,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | NCBI Datasets API | [Official OpenAPI specification](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/openapi3/openapi3.docs.yaml); [API documentation](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/rest-api/) | YAML | 3.0.1 | `official` `life-sciences` `genomics` `public-data` |
 | openFDA | [Community specification](specs/openfda/openapi.yml); [Drug Adverse Event API docs](https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/) | YAML | 3.1.0 | `community-maintained` `focused` `healthcare` `public-data` |
 | Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
+| USDA FoodData Central | [Official OpenAPI specification](https://api.swaggerhub.com/apis/fdcnal/food-data_central_api/1.0.1) · [API guide](https://fdc.nal.usda.gov/api-guide/) | JSON | 3.0.0 | `official` `government` `nutrition` `public-data` |
 
 ## Education
 | Provider | OpenAPI spec | Format | Version | Tags |
