@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="172 specifications" src="https://img.shields.io/badge/specifications-172-13795b">
+  <img alt="173 specifications" src="https://img.shields.io/badge/specifications-173-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -182,6 +182,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
 | OpenSearch  | [API specification repository](https://github.com/opensearch-project/opensearch-api-specification) | YAML | 3.1 | `official` `platform` `open-source` `search` `analytics` |
+| Oracle REST Data Services | [Community specification](specs/oracle-rest-data-services/openapi.yml); [API docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/26.1/orrst/rest-endpoints.html) | YAML | 3.1.0 | `community-maintained` `focused` `database` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | PostHog     | [API specification](https://us.posthog.com/api/schema/?format=json)                    | JSON       | 3.1.0   | `official` `analytics` `product-analytics` |
 | Qdrant      | [REST API specification](https://github.com/qdrant/qdrant/tree/master/docs/redoc)      | YAML       | 3.0     | `official` `open-source` `vector-database` |
