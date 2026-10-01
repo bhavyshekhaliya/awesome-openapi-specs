@@ -261,6 +261,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| ONS | [Search API specification](https://raw.githubusercontent.com/ONSdigital/dp-search-api/develop/swagger.yaml) | YAML | 2.0 | `official` `government` `statistics` `public-data` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
 
 ## Social Media and Online Communities
