@@ -158,6 +158,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
 | CoinCap | [API specification](https://rest.coincap.io/api-docs.json) · [API documentation](https://rest.coincap.io/api-docs/) | JSON | 3.0.0 | `official` `crypto` `market-data` `financial-data` |
 | Frankfurter | [API specification](https://api.frankfurter.dev/v2/openapi.json) | JSON | 3.1.2 | `official` `currency-exchange` `exchange-rates` `open-source` |
+| OpenFIGI | [Official OpenAPI specification](https://api.openfigi.com/schema); [API documentation](https://www.openfigi.com/api/documentation) | JSON | 3.0.0 | `official` `finance` `securities` `identifiers` `public-data` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
 | SEC EDGAR | [Community specification](specs/sec-edgar/openapi.yml) · [EDGAR data APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) | YAML | 3.1.0 | `community-maintained` `focused` `financial-data` `public-data` |
