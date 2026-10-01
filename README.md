@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="188 specifications" src="https://img.shields.io/badge/specifications-188-13795b">
+  <img alt="189 specifications" src="https://img.shields.io/badge/specifications-189-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -285,6 +285,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| BART | [Community specification](specs/bart/openapi.yml) · [Real-time estimates docs](https://api.bart.gov/docs/etd/etd.aspx) | YAML | 3.1.0 | `community-maintained` `focused` `transit` `real-time` `legacy` |
 | GovInfo | [OpenAPI specification and interactive documentation](https://api.govinfo.gov/docs/) | JSON | 3.x | `official` `government` `public-data` |
 | Nager.Date | [Community API v4 specification](https://nagerholidays.com/openapi/community-v4.json) | JSON | 3.1.1 | `official` `open-source` `calendar` `public-holidays` `public-data` |
 | National Park Service | [API specification](https://www.nps.gov/subjects/developer/customcf/swagger.json?03142019) | JSON | 2.0 | `official` `government` `parks` `public-data` |
