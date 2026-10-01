@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: Airtable Web API (focused)
+  version: 1.0.0
+  description: >-
+    Community-maintained definition of record listing and creation. Field values
+    are left open because each Airtable base defines its own fields and cell types.
+  externalDocs:
+    description: Airtable Web API documentation
+    url: https://airtable.com/developers/web/api/introduction
+servers:
+  - url: https://api.airtable.com
+security:
+  - AirtableToken: []
+paths:
+  /v0/{baseId}/{tableIdOrName}:
+    parameters:
+      - name: baseId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: tableIdOrName
+        in: path
+        required: true
+        description: A table ID or table name.
+        schema:
+          type: string
+    get:
+      operationId: listRecords
+      summary: List records
+      description: Returns one page of records; pass the returned offset to fetch the next page.
+      externalDocs:
+        url: https://airtable.com/developers/web/api/list-records
+      parameters:
+        - name: pageSize
+          in: query
+          description: Number of records per page; defaults to 100 and cannot exceed 100.
+          schema:
+            type: integer
+            maximum: 100
+            default: 100
+        - name: maxRecords
+          in: query
+          description: Maximum total number of records to return across pages.
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Offset returned by the previous page.
+          schema:
+            type: string
+        - name: view
+          in: query
+          description: Name or ID of the view whose records should be returned.
+          schema:
+            type: string
+        - name: filterByFormula
+          in: query
+          description: Airtable formula used to filter records.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A page of records, with an offset when another page is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordPage'
+    post:
+      operationId: createRecords
+      summary: Create one or more records
+      description: Create a single record or submit an array of records.
+      externalDocs:
+        url: https://airtable.com/developers/web/api/create-records
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecordsRequest'
+      responses:
+        '200':
+          description: The created record or records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRecordsResponse'
+components:
+  securitySchemes:
+    AirtableToken:
+      type: http
+      scheme: bearer
+      description: Airtable personal access token or OAuth access token.
+  schemas:
+    Record:
+      type: object
+      required:
+        - id
+        - createdTime
+        - fields
+      properties:
+        id:
+          type: string
+        createdTime:
+          type: string
+          format: date-time
+        fields:
+          type: object
+          additionalProperties: true
+    RecordPage:
+      type: object
+      required:
+        - records
+      properties:
+        offset:
+          type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/Record'
+    CreateRecordsRequest:
+      type: object
+      oneOf:
+        - required:
+            - fields
+        - required:
+            - records
+      properties:
+        fields:
+          type: object
+          description: Cell values for a single record, keyed by field name or ID.
+          additionalProperties: true
+        records:
+          type: array
+          items:
+            type: object
+            required:
+              - fields
+            properties:
+              fields:
+                type: object
+                additionalProperties: true
+        returnFieldsByFieldId:
+          type: boolean
+        typecast:
+          type: boolean
+    CreateRecordsResponse:
+      oneOf:
+        - type: object
+          required:
+            - records
+          properties:
+            records:
+              type: array
+              items:
+                $ref: '#/components/schemas/Record'
+        - $ref: '#/components/schemas/Record'

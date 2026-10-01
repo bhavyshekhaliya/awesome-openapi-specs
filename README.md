@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="158 specifications" src="https://img.shields.io/badge/specifications-158-13795b">
+  <img alt="159 specifications" src="https://img.shields.io/badge/specifications-159-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -170,6 +170,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
 | ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
+| Airtable | [Community specification](specs/airtable/openapi.yml); [list records](https://airtable.com/developers/web/api/list-records) · [create records](https://airtable.com/developers/web/api/create-records) | YAML | 3.1.0 | `community-maintained` `focused` `database` |
 | Datafast | [Community specification](specs/datafast/openapi.yml); [source docs](https://datafa.st/docs/api) | YAML | 3.2.1 | `community-maintained` `analytics` |
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
