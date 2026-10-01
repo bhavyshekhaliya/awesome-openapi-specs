@@ -274,6 +274,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
+| OpenF1 | [Community specification](specs/openf1/openapi.yml) · [source docs](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `sports` `open-source` |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
 
 ## Content Management and CMS
