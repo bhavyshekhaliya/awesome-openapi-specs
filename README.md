@@ -57,6 +57,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
+| Livestorm        | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml)                                            | YAML   | 3.0.3   | `official` `webinars`                     |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | Mixpanel          | [14 API specifications](https://docs.mixpanel.com/llms.txt)                                               | JSON, YAML | 3.0.2, 3.0.3, 3.1.0 | `official` `analytics` `product-analytics` |
