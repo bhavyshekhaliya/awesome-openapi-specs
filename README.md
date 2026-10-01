@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="222 specifications" src="https://img.shields.io/badge/specifications-222-13795b">
+  <img alt="223 specifications" src="https://img.shields.io/badge/specifications-223-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -191,6 +191,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Figshare | [API specification](https://docs.figshare.com/swagger.json) · [API documentation](https://docs.figshare.com/v2/) | JSON | 3.0.3 | `official` `research` `open-science` `data-sharing` |
 | GBIF Occurrence Search API | [API specification](https://techdocs.gbif.org/openapi/occurrence-search.json) · [API documentation](https://techdocs.gbif.org/en/openapi/v1/occurrence) | JSON | 3.1.0 | `official` `biodiversity` `occurrence-data` `public-data` |
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
+| Harvard Art Museums | [Community specification](specs/harvard-art-museums/openapi.yml); [official API documentation](https://github.com/harvardartmuseums/api-docs) | YAML | 3.1.0 | `community-maintained` `focused` `cultural-heritage` `public-data` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
 | Metabase | [API specification](https://raw.githubusercontent.com/metabase/metabase/master/resources/openapi/openapi.json); [API documentation](https://www.metabase.com/learn/metabase-basics/administration/administration-and-operation/metabase-api) | JSON | 3.1.0 | `official` `analytics` `business-intelligence` |
