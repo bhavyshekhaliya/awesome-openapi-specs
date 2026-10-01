@@ -146,6 +146,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mollie   | [API specification](https://github.com/mollie/openapi)                              | YAML       | 3.0     | `official` `payments` `open-source` |
 | Open Payments | [Community specification](specs/openpayments/openapi.yml) · [source docs](https://docs.openpayments.io/docs/quickstart_pis) | YAML | 3.0.3 | `community-maintained` `focused` `payments` `open-banking` |
 | Openpay Mexico | [Community specification](specs/openpay-mexico/openapi.yml) · [official API docs](https://documents.openpay.mx/docs/api/index.html) | YAML | 3.1.0 | `community-maintained` `focused` `payments` `fintech` |
+| OpenPayd | [Community specification](specs/openpayd/openapi.yml) · [source docs](https://apidocs.openpayd.com/) | YAML | 3.1.0 | `community-maintained` `focused` `payments` `banking` |
 | Paddle   | [API specification](https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/main/v1/openapi.yaml) | YAML | 3.1.0 | `official` `billing` `subscriptions` `merchant-of-record` |
 | Paystack | [API specification](https://raw.githubusercontent.com/PaystackOSS/openapi/main/dist/paystack.yaml) | YAML       | 3.0.1   | `official` `focused` `payments` `checkout` `fintech` |
 | PayPal   | [REST API specifications](https://github.com/paypal/paypal-rest-api-specifications) | JSON       | 3.0     | `official` `payments`               |
