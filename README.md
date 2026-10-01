@@ -257,6 +257,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | LearnHouse | [API specification](https://api.learnhouse.io/openapi.json) | JSON | 3.1.0 | `official` `education` `learning-management` |
 | Open Education API | [Open Education API specification](https://raw.githubusercontent.com/open-education-api/specification/main/oeapi.yaml) | YAML | 3.1.1 | `official` `education` `open-source` |
+| Open Trivia Database | [Community specification](specs/opentdb/openapi.yml) · [source docs](https://opentdb.com/api_config.php) | YAML | 3.1.0 | `community-maintained` `trivia` `quiz` |
 
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
