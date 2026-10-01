@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="208 specifications" src="https://img.shields.io/badge/specifications-208-13795b">
+  <img alt="209 specifications" src="https://img.shields.io/badge/specifications-209-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -216,6 +216,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Apigee Registry | [API specification](https://raw.githubusercontent.com/apigee/registry/main/openapi.yaml) · [API documentation](https://apigee.github.io/registry/api.html) | YAML | 3.0.3 | `official` `open-source` `api-registry` `developer-tools` |
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
 | Convex        | [Management API specification](https://api.convex.dev/v1/openapi.json)                         | JSON   | 3.1.0   | `official` `backend` `developer-platform` `beta` |
+| Debian Code Search | [API specification](https://codesearch.debian.net/openapi.yaml) · [API key documentation](https://codesearch.debian.net/apikeys/) | YAML | 3.0.1 | `official` `open-source` `code-search` `public-data` |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
 | Elastic (Kibana) | [Kibana API specification](https://raw.githubusercontent.com/elastic/kibana/main/oas_docs/output/kibana.yaml) | YAML | 3.0.3 | `official` `observability` `analytics` `work-in-progress` |
 | Grafana       | [HTTP API specification](https://github.com/grafana/grafana/blob/main/public/api-merged.json) | JSON   | 2.0     | `official` `observability` `open-source` |
