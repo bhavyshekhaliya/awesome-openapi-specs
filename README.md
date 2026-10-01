@@ -173,6 +173,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | OpenSearch  | [API specification repository](https://github.com/opensearch-project/opensearch-api-specification) | YAML | 3.1 | `official` `platform` `open-source` `search` `analytics` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | Qdrant      | [REST API specification](https://github.com/qdrant/qdrant/tree/master/docs/redoc)      | YAML       | 3.0     | `official` `open-source` `vector-database` |
+| SEOmatic | [API specification](https://app.seomatic.ai/api/v1/openapi.json) | JSON | 3.1.0 | `official` `seo` `analytics` |
 | Typesense   | [Specification repository](https://github.com/typesense/typesense-api-spec)            | YAML       | 3.0     | `official` `open-source` `search`          |
 | Turso       | [Platform API specification](https://raw.githubusercontent.com/tursodatabase/turso/main/bindings/dotnet/src/Turso.Platform.Client/openapi.json) | JSON | 3.0.1 | `official` `database` `platform` |
 | Weaviate    | [REST API specification](https://github.com/weaviate/weaviate/tree/main/openapi-specs) | YAML       | 3.0     | `official` `open-source` `vector-database` |
