@@ -59,6 +59,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
+| MailerLite       | [Community specification](specs/mailerlite/openapi.yml); [source docs](https://developers.mailerlite.com/api/subscribers) | YAML | 3.1.0 | `community-maintained` `email-marketing` |
 | Mixpanel          | [14 API specifications](https://docs.mixpanel.com/llms.txt)                                               | JSON, YAML | 3.0.2, 3.0.3, 3.1.0 | `official` `analytics` `product-analytics` |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |

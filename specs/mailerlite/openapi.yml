@@ -1,0 +1,871 @@
+openapi: 3.1.0
+info:
+  title: MailerLite API (community subset)
+  version: 2026-10-02
+  summary: Community-maintained OpenAPI subset for core MailerLite marketing workflows.
+  description: >-
+    Covers documented subscriber, group, and campaign operations. The provider's
+    public API reference remains authoritative for behavior and for API areas not
+    included in this focused subset.
+  contact:
+    name: MailerLite API support
+    url: https://www.mailerlite.com/help/c/integrations
+  externalDocs:
+    description: Official MailerLite API reference
+    url: https://developers.mailerlite.com/
+servers:
+  - url: https://connect.mailerlite.com/api
+    description: MailerLite REST API
+security:
+  - bearerAuth: []
+tags:
+  - name: Subscribers
+    description: Subscriber records and engagement data.
+  - name: Groups
+    description: Subscriber groups and membership.
+  - name: Campaigns
+    description: Email campaign creation and delivery.
+paths:
+  /subscribers:
+    get:
+      tags: [Subscribers]
+      operationId: listSubscribers
+      summary: List subscribers
+      description: Returns subscribers with cursor-based pagination.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      parameters:
+        - name: filter[status]
+          in: query
+          schema:
+            type: string
+            enum: [active, unsubscribed, unconfirmed, bounced, junk]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: include
+          in: query
+          description: Currently documented include value is groups.
+          schema:
+            type: string
+            enum: [groups]
+      responses:
+        '200':
+          description: Subscriber page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Subscribers]
+      operationId: upsertSubscriber
+      summary: Create or update a subscriber
+      description: Creates a subscriber or updates the existing record matching the email.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberUpsert'
+      responses:
+        '200':
+          description: An existing subscriber was updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberEnvelope'
+        '201':
+          description: A subscriber was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /subscribers/{subscriber_id}:
+    parameters:
+      - $ref: '#/components/parameters/SubscriberId'
+    get:
+      tags: [Subscribers]
+      operationId: getSubscriber
+      summary: Get a subscriber
+      description: The path value may be a subscriber ID or email address.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      responses:
+        '200':
+          description: Subscriber record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Subscriber was not found.
+    put:
+      tags: [Subscribers]
+      operationId: updateSubscriber
+      summary: Update a subscriber
+      description: Updates documented subscriber fields and group membership for an existing record.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberUpdate'
+      responses:
+        '200':
+          description: Updated subscriber record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Subscribers]
+      operationId: deleteSubscriber
+      summary: Delete a subscriber
+      description: Removes a subscriber while retaining information in case they resubscribe.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      responses:
+        '204':
+          description: Subscriber deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Subscriber was not found.
+  /subscribers/{subscriber_id}/forget:
+    parameters:
+      - $ref: '#/components/parameters/SubscriberId'
+    post:
+      tags: [Subscribers]
+      operationId: forgetSubscriber
+      summary: Request permanent subscriber deletion
+      description: Requests permanent deletion of subscriber data within 30 days.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/subscribers
+      responses:
+        '200':
+          description: Deletion request accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Subscriber was not found.
+  /groups:
+    get:
+      tags: [Groups]
+      operationId: listGroups
+      summary: List groups
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+        - name: filter[name]
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [name, total, open_rate, click_rate, created_at, -name, -total, -open_rate, -click_rate, -created_at]
+      responses:
+        '200':
+          description: Group page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Groups]
+      operationId: createGroup
+      summary: Create a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInput'
+      responses:
+        '201':
+          description: Group created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /groups/{group_id}:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    put:
+      tags: [Groups]
+      operationId: updateGroup
+      summary: Update a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupInput'
+      responses:
+        '200':
+          description: Updated group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Groups]
+      operationId: deleteGroup
+      summary: Delete a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      responses:
+        '204':
+          description: Group deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Group was not found.
+  /groups/{group_id}/subscribers:
+    parameters:
+      - $ref: '#/components/parameters/GroupId'
+    get:
+      tags: [Groups]
+      operationId: listGroupSubscribers
+      summary: List subscribers in a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      parameters:
+        - name: filter[status]
+          in: query
+          schema:
+            type: string
+            enum: [active, unsubscribed, unconfirmed, bounced, junk]
+            default: active
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            maximum: 1000
+            default: 50
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: include
+          in: query
+          schema:
+            type: string
+            enum: [groups]
+      responses:
+        '200':
+          description: Subscriber page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Group was not found.
+  /subscribers/{subscriber_id}/groups/{group_id}:
+    parameters:
+      - $ref: '#/components/parameters/SubscriberId'
+      - $ref: '#/components/parameters/GroupId'
+    post:
+      tags: [Groups]
+      operationId: assignSubscriberToGroup
+      summary: Add a subscriber to a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      responses:
+        '200':
+          description: Subscriber assigned to group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupEnvelope'
+        '201':
+          description: Group membership created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Groups]
+      operationId: removeSubscriberFromGroup
+      summary: Remove a subscriber from a group
+      externalDocs:
+        url: https://developers.mailerlite.com/api/groups
+      responses:
+        '204':
+          description: Subscriber removed from group.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Subscriber or group was not found.
+  /campaigns:
+    get:
+      tags: [Campaigns]
+      operationId: listCampaigns
+      summary: List campaigns
+      externalDocs:
+        url: https://developers.mailerlite.com/api/campaigns
+      parameters:
+        - name: filter[status]
+          in: query
+          schema:
+            type: string
+            enum: [sent, draft, ready]
+        - name: filter[type]
+          in: query
+          schema:
+            type: string
+            enum: [regular, ab, resend, rss]
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+      responses:
+        '200':
+          description: Campaign page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [Campaigns]
+      operationId: createCampaign
+      summary: Create a campaign
+      externalDocs:
+        url: https://developers.mailerlite.com/api/campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignInput'
+      responses:
+        '200':
+          description: Campaign created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /campaigns/{campaign_id}:
+    parameters:
+      - $ref: '#/components/parameters/CampaignId'
+    get:
+      tags: [Campaigns]
+      operationId: getCampaign
+      summary: Get a campaign
+      externalDocs:
+        url: https://developers.mailerlite.com/api/campaigns
+      responses:
+        '200':
+          description: Campaign record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: Campaign was not found.
+  /campaigns/{campaign_id}/schedule:
+    parameters:
+      - $ref: '#/components/parameters/CampaignId'
+    post:
+      tags: [Campaigns]
+      operationId: scheduleCampaign
+      summary: Schedule or send a campaign
+      description: Use delivery instant to send immediately or scheduled to set a future delivery time.
+      externalDocs:
+        url: https://developers.mailerlite.com/api/campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignSchedule'
+      responses:
+        '200':
+          description: Campaign scheduled or sent.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: MailerLite API token passed in the Authorization header.
+  parameters:
+    SubscriberId:
+      name: subscriber_id
+      in: path
+      required: true
+      description: Subscriber ID; the GET subscriber operation also accepts an email address.
+      schema:
+        type: string
+    GroupId:
+      name: group_id
+      in: path
+      required: true
+      schema:
+        type: string
+    CampaignId:
+      name: campaign_id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: API token is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationError:
+      description: Request fields failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      additionalProperties: true
+    SubscriberUpsert:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+        fields:
+          type: object
+          additionalProperties: true
+        groups:
+          type: array
+          items:
+            type: string
+        status:
+          $ref: '#/components/schemas/SubscriberStatus'
+        subscribed_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+        ip_address:
+          type: string
+        opted_in_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+        optin_ip:
+          type: string
+        unsubscribed_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+        resubscribe:
+          type: boolean
+    SubscriberUpdate:
+      type: object
+      properties:
+        fields:
+          type: object
+          additionalProperties: true
+        groups:
+          type: array
+          items:
+            type: string
+          description: Group IDs to retain on the subscriber.
+        status:
+          $ref: '#/components/schemas/SubscriberStatus'
+        subscribed_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+        ip_address:
+          type: string
+        opted_in_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+        optin_ip:
+          type: string
+        unsubscribed_at:
+          type: string
+          description: Date in yyyy-MM-dd HH:mm:ss format.
+    SubscriberStatus:
+      type: string
+      enum: [active, unsubscribed, unconfirmed, bounced, junk]
+    Subscriber:
+      type: object
+      required: [id, email, status]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        status:
+          $ref: '#/components/schemas/SubscriberStatus'
+        source:
+          type: string
+        sent:
+          type: integer
+        opens_count:
+          type: integer
+        clicks_count:
+          type: integer
+        open_rate:
+          type: number
+        click_rate:
+          type: number
+        ip_address:
+          type: [string, 'null']
+        subscribed_at:
+          type: [string, 'null']
+        unsubscribed_at:
+          type: [string, 'null']
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        fields:
+          type: object
+          additionalProperties: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        opted_in_at:
+          type: [string, 'null']
+        optin_ip:
+          type: [string, 'null']
+      additionalProperties: true
+    SubscriberEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Subscriber'
+      additionalProperties: true
+    SubscriberList:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscriber'
+        links:
+          $ref: '#/components/schemas/CursorLinks'
+        meta:
+          $ref: '#/components/schemas/CursorMeta'
+      additionalProperties: true
+    CursorLinks:
+      type: object
+      properties:
+        first:
+          type: [string, 'null']
+        last:
+          type: [string, 'null']
+        prev:
+          type: [string, 'null']
+        next:
+          type: [string, 'null']
+      additionalProperties: true
+    CursorMeta:
+      type: object
+      properties:
+        path:
+          type: string
+        per_page:
+          type: integer
+        next_cursor:
+          type: [string, 'null']
+        prev_cursor:
+          type: [string, 'null']
+      additionalProperties: true
+    GroupInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+    Group:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        active_count:
+          type: integer
+        sent_count:
+          type: integer
+        opens_count:
+          type: integer
+        clicks_count:
+          type: integer
+        unsubscribed_count:
+          type: integer
+        unconfirmed_count:
+          type: integer
+        bounced_count:
+          type: integer
+        junk_count:
+          type: integer
+        created_at:
+          type: string
+      additionalProperties: true
+    GroupEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Group'
+      additionalProperties: true
+    GroupList:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+        links:
+          type: object
+          additionalProperties: true
+        meta:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    CampaignInput:
+      type: object
+      required: [name, type, emails]
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        language_id:
+          type: integer
+        type:
+          type: string
+          enum: [regular, ab, resend, multivariate]
+        emails:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/CampaignEmailInput'
+        groups:
+          type: array
+          items:
+            type: string
+        segments:
+          type: array
+          items:
+            type: string
+        ab_settings:
+          type: object
+          additionalProperties: true
+        resend_settings:
+          type: object
+          additionalProperties: true
+        multivariate_settings:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    CampaignEmailInput:
+      type: object
+      properties:
+        subject:
+          type: string
+          maxLength: 255
+        from_name:
+          type: string
+          maxLength: 255
+        from:
+          type: string
+          format: email
+        reply_to:
+          type: string
+          format: email
+        content:
+          type: string
+      additionalProperties: true
+    CampaignSchedule:
+      type: object
+      required: [delivery]
+      properties:
+        delivery:
+          type: string
+          enum: [instant, scheduled, timezone_based, smart_sending]
+        schedule:
+          type: object
+          properties:
+            date:
+              type: string
+            hours:
+              type: string
+            minutes:
+              type: string
+            timezone_id:
+              type: integer
+          additionalProperties: true
+        resend:
+          type: object
+          properties:
+            delivery:
+              type: string
+              enum: [day, scheduled]
+            date:
+              type: string
+            hours:
+              type: string
+            minutes:
+              type: string
+            timezone_id:
+              type: integer
+          additionalProperties: true
+        sending_time_test_schedule:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              hours:
+                type: string
+              minutes:
+                type: string
+              timezone_id:
+                type: string
+            additionalProperties: true
+      additionalProperties: true
+    Campaign:
+      type: object
+      required: [id, name, type, status]
+      properties:
+        id:
+          type: string
+        account_id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        status:
+          type: string
+        language_id:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        emails:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    CampaignEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Campaign'
+      additionalProperties: true
+    CampaignList:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+        links:
+          type: object
+          additionalProperties: true
+        meta:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
