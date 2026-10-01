@@ -290,6 +290,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
+| ONYPHE | [Community specification](specs/onyphe/openapi.yml) · [source docs](https://search.onyphe.io/docs/general-apis/search) | YAML | 3.1.0 | `community-maintained` `threat-intelligence` `security` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 | Permit.io | [Cloud API specification](https://api.permit.io/v2/openapi.json) | JSON | 3.1.0 | `official` `authorization` `policy-engine` `permissions` |
 | Tailscale | [API documentation and OpenAPI download](https://tailscale.com/api) | JSON | 3.x | `official` `networking` `zero-trust` `vpn` |
