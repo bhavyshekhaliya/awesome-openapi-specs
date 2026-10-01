@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="161 specifications" src="https://img.shields.io/badge/specifications-161-13795b">
+  <img alt="162 specifications" src="https://img.shields.io/badge/specifications-162-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -167,6 +167,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 | Upstash  | [QStash API specification](https://upstash.com/docs/qstash/openapi.yaml) | YAML | 3.1.0 | `official` `messaging` `queues` `scheduling` |
 | Zoom     | [Meetings API specification](https://developers.zoom.us/api-hub/meetings/methods/endpoints.json) | JSON | 3.0.0 | `official` `focused` `video-conferencing` `meetings` |
+| Zoom Video SDK | [API specification](https://developers.zoom.us/api-hub/video-sdk/methods/endpoints.json) | JSON | 3.0.0 | `official` `focused` `video-conferencing` `video-sdk` |
 
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
