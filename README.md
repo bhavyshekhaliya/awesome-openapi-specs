@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="160 specifications" src="https://img.shields.io/badge/specifications-160-13795b">
+  <img alt="161 specifications" src="https://img.shields.io/badge/specifications-161-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -100,6 +100,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Asana        | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
 | Box          | [API specification](https://github.com/box/box-openapi)                                              | JSON, YAML | 3.0     | `official` `content-management` |
 | Cal.com      | [API v2 specification](https://raw.githubusercontent.com/calcom/cal.com/main/docs/api-reference/v2/openapi.json) | JSON | 3.0.0 | `official` `calendar` `scheduling` `open-source` |
+| Canva        | [Connect API specification](https://www.canva.dev/sources/connect/api/latest/api.yml) | YAML | 3.0.0 | `official` `focused` `design` `collaboration` |
 | Coda         | [OpenAPI specification](https://coda.io/apis/v1/openapi.yaml)                                        | YAML       | 3.0     | `official` `focused` `docs` `collaboration` |
 | ClickUp      | [API specification](https://developer.clickup.com/openapi/clickup-api-v2-reference.json)             | JSON       | 3.1     | `official` `project-management` |
 | Documenso    | [API v2 specification](https://openapi.documenso.com/reference/openapi.json)                          | JSON       | 3.1.1   | `official` `e-signature` `open-source` |
