@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="207 specifications" src="https://img.shields.io/badge/specifications-207-13795b">
+  <img alt="208 specifications" src="https://img.shields.io/badge/specifications-208-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -341,6 +341,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Maps, Geolocation and Local Services
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Country | [API specification](https://api.country.is/openapi.json) · [API documentation](https://country.is/) | JSON | 3.1.0 | `official` `open-source` `ip-geolocation` `public-data` |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
 
 ## Security and Compliance
