@@ -395,6 +395,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Country | [API specification](https://api.country.is/openapi.json) · [API documentation](https://country.is/) | JSON | 3.1.0 | `official` `open-source` `ip-geolocation` `public-data` |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
 | Nominatim | [Community specification](specs/nominatim/openapi.yml) · [API docs](https://nominatim.org/release-docs/develop/api/Overview/) · [usage policy](https://operations.osmfoundation.org/policies/nominatim/) | YAML | 3.0.3 | `community-maintained` `geocoding` `open-data` |
+| OneMap Singapore | [Community specification](specs/onemap/openapi.yml) · [search docs](https://www.onemap.gov.sg/apidocs/search) · [reverse geocode docs](https://www.onemap.gov.sg/apidocs/reverseGeocode) · [API terms](https://www.onemap.gov.sg/legal/apitermsofservice.html) | YAML | 3.0.3 | `community-maintained` `focused` `geocoding` `singapore` `public-data` |
 | Open Charge Map | [API specification](https://raw.githubusercontent.com/openchargemap/ocm-docs/refs/heads/master/Model/schema/ocm-openapi-spec.yaml) · [API documentation](https://www.openchargemap.org/develop/api) · [terms](https://www.openchargemap.org/about/terms) | YAML | 3.1.0 | `official` `open-source` `ev-charging` `geospatial` |
 
 ## Security and Compliance
