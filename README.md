@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="156 specifications" src="https://img.shields.io/badge/specifications-156-13795b">
+  <img alt="157 specifications" src="https://img.shields.io/badge/specifications-157-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -106,6 +106,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | DocuSign     | [OpenAPI specifications](https://github.com/docusign/OpenAPI-Specifications)                          | JSON       | 2.0     | `official` `platform` `e-signature` `workflow` `enterprise` |
 | Dropbox Sign | [API specification](https://github.com/hellosign/hellosign-openapi)                                  | YAML       | 3.0     | `official` `e-signature`        |
 | Figma        | [REST API specification](https://github.com/figma/rest-api-spec)                                     | YAML       | 3.1     | `official` `design`             |
+| Jira Cloud   | [REST API specification](https://developer.atlassian.com/cloud/jira/platform/swagger-v3.v3.json) | JSON | 3.0.1 | `official` `focused` `issue-tracking` `project-management` |
 | Miro         | [Developer Platform specification](https://github.com/miroapp/api-clients/blob/main/packages/generator/spec.json) | JSON | 3.0 | `official` `collaboration` |
 | Notion       | [API specification](https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/scripts/notion-openapi.json) | JSON | 3.1.0 | `official` `focused` `docs` `collaboration` `open-source` `archived` |
 | OpenProject  | [API specification](https://www.openproject.org/docs/api/)                                          | JSON, YAML | 3.1     | `official` `open-source` `project-management` |
