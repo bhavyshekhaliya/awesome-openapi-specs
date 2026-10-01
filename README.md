@@ -72,6 +72,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider  | OpenAPI spec                                                                                         | Format | Version | Tags                                                       |
 | --------- | ---------------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------------------------- |
 | Attio     | [API specification](https://api.attio.com/openapi/api)                                               | JSON   | 3.1.0   | `official` `crm`                                           |
+| Climbo 2.0 | [Agency Mode API specification](https://dash.readme.com/api/v1/api-registry/ztgme6lmpnr7yu5) | JSON | 3.1.0 | `official` `reputation-management` `marketing` |
 | Close     | [API specification](https://api.close.com/api/openapi.json)                                           | JSON   | 3.1.0   | `official` `crm` `sales-engagement` `experimental`         |
 | HubSpot   | [Public API specification collection](https://github.com/HubSpot/HubSpot-public-api-spec-collection) | JSON   | 3.0     | `official` `crm`                                           |
 | Keap      | [OpenAPI specification](https://crm.infusionsoft.com/app/v3/api-docs/V2)                              | JSON   | 3.1.0   | `official` `crm` `marketing-automation`                    |
