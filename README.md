@@ -244,6 +244,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
+| Universe | [REST API](https://dash.readme.com/api/v1/api-registry/1qz7y2qplt7f12sf) ? [Ticketmanager API](https://dash.readme.com/api/v1/api-registry/1mld74kq6vjc4y) ? [OAuth API](https://dash.readme.com/api/v1/api-registry/1mld74kq6vtujq) | JSON | 3.0.3, 3.1.0 | `official` `events` `ticketing` |
 
 ## Healthcare and Life Sciences
 | Provider | OpenAPI spec | Format | Version | Tags |
