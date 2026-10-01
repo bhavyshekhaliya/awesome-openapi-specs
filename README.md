@@ -330,6 +330,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Open-Meteo | [API specifications](https://github.com/open-meteo/open-meteo/tree/main/openapi) | YAML | 3.1.0 | `official` `open-source` `weather` `public-data` |
 | Police API (data.police.uk) | [Community specification](specs/data-police-uk/openapi.yml); [official API docs](https://data.police.uk/docs/) | YAML | 3.1.0 | `community-maintained` `focused` `crime-data` `public-data` `government` |
 | REST Countries | [Community specification](specs/rest-countries/openapi.yml) · [Countries API docs](https://restcountries.com/docs/countries) | YAML | 3.1.0 | `community-maintained` `focused` `country-data` `public-data` |
+| Trove API | [Official OpenAPI specification](https://api.trove.nla.gov.au/v3/trove-api-v3.yaml) · [API documentation](https://trove.nla.gov.au/about/create-something/using-api) | YAML | 3.0.3 | `official` `government` `cultural-heritage` `public-data` |
 | U.S. Census Bureau | [Community specification](specs/us-census-bureau/openapi.yml) · [Census Data API guide](https://www.census.gov/data/developers/guidance/api-user-guide.html) | YAML | 3.1.0 | `community-maintained` `focused` `government` `public-data` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
 
