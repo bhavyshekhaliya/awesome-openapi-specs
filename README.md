@@ -60,6 +60,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
+| Optimizely Campaign | [REST API specification](https://dash.readme.com/api/v1/api-registry/19jhm51im5whcrv5) | JSON | 3.0.1 | `official` `marketing-automation` `email-marketing` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
