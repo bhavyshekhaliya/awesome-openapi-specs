@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="195 specifications" src="https://img.shields.io/badge/specifications-195-13795b">
+  <img alt="196 specifications" src="https://img.shields.io/badge/specifications-196-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -286,6 +286,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| AEMET OpenData | [API specification](https://opendata.aemet.es/AEMET_OpenData_specification.json) · [API information](https://opendata.aemet.es/centrodedescargas/info) | JSON | 3.0.1 | `official` `government` `weather` `public-data` |
 | BART | [Community specification](specs/bart/openapi.yml) · [Real-time estimates docs](https://api.bart.gov/docs/etd/etd.aspx) | YAML | 3.1.0 | `community-maintained` `focused` `transit` `real-time` `legacy` |
 | CFPB Consumer Complaint Database | [API specification](https://raw.githubusercontent.com/cfpb/ccdb5-api/main/swagger-config.yaml) · [API documentation](https://cfpb.github.io/api/ccdb/api.html) | YAML | 3.0.0 | `official` `government` `consumer-finance` `public-data` |
 | CFPB HMDA Data Browser API | [Community specification](specs/cfpb-hmda/openapi.yml) · [Data Browser API docs](https://ffiec.cfpb.gov/documentation/api/data-browser/) | YAML | 3.1.0 | `community-maintained` `government` `mortgage-data` `public-data` |
