@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="194 specifications" src="https://img.shields.io/badge/specifications-194-13795b">
+  <img alt="195 specifications" src="https://img.shields.io/badge/specifications-195-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -206,6 +206,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Developer Tools
 | Provider      | OpenAPI spec                                                                                  | Format | Version | Tags                                     |
 | ------------- | --------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------- |
+| Apache Airflow | [Stable REST API specification](https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml) · [API docs](https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html) | YAML | 3.1.0 | `official` `open-source` `workflow-orchestration` |
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
 | Convex        | [Management API specification](https://api.convex.dev/v1/openapi.json)                         | JSON   | 3.1.0   | `official` `backend` `developer-platform` `beta` |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
