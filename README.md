@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="157 specifications" src="https://img.shields.io/badge/specifications-157-13795b">
+  <img alt="158 specifications" src="https://img.shields.io/badge/specifications-158-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -216,6 +216,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | GitLab       | [REST API specification](https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v3.yaml) | YAML | 3.0.0 | `official` `developer-platform` `git` `ci-cd` |
 | Hostinger    | [API specification](https://raw.githubusercontent.com/hostinger/api/main/openapi.json)                | JSON   | 3.0      | `official` `focused` `hosting` `domains` `cloud` |
 | Kubernetes   | [Generated OpenAPI definitions](https://github.com/kubernetes/kubernetes/tree/master/api/openapi-spec) | JSON   | 2.0      | `official` `containers` `open-source`         |
+| Microsoft Graph | [v1.0 OpenAPI specification](https://github.com/microsoftgraph/msgraph-metadata/blob/master/openapi/v1.0/openapi.yaml) | YAML | 3.0.4 | `official` `cloud` `identity` `productivity` `open-source` |
 | Neon         | [API v2 specification](https://neon.com/api_spec/release/v2.json)                                      | JSON   | 3.0.3    | `official` `database` `postgres` `serverless` |
 | PlanetScale  | [API OpenAPI specification](https://planetscale.com/docs/openapi.yaml)                                 | YAML   | 3.0.1    | `official` `database` `branching` `cloud` |
 | Render       | [Public API specification](https://api-docs.render.com/openapi/render-public-api-1.json)               | JSON   | 3.0.2    | `official` `cloud` `deployment` `hosting` |
