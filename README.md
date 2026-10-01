@@ -275,6 +275,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
+| OMDb | [API specification](https://www.omdbapi.com/swagger.json) | JSON | 2.0 | `official` `movies` `media` |
 
 ## Content Management and CMS
 | Provider | OpenAPI spec | Format | Version | Tags |
