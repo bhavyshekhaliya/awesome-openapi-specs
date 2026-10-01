@@ -250,6 +250,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Foundation Health | [API documentation and OpenAPI specification](https://docs.foundationhealth.com/) | JSON, YAML | 3.0.2 | `official` `healthcare` `pharmacy` |
+| Open Health Hub | [Community specification](specs/openhealthhub/openapi.yml); [source docs](https://developer.openhealthhub.com/clients.html) | YAML | 3.0.3 | `community-maintained` `focused` `healthcare` `fhir` |
 | Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
 
 ## Education

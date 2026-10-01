@@ -1,0 +1,409 @@
+openapi: 3.0.3
+info:
+  title: Open Health Hub FHIR API (documented subset)
+  version: 1.0.0
+  description: >-
+    Community-maintained OpenAPI description of the interactions listed in
+    Open Health Hub's FHIR R4 capability statement. This gateway focuses on
+    workflows around FHIR questionnaires rather than the full FHIR resource
+    set. This document models JSON representations only. Resource payloads
+    remain open FHIR objects; use provider profiles for their constraints. The
+    provider recommends using an FHIR library because resources can gain fields
+    and extensions.
+externalDocs:
+  description: Provider FHIR API capability statement
+  url: https://developer.openhealthhub.com/CapabilityStatement-ohh-capability-statement.html
+servers:
+  - url: https://api.openhealthhub.com/OpenHealthhub/fhir/4
+    description: Example sandbox base URL from the provider guide; use the URL assigned for live access.
+security:
+  - apiKey: []
+    oauth2: []
+tags:
+  - name: FHIR system
+  - name: Binary
+  - name: CarePlan
+  - name: CareTeam
+  - name: OperationDefinition
+  - name: PlanDefinition
+  - name: Practitioner
+  - name: Questionnaire
+  - name: QuestionnaireResponse
+  - name: Subscription
+paths:
+  /:
+    post:
+      tags: [FHIR system]
+      operationId: submitBundle
+      summary: Submit a FHIR Bundle
+      description: >-
+        The provider documents batch Bundles for supported resources when their
+        actions have no dependencies. Transaction Bundles are limited to sets
+        of QuestionnaireResponses.
+      requestBody:
+        $ref: '#/components/requestBodies/FhirBundle'
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Binary:
+    post:
+      tags: [Binary]
+      operationId: createBinary
+      summary: Create a Binary resource
+      description: The capability statement lists create for Binary resources.
+      requestBody:
+        $ref: '#/components/requestBodies/FhirResource'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /CarePlan:
+    get:
+      tags: [CarePlan]
+      operationId: searchCarePlans
+      summary: Search CarePlans
+      parameters:
+        - { name: _id, in: query, schema: { type: string } }
+        - { name: _since, in: query, schema: { type: string } }
+        - { name: identifier, in: query, schema: { type: string } }
+        - { name: instantiates-canonical, in: query, schema: { type: string } }
+        - { name: patient.email, in: query, schema: { type: string } }
+        - { name: patient.identifier, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+    post:
+      tags: [CarePlan]
+      operationId: createCarePlan
+      summary: Create a CarePlan
+      requestBody:
+        $ref: '#/components/requestBodies/FhirResource'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /CarePlan/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [CarePlan]
+      operationId: readCarePlan
+      summary: Read a CarePlan
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+    put:
+      tags: [CarePlan]
+      operationId: updateCarePlan
+      summary: Update a CarePlan
+      requestBody:
+        $ref: '#/components/requestBodies/FhirResource'
+      responses:
+        '200':
+          $ref: '#/components/responses/Updated'
+        default:
+          $ref: '#/components/responses/FhirError'
+    delete:
+      tags: [CarePlan]
+      operationId: deleteCarePlan
+      summary: Delete a CarePlan
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /CareTeam:
+    get:
+      tags: [CareTeam]
+      operationId: searchCareTeams
+      summary: Search CareTeams
+      parameters:
+        - { name: _id, in: query, schema: { type: string } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /CareTeam/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [CareTeam]
+      operationId: readCareTeam
+      summary: Read a CareTeam
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /OperationDefinition/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [OperationDefinition]
+      operationId: readOperationDefinition
+      summary: Read an OperationDefinition
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /PlanDefinition:
+    get:
+      tags: [PlanDefinition]
+      operationId: searchPlanDefinitions
+      summary: Search PlanDefinitions
+      parameters:
+        - { name: _since, in: query, schema: { type: string } }
+        - { name: context, in: query, schema: { type: string } }
+        - { name: definition, in: query, schema: { type: string } }
+        - { name: publisher, in: query, schema: { type: string } }
+        - { name: _id, in: query, schema: { type: string } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /PlanDefinition/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [PlanDefinition]
+      operationId: readPlanDefinition
+      summary: Read a PlanDefinition
+      description: >-
+        PlanDefinitions are versioned. To request a specific version, append
+        %7C and the version to the ID; otherwise the latest version is returned.
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Practitioner:
+    get:
+      tags: [Practitioner]
+      operationId: searchPractitioners
+      summary: Search Practitioners
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Practitioner/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Practitioner]
+      operationId: readPractitioner
+      summary: Read a Practitioner
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Questionnaire:
+    get:
+      tags: [Questionnaire]
+      operationId: searchQuestionnaires
+      summary: Search Questionnaires
+      parameters:
+        - { name: url, in: query, schema: { type: string } }
+        - { name: version, in: query, schema: { type: string } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Questionnaire/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Questionnaire]
+      operationId: readQuestionnaire
+      summary: Read a Questionnaire
+      description: >-
+        Questionnaires are versioned. To request a specific version, append
+        %7C and the version to the ID; otherwise the latest version is returned.
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /QuestionnaireResponse:
+    get:
+      tags: [QuestionnaireResponse]
+      operationId: searchQuestionnaireResponses
+      summary: Search QuestionnaireResponses
+      parameters:
+        - { name: _since, in: query, schema: { type: string } }
+        - { name: based-on.instantiates-canonical, in: query, schema: { type: string } }
+        - { name: patient.identifier, in: query, schema: { type: string } }
+        - { name: questionnaire, in: query, schema: { type: string } }
+        - { name: status, in: query, schema: { type: string } }
+        - { name: _count, in: query, description: Maximum results per page; defaults to 10 and is capped at 20., schema: { type: integer, maximum: 20 } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+    post:
+      tags: [QuestionnaireResponse]
+      operationId: createQuestionnaireResponse
+      summary: Create a QuestionnaireResponse
+      description: QuestionnaireResponse creation is also available through a transaction Bundle.
+      requestBody:
+        $ref: '#/components/requestBodies/FhirResource'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /QuestionnaireResponse/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [QuestionnaireResponse]
+      operationId: readQuestionnaireResponse
+      summary: Read a QuestionnaireResponse
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Subscription:
+    get:
+      tags: [Subscription]
+      operationId: searchSubscriptions
+      summary: Search Subscriptions
+      parameters:
+        - { name: criteria, in: query, description: Search rules used to determine when to send a notification., schema: { type: string } }
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirBundle'
+        default:
+          $ref: '#/components/responses/FhirError'
+    post:
+      tags: [Subscription]
+      operationId: createSubscription
+      summary: Create a Subscription
+      requestBody:
+        $ref: '#/components/requestBodies/FhirResource'
+      responses:
+        '201':
+          $ref: '#/components/responses/Created'
+        default:
+          $ref: '#/components/responses/FhirError'
+  /Subscription/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Subscription]
+      operationId: readSubscription
+      summary: Read a Subscription
+      responses:
+        '200':
+          $ref: '#/components/responses/FhirResource'
+        default:
+          $ref: '#/components/responses/FhirError'
+    delete:
+      tags: [Subscription]
+      operationId: deleteSubscription
+      summary: Delete a Subscription
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        default:
+          $ref: '#/components/responses/FhirError'
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    FhirResource:
+      required: true
+      content:
+        application/fhir+json:
+          schema:
+            $ref: '#/components/schemas/FhirResource'
+    FhirBundle:
+      required: true
+      content:
+        application/fhir+json:
+          schema:
+            $ref: '#/components/schemas/FhirBundle'
+  responses:
+    FhirResource:
+      description: FHIR R4 resource
+      content:
+        application/fhir+json:
+          schema:
+            $ref: '#/components/schemas/FhirResource'
+    FhirBundle:
+      description: FHIR Bundle
+      content:
+        application/fhir+json:
+          schema:
+            $ref: '#/components/schemas/FhirBundle'
+    FhirError:
+      description: Error response; the provider guide does not define a single error payload shape.
+    Created:
+      description: Resource created
+    Updated:
+      description: Resource updated
+    Deleted:
+      description: Resource deleted
+  schemas:
+    FhirResource:
+      type: object
+      description: >-
+        FHIR R4 resource. Resource-specific fields and profiles are documented
+        by Open Health Hub; additional fields are allowed.
+      required: [resourceType]
+      properties:
+        resourceType:
+          type: string
+        id:
+          type: string
+      additionalProperties: true
+    FhirBundle:
+      type: object
+      description: FHIR R4 Bundle; supported transaction types are described per operation.
+      required: [resourceType]
+      properties:
+        resourceType:
+          type: string
+          enum: [Bundle]
+        type:
+          type: string
+        entry:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key provided for the sandbox or live environment.
+    oauth2:
+      type: oauth2
+      description: OpenID Connect access token from the provider's token endpoint.
+      flows:
+        clientCredentials:
+          tokenUrl: https://auth.openhealthhub.com/auth/realms/OpenHealthHub/protocol/openid-connect/token
+          scopes: {}
