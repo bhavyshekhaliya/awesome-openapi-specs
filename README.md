@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="212 specifications" src="https://img.shields.io/badge/specifications-212-13795b">
+  <img alt="213 specifications" src="https://img.shields.io/badge/specifications-213-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -302,6 +302,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | CFPB Consumer Complaint Database | [API specification](https://raw.githubusercontent.com/cfpb/ccdb5-api/main/swagger-config.yaml) · [API documentation](https://cfpb.github.io/api/ccdb/api.html) | YAML | 3.0.0 | `official` `government` `consumer-finance` `public-data` |
 | CFPB HMDA Data Browser API | [Community specification](specs/cfpb-hmda/openapi.yml) · [Data Browser API docs](https://ffiec.cfpb.gov/documentation/api/data-browser/) | YAML | 3.1.0 | `community-maintained` `government` `mortgage-data` `public-data` |
 | Congress.gov | [API specification](https://raw.githubusercontent.com/LibraryOfCongress/api.congress.gov/main/Documentation/openapi.json) | JSON | 3.0.3 | `official` `government` `legislation` `public-data` |
+| DigitalNZ | [API specification](https://api.swaggerhub.com/apis/DigitalNZ/Records/3) · [API documentation](https://digitalnz.org/developers/api-docs-v3) | JSON | 3.0.1 | `official` `government` `cultural-heritage` `public-data` |
 | GovInfo | [OpenAPI specification and interactive documentation](https://api.govinfo.gov/docs/) | JSON | 3.x | `official` `government` `public-data` |
 | Nager.Date | [Community API v4 specification](https://nagerholidays.com/openapi/community-v4.json) | JSON | 3.1.1 | `official` `open-source` `calendar` `public-holidays` `public-data` |
 | National Archives Catalog API | [Swagger specification](https://catalog.archives.gov/api/v2/swagger.json) · [API documentation](https://www.archives.gov/research/catalog/help/api) | JSON | 3.0.0 | `official` `government` `archives` `public-data` |
