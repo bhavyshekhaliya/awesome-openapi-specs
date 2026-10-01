@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="216 specifications" src="https://img.shields.io/badge/specifications-216-13795b">
+  <img alt="217 specifications" src="https://img.shields.io/badge/specifications-217-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -167,6 +167,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec                                                          | Format     | Version | Tags                                     |
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
 | Discord  | [API specification](https://github.com/discord/discord-api-spec)      | JSON       | 3.1     | `official` `platform` `messaging` `community` `public-preview` |
+| Gotify | [API specification](https://raw.githubusercontent.com/gotify/server/v3.1.1/docs/spec.json); [API documentation](https://gotify.net/api-docs) | JSON | 2.0 | `official` `open-source` `self-hosted` `notifications` |
 | Knock    | [API specification](https://api.knock.app/v1/openapi)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
 | Mailgun  | [API specification](https://documentation.mailgun.com/_spec/docs/mailgun/api-reference/send/mailgun.json?download=) | JSON | 3.1 | `official` `focused` `transactional-email` `delivery` `analytics` |
 | Novu     | [API specification](https://api.novu.co/openapi.json)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
