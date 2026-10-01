@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
+  <img alt="151 specifications" src="https://img.shields.io/badge/specifications-151-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -180,6 +180,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Identity
 | Provider | OpenAPI spec                                                                         | Format     | Version | Tags                                |
 | -------- | ------------------------------------------------------------------------------------ | ---------- | ------- | ----------------------------------- |
+| Auth0    | [Management API specification](https://auth0.com/docs/oas/management/v2/management-api-oas.json) | JSON | 3.1.0 | `official` `identity` `beta` |
 | Clerk    | [API specifications](https://github.com/clerk/openapi-specs)                         | JSON       | 3.0     | `official` `authentication`         |
 | FusionAuth | [API specification](https://raw.githubusercontent.com/FusionAuth/fusionauth-openapi/develop/openapi.yaml) | YAML | 3.0.3 | `official` `platform` `identity` `authentication` `user-management` |
 | Okta     | [Management API specification](https://github.com/okta/okta-management-openapi-spec) | JSON, YAML | 3.0     | `official` `identity`               |
