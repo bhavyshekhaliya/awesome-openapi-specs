@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="220 specifications" src="https://img.shields.io/badge/specifications-220-13795b">
+  <img alt="221 specifications" src="https://img.shields.io/badge/specifications-221-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -323,6 +323,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Hacker News | [Community specification](specs/hacker-news/openapi.yml); [official API documentation](https://github.com/HackerNews/API) | YAML | 3.1.0 | `community-maintained` `focused` `community` `news` |
 | Pinterest | [REST API specifications](https://github.com/pinterest/api-description/tree/main/v5) | JSON, YAML | 3.0.3 | `official` `social-media` `marketing` `open-source` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | TikTok Display API | [Community specification](specs/tiktok-display/openapi.yml) · [source docs](https://developers.tiktok.com/docs/en/display-api-overview) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `video` |
