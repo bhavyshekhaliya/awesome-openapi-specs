@@ -62,6 +62,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
+| rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
