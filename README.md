@@ -211,6 +211,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Hostinger    | [API specification](https://raw.githubusercontent.com/hostinger/api/main/openapi.json)                | JSON   | 3.0      | `official` `focused` `hosting` `domains` `cloud` |
 | Kubernetes   | [Generated OpenAPI definitions](https://github.com/kubernetes/kubernetes/tree/master/api/openapi-spec) | JSON   | 2.0      | `official` `containers` `open-source`         |
 | Neon         | [API v2 specification](https://neon.com/api_spec/release/v2.json)                                      | JSON   | 3.0.3    | `official` `database` `postgres` `serverless` |
+| OpenObserve  | [API specification](https://api.openobserve.ai/api-doc/openapi.json)                                    | JSON   | 3.1.0    | `official` `observability` `open-source`       |
 | PlanetScale  | [API OpenAPI specification](https://planetscale.com/docs/openapi.yaml)                                 | YAML   | 3.0.1    | `official` `database` `branching` `cloud` |
 | Render       | [Public API specification](https://api-docs.render.com/openapi/render-public-api-1.json)               | JSON   | 3.0.2    | `official` `cloud` `deployment` `hosting` |
 | Vercel       | [OpenAPI specification](https://openapi.vercel.sh/)                                                    | JSON   | 3.0.3    | `official` `platform` `deployment` `cloud` `developer-platform` |
