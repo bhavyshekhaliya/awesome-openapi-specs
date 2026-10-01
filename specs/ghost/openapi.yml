@@ -1,0 +1,341 @@
+openapi: 3.1.0
+info:
+  title: Ghost Content API (focused)
+  version: 5.0.0
+  description: >-
+    Community-maintained read-only definition for browsing and reading Ghost
+    posts, pages, authors, tags, tiers, and settings. Send Accept-Version:
+    v5.0 to set the API version. Resource payload fields are left open because
+    the API supports field selection and related resources.
+  externalDocs:
+    description: Ghost Content API documentation
+    url: https://ghost.org/docs/content-api/
+servers:
+  - url: https://{admin_domain}/ghost/api/content
+    variables:
+      admin_domain:
+        default: demo.ghost.io
+        description: The Ghost site's admin domain.
+security:
+  - ContentApiKey: []
+paths:
+  /posts/:
+    get:
+      operationId: browsePosts
+      summary: Browse posts
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: Posts and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /posts/{id}/:
+    get:
+      operationId: readPostById
+      summary: Read a post by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: The requested post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /posts/slug/{slug}/:
+    get:
+      operationId: readPostBySlug
+      summary: Read a post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: The requested post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /pages/:
+    get:
+      operationId: browsePages
+      summary: Browse pages
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: Pages and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /pages/{id}/:
+    get:
+      operationId: readPageById
+      summary: Read a page by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: The requested page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /pages/slug/{slug}/:
+    get:
+      operationId: readPageBySlug
+      summary: Read a page by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Formats'
+      responses:
+        '200':
+          description: The requested page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /authors/:
+    get:
+      operationId: browseAuthors
+      summary: Browse authors
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+      responses:
+        '200':
+          description: Authors and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /authors/{id}/:
+    get:
+      operationId: readAuthorById
+      summary: Read an author by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The requested author.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /authors/slug/{slug}/:
+    get:
+      operationId: readAuthorBySlug
+      summary: Read an author by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The requested author.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /tags/:
+    get:
+      operationId: browseTags
+      summary: Browse tags
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+      responses:
+        '200':
+          description: Tags and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /tags/{id}/:
+    get:
+      operationId: readTagById
+      summary: Read a tag by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The requested tag.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /tags/slug/{slug}/:
+    get:
+      operationId: readTagBySlug
+      summary: Read a tag by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The requested tag.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /tiers/:
+    get:
+      operationId: browseTiers
+      summary: Browse tiers
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Filter'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+      responses:
+        '200':
+          description: Tiers and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+  /settings/:
+    get:
+      operationId: browseSettings
+      summary: Browse settings
+      parameters:
+        - $ref: '#/components/parameters/Include'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: Site settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+components:
+  securitySchemes:
+    ContentApiKey:
+      type: apiKey
+      in: query
+      name: key
+  parameters:
+    Include:
+      name: include
+      in: query
+      description: Comma-separated related resources to include.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      description: Comma-separated fields to return.
+      schema:
+        type: string
+    Filter:
+      name: filter
+      in: query
+      description: Ghost NQL filter expression.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Number of results per page, or all.
+      schema:
+        type: string
+        default: '15'
+    Page:
+      name: page
+      in: query
+      description: One-based page number.
+      schema:
+        type: integer
+        default: 1
+    Order:
+      name: order
+      in: query
+      description: Sort expression using Ghost's documented SQL-like syntax.
+      schema:
+        type: string
+    Formats:
+      name: formats
+      in: query
+      description: Additional formats to return for posts and pages.
+      schema:
+        type: string
+  schemas:
+    ContentResponse:
+      type: object
+      description: >-
+        Resource keys and resource fields vary by endpoint. Browse responses
+        include meta.pagination; settings returns a single object.
+      additionalProperties: true
