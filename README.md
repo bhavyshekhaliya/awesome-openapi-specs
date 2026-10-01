@@ -269,6 +269,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
 | Open Food Facts | [API v3 specification](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/docs/api/ref/api-v3.yaml) | YAML | 3.1.0 | `official` `food-database` `open-source` |
+| OpenSea API | [Official OpenAPI specification](https://api.opensea.io/api/v2/openapi.json); [developer documentation](https://docs.opensea.io/) | JSON | 3.1.0 | `official` `commerce` `marketplace` `nft` `web3` |
 
 ## Customer Support and Helpdesk
 | Provider | OpenAPI spec | Format | Version | Tags |
