@@ -343,6 +343,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | D&D 5e SRD API (2014) | [API specification](https://raw.githubusercontent.com/5e-bits/5e-srd-api/main/apps/docs/openapi.json); [API documentation](https://docs.dnd5eapi.co/introduction) | JSON | 3.0.1 | `official` `open-source` `gaming` `reference-data` |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
+| NASA Image and Video Library | [Community specification](specs/nasa-image-video-library/openapi.yml); [official API documentation](https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf) · [library](https://images.nasa.gov/) | YAML | 3.1.0 | `community-maintained` `government` `media-library` `imagery` `public-data` |
 | Open Library | [Community specification](specs/open-library/openapi.yml); [Search API docs](https://openlibrary.org/dev/docs/api/search) | YAML | 3.1.0 | `community-maintained` `focused` `books` `catalog` |
 | PokéAPI | [REST API specification](https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml) | YAML | 3.1.0 | `official` `open-source` `gaming` `public-data` |
 | Radarr | [API specification](https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json) · [project/API docs](https://github.com/Radarr/Radarr/tree/develop/src/Radarr.Api.V3) | JSON | 3.0.4 | `official` `open-source` `self-hosted` `media-management` |
