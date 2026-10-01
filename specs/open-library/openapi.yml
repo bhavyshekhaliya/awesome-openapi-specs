@@ -1,0 +1,154 @@
+openapi: 3.1.0
+info:
+  title: Open Library Search API
+  version: 1.0.0
+  description: >-
+    Focused specification for the documented book and work search endpoint.
+    Search result fields vary and the provider does not guarantee that its
+    underlying Solr schema remains stable. Follow Open Library's low-volume
+    usage guidelines; this API is not intended for bulk downloads or as a
+    high-traffic commercial backend.
+  externalDocs:
+    description: Open Library Search API documentation
+    url: https://openlibrary.org/dev/docs/api/search
+servers:
+  - url: https://openlibrary.org
+    description: Open Library public site
+paths:
+  /search.json:
+    get:
+      operationId: searchBooksAndWorks
+      summary: Search books and works
+      description: >-
+        Returns matching works and, when requested through `fields`, edition
+        information. `q`, `title`, and `author` are query forms shown in the
+        provider's examples. Use pagination parameters for multi-page results.
+      externalDocs:
+        description: Search API documentation and response examples
+        url: https://openlibrary.org/dev/docs/api/search
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Solr query string.
+          schema:
+            type: string
+        - name: title
+          in: query
+          required: false
+          description: Example title search parameter documented by Open Library.
+          schema:
+            type: string
+        - name: author
+          in: query
+          required: false
+          description: Example author search parameter documented by Open Library.
+          schema:
+            type: string
+        - name: fields
+          in: query
+          required: false
+          description: >-
+            Comma-separated fields to return. `*` requests all fields; the
+            special value `availability` includes availability data.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sort
+          in: query
+          required: false
+          description: >-
+            Sort facet. The documentation gives `new`, `old`, `random`, and
+            `key` as examples; the default is relevance.
+          schema:
+            type: string
+        - name: lang
+          in: query
+          required: false
+          description: Two-letter ISO 639-1 language code used to influence results.
+          schema:
+            type: string
+        - name: offset
+          in: query
+          required: false
+          description: Result offset for pagination.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: false
+          description: Number of results per page.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: One-based result page number.
+          schema:
+            type: integer
+        - name: User-Agent
+          in: header
+          required: false
+          description: >-
+            For regular use, identify the application and include a contact
+            email to receive the higher documented request rate.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results; document fields depend on the request and catalog data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+components:
+  schemas:
+    SearchResponse:
+      type: object
+      properties:
+        start:
+          type: integer
+        numFound:
+          type: integer
+        num_found:
+          type: integer
+        numFoundExact:
+          type: boolean
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchDocument'
+      additionalProperties: true
+    SearchDocument:
+      type: object
+      properties:
+        cover_i:
+          type: integer
+        has_fulltext:
+          type: boolean
+        edition_count:
+          type: integer
+        title:
+          type: string
+        author_name:
+          type: array
+          items:
+            type: string
+        first_publish_year:
+          type: integer
+        key:
+          type: string
+        ia:
+          type: array
+          items:
+            type: string
+        author_key:
+          type: array
+          items:
+            type: string
+        public_scan_b:
+          type: boolean
+      additionalProperties: true
