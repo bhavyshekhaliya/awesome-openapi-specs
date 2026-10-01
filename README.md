@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="184 specifications" src="https://img.shields.io/badge/specifications-184-13795b">
+  <img alt="185 specifications" src="https://img.shields.io/badge/specifications-185-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -157,6 +157,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Frankfurter | [API specification](https://api.frankfurter.dev/v2/openapi.json) | JSON | 3.1.2 | `official` `currency-exchange` `exchange-rates` `open-source` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
+| SEC EDGAR | [Community specification](specs/sec-edgar/openapi.yml) · [EDGAR data APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) | YAML | 3.1.0 | `community-maintained` `focused` `financial-data` `public-data` |
 | TrustMRR | [Community specification](specs/trustmrr/openapi.yml); [source docs](https://trustmrr.com/docs/api) | YAML | 3.2.1 | `community-maintained` `startup-data` `revenue` |
 | Xero     | [Accounting API specifications](https://github.com/XeroAPI/Xero-OpenAPI) | YAML   | 3.0     | `official` `accounting` |
 
