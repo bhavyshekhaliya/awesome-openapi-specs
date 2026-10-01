@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="221 specifications" src="https://img.shields.io/badge/specifications-221-13795b">
+  <img alt="222 specifications" src="https://img.shields.io/badge/specifications-222-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -122,6 +122,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Cohere       | [API specification](https://github.com/cohere-ai/cohere-developer-experience) | YAML       | 3.1     | `official` `ai`               |
 | Composio     | [Platform API specification](https://backend.composio.dev/api/v3/openapi.json) | JSON       | 3.0     | `official` `agent-tools`      |
 | Deepgram     | [API specification](https://raw.githubusercontent.com/deepgram/deepgram-api-specs/main/openapi.yml) | YAML       | 3.1     | `official` `focused` `speech-ai` `transcription` `audio` |
+| E2B | [API specification](https://raw.githubusercontent.com/e2b-dev/E2B/main/spec/openapi.yml); [API reference](https://e2b.dev/docs/api-reference) | YAML | 3.0.0 | `official` `open-source` `ai` `sandbox` `code-execution` |
 | ElevenLabs   | [API specification](https://api.elevenlabs.io/openapi.json)                   | JSON       | 3.1     | `official` `voice-ai`         |
 | Exa          | [Public API specification](https://api.exa.ai/openapi.json)                   | JSON       | 3.1     | `official` `ai-search`        |
 | Firecrawl    | [v2 API specification](https://raw.githubusercontent.com/firecrawl/firecrawl-docs/main/v1/api-reference/v2-openapi.json) | JSON | 3.0.0 | `official` `web-data` `scraping` `ai` |
