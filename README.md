@@ -255,6 +255,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | LearnHouse | [API specification](https://api.learnhouse.io/openapi.json) | JSON | 3.1.0 | `official` `education` `learning-management` |
+| Uptyde | [API v2 specification](https://app.uptyde.events/api-docs/v1/swagger.yaml) | YAML | 3.0.1 | `official` `events` `workshops` |
 | Open Education API | [Open Education API specification](https://raw.githubusercontent.com/open-education-api/specification/main/oeapi.yaml) | YAML | 3.1.1 | `official` `education` `open-source` |
 
 ## Government and Public Data
