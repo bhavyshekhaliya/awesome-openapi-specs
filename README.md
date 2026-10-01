@@ -53,6 +53,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
 | Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
+| Enginemailer | [Zapier API v1 specification](https://connect.enginemailer.com/swagger/Zapierv1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `transactional-email` |
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
