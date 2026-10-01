@@ -285,6 +285,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+| OneMap | [Community specification](specs/onemap/openapi.yml) · [source docs](https://www.onemap.gov.sg/apidocs/) | YAML | 3.2.1 | `community-maintained` `geocoding` `routing` `public-data` |
 
 ## Security and Compliance
 | Provider | OpenAPI spec | Format | Version | Tags |
