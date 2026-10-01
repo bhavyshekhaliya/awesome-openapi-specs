@@ -231,6 +231,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Grafana       | [HTTP API specification](https://github.com/grafana/grafana/blob/main/public/api-merged.json) | JSON   | 2.0     | `official` `observability` `open-source` |
 | Inngest       | [REST API v2 specification](https://api-docs.inngest.com/api-specs/v2.json)                     | JSON   | 3.0.3   | `official` `serverless-workflows` `background-jobs` |
 | LaunchDarkly  | [REST API specification](https://app.launchdarkly.com/api/v2/openapi.json)                      | JSON   | 3.0.3   | `official` `feature-management` `experimentation` |
+| n8n Public API | [Official OpenAPI source and components](https://github.com/n8n-io/n8n/tree/master/packages/cli/src/public-api/v1); [API documentation](https://docs.n8n.io/connect/n8n-api/api-reference) | YAML | 3.0.0 | `official` `self-hosted` `workflow-automation` `developer-tools` |
 | PagerDuty     | [REST API specification](https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json) | JSON | 3.0.2 | `official` `platform` `incident-management` `on-call` `observability` |
 | Sentry        | [API schema](https://github.com/getsentry/sentry-api-schema)                                  | JSON   | 3.0     | `official` `observability` `open-source` |
 | Svix          | [API specification](https://raw.githubusercontent.com/svix/svix-webhooks/main/server/openapi.json) | JSON | 3.0.2 | `official` `webhooks` `developer-platform` `open-source` |
