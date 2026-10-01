@@ -128,6 +128,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Sonz AI      | [API specification](https://api.sonz.ai/docs/openapi.yaml)                    | YAML       | 3.1     | `official` `ai` `agent-platform` |
 | TypeSafe AI  | [API specification](https://api.typesafe.ai/openapi.json)                    | JSON       | 3.1.0   | `official` `ai` `inference` |
 | Unstructured | [Platform API specification](https://platform.unstructuredapp.io/openapi.json) | JSON      | 3.1     | `official` `ai-data-platform` |
+| Zhipu AI (BigModel) | [API specification](https://docs.bigmodel.cn/openapi/openapi.json) | JSON | 3.0.1 | `official` `ai` `llm-inference` |
 
 ## Payments
 | Provider | OpenAPI spec                                                                        | Format     | Version | Tags                                |
