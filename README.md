@@ -393,6 +393,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Country | [API specification](https://api.country.is/openapi.json) · [API documentation](https://country.is/) | JSON | 3.1.0 | `official` `open-source` `ip-geolocation` `public-data` |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+| Nominatim | [Community specification](specs/nominatim/openapi.yml) · [API docs](https://nominatim.org/release-docs/develop/api/Overview/) · [usage policy](https://operations.osmfoundation.org/policies/nominatim/) | YAML | 3.0.3 | `community-maintained` `geocoding` `open-data` |
 
 ## Security and Compliance
 | Provider | OpenAPI spec | Format | Version | Tags |
