@@ -267,6 +267,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
+| ViralNote | [API specification](https://dashboard.viralnote.app/api/v1/openapi) | JSON | 3.1.0 | `social-media` `content-marketing` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
 ## Media and Entertainment
