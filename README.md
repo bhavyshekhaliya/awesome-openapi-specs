@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="210 specifications" src="https://img.shields.io/badge/specifications-210-13795b">
+  <img alt="211 specifications" src="https://img.shields.io/badge/specifications-211-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -183,6 +183,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Algolia     | [API specifications](https://github.com/algolia/api-clients-automation/tree/main/specs) | YAML | 3.0.2 | `official` `search` `discovery` `open-source` |
 | Astrophysics Data System (ADS) | [OpenAPI specification directory](https://github.com/adsabs/adsabs-dev-api/tree/master/openapi) · [API documentation](https://ui.adsabs.harvard.edu/help/api/) | YAML | 3.0.3 | `official` `research` `astronomy` `public-data` |
 | Datafast | [Community specification](specs/datafast/openapi.yml); [source docs](https://datafa.st/docs/api) | YAML | 3.2.1 | `community-maintained` `analytics` |
+| Figshare | [API specification](https://docs.figshare.com/swagger.json) · [API documentation](https://docs.figshare.com/v2/) | JSON | 3.0.3 | `official` `research` `open-science` `data-sharing` |
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
