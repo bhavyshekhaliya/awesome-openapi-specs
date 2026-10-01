@@ -174,6 +174,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mailgun  | [API specification](https://documentation.mailgun.com/_spec/docs/mailgun/api-reference/send/mailgun.json?download=) | JSON | 3.1 | `official` `focused` `transactional-email` `delivery` `analytics` |
 | Mail-in-a-Box | [API specification](https://raw.githubusercontent.com/mail-in-a-box/mailinabox/main/api/mailinabox.yml); [API documentation](https://mailinabox.email/api-docs.html) | YAML | 3.0.3 | `official` `open-source` `self-hosted` `mail-server` |
 | Novu     | [API specification](https://api.novu.co/openapi.json)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
+| Nylas | [Official v3 API specification](https://developer.nylas.com/_spec-files/nylas-api.yaml); [API reference](https://developer.nylas.com/docs/reference/api/) | YAML | 3.1.0 | `official` `email` `calendar` `communications` |
 | Slack    | [Web API specifications](https://github.com/slackapi/slack-api-specs) | JSON, YAML | 2.0     | `official` `collaboration` `open-source` |
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 | Upstash  | [QStash API specification](https://upstash.com/docs/qstash/openapi.yaml) | YAML | 3.1.0 | `official` `messaging` `queues` `scheduling` |
