@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="200 specifications" src="https://img.shields.io/badge/specifications-200-13795b">
+  <img alt="201 specifications" src="https://img.shields.io/badge/specifications-201-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -341,6 +341,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
+| CIRCL Hashlookup | [API specification](https://hashlookup.circl.lu/swagger.json) · [API documentation](https://hashlookup.circl.lu/) | JSON | 2.0 | `official` `security` `hash-lookup` `public-data` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 | Permit.io | [Cloud API specification](https://api.permit.io/v2/openapi.json) | JSON | 3.1.0 | `official` `authorization` `policy-engine` `permissions` |
 | Tailscale | [API documentation and OpenAPI download](https://tailscale.com/api) | JSON | 3.x | `official` `networking` `zero-trust` `vpn` |
