@@ -220,6 +220,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Amazon | [Selling Partner API models](https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json) | JSON | 2.0 | `official` `commerce` `retail` |
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
+| Vouchery.io | [API specification](https://dash.readme.com/api/v1/api-registry/2r5moim7dh7bb2) | JSON | 3.0.0 | `official` `loyalty` `promotions` `marketing` |
 
 ## Customer Support and Helpdesk
 | Provider | OpenAPI spec | Format | Version | Tags |
