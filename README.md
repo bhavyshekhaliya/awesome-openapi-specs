@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="162 specifications" src="https://img.shields.io/badge/specifications-162-13795b">
+  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -52,32 +52,21 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                         | YAML   | 3.0.2   | `official` `email-marketing`              |
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
-| Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml)                                                        | YAML   | 2.0     | `official` `email-marketing`              |
 | Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
-| Eventleaf        | [API specification](https://api.eventleaf.com/swagger/docs/v1)                                                   | JSON   | 2.0     | `official` `event-management`             |
-| GaggleAMP        | [API specification](https://secure6.gaggleamp.com/api/v1/swagger.json)                                           | JSON   | 2.0     | `official` `employee-advocacy` `social-media` |
-| GetResponse      | [API specification](https://apireference.getresponse.com/open-api.json)                                          | JSON   | 3.0.0   | `official` `email-marketing`              |
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
-| Limpi            | [API specification](https://limpiaudit.com/api/v1/openapi.json)                                                  | JSON   | 3.1.0   | `official` `seo` `website-audit`          |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
-| Mailtrap         | [OpenAPI specification collection](https://github.com/mailtrap/mailtrap-openapi)                                | YAML   | 3.1.0   | `official` `email-marketing` `email-delivery` |
-| ManyChat         | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `official` `chat-marketing` `experimental` |
-| MarketGo         | [API specification](https://api.marketgo.ai/api/v1/openapi.json)                                                 | JSON   | 3.1.0   | `official` `marketing-automation`         |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
-| Pulseem          | [API specification](https://api.pulseem.com/swagger/v1/swagger.json)                                             | JSON   | 3.0.1   | `official` `email-marketing` `marketing-automation` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
-| SendGrid         | [Mail API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML   | 3.1.0   | `official` `email` `transactional-email`  |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
-| ViralNote        | [API specification](https://dashboard.viralnote.app/api/v1/openapi)                                              | JSON   | 3.1.0   | `official` `social-media` `content-marketing` |
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
 
 ## CRM
@@ -278,7 +267,6 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
-| Pinterest | [API specification](https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml) | YAML | 3.0.3 | `official` `social-media` `advertising` `open-source` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
