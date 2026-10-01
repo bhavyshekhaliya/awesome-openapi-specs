@@ -50,6 +50,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
+| beehiiv          | [API specification](https://developers.beehiiv.com/_fern-files/beehiiv.docs.buildwithfern.com/0a003f55c621652234cd8ef8b2460be3ee66bd4de4c707cbfba0e59d3081a847/assets/beehiiv-API-Specification.yaml) | YAML | 3.0.1 | `official` `email-marketing` `newsletter` |
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
 | Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
