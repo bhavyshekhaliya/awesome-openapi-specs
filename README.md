@@ -292,6 +292,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | ClinicalTrials.gov | [Community specification](specs/clinicaltrials-gov/openapi.yml) · [API v2 documentation](https://clinicaltrials.gov/data-api/about-api) | YAML | 3.1.0 | `community-maintained` `focused` `clinical-trials` `public-data` |
 | Foundation Health | [API documentation and OpenAPI specification](https://docs.foundationhealth.com/) | JSON, YAML | 3.0.2 | `official` `healthcare` `pharmacy` |
+| NCBI Datasets API | [Official OpenAPI specification](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/openapi3/openapi3.docs.yaml); [API documentation](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/rest-api/) | YAML | 3.0.1 | `official` `life-sciences` `genomics` `public-data` |
 | openFDA | [Community specification](specs/openfda/openapi.yml); [Drug Adverse Event API docs](https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/) | YAML | 3.1.0 | `community-maintained` `focused` `healthcare` `public-data` |
 | Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
 
