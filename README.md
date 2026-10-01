@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="148 specifications" src="https://img.shields.io/badge/specifications-148-13795b">
+  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -212,6 +212,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Neon         | [API v2 specification](https://neon.com/api_spec/release/v2.json)                                      | JSON   | 3.0.3    | `official` `database` `postgres` `serverless` |
 | PlanetScale  | [API OpenAPI specification](https://planetscale.com/docs/openapi.yaml)                                 | YAML   | 3.0.1    | `official` `database` `branching` `cloud` |
 | Render       | [Public API specification](https://api-docs.render.com/openapi/render-public-api-1.json)               | JSON   | 3.0.2    | `official` `cloud` `deployment` `hosting` |
+| Snowflake    | [REST API specifications](https://github.com/snowflakedb/snowflake-rest-api-specs/tree/main/specifications) | YAML | 3.0.0 | `official` `database` `data-warehouse` |
 | Vercel       | [OpenAPI specification](https://openapi.vercel.sh/)                                                    | JSON   | 3.0.3    | `official` `platform` `deployment` `cloud` `developer-platform` |
 
 ## E-commerce and Retail
@@ -308,7 +309,7 @@ The `3.x` value is used for official download pages or multi-file repositories w
 
 Links point to official repositories or directories when a provider publishes multiple API definitions or generated variants. Community-maintained entries link to local YAML files and their source documentation. Providers retain ownership of their trademarks and documentation.
 
-Last reviewed: August 4, 2026.
+Last reviewed: October 1, 2026.
 
 ## Contributing
 Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for the acceptance criteria and pull request format.
