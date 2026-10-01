@@ -149,6 +149,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
+| OilPriceAPI | [API specification](https://api.oilpriceapi.com/swagger.yaml) | YAML | 3.0.3 | `official` `energy` `commodity-prices` |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
 | TrustMRR | [Community specification](specs/trustmrr/openapi.yml); [source docs](https://trustmrr.com/docs/api) | YAML | 3.2.1 | `community-maintained` `startup-data` `revenue` |
 | Xero     | [Accounting API specifications](https://github.com/XeroAPI/Xero-OpenAPI) | YAML   | 3.0     | `official` `accounting` |
