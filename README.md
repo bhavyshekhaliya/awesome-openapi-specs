@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="178 specifications" src="https://img.shields.io/badge/specifications-178-13795b">
+  <img alt="179 specifications" src="https://img.shields.io/badge/specifications-179-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -240,6 +240,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Amazon | [Selling Partner API models](https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json) | JSON | 2.0 | `official` `commerce` `retail` |
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
+| Open Food Facts | [API v3 specification](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/docs/api/ref/api-v3.yaml) | YAML | 3.1.0 | `official` `food-database` `open-source` |
 
 ## Customer Support and Helpdesk
 | Provider | OpenAPI spec | Format | Version | Tags |
