@@ -67,6 +67,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
+| Yespo | [API specification](https://dash.readme.com/api/v1/api-registry/ab41n1mump656s) | JSON | 3.0.1 | `official` `email-marketing` `marketing-automation` |
 
 ## CRM
 | Provider  | OpenAPI spec                                                                                         | Format | Version | Tags                                                       |
