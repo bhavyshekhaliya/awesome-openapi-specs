@@ -1,0 +1,525 @@
+openapi: 3.2.0
+info:
+  version: '1.1'
+  title: TrustRadius Trust Quotes API
+  description: TrustRadius API
+servers:
+- url: https://api.trustradius.com/v1
+tags:
+- name: TrustQuotes
+paths:
+  /reports/syndication/tqw/pages:
+    get:
+      parameters:
+      - $ref: '#/components/parameters/filters_start-date'
+      - $ref: '#/components/parameters/filters_end-date'
+      - $ref: '#/components/parameters/format'
+      - in: query
+        name: date-group
+        description: Specifies the date type by which to aggregate the results. Can be day, week, or month (default).
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+      - $ref: '#/components/parameters/sort'
+      - in: query
+        name: vendor
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    total:
+                      type: integer
+                    renders:
+                      type: integer
+                    views:
+                      type: integer
+                    clicksTotal:
+                      type: integer
+                    clicksAllReviews:
+                      type: integer
+                    clicksOneReviewTotal:
+                      type: integer
+                    clicksOneReviewTitle:
+                      type: integer
+                    clicksOneReviewReadMore:
+                      type: integer
+                    productId:
+                      type: string
+                    widgetId:
+                      type: string
+                    link:
+                      type: string
+                    domain:
+                      type: string
+                    page:
+                      type: string
+                    date:
+                      type: string
+                    widgetName:
+                      type: string
+                    productName:
+                      type: string
+                    vendorName:
+                      type: string
+                  required:
+                  - total
+                  - renders
+                  - views
+                  - clicksTotal
+                  - clicksAllReviews
+                  - clicksOneReviewTotal
+                  - clicksOneReviewTitle
+                  - clicksOneReviewReadMore
+                  - productId
+                  - widgetId
+                  - date
+                  - widgetName
+                  - productName
+                  - vendorName
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/reports/syndication/tqw/pages
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      security:
+      - x-api-key: []
+      description: Gets information about TrustQuotes for Web performance.
+      summary: Gets TrustQuotes for Web performance
+      operationId: tqw_pages_get
+      tags:
+      - TrustQuotes
+  /trustquotes:
+    get:
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrustQuotes'
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TrustQuotes'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      summary: Gets TrustQuotes
+      parameters:
+      - $ref: '#/components/parameters/format'
+      - $ref: '#/components/parameters/filters_start-date'
+      - $ref: '#/components/parameters/filters_end-date'
+      - in: query
+        name: vendors
+        description: Id of the vendor or vendors to get data for in a comma-separated format (e.g., "vendors=id1,id2").
+        schema:
+          type: array
+          items:
+            type: string
+      - $ref: '#/components/parameters/ids_products-multiple'
+      - in: query
+        name: include-anonymous
+        description: Whether to include quotes that are in anonymous reviews or not.
+        schema:
+          type: boolean
+          default: false
+      - in: query
+        name: min-rating
+        description: The minimum rating a review must have for a quote to be returned.
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 10
+      - in: query
+        name: max-quotes
+        description: The maximum number of quotes to return.
+        schema:
+          type: integer
+      - in: query
+        name: tags
+        description: Id of the tag or tags to get data for in a comma-separated format (e.g., "tags=id1,id2").
+        schema:
+          type: array
+          items:
+            type: string
+      security:
+      - x-api-key: []
+      description: 'Provides access to quotes in product reviews.
+
+
+        #### How do I get Review quotes having specific tags?
+
+
+        Call the `trustquotes` with the `tags` query parameter set to the Tag IDs of the Tags you''re interested in:
+
+
+        ```
+
+        curl -X GET -H ''x-api-key: '' \
+
+        ''https://api.trustradius.com/v1/trustquotes?include-anonymous=true&max-review-age=365&vendors=&tags=,''
+
+        ```'
+      tags:
+      - TrustQuotes
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/trustquotes
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      operationId: trustquotes_get
+  /tags:
+    get:
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tags'
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tags'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      summary: Gets Tags used for tagging TrustQuotes
+      security:
+      - x-api-key: []
+      parameters:
+      - in: query
+        name: vendors
+        description: Id of the vendor or vendors to get data for in a comma-separated format (e.g., "vendors=id1,id2").
+        schema:
+          type: array
+          items:
+            type: string
+      - $ref: '#/components/parameters/ids_products-multiple'
+      - in: query
+        name: tag-groups
+        description: Id of the tag group or tag groups to get data for in a comma-separated format (e.g., "tag-groups=id1,id2").
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: tags
+        description: Id of the tag or tags to get data for in a comma-separated format (e.g., "tags=id1,id2").
+        schema:
+          type: array
+          items:
+            type: string
+      - in: query
+        name: custom-only
+        description: 'Get only vendor-defined tags. Shared tags (those defined by TrustRadius) will not be returned. '
+        schema:
+          type: boolean
+          default: false
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/tags
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      description: 'Gets Tags used for tagging TrustQuotes.
+
+
+        #### How do I find the Tag Group ID? I just know its name.
+
+
+        Call the `tags` endpoint with the Vendor ID only, then find the ID of the Tag Group you want:
+
+
+        ```
+
+        curl -X GET -H ''x-api-key: \
+
+        ''https://api.trustradius.com/v1/tags?custom-only=true&vendors=''''
+
+        ```
+
+
+        #### How do I find all the Tags belonging to a Tag Group?
+
+
+        Call the `tags` endpoint with the Tag Group ID in the `tag-groups` query parameter, `custom-only=true` to exclude TrustRadius-created Tags:
+
+
+        ```
+
+        curl -X GET -H ''x-api-key: '' \
+
+        ''https://api.trustradius.com/v1/tags?custom-only=true&vendors=&tag-groups=''
+
+        ```'
+      operationId: tags_get
+      tags:
+      - TrustQuotes
+components:
+  parameters:
+    filters_end-date:
+      name: end-date
+      in: query
+      description: For time-series data, this filters the results to include those occurring before or on the given date. Expected to be in ISO 8601 format.
+      schema:
+        type: string
+        format: date
+    filters_start-date:
+      name: start-date
+      in: query
+      description: For time-series data, this filters the results to include those occurring on or after the given date. Expected to be in ISO 8601 format.
+      schema:
+        type: string
+        format: date
+    ids_products-multiple:
+      name: products
+      in: query
+      description: Id of the product or products to get traffic data for in a comma-separated format (e.g., "products=id1,id2").
+      schema:
+        type: string
+    sort:
+      in: query
+      name: sort
+      description: Specifies the data fields to sort by as a comma-separated list of fields. Field names can be preceded by a hyphen to indicate that they should be sorted in descending order of values.
+      schema:
+        type: string
+    format:
+      name: format
+      in: query
+      description: Specifies the format of the results. Can be either "csv" or "json" (the default).
+      schema:
+        type: string
+        enum:
+        - csv
+        - json
+        default: json
+  schemas:
+    TrustQuotes:
+      type: object
+      title: Trust Quotes
+      properties:
+        vendor:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        product:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        review:
+          type: object
+          properties:
+            id:
+              type: string
+            editedDate:
+              type: string
+            publishedDate:
+              type: string
+            heading:
+              type: string
+            url:
+              type: string
+            rating:
+              type: integer
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            pictureUrl:
+              type: string
+            name:
+              type: string
+            company:
+              type: object
+              properties:
+                name:
+                  type: string
+                size:
+                  type: string
+                industry:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+            position:
+              type: object
+              properties:
+                title:
+                  type: string
+                jobType:
+                  type: string
+                department:
+                  type: string
+        id:
+          type: string
+        isSummary:
+          type: boolean
+        isAnonymous:
+          type: boolean
+        created:
+          type: string
+        taggedreviewStatus:
+          type: string
+        text:
+          type: string
+        allTags:
+          type: array
+          items:
+            type: string
+        allTagNames:
+          type: array
+          items:
+            type: string
+    Tags:
+      type: object
+      title: Tags
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        sequence:
+          type: number
+        vendor:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        products:
+          type: object
+          properties:
+            ids:
+              type: array
+              items:
+                type: string
+            names:
+              type: array
+              items:
+                type: string
+        tagGroup:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            type:
+              type: string
+            sequence:
+              type: number
+            scope:
+              type: string
+  responses:
+    validation-error:
+      description: One or more input parameters failed validation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - ValidationError
+                default: ValidationError
+                description: The name is always "ValidationError".
+              status:
+                type: number
+                enum:
+                - 400
+                default: 400
+                description: The HTTP status code is always 400.
+              message:
+                type: string
+                description: An error message. This may be a generic error message if parameter-specific errors are also included in the `errors` array.
+              errors:
+                type: array
+                description: This can be an array of message strings or an array of objects that contain a message, field name, and location.
+                items:
+                  oneOf:
+                  - type: string
+                    description: Any error message string.
+                  - type: object
+                    properties:
+                      param:
+                        type: string
+                        description: The name of the input parameter that is not valid.
+                      msg:
+                        type: string
+                        description: An error message specifically for this parameter.
+                      location:
+                        type: string
+                        enum:
+                        - body
+                        - query
+                        - param
+                        - header
+                        description: The input location (path parameter, body property, query parameter, or header value) where this parameter was received.
+    not-found:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - NotFound
+                description: The name is always "NotFound".
+              status:
+                type: number
+                enum:
+                - 404
+                description: The HTTP status code is always 404.
+              message:
+                type: string
+  securitySchemes:
+    x-api-key:
+      name: x-api-key
+      type: apiKey
+      in: header
+      description: All API calls must send an API key in the "x-api-key" HTTP header. TrustRadius clients can get their key from their Client Success Manager.

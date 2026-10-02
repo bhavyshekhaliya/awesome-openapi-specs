@@ -1,0 +1,336 @@
+openapi: 3.2.0
+info:
+  version: '1.1'
+  title: TrustRadius Intent Data API
+  description: TrustRadius API
+servers:
+- url: https://api.trustradius.com/v1
+tags:
+- name: Intent Data
+paths:
+  /intent:
+    get:
+      operationId: intent_data
+      parameters:
+      - in: header
+        name: x-api-key
+        schema:
+          type: string
+      - in: query
+        name: start-date
+        required: false
+        description: An ISO 8601 date string specifying the starting date of the activity date range. Activities on this date will be included in the response. When neither the start-date and end-date parameters are included, the default start-date is fourteen days prior to the current day. When only the end-date is specified, the start-date dafauts to fourteen days prior to the end-date not to exceed fourty-five days prior to the current day.
+        schema:
+          type: string
+          format: full-date
+      - in: query
+        name: end-date
+        required: false
+        description: An ISO8601 date string specifying the ending date of the activity date range. Activities on this date will not be included in the response. When neither the start-date and end-date parameters are included, the default end-date is the current day. When only the start-date is specified, the end-date dafauts to fourteen after the start-date not to exceed the current day.
+        schema:
+          type: string
+          format: full-date
+      - in: query
+        name: detailed
+        required: false
+        description: When set to 'true', extra details about the account are included in the response. When set to 'false', only the account ID, name and domain are included in the response. The default value is 'false'.
+        schema:
+          type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/intent-data'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      security:
+      - x-api-key: []
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/intent
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      description: Gets intent data about accounts researching products, categories, competitors, and more on trustradius.com. Includes company firmographic information, visitor counts, and activity details for intent shown by identified companies.
+      summary: Gets intent data
+      tags:
+      - Intent Data
+components:
+  responses:
+    validation-error:
+      description: One or more input parameters failed validation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - ValidationError
+                default: ValidationError
+                description: The name is always "ValidationError".
+              status:
+                type: number
+                enum:
+                - 400
+                default: 400
+                description: The HTTP status code is always 400.
+              message:
+                type: string
+                description: An error message. This may be a generic error message if parameter-specific errors are also included in the `errors` array.
+              errors:
+                type: array
+                description: This can be an array of message strings or an array of objects that contain a message, field name, and location.
+                items:
+                  oneOf:
+                  - type: string
+                    description: Any error message string.
+                  - type: object
+                    properties:
+                      param:
+                        type: string
+                        description: The name of the input parameter that is not valid.
+                      msg:
+                        type: string
+                        description: An error message specifically for this parameter.
+                      location:
+                        type: string
+                        enum:
+                        - body
+                        - query
+                        - param
+                        - header
+                        description: The input location (path parameter, body property, query parameter, or header value) where this parameter was received.
+    not-found:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - NotFound
+                description: The name is always "NotFound".
+              status:
+                type: number
+                enum:
+                - 404
+                description: The HTTP status code is always 404.
+              message:
+                type: string
+    intent-data:
+      description: A successful call returns an object containing a list of accounts which have been active during the requested date range. Each account contains a list of the activities performed by vistors from the account.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              start_date:
+                type: string
+                description: The actual start date used when collecting data. This will reflect the start-date parameter if specified or the computed default value.
+              end_date:
+                type: string
+                description: The actual end date used when collecting data. This will reflect the end-date parameter if specified or the computed default value.
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: The unique identifier of the account.
+                    url:
+                      type: string
+                      description: The URL path to be used in the _/accounts_ API call to collect more information about the account.
+                    name:
+                      type: string
+                      description: The account name.
+                    domain:
+                      type: string
+                      description: The account domain.
+                    description:
+                      type: string
+                      description: A description about the account. This is only included when the _detailed_ parameter is true.
+                    companySize:
+                      type: object
+                      properties:
+                        size:
+                          type: string
+                          description: A representation of the company size specified as a range in the number of employees. This is only included when the _detailed_ parameter is true.
+                        order:
+                          type: integer
+                          description: The ordinal of the _size_ value in the list of all possible values. This is only included when the _detailed_ parameter is true.
+                    sector:
+                      type: string
+                      description: The business sector in which the accouny operates. This is only included when the _detailed_ parameter is true.
+                    industry:
+                      type: string
+                      description: The industry in which the account operates. This is only included when the _detailed_ parameter is true.
+                    subIndustry:
+                      type: string
+                      description: The sub-industry in which the account operates. This is only included when the _detailed_ parameter is true.
+                    sicCode:
+                      type: string
+                      description: The Standard Industrial Code for the account. This is only included when the _detailed_ parameter is true.
+                    city:
+                      type: string
+                      description: The city where the account's headquarters is located. This is only included when the _detailed_ parameter is true.
+                    state:
+                      type: string
+                      description: The state where the account's headquarters is located. This is only included when the _detailed_ parameter is true.
+                    stateCode:
+                      type: string
+                      description: The abbreviations of the state where the account's headquarters is located. This is only included when the _detailed_ parameter is true.
+                    country:
+                      type: string
+                      description: The country where the account's headquarters is located. This is only included when the _detailed_ parameter is true.
+                    countryCode:
+                      type: string
+                      description: The abbreviation of the country where the account's headquarters is located. This is only included when the _detailed_ parameter is true.
+                    postalCode:
+                      type: string
+                    facebook:
+                      type: string
+                      description: The Facebook handle for the account. This is only included when the _detailed_ parameter is true.
+                    twitter:
+                      type: string
+                      description: The Twitter handle for the account. This is only included when the _detailed_ parameter is true.
+                    linkedIn:
+                      type: string
+                      description: The LinkedIn handle for the account. This is only included when the _detailed_ parameter is true.
+                    annualRevenue:
+                      type: string
+                      description: The annual revenue for the account if the account is public. This is only included when the _detailed_ parameter is true.
+                    activities:
+                      type: array
+                      description: A list of activities performed by the account during the specified date range.
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            description: The unique ID of the activity.
+                          type:
+                            type: string
+                            description: 'The type of activity, e.g. _view_ or _click_. '
+                          date:
+                            type: string
+                            format: full-date
+                            description: The date the activity took place.
+                          label:
+                            type: string
+                            description: The subject of the activity type, e.g. _Product Pricing Link_, _Product Reviews_, or _Comparison_.
+                          objects:
+                            type: array
+                            description: A list providing details about the objects involved in the activity.
+                            items:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  description: The type of object, e.g. _roduct_, _review_, _category_.
+                                id:
+                                  type: string
+                                  description: The unique ID of the object.
+                                name:
+                                  type: string
+                                  description: The name of the object.
+                          webUrl:
+                            type: string
+                            description: the full URL of the page on the TrustRadius platform where the activity took place.
+                          location:
+                            type: object
+                            description: The location of the visitor when the activity was executed
+                            properties:
+                              city:
+                                type: string
+                                description: The city where the visitor was located when the activity was executed.
+                              state:
+                                type: string
+                                description: The state where the visitor was located when the activity was executed.
+                              stateCode:
+                                type: string
+                                description: The state code where the visitor was located when the activity was executed.
+                              country:
+                                type: string
+                                description: The country where the visitor was located when the activity was executed.
+                              countryCode:
+                                type: string
+                                description: The country code where the visitor was located when the activity was executed.
+                          human_readable:
+                            type: string
+                            description: A piece of text describing the activity.
+                          source:
+                            type: string
+                            description: Identifies the reason an activity was included in the response. Possible values are _Licensed Product_, _Category_ and _Competitors_.
+                    visitorCount:
+                      type: integer
+                      description: The number of visitors from this account.
+              more:
+                type: boolean
+                description: A value of true indicates that there is more data available on the server for the specified date range.
+          examples:
+            response:
+              value:
+                start-date: '2020-05-02'
+                end-date: '2020-05-03'
+                accounts:
+                - id: 5e8bd2974a29100004c40cbb
+                  name: Some Company
+                  domain: somecompany.com
+                  url: /accounts/5e8bd2974a29100004c40cbb
+                  description: This is some sort of company description.
+                  companySize:
+                    size: 1 to 10
+                    order: 1
+                  sector: Industrials
+                  industry: Professional Services
+                  subIndustry: Consulting
+                  sicCode: '33'
+                  city: Crewe
+                  state: Cheshire East
+                  stateCode: CE
+                  country: United Kingdom
+                  countryCode: GB
+                  postalCode: CW1 6DD
+                  linkedIn: company/trimo
+                  twitter: trimo
+                  facebook: trimo
+                  activities:
+                  - id: 5eae37d021063f0031f2b825
+                    date: '2020-05-02'
+                    type: view
+                    label: Comparison
+                    objects:
+                    - type: product
+                      id: 536bf38fd35ad20200000a53
+                      name: My Product
+                      category: My Category
+                    - type: product
+                      id: 536bf38fd35ad20200000a64
+                      name: Another Product
+                      category: Some Category
+                    webUrl: http://trustradius.com/compare-products/my-product-vs-another-product
+                    location:
+                      city: Austin
+                      state: Texas
+                      stateCode: TX
+                      country: United States
+                      countryCode: USA
+                    human_readable: Viewed a comparison of My Product vs Another Product
+                    source: Licensed Product
+                  visitorCount: 12
+                more: false
+  securitySchemes:
+    x-api-key:
+      name: x-api-key
+      type: apiKey
+      in: header
+      description: All API calls must send an API key in the "x-api-key" HTTP header. TrustRadius clients can get their key from their Client Success Manager.

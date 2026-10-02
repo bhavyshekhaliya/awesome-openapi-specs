@@ -1,0 +1,519 @@
+openapi: 3.2.0
+info:
+  version: '1.1'
+  title: TrustRadius Legacy API
+  description: TrustRadius API
+servers:
+- url: https://api.trustradius.com/v1
+tags:
+- name: Legacy
+paths:
+  /reports/visitor-insights/companies:
+    get:
+      operationId: visitor_insights_report
+      parameters:
+      - $ref: '#/components/parameters/filters_start-date'
+      - $ref: '#/components/parameters/filters_end-date'
+      - $ref: '#/components/parameters/ids_products-multiple'
+      - $ref: '#/components/parameters/listPaging_skip'
+      - $ref: '#/components/parameters/listPaging_limit'
+      - $ref: '#/components/parameters/format'
+      - $ref: '#/components/parameters/sort'
+      - in: query
+        name: group
+        description: 'defines time period to group on: day, week (starts on Sunday), month (starts on 1st of the month)'
+        schema:
+          type: string
+          enum:
+          - month
+          - day
+          default: day
+      responses:
+        '200':
+          description: A successful call returns an array of companies from which TrustRadius content related to the specified product(s) was viewed.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VisitorInsightsCompany'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      security:
+      - x-api-key: []
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/reports/visitor-insights/companies
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      description: Gets company firmographic information and aggregate visit counts for each identified company researching the requested product(s) on TrustRadius.
+      summary: Gets company information and aggregate visit counts
+      tags:
+      - Legacy
+  /reports/visitor-insights/pages:
+    get:
+      responses:
+        '200':
+          description: Each row represents a sum of visits and unique visitors to a page on TrustRadius relating to the product. Only visitors that were identified as originating from a participating company on TrustRadius will be returned from this API.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VisitorInsightsPages'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/reports/visitor-insights/pages
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      summary: Gets company information and page view detail
+      description: Gets company firmographic information and page view level detail (products compared, etc) for each identified company researching the requested product(s) on TrustRadius.
+      security:
+      - x-api-key: []
+      parameters:
+      - $ref: '#/components/parameters/filters_start-date'
+      - $ref: '#/components/parameters/filters_end-date'
+      - $ref: '#/components/parameters/listPaging_skip'
+      - $ref: '#/components/parameters/listPaging_limit'
+      - $ref: '#/components/parameters/ids_products-multiple'
+      - $ref: '#/components/parameters/format'
+      - $ref: '#/components/parameters/sort'
+      - in: query
+        name: group
+        description: 'defines time period to group on: day, week (starts on Sunday), month (starts on 1st of the month)'
+        schema:
+          type: string
+          enum:
+          - month
+          - day
+          default: day
+      - in: query
+        name: product-pages-only
+        description: If set to `true` the report only includes pages of the requested `products`. When `false` (or not set) the report includes all pages viewed by a visitor viewing at least one page of the requested `products`.
+        schema:
+          type: boolean
+      operationId: visitor_insights_report_pages_get
+      tags:
+      - Legacy
+  /accounts/{account_id}:
+    parameters:
+    - schema:
+        type: string
+      name: account_id
+      description: The unique identifier for the account being queries.
+      in: path
+      required: true
+    get:
+      operationId: account_details
+      responses:
+        '200':
+          description: A successful call returns company firmographic information about the specified account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDetail'
+        '400':
+          $ref: '#/components/responses/validation-error'
+        '404':
+          $ref: '#/components/responses/not-found'
+      security:
+      - x-api-key: []
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/accounts/{account_trid}
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+          integration.request.path.account_trid: method.request.path.account_trid
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      description: Gets company firmographic information, visitor counts and visit activity for each identified company researching the caller's product and categories on TrustRadius.
+      summary: Gets firmographic information , visitor counts and visit activity for each…
+      tags:
+      - Legacy
+components:
+  parameters:
+    filters_end-date:
+      name: end-date
+      in: query
+      description: For time-series data, this filters the results to include those occurring before or on the given date. Expected to be in ISO 8601 format.
+      schema:
+        type: string
+        format: date
+    filters_start-date:
+      name: start-date
+      in: query
+      description: For time-series data, this filters the results to include those occurring on or after the given date. Expected to be in ISO 8601 format.
+      schema:
+        type: string
+        format: date
+    listPaging_skip:
+      name: skip
+      in: query
+      description: The number of records to skip before returning records. This is most useful in combination with "limit" for paging through results.
+      schema:
+        type: integer
+        minimum: 0
+    sort:
+      in: query
+      name: sort
+      description: Specifies the data fields to sort by as a comma-separated list of fields. Field names can be preceded by a hyphen to indicate that they should be sorted in descending order of values.
+      schema:
+        type: string
+    ids_products-multiple:
+      name: products
+      in: query
+      description: Id of the product or products to get traffic data for in a comma-separated format (e.g., "products=id1,id2").
+      schema:
+        type: string
+    format:
+      name: format
+      in: query
+      description: Specifies the format of the results. Can be either "csv" or "json" (the default).
+      schema:
+        type: string
+        enum:
+        - csv
+        - json
+        default: json
+    listPaging_limit:
+      name: limit
+      in: query
+      description: The maximum number of records to return.
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    validation-error:
+      description: One or more input parameters failed validation.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - ValidationError
+                default: ValidationError
+                description: The name is always "ValidationError".
+              status:
+                type: number
+                enum:
+                - 400
+                default: 400
+                description: The HTTP status code is always 400.
+              message:
+                type: string
+                description: An error message. This may be a generic error message if parameter-specific errors are also included in the `errors` array.
+              errors:
+                type: array
+                description: This can be an array of message strings or an array of objects that contain a message, field name, and location.
+                items:
+                  oneOf:
+                  - type: string
+                    description: Any error message string.
+                  - type: object
+                    properties:
+                      param:
+                        type: string
+                        description: The name of the input parameter that is not valid.
+                      msg:
+                        type: string
+                        description: An error message specifically for this parameter.
+                      location:
+                        type: string
+                        enum:
+                        - body
+                        - query
+                        - param
+                        - header
+                        description: The input location (path parameter, body property, query parameter, or header value) where this parameter was received.
+    not-found:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                enum:
+                - NotFound
+                description: The name is always "NotFound".
+              status:
+                type: number
+                enum:
+                - 404
+                description: The HTTP status code is always 404.
+              message:
+                type: string
+  schemas:
+    AccountDetail:
+      title: AccountDetail
+      allOf:
+      - $ref: '#/components/schemas/Account'
+      - type: object
+        properties:
+          visitors:
+            type: array
+            items:
+              $ref: '#/components/schemas/Visitor'
+    Visitor:
+      title: Visitor
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        account_id:
+          type: string
+    VisitorInsightsPages:
+      title: Visitor Insights Pages
+      description: Similar to Visitor Insights Company model, but adds `num_visitors` and page-specific information.
+      type: object
+      properties:
+        companyName:
+          type: string
+        companyCategory:
+          description: Standard Industrial Classification name
+          type:
+          - string
+          - 'null'
+        companySicCode:
+          description: Standard Industrial Classification code
+          type:
+          - string
+          - 'null'
+        companySize:
+          description: A range of numbers of employees
+          type:
+          - string
+          - 'null'
+        companyCity:
+          type:
+          - string
+          - 'null'
+        companyRegion:
+          type:
+          - string
+          - 'null'
+        companyRegionCode:
+          type:
+          - string
+          - 'null'
+        companyCountry:
+          type:
+          - string
+          - 'null'
+        companyCountryCode:
+          minLength: 2
+          maxLength: 2
+          type:
+          - string
+          - 'null'
+        companyFacebook:
+          type:
+          - string
+          - 'null'
+        companyLinkedinId:
+          type:
+          - string
+          - 'null'
+        companyTwitter:
+          type:
+          - string
+          - 'null'
+        companyWebsite:
+          type:
+          - string
+          - 'null'
+        visits:
+          type: integer
+          minimum: 0
+          description: The number of visits from this company during the specified date range.
+        date:
+          type: string
+          format: date-time
+        visitors:
+          type: integer
+          minimum: 1
+        pageType:
+          type: string
+        pageTitle:
+          type: string
+        url:
+          type: string
+        product:
+          type: string
+        productId:
+          type: string
+        vendor:
+          type: string
+    VisitorInsightsCompany:
+      title: Visitor Insights Company
+      type: object
+      properties:
+        companyName:
+          type: string
+        companyCategory:
+          description: Standard Industrial Classification name
+          type:
+          - string
+          - 'null'
+        companySicCode:
+          description: Standard Industrial Classification code
+          type:
+          - string
+          - 'null'
+        companySize:
+          description: A range of numbers of employees
+          type:
+          - string
+          - 'null'
+        companyCity:
+          type:
+          - string
+          - 'null'
+        companyRegion:
+          type:
+          - string
+          - 'null'
+        companyRegionCode:
+          type:
+          - string
+          - 'null'
+        companyCountry:
+          type:
+          - string
+          - 'null'
+        companyCountryCode:
+          minLength: 2
+          maxLength: 2
+          type:
+          - string
+          - 'null'
+        companyFacebook:
+          type:
+          - string
+          - 'null'
+        companyLinkedinId:
+          type:
+          - string
+          - 'null'
+        companyTwitter:
+          type:
+          - string
+          - 'null'
+        companyWebsite:
+          type:
+          - string
+          - 'null'
+        visits:
+          type: integer
+          minimum: 0
+          description: The number of visits from this company during the specified date range.
+        date:
+          type: string
+          format: date-time
+        product:
+          type: string
+        productId:
+          type: string
+        vendor:
+          type: string
+    Account:
+      title: Account
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        company:
+          type: object
+          properties:
+            name:
+              type: string
+            domain:
+              type:
+              - string
+              - 'null'
+            industry:
+              description: Standard Industrial Classification name
+              type:
+              - string
+              - 'null'
+            sicCode:
+              description: Standard Industrial Classification code for major industry
+              type:
+              - string
+              - 'null'
+            companySize:
+              description: A range of numbers of employees
+              type:
+              - string
+              - 'null'
+            city:
+              type:
+              - string
+              - 'null'
+            state:
+              type:
+              - string
+              - 'null'
+            stateCode:
+              type:
+              - string
+              - 'null'
+            country:
+              type:
+              - string
+              - 'null'
+            countryCode:
+              minLength: 2
+              maxLength: 2
+              type:
+              - string
+              - 'null'
+            postalCode:
+              type:
+              - string
+              - 'null'
+            facebook:
+              type:
+              - string
+              - 'null'
+            linkedIn:
+              type:
+              - string
+              - 'null'
+            twitter:
+              type:
+              - string
+              - 'null'
+  securitySchemes:
+    x-api-key:
+      name: x-api-key
+      type: apiKey
+      in: header
+      description: All API calls must send an API key in the "x-api-key" HTTP header. TrustRadius clients can get their key from their Client Success Manager.
