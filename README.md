@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Omnisend | [API specification](https://dash.readme.com/api/v1/api-registry/b42jmls0kkny) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
 | Dub | [API specification](https://spec.speakeasy.com/dub/dub/dub-with-code-samples) | JSON | 3.0.3 | `official` `url-shortener` `link-management` |
 | EmailOctopus | [API specification](https://emailoctopus.com/api-documentation/v2) | JSON | 3.1.0 | `official` `email-marketing` |
 | Enginemailer | [Zapier API v1 specification](https://connect.enginemailer.com/swagger/Zapierv1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `transactional-email` |
