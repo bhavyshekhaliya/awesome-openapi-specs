@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -71,6 +71,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mailrith | [API specification](https://mailrith.com/openapi.json) | JSON | 3.1.0 | `email-marketing` |
 | AutoContent API | [API specification](https://api.autocontentapi.com/api-docs.json) | JSON | 3.0.0 | `content-marketing` |
 | BonusQR | [API specification](https://app.bonusqr.com/docs/api-docs.json?api-docs.json) | JSON | 3.0.0 | `loyalty` `marketing` |
+| Boomerangme | [Official OpenAPI specification](https://api.digitalwallet.cards/api/v2/docs/json) · [API documentation](https://docs.boomerangme.cards/api/api-docs) | JSON | 3.0.0 | `official` `loyalty` `marketing-automation` |
 | Blastable | [API specification](https://blastable.com/swagger.json) | JSON | 3.0.0 | `email-marketing` |
 | Maildroppa | [API specification](https://api.maildroppa.com/openapi) | JSON | 3.1.0 | `email-marketing` `experimental` |
 | Event Cadence | [API specification](https://event-cadence.github.io/cadence-webhook-api/swagger.yaml) | YAML | 3.0.1 | `event-management` |
