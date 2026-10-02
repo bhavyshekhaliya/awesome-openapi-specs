@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Enginemailer | [Zapier API v1 specification](https://connect.enginemailer.com/swagger/Zapierv1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `transactional-email` |
 | Postmark | [Server API](https://postmarkapp.com/swagger/server.yml) ? [Account API](https://postmarkapp.com/swagger/account.yml) | YAML | 2.0 | `official` `transactional-email` `email-delivery` |
 | Pulseem | [Direct Send API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `sms` |
 | TrekkSoft | [API specification](https://developer.trekksoft.com/js/swagger.yaml) | YAML | 3.0.0 | `official` `travel` `booking` `event-management` |
