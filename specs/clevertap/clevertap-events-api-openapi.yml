@@ -1,0 +1,132 @@
+openapi: 3.2.0
+info:
+  title: CleverTap REST Events API
+  description: 'CleverTap customer engagement and retention REST API.
+
+    The base URL is region-specific: replace {region} with your account''s
+
+    region code (e.g. in1, us1, eu1, sg1, sk1, mec1). All requests must
+
+    include X-CleverTap-Account-Id and X-CleverTap-Passcode headers.
+
+    Rate limits: concurrent requests capped at 15 per account; campaign
+
+    creation limited to 3 RPS.'
+  version: 1.0.0
+  contact:
+    name: CleverTap Developers
+    url: https://developer.clevertap.com/docs
+servers:
+- url: https://{region}.api.clevertap.com
+  description: CleverTap region-specific API
+  variables:
+    region:
+      default: in1
+      enum:
+      - in1
+      - us1
+      - eu1
+      - sg1
+      - sk1
+      - mec1
+      - aps3
+      description: CleverTap data-center region
+security:
+- AccountId: []
+  Passcode: []
+tags:
+- name: Events
+paths:
+  /1/upload:
+    post:
+      summary: Upload user profiles or events
+      description: 'Upload an array of records, each typed as "profile" or "event".
+
+        Maximum 1000 records per call.'
+      operationId: upload
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - d
+              properties:
+                d:
+                  type: array
+                  maxItems: 1000
+                  items:
+                    type: object
+                    required:
+                    - type
+                    properties:
+                      type:
+                        type: string
+                        enum:
+                        - profile
+                        - event
+                      identity:
+                        type: string
+                      FBID:
+                        type: string
+                      GPID:
+                        type: string
+                      objectId:
+                        type: string
+                      profileData:
+                        type: object
+                      evtName:
+                        type: string
+                      evtData:
+                        type: object
+                      ts:
+                        type: integer
+                        description: Unix epoch seconds
+      responses:
+        '200':
+          description: Upload accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  processed:
+                    type: integer
+                  unprocessed:
+                    type: array
+                    items:
+                      type: object
+        '429':
+          description: Concurrency / rate limit exceeded
+  /1/events.json:
+    post:
+      summary: Query events
+      operationId: queryEvents
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Events query result
+components:
+  securitySchemes:
+    AccountId:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Account-Id
+      description: CleverTap account identifier
+    Passcode:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Passcode
+      description: CleverTap account or user passcode
