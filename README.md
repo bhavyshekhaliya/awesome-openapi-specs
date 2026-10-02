@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -53,6 +53,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Facebook Conversions | [Community specification](specs/facebook-conversions/openapi.yml); [source docs](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/) | YAML | 3.1.0 | `community-maintained` `advertising` `conversion-tracking` |
 | SendGrid         | [Mail API specification](https://github.com/twilio/sendgrid-oai/blob/main/spec/json/tsg_mail_v3.json)              | JSON   | 3.1.0   | `official` `focused` `transactional-email` `open-source` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                         | YAML   | 3.0.2   | `official` `email-marketing`              |
+| Poptin | [Community specification](specs/poptin/openapi.yml); [source docs](https://developers.poptin.com/reference) | YAML | 3.1.0 | `community-maintained` `email-marketing` `lead-generation` |
 | Postmark | [Account API](https://postmarkapp.com/swagger/account.yml); [Server API](https://postmarkapp.com/swagger/server.yml) | YAML | 2.0 | `transactional-email` |
 | SendFox | [API specification](https://sendfox.com/openapi.yaml) | YAML | 3.0.3 | `email-marketing` |
 | SendPulse | [OpenAPI specification index](https://api.sendpulse.com/.well-known/openapi/index.yaml) | YAML | 3.1.0 | `email-marketing` `marketing-automation` |
