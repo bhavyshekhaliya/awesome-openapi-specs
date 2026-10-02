@@ -1,0 +1,73 @@
+openapi: 3.2.0
+info:
+  title: Kameleoon Automation Experiments API
+  description: REST API for programmatically managing Kameleoon experiments, personalizations, and related account resources. Authentication is performed with OAuth 2.0 (Client Credentials for internal use, Authorization Code for third-party integrations) and tokens are presented as Bearer credentials on subsequent API calls.
+  version: 1.0.0
+  termsOfService: https://www.kameleoon.com/en/legal-notice
+  contact:
+    name: Kameleoon Developers
+    url: https://developers.kameleoon.com/
+  license:
+    name: Proprietary
+    url: https://www.kameleoon.com/en/legal-notice
+servers:
+- url: https://api.kameleoon.com
+  description: Kameleoon API production endpoint
+tags:
+- name: Experiments
+  description: Manage Kameleoon experiments.
+paths:
+  /experiments:
+    get:
+      operationId: listExperiments
+      summary: List experiments
+      description: List Kameleoon experiments for the authenticated account.
+      tags:
+      - Experiments
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of experiments.
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      operationId: createExperiment
+      summary: Create an experiment
+      description: Create a new Kameleoon experiment.
+      tags:
+      - Experiments
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Created experiment.
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+      description: OAuth 2.0 access token obtained from /oauth/token, supplied as a Bearer token in the Authorization header.
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.kameleoon.com/oauth/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://api.kameleoon.com/oauth/authorize
+          tokenUrl: https://api.kameleoon.com/oauth/token
+          scopes: {}

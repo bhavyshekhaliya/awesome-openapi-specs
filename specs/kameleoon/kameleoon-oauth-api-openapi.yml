@@ -1,0 +1,110 @@
+openapi: 3.2.0
+info:
+  title: Kameleoon Automation OAuth API
+  description: REST API for programmatically managing Kameleoon experiments, personalizations, and related account resources. Authentication is performed with OAuth 2.0 (Client Credentials for internal use, Authorization Code for third-party integrations) and tokens are presented as Bearer credentials on subsequent API calls.
+  version: 1.0.0
+  termsOfService: https://www.kameleoon.com/en/legal-notice
+  contact:
+    name: Kameleoon Developers
+    url: https://developers.kameleoon.com/
+  license:
+    name: Proprietary
+    url: https://www.kameleoon.com/en/legal-notice
+servers:
+- url: https://api.kameleoon.com
+  description: Kameleoon API production endpoint
+tags:
+- name: OAuth
+  description: OAuth 2.0 authorization and token endpoints.
+paths:
+  /oauth/token:
+    post:
+      operationId: oauthToken
+      summary: Request an OAuth 2.0 access token
+      description: Exchange client credentials (or an authorization code) for an OAuth 2.0 access token. Client Credentials access tokens are valid for two hours.
+      tags:
+      - OAuth
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                  - client_credentials
+                  - authorization_code
+                  - refresh_token
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                code:
+                  type: string
+                redirect_uri:
+                  type: string
+                  format: uri
+                refresh_token:
+                  type: string
+              required:
+              - grant_type
+              - client_id
+      responses:
+        '200':
+          description: OAuth token payload.
+          content:
+            application/json:
+              schema:
+                type: object
+  /oauth/authorize:
+    get:
+      operationId: oauthAuthorize
+      summary: Request an OAuth 2.0 authorization code
+      description: Display the Kameleoon consent screen and request an authorization code.
+      tags:
+      - OAuth
+      parameters:
+      - name: client_id
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+      - name: response_type
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - code
+      - name: scope
+        in: query
+        schema:
+          type: string
+      responses:
+        '302':
+          description: Redirect to the configured redirect_uri carrying the authorization code.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+      description: OAuth 2.0 access token obtained from /oauth/token, supplied as a Bearer token in the Authorization header.
+    oauth2:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.kameleoon.com/oauth/token
+          scopes: {}
+        authorizationCode:
+          authorizationUrl: https://api.kameleoon.com/oauth/authorize
+          tokenUrl: https://api.kameleoon.com/oauth/token
+          scopes: {}

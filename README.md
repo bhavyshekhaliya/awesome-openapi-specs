@@ -180,6 +180,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
 | Iterable         | [API specification](https://api.iterable.com/api-docs)                                                           | JSON   | 2.0     | `official` `marketing-automation`         |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
+| Kameleoon | [Three Automation API specifications](specs/kameleoon/README.md); [official API reference](https://developers.kameleoon.com/apis/automation-api-rest/api-reference) | YAML | 3.2.0 | `community-maintained` `experimentation` `personalization` |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadConnector    | [API specifications](https://github.com/GoHighLevel/highlevel-api-docs/tree/main/apps) | JSON | 3.0.0 | `official` `crm` `marketing-automation` |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
