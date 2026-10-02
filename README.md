@@ -304,6 +304,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Security and Compliance
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| OOPSpam | [Community specification](specs/oopspam/openapi.yml) Â· [source docs](https://www.oopspam.com/docs/) | YAML | 3.1.0 | `community-maintained` `spam-prevention` `security` |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
 | ONYPHE | [Community specification](specs/onyphe/openapi.yml) Â· [source docs](https://search.onyphe.io/docs/general-apis/search) | YAML | 3.1.0 | `community-maintained` `threat-intelligence` `security` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
