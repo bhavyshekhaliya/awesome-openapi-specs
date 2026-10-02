@@ -51,6 +51,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
+| Campaign Monitor | [Community specification](specs/campaignmonitor/openapi.yml) · [source docs](https://www.campaignmonitor.com/api/) | YAML | 3.1.0 | `community-maintained` `email-marketing` `transactional-email` |
 | Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
 | GoTo Webinar     | [Community specification](specs/gotowebinar/openapi.yml) · [source docs](https://developer.goto.com/GoToWebinarV2) | YAML | 3.1.0 | `community-maintained` `webinars` `event-management` |
