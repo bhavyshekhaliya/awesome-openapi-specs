@@ -1,0 +1,302 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Transmissions API
+  description: Send transactional and marketing emails at scale using inline recipients or stored recipient lists. Supports templating, A/B testing, scheduled sending, and per-recipient substitution data.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/transmissions/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Transmissions
+paths:
+  /transmissions:
+    post:
+      operationId: createTransmission
+      summary: Create a Transmission
+      description: Send transactional or marketing emails. Supports inline content, stored templates, A/B tests, and RFC822 raw email format.
+      tags:
+      - Transmissions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransmissionRequest'
+      responses:
+        '200':
+          description: Transmission accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransmissionResponse'
+        '400':
+          description: Invalid domain or DKIM key errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Subresource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteTransmissionsByCampaign
+      summary: Delete Scheduled Transmissions by Campaign
+      description: Bulk delete scheduled transmissions by campaign ID. Deletion happens asynchronously.
+      tags:
+      - Transmissions
+      parameters:
+      - name: campaign_id
+        in: query
+        required: true
+        description: Campaign identifier to filter transmissions for deletion
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Deletion accepted (asynchronous)
+  /transmissions/{id}:
+    get:
+      operationId: getTransmission
+      summary: Retrieve a Scheduled Transmission
+      description: Retrieve details about a scheduled transmission by its ID. (Deprecated)
+      deprecated: true
+      tags:
+      - Transmissions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Transmission ID
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Transmission details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransmissionDetails'
+        '404':
+          description: Transmission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteTransmission
+      summary: Delete a Scheduled Transmission
+      description: Remove an individual scheduled transmission. (Deprecated)
+      deprecated: true
+      tags:
+      - Transmissions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Transmission ID
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: Transmission deleted
+        '404':
+          description: Transmission not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Too close to generation time or invalid state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    Recipient:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          oneOf:
+          - type: string
+            description: Recipient email address
+          - type: object
+            properties:
+              email:
+                type: string
+              name:
+                type: string
+              header_to:
+                type: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags for recipient grouping
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Per-recipient metadata
+        substitution_data:
+          type: object
+          additionalProperties: true
+          description: Per-recipient substitution data for templates
+    TransmissionRequest:
+      type: object
+      properties:
+        options:
+          type: object
+          description: Transmission-level settings
+          properties:
+            start_time:
+              type: string
+              format: date-time
+              description: Schedule transmission for future delivery (max 3 days ahead)
+            open_tracking:
+              type: boolean
+              description: Enable open tracking
+            click_tracking:
+              type: boolean
+              description: Enable click tracking
+            transactional:
+              type: boolean
+              description: Classify as transactional (bypasses suppression list for non_transactional)
+            sandbox:
+              type: boolean
+              description: Use sandbox mode for testing
+            skip_suppression:
+              type: boolean
+              description: Skip suppression list check
+            ip_pool:
+              type: string
+              description: IP pool to use for sending
+            inline_css:
+              type: boolean
+              description: Inline CSS before sending
+            perform_substitutions:
+              type: boolean
+              description: Perform substitution data replacement
+            dkim_key:
+              type: string
+              description: DKIM key to use for signing
+        recipients:
+          oneOf:
+          - type: array
+            items:
+              $ref: '#/components/schemas/Recipient'
+          - type: object
+            properties:
+              list_id:
+                type: string
+                description: ID of stored recipient list
+        content:
+          type: object
+          description: Email content (inline, template, A/B test, or RFC822)
+          properties:
+            html:
+              type: string
+              description: HTML body
+            text:
+              type: string
+              description: Plain text body
+            subject:
+              type: string
+              description: Email subject line
+            from:
+              type: string
+              description: Sender address
+            reply_to:
+              type: string
+              description: Reply-to address
+            headers:
+              type: object
+              additionalProperties:
+                type: string
+              description: Custom email headers
+            template_id:
+              type: string
+              description: ID of stored template
+            ab_test_id:
+              type: string
+              description: ID of A/B test
+            email_rfc822:
+              type: string
+              description: Raw RFC822 email content
+        campaign_id:
+          type: string
+          description: Campaign name for grouping transmissions
+        description:
+          type: string
+          description: Human-readable description of the transmission
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Transmission-level metadata passed to webhooks
+        substitution_data:
+          type: object
+          additionalProperties: true
+          description: Template substitution data for all recipients
+        return_path:
+          type: string
+          description: Envelope FROM address for bounce handling
+    TransmissionDetails:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            id:
+              type: string
+            state:
+              type: string
+            num_recipients:
+              type: integer
+            campaign_id:
+              type: string
+    TransmissionResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            total_rejected_recipients:
+              type: integer
+            total_accepted_recipients:
+              type: integer
+            id:
+              type: string
+              description: Transmission ID
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

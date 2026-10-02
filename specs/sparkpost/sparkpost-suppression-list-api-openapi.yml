@@ -1,0 +1,392 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Suppression List API
+  description: Manage the suppression list to prevent sending to unsubscribed, bounced, or complained recipients. Supports bulk insert, search, and deletion of suppressed addresses.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/suppression-list/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Suppression List
+paths:
+  /suppression-list:
+    put:
+      operationId: bulkUpsertSuppressions
+      summary: Bulk Create or Update Suppressions
+      description: Insert or update up to 10,000 suppression entries in a single request.
+      tags:
+      - Suppression List
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: array
+                  maxItems: 10000
+                  description: List of suppression entries to create or update
+                  items:
+                    $ref: '#/components/schemas/SuppressionEntry'
+      responses:
+        '200':
+          description: Suppressions upserted
+        '400':
+          description: Invalid or malformed recipients
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: searchSuppressions
+      summary: Search Suppressions
+      description: Search the suppression list with optional filters for date range, domain, source, and type.
+      tags:
+      - Suppression List
+      parameters:
+      - name: to
+        in: query
+        required: false
+        description: Filter suppressions created before this date (YYYY-MM-DDTHH:mm:ssZ)
+        schema:
+          type: string
+          format: date-time
+      - name: from
+        in: query
+        required: false
+        description: Filter suppressions created after this date (YYYY-MM-DDTHH:mm:ssZ)
+        schema:
+          type: string
+          format: date-time
+      - name: domain
+        in: query
+        required: false
+        description: Filter by recipient email domain
+        schema:
+          type: string
+      - name: sources
+        in: query
+        required: false
+        description: Filter by suppression sources
+        schema:
+          type: string
+      - name: types
+        in: query
+        required: false
+        description: Filter by suppression type (transactional or non_transactional)
+        schema:
+          type: string
+      - name: description
+        in: query
+        required: false
+        description: Filter by description (partial match)
+        schema:
+          type: string
+      - name: description_strict
+        in: query
+        required: false
+        description: If true, use exact description match
+        schema:
+          type: boolean
+      - name: list_id
+        in: query
+        required: false
+        description: Filter by list ID
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        required: false
+        description: Pagination cursor
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        description: Results per page (default 1000)
+        schema:
+          type: integer
+          default: 1000
+      - name: page
+        in: query
+        required: false
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: sort
+        in: query
+        required: false
+        description: Sort order
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: List of suppression entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuppressionListResponse'
+  /suppression-list/summary:
+    get:
+      operationId: getSuppressionSummary
+      summary: Retrieve Suppression Summary
+      description: Retrieve suppression counts grouped by source and overall total.
+      tags:
+      - Suppression List
+      responses:
+        '200':
+          description: Suppression counts summary
+  /suppression-list/{recipient}:
+    put:
+      operationId: upsertSuppression
+      summary: Create or Update Single Suppression
+      description: Insert or update a suppression entry for a specific recipient email address.
+      tags:
+      - Suppression List
+      parameters:
+      - name: recipient
+        in: path
+        required: true
+        description: Recipient email address
+        schema:
+          type: string
+          format: email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleSuppressionRequest'
+      responses:
+        '200':
+          description: Suppression upserted
+        '400':
+          description: Missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: getSuppression
+      summary: Retrieve Single Suppression
+      description: Retrieve suppression status for a specific recipient email address.
+      tags:
+      - Suppression List
+      parameters:
+      - name: recipient
+        in: path
+        required: true
+        description: Recipient email address
+        schema:
+          type: string
+          format: email
+      - name: types
+        in: query
+        required: false
+        description: Filter by suppression type
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        required: false
+        description: Pagination cursor
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        description: Results per page (1-10,000, default 1000)
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        description: Page number
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Suppression entry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuppressionResponse'
+        '404':
+          description: Recipient not found in suppression list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteSuppression
+      summary: Delete Suppression
+      description: Remove a suppression entry for a specific recipient.
+      tags:
+      - Suppression List
+      parameters:
+      - name: recipient
+        in: path
+        required: true
+        description: Recipient email address
+        schema:
+          type: string
+          format: email
+      - name: list_id
+        in: query
+        required: false
+        description: Filter by list ID
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum:
+                  - transactional
+                  - non_transactional
+                  description: Suppression type to remove
+      responses:
+        '204':
+          description: Suppression deleted
+        '403':
+          description: Compliance-protected suppression cannot be deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Recipient not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    SingleSuppressionRequest:
+      type: object
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - transactional
+          - non_transactional
+          description: Type of suppression
+        description:
+          type: string
+          description: Human-readable reason for suppression
+        list_id:
+          type: string
+          description: RFC 2919 compliant list identifier
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    SuppressionListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              recipient:
+                type: string
+              type:
+                type: string
+              source:
+                type: string
+              description:
+                type: string
+              created:
+                type: string
+                format: date-time
+              updated:
+                type: string
+                format: date-time
+        total_count:
+          type: integer
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+    SuppressionResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              recipient:
+                type: string
+              type:
+                type: string
+              source:
+                type: string
+              description:
+                type: string
+              created:
+                type: string
+                format: date-time
+              updated:
+                type: string
+                format: date-time
+    SuppressionEntry:
+      type: object
+      required:
+      - recipient
+      - type
+      properties:
+        recipient:
+          type: string
+          format: email
+          description: Recipient email address
+        type:
+          type: string
+          enum:
+          - transactional
+          - non_transactional
+          description: Type of suppression
+        description:
+          type: string
+          description: Human-readable reason for suppression
+        list_id:
+          type: string
+          description: RFC 2919 compliant list identifier
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

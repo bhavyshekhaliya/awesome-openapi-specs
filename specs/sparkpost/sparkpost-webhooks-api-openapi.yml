@@ -1,0 +1,357 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Webhooks API
+  description: Configure real-time HTTP push notifications for email events (deliveries, bounces, opens, clicks, spam complaints). Supports batched event payloads and retry logic.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/webhooks/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Webhooks
+paths:
+  /webhooks:
+    post:
+      operationId: createWebhook
+      summary: Create a Webhook
+      description: Create a new webhook to receive real-time event notifications via HTTP POST.
+      tags:
+      - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRequest'
+      responses:
+        '200':
+          description: Webhook created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: listWebhooks
+      summary: List All Webhooks
+      description: Retrieve a list of all configured webhooks.
+      tags:
+      - Webhooks
+      parameters:
+      - name: timezone
+        in: query
+        required: false
+        description: Timezone for date fields (default UTC)
+        schema:
+          type: string
+          default: UTC
+      responses:
+        '200':
+          description: List of webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WebhookDetails'
+  /webhooks/{id}:
+    get:
+      operationId: getWebhook
+      summary: Retrieve a Webhook
+      description: Retrieve details about a specific webhook.
+      tags:
+      - Webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Webhook ID
+        schema:
+          type: string
+      - name: timezone
+        in: query
+        required: false
+        description: Timezone for date fields (default UTC)
+        schema:
+          type: string
+          default: UTC
+      responses:
+        '200':
+          description: Webhook details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookResponse'
+    put:
+      operationId: updateWebhook
+      summary: Update a Webhook
+      description: Update configuration for an existing webhook.
+      tags:
+      - Webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Webhook ID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookUpdateRequest'
+      responses:
+        '200':
+          description: Webhook updated
+    delete:
+      operationId: deleteWebhook
+      summary: Delete a Webhook
+      description: Remove a webhook configuration.
+      tags:
+      - Webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Webhook ID
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Webhook deleted
+  /webhooks/{id}/validate:
+    post:
+      operationId: validateWebhook
+      summary: Validate a Webhook
+      description: Send a test event batch to the webhook target to validate connectivity.
+      tags:
+      - Webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Webhook ID
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: array
+              description: Sample event batch to send
+              items:
+                type: object
+      responses:
+        '200':
+          description: Validation result
+  /webhooks/{id}/batch-status:
+    get:
+      operationId: getWebhookBatchStatus
+      summary: Retrieve Batch Status Information
+      description: Retrieve delivery status information for recent event batches sent to this webhook.
+      tags:
+      - Webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Webhook ID
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: Maximum number of batch status records to return (default 1000)
+        schema:
+          type: integer
+          default: 1000
+      responses:
+        '200':
+          description: Batch status records
+  /webhooks/events/documentation:
+    get:
+      operationId: getWebhookEventsDocumentation
+      summary: Events Documentation
+      description: Retrieve documentation for all event types available for webhook delivery.
+      tags:
+      - Webhooks
+      responses:
+        '200':
+          description: Event type documentation
+  /webhooks/events/samples:
+    get:
+      operationId: getWebhookEventSamples
+      summary: Event Samples
+      description: Retrieve sample payloads for specific event types.
+      tags:
+      - Webhooks
+      parameters:
+      - name: events
+        in: query
+        required: false
+        description: Comma-delimited list of event types
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Sample event payloads
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    WebhookRequest:
+      type: object
+      required:
+      - name
+      - target
+      - events
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the webhook
+        target:
+          type: string
+          format: uri
+          description: HTTP or HTTPS URL to receive webhook POST events
+        events:
+          type: array
+          items:
+            type: string
+          description: List of event types to subscribe to
+        active:
+          type: boolean
+          default: true
+          description: Whether the webhook is active
+        custom_headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Custom HTTP headers to include in webhook requests
+        exception_subaccounts:
+          type: array
+          items:
+            type: integer
+          description: Subaccount IDs to exclude from this webhook
+        auth_type:
+          type: string
+          enum:
+          - none
+          - basic
+          - oauth2
+          default: none
+          description: Authentication type for webhook requests
+        auth_request_details:
+          type: object
+          description: OAuth 2.0 configuration (required if auth_type=oauth2)
+          properties:
+            url:
+              type: string
+              format: uri
+            body:
+              type: object
+        auth_credentials:
+          type: object
+          description: Credentials for basic auth (required if auth_type=basic)
+          properties:
+            username:
+              type: string
+            password:
+              type: string
+    WebhookResponse:
+      type: object
+      properties:
+        results:
+          $ref: '#/components/schemas/WebhookDetails'
+    WebhookUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        target:
+          type: string
+          format: uri
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        custom_headers:
+          type: object
+          additionalProperties:
+            type: string
+        exception_subaccounts:
+          type: array
+          items:
+            type: integer
+        subaccount_id:
+          type: integer
+        auth_type:
+          type: string
+          enum:
+          - none
+          - basic
+          - oauth2
+        auth_request_details:
+          type: object
+        auth_credentials:
+          type: object
+    WebhookDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        target:
+          type: string
+        events:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        auth_type:
+          type: string
+        custom_headers:
+          type: object
+        last_successful:
+          type: string
+          format: date-time
+        last_failure:
+          type: string
+          format: date-time
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
