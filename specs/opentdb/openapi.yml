@@ -1,0 +1,153 @@
+openapi: 3.1.0
+info:
+  title: Open Trivia Database API
+  version: 1.0.0
+  description: |-
+    Community-maintained description of the public Open Trivia Database API.
+    The provider says the JSON API is free and requires no API key. It limits
+    each IP address to one request every five seconds and allows at most 50
+    questions per request. The provider documents response-code meanings but
+    does not publish response property schemas, so response objects are left
+    open rather than guessing fields. Question data is licensed CC BY-SA 4.0.
+externalDocs:
+  description: Official Open Trivia Database API documentation
+  url: https://opentdb.com/api_config.php
+servers:
+  - url: https://opentdb.com
+    description: Open Trivia Database
+security: []
+tags:
+  - name: Questions
+  - name: Categories
+  - name: Counts
+  - name: Session tokens
+paths:
+  /api.php:
+    get:
+      operationId: getQuestions
+      summary: Retrieve trivia questions
+      description: |-
+        Only one category can be requested per call. Omit category to retrieve
+        questions from any category. The provider documents response codes for
+        success, insufficient results, invalid parameters, missing or exhausted
+        tokens, and rate limiting.
+      tags: [Questions]
+      parameters:
+        - name: amount
+          in: query
+          required: true
+          description: Number of questions to retrieve; maximum 50.
+          schema:
+            type: integer
+            maximum: 50
+          example: 10
+        - name: category
+          in: query
+          description: Category ID. Only one category may be selected per call.
+          schema:
+            type: integer
+        - name: difficulty
+          in: query
+          description: Question difficulty.
+          schema:
+            type: string
+            enum: [easy, medium, hard]
+        - name: type
+          in: query
+          description: Question type.
+          schema:
+            type: string
+            enum: [multiple, boolean]
+        - name: encode
+          in: query
+          description: Response encoding. If omitted, the API uses its default HTML-code encoding.
+          schema:
+            type: string
+            enum: [urlLegacy, url3986, base64]
+        - name: token
+          in: query
+          description: Session token used to avoid returning previously retrieved questions. Tokens expire after six hours of inactivity.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JSON result or documented response-code outcome.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+  /api_category.php:
+    get:
+      operationId: listCategories
+      summary: List trivia categories
+      tags: [Categories]
+      responses:
+        '200':
+          description: JSON category list with category names and IDs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+  /api_count.php:
+    get:
+      operationId: getCategoryQuestionCount
+      summary: Get a category's question count
+      tags: [Counts]
+      parameters:
+        - name: category
+          in: query
+          required: true
+          description: Category ID.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: JSON question count for the category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+  /api_count_global.php:
+    get:
+      operationId: getGlobalQuestionCounts
+      summary: Get global question counts
+      tags: [Counts]
+      responses:
+        '200':
+          description: JSON counts for total, pending, verified, and rejected questions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+  /api_token.php:
+    get:
+      operationId: manageSessionToken
+      summary: Request or reset a session token
+      description: Resetting a token clears its question history. A token is deleted after six hours of inactivity.
+      tags: [Session tokens]
+      parameters:
+        - name: command
+          in: query
+          required: true
+          description: Request a new token or reset an existing token.
+          schema:
+            type: string
+            enum: [request, reset]
+        - name: token
+          in: query
+          description: Required when command is reset.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: JSON token operation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+components:
+  schemas:
+    JsonResponse:
+      type: object
+      description: The provider documents response behavior but not the JSON property schema.
+      additionalProperties: true
