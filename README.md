@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| GetResponse      | [API v3 specification](https://apireference.getresponse.com/open-api.json) | JSON   | 3.0.0   | `official` `marketing-automation` `email-marketing` |
 | Attentive        | [API v2 specification](https://docs.attentive.com/openapi/attentive-api-bundled-v2.yaml) | JSON   | 3.0.3   | `official` `sms-marketing` `marketing-automation` |
 | Twilio Segment  | [Official OpenAPI spec snapshot](specs/twilio-segment/openapi.json); [source docs](https://docs.segmentapis.com/) | JSON   | 73.5.0   | `official` `marketing-automation` `customer-data-platform` |
 | Mailtrap         | [API specifications](https://github.com/mailtrap/mailtrap-openapi/tree/main/specs)                                  | YAML   | 3.1.0   | `official` `email-marketing` `transactional-email` |
