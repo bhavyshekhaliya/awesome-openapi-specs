@@ -91,6 +91,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Oracle Eloqua | [API specification](https://docs.oracle.com/en/cloud/saas/marketing/eloqua-rest-api/swagger.json) | JSON | 2.0 | `marketing-automation` `enterprise` |
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Eventleaf | [API specification](https://api.eventleaf.com/swagger/docs/v1) | JSON | 2.0 | `event-management` |
+| Humanitix | [OpenAPI specification](https://api.humanitix.com/v1/documentation/json); [official API documentation](https://help.humanitix.com/en/articles/8888275-public-api-documentation) | JSON | 3.0.0 | `event-management` `ticketing` |
 | GetResponse | [API specification](https://apireference.getresponse.com/open-api.json) | JSON | 3.0.0 | `email-marketing` |
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
