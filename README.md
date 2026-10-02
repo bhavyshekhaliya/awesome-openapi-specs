@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Maildroppa | [API specification](https://api.maildroppa.com/openapi) | JSON | 3.1.0 | `email-marketing` `experimental` |
 | Event Cadence | [API specification](https://event-cadence.github.io/cadence-webhook-api/swagger.yaml) | YAML | 3.0.1 | `event-management` |
 | Cinari | [API specification](https://app.cinari.ai/docs/openapi.json) | JSON | 3.0.3 | `marketing-automation` |
 | GoodAPI | [API specification](https://app.thegoodapi.com/openapi.json) | JSON | 3.1.0 | `sustainability` |
