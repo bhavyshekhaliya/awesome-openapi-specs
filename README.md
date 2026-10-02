@@ -174,6 +174,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
 | Discord  | [API specification](https://github.com/discord/discord-api-spec)      | JSON       | 3.1     | `official` `platform` `messaging` `community` `public-preview` |
 | Knock    | [API specification](https://api.knock.app/v1/openapi)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
+| MailChannels | [Email API specification](https://docs.mailchannels.com/email-api/api-reference/openapi.yaml) | YAML | 3.0.0 | `official` `email-delivery` `transactional-email` |
 | Mailgun  | [API specification](https://documentation.mailgun.com/_spec/docs/mailgun/api-reference/send/mailgun.json?download=) | JSON | 3.1 | `official` `focused` `transactional-email` `delivery` `analytics` |
 | Novu     | [API specification](https://api.novu.co/openapi.json)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
 | Slack    | [Web API specifications](https://github.com/slackapi/slack-api-specs) | JSON, YAML | 2.0     | `official` `collaboration` `open-source` |
