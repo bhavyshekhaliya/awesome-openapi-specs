@@ -200,6 +200,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | OpenWeather | [Community specification](specs/openweather/openapi.yml); [source docs](https://openweathermap.org/api/one-call-4) | YAML | 3.1.0 | `community-maintained` `weather` `forecast` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | Qdrant      | [REST API specification](https://github.com/qdrant/qdrant/tree/master/docs/redoc)      | YAML       | 3.0     | `official` `open-source` `vector-database` |
+| SEOmatic | [API specification](https://app.seomatic.ai/api/v1/openapi.json) | JSON | 3.1.0 | `official` `seo` `analytics` |
 | Typesense   | [Specification repository](https://github.com/typesense/typesense-api-spec)            | YAML       | 3.0     | `official` `open-source` `search`          |
 | Turso       | [Platform API specification](https://raw.githubusercontent.com/tursodatabase/turso/main/bindings/dotnet/src/Turso.Platform.Client/openapi.json) | JSON | 3.0.1 | `official` `database` `platform` |
 | Weaviate    | [REST API specification](https://github.com/weaviate/weaviate/tree/main/openapi-specs) | YAML       | 3.0     | `official` `open-source` `vector-database` |
