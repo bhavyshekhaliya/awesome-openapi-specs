@@ -1,0 +1,398 @@
+openapi: 3.1.0
+info:
+  title: NCEI Climate Data Online API
+  version: '2'
+  description: >-
+    Community-maintained specification for the documented Climate Data Online
+    web services API v2. Response records are left extensible because the
+    provider documentation does not define fixed schemas for every resource
+    and dataset.
+  externalDocs:
+    description: Official NCEI Climate Data Online web services documentation
+    url: https://www.ncei.noaa.gov/cdo-web/webservices/v2
+servers:
+  - url: https://www.ncei.noaa.gov/cdo-web/api/v2
+    description: NCEI Climate Data Online API v2
+security:
+  - tokenAuth: []
+paths:
+  /datasets:
+    get:
+      operationId: listDatasets
+      summary: List datasets
+      parameters:
+        - $ref: '#/components/parameters/datatypeid'
+        - $ref: '#/components/parameters/locationid'
+        - $ref: '#/components/parameters/stationid'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /datasets/{id}:
+    get:
+      operationId: getDataset
+      summary: Get a dataset by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /datacategories:
+    get:
+      operationId: listDataCategories
+      summary: List data categories
+      parameters:
+        - $ref: '#/components/parameters/datasetid'
+        - $ref: '#/components/parameters/locationid'
+        - $ref: '#/components/parameters/stationid'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /datacategories/{id}:
+    get:
+      operationId: getDataCategory
+      summary: Get a data category by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /datatypes:
+    get:
+      operationId: listDataTypes
+      summary: List data types
+      parameters:
+        - $ref: '#/components/parameters/datasetid'
+        - $ref: '#/components/parameters/locationid'
+        - $ref: '#/components/parameters/stationid'
+        - $ref: '#/components/parameters/datacategoryid'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /datatypes/{id}:
+    get:
+      operationId: getDataType
+      summary: Get a data type by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /locationcategories:
+    get:
+      operationId: listLocationCategories
+      summary: List location categories
+      parameters:
+        - $ref: '#/components/parameters/datasetid'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /locationcategories/{id}:
+    get:
+      operationId: getLocationCategory
+      summary: Get a location category by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /locations:
+    get:
+      operationId: listLocations
+      summary: List locations
+      parameters:
+        - $ref: '#/components/parameters/datasetid'
+        - $ref: '#/components/parameters/locationcategoryid'
+        - $ref: '#/components/parameters/datacategoryid'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /locations/{id}:
+    get:
+      operationId: getLocation
+      summary: Get a location by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /stations:
+    get:
+      operationId: listStations
+      summary: List stations
+      parameters:
+        - $ref: '#/components/parameters/datasetid'
+        - $ref: '#/components/parameters/locationid'
+        - $ref: '#/components/parameters/datacategoryid'
+        - $ref: '#/components/parameters/datatypeid'
+        - $ref: '#/components/parameters/extent'
+        - $ref: '#/components/parameters/startdate'
+        - $ref: '#/components/parameters/enddate'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+  /stations/{id}:
+    get:
+      operationId: getStation
+      summary: Get a station by ID
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          $ref: '#/components/responses/Item'
+  /data:
+    get:
+      operationId: listData
+      summary: Fetch data records
+      description: >-
+        A single dataset ID and both date bounds are required. The documented
+        maximum date range is ten years for annual and monthly datasets and one
+        year for other datasets.
+      parameters:
+        - $ref: '#/components/parameters/dataDatasetid'
+        - $ref: '#/components/parameters/datatypeid'
+        - $ref: '#/components/parameters/locationid'
+        - $ref: '#/components/parameters/stationid'
+        - $ref: '#/components/parameters/dataStartdate'
+        - $ref: '#/components/parameters/dataEnddate'
+        - $ref: '#/components/parameters/units'
+        - $ref: '#/components/parameters/sortfield'
+        - $ref: '#/components/parameters/sortorder'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/includemetadata'
+      responses:
+        '200':
+          $ref: '#/components/responses/Collection'
+components:
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: token
+      description: Obtain an access token by email through the [CDO token request page](https://www.ncei.noaa.gov/cdo-web/token).
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      description: Dataset, category, type, location, or station identifier.
+      schema:
+        type: string
+    datasetid:
+      name: datasetid
+      in: query
+      description: Filter by one or more dataset IDs; the API accepts repeated values or a comma-separated list.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    dataDatasetid:
+      name: datasetid
+      in: query
+      required: true
+      description: A single dataset ID; exactly one is required.
+      schema:
+        type: string
+    datatypeid:
+      name: datatypeid
+      in: query
+      description: Filter by one or more data type IDs; the API accepts repeated values or a comma-separated list.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    locationid:
+      name: locationid
+      in: query
+      description: Filter by one or more location IDs; the API accepts repeated values or a comma-separated list.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    stationid:
+      name: stationid
+      in: query
+      description: Filter by one or more station IDs; the API accepts repeated values or a comma-separated list.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    datacategoryid:
+      name: datacategoryid
+      in: query
+      description: Filter by one or more data category IDs; the API accepts repeated values or a comma-separated list.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    locationcategoryid:
+      name: locationcategoryid
+      in: query
+      description: Filter by one or more location category IDs.
+      schema:
+        type: array
+        items:
+          type: string
+      style: form
+      explode: true
+    startdate:
+      name: startdate
+      in: query
+      description: Filter records with data after this ISO 8601 date.
+      schema:
+        type: string
+        format: date
+    enddate:
+      name: enddate
+      in: query
+      description: Filter records with data before this ISO 8601 date.
+      schema:
+        type: string
+        format: date
+    dataStartdate:
+      name: startdate
+      in: query
+      required: true
+      description: Required start date as YYYY-MM-DD or an ISO 8601 date-time.
+      schema:
+        type: string
+    dataEnddate:
+      name: enddate
+      in: query
+      required: true
+      description: Required end date as YYYY-MM-DD or an ISO 8601 date-time.
+      schema:
+        type: string
+    sortfield:
+      name: sortfield
+      in: query
+      description: Field used to sort results.
+      schema:
+        type: string
+        enum: [id, name, mindate, maxdate, datacoverage]
+    sortorder:
+      name: sortorder
+      in: query
+      description: Sort direction; defaults to ascending.
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of results; defaults to 25 and cannot exceed 1000.
+      schema:
+        type: integer
+        maximum: 1000
+        default: 25
+    offset:
+      name: offset
+      in: query
+      description: Zero-based result offset; defaults to 0.
+      schema:
+        type: integer
+        default: 0
+    extent:
+      name: extent
+      in: query
+      description: Comma-separated geographic bounds as north,west,south,east.
+      schema:
+        type: string
+    units:
+      name: units
+      in: query
+      description: Convert supported data values to the requested units.
+      schema:
+        type: string
+        enum: [standard, metric]
+    includemetadata:
+      name: includemetadata
+      in: query
+      description: Include calculated result metadata; defaults to true.
+      schema:
+        oneOf:
+          - type: boolean
+          - type: integer
+            enum: [0, 1]
+        default: true
+  responses:
+    Collection:
+      description: A paginated collection of JSON records.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Collection'
+    Item:
+      description: A single JSON record.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Record'
+  schemas:
+    Record:
+      type: object
+      additionalProperties: true
+    Collection:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Record'
+        metadata:
+          type: object
+          properties:
+            resultset:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                count:
+                  type: integer
+                offset:
+                  type: integer
