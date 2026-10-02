@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="205 specifications" src="https://img.shields.io/badge/specifications-205-13795b">
+  <img alt="227 specifications" src="https://img.shields.io/badge/specifications-227-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -60,6 +60,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
+| OpenPageRank | [Official OpenAPI specification](https://openpagerank.keywordseverywhere.com/v1/openapi.json) · [API docs](https://openpagerank.keywordseverywhere.com/docs) · [free plan](https://openpagerank.keywordseverywhere.com/pricing) | JSON | 3.0.3 | `official` `seo` `page-rank` `free-tier` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
@@ -118,9 +119,11 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | ------------ | ----------------------------------------------------------------------------- | ---------- | ------- | ----------------------------- |
 | AssemblyAI   | [API specification](https://www.assemblyai.com/docs/openapi.json)             | JSON       | 3.1     | `official` `speech-ai`        |
 | Browserbase  | [API specification](https://docs.browserbase.com/reference/api/openapi.v1.yaml) | YAML     | 3.0.0   | `official` `ai` `browser-automation` `web-research` |
+| Braintrust | [API specification](https://raw.githubusercontent.com/braintrustdata/braintrust-openapi/main/openapi/spec.json); [API reference](https://www.braintrust.dev/docs/api-reference) | JSON | 3.0.3 | `official` `ai` `observability` `evaluation` |
 | Cohere       | [API specification](https://github.com/cohere-ai/cohere-developer-experience) | YAML       | 3.1     | `official` `ai`               |
 | Composio     | [Platform API specification](https://backend.composio.dev/api/v3/openapi.json) | JSON       | 3.0     | `official` `agent-tools`      |
 | Deepgram     | [API specification](https://raw.githubusercontent.com/deepgram/deepgram-api-specs/main/openapi.yml) | YAML       | 3.1     | `official` `focused` `speech-ai` `transcription` `audio` |
+| E2B | [API specification](https://raw.githubusercontent.com/e2b-dev/E2B/main/spec/openapi.yml); [API reference](https://e2b.dev/docs/api-reference) | YAML | 3.0.0 | `official` `open-source` `ai` `sandbox` `code-execution` |
 | ElevenLabs   | [API specification](https://api.elevenlabs.io/openapi.json)                   | JSON       | 3.1     | `official` `voice-ai`         |
 | Exa          | [Public API specification](https://api.exa.ai/openapi.json)                   | JSON       | 3.1     | `official` `ai-search`        |
 | Firecrawl    | [v2 API specification](https://raw.githubusercontent.com/firecrawl/firecrawl-docs/main/v1/api-reference/v2-openapi.json) | JSON | 3.0.0 | `official` `web-data` `scraping` `ai` |
@@ -141,6 +144,9 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Adyen    | [API specifications](https://github.com/Adyen/adyen-openapi)                        | JSON       | 3.1     | `official` `payments`               |
 | Dodo Payments | [OpenAPI specification](https://raw.githubusercontent.com/dodopayments/dodo-docs/main/openapi/openapi.documented.yml) | YAML | 3.1.0 | `official` `payments` `merchant-of-record` `subscriptions` |
 | Mollie   | [API specification](https://github.com/mollie/openapi)                              | YAML       | 3.0     | `official` `payments` `open-source` |
+| Open Payments | [Community specification](specs/openpayments/openapi.yml) · [source docs](https://docs.openpayments.io/docs/quickstart_pis) | YAML | 3.0.3 | `community-maintained` `focused` `payments` `open-banking` |
+| Openpay Mexico | [Community specification](specs/openpay-mexico/openapi.yml) · [official API docs](https://documents.openpay.mx/docs/api/index.html) | YAML | 3.1.0 | `community-maintained` `focused` `payments` `fintech` |
+| OpenPayd | [Community specification](specs/openpayd/openapi.yml) · [source docs](https://apidocs.openpayd.com/) | YAML | 3.1.0 | `community-maintained` `focused` `payments` `banking` |
 | Paddle   | [API specification](https://raw.githubusercontent.com/PaddleHQ/paddle-openapi/main/v1/openapi.yaml) | YAML | 3.1.0 | `official` `billing` `subscriptions` `merchant-of-record` |
 | Paystack | [API specification](https://raw.githubusercontent.com/PaystackOSS/openapi/main/dist/paystack.yaml) | YAML       | 3.0.1   | `official` `focused` `payments` `checkout` `fintech` |
 | PayPal   | [REST API specifications](https://github.com/paypal/paypal-rest-api-specifications) | JSON       | 3.0     | `official` `payments`               |
@@ -154,7 +160,18 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec                                                             | Format | Version | Tags                    |
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
+| CoinCap | [API specification](https://rest.coincap.io/api-docs.json) · [API documentation](https://rest.coincap.io/api-docs/) | JSON | 3.0.0 | `official` `crypto` `market-data` `financial-data` |
 | Frankfurter | [API specification](https://api.frankfurter.dev/v2/openapi.json) | JSON | 3.1.2 | `official` `currency-exchange` `exchange-rates` `open-source` |
+| Open Banking ATM Locator API | [Official Swagger 2.0 specification (Open Data API v2.3.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/atmlocator/atml.2.3.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/atmlocator/atm-locator.html) | JSON | 2.0 | `official` `open-data` `finance` `atm-locator` `public-data` |
+| Open Banking Branch Locator API | [Official Swagger 2.0 specification (Open Data API v2.3.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/branchlocator/bral.2.3.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/branchlocator/branch-locator.html) | JSON | 2.0 | `official` `open-data` `finance` `branch-locator` `public-data` |
+| Open Banking Business Current Account API | [Official Swagger 2.0 specification (Open Data API v2.4.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/bca/bca.2.4.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/bca/business-current-account.html) | JSON | 2.0 | `official` `open-data` `finance` `business-banking` `public-data` |
+| Open Banking Personal Current Account API | [Official Swagger 2.0 specification (Open Data API v2.4.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/pca/pca.2.4.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/pca/personal-current-account.html) | JSON | 2.0 | `official` `open-data` `finance` `personal-banking` `public-data` |
+| Open Banking Project.ch (Swiss NextGen API) | [Official OpenAPI specification](https://raw.githubusercontent.com/openbankingproject-ch/obp-apis/master/swiss-ng-api.yaml) · [API docs](https://www.openbankingproject.ch/en/catalog/apis/community/swiss-nextgen-api/) | YAML | 3.0.1 | `official` `finance` `open-banking` `switzerland` |
+| Open Banking SME Commercial Credit Card API | [Official Swagger 2.0 specification (Open Data API v2.3.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/smeccc/ccc.2.3.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/smeccc/sme-commercial-credit-card.html) | JSON | 2.0 | `official` `open-data` `finance` `small-business` `credit-card` `public-data` |
+| Open Banking SME Loan API | [Official Swagger 2.0 specification (Open Data API v2.3.0)](https://openbankinguk.github.io/opendata-api-docs-pub/assets/smeloan/smel.2.3.0.swagger.json) · [API docs](https://openbankinguk.github.io/opendata-api-docs-pub/v2.4.0/smeloan/sme-loan.html) | JSON | 2.0 | `official` `open-data` `finance` `small-business` `lending` `public-data` |
+| Open Exchange Rates API | [Community specification](specs/openexchangerates/openapi.yml) · [API docs](https://docs.openexchangerates.org/reference/api-introduction) · [Free plan](https://openexchangerates.org/signup/free) | YAML | 3.1.0 | `community-maintained` `finance` `currency-exchange` `exchange-rates` `public-data` |
+| Open Finance Brasil APIs | [Official OpenAPI specifications](https://github.com/OpenBanking-Brasil/openapi/tree/main/swagger-apis) | YAML | 3.0.0 | `official` `finance` `open-banking` `brazil` |
+| OpenFIGI | [Official OpenAPI specification](https://api.openfigi.com/schema); [API documentation](https://www.openfigi.com/api/documentation) | JSON | 3.0.0 | `official` `finance` `securities` `identifiers` `public-data` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
 | SEC EDGAR | [Community specification](specs/sec-edgar/openapi.yml) · [EDGAR data APIs](https://www.sec.gov/search-filings/edgar-application-programming-interfaces) | YAML | 3.1.0 | `community-maintained` `focused` `financial-data` `public-data` |
@@ -165,9 +182,12 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec                                                          | Format     | Version | Tags                                     |
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
 | Discord  | [API specification](https://github.com/discord/discord-api-spec)      | JSON       | 3.1     | `official` `platform` `messaging` `community` `public-preview` |
+| Gotify | [API specification](https://raw.githubusercontent.com/gotify/server/v3.1.1/docs/spec.json); [API documentation](https://gotify.net/api-docs) | JSON | 2.0 | `official` `open-source` `self-hosted` `notifications` |
 | Knock    | [API specification](https://api.knock.app/v1/openapi)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
 | Mailgun  | [API specification](https://documentation.mailgun.com/_spec/docs/mailgun/api-reference/send/mailgun.json?download=) | JSON | 3.1 | `official` `focused` `transactional-email` `delivery` `analytics` |
+| Mail-in-a-Box | [API specification](https://raw.githubusercontent.com/mail-in-a-box/mailinabox/main/api/mailinabox.yml); [API documentation](https://mailinabox.email/api-docs.html) | YAML | 3.0.3 | `official` `open-source` `self-hosted` `mail-server` |
 | Novu     | [API specification](https://api.novu.co/openapi.json)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
+| Nylas | [Official v3 API specification](https://developer.nylas.com/_spec-files/nylas-api.yaml); [API reference](https://developer.nylas.com/docs/reference/api/) | YAML | 3.1.0 | `official` `email` `calendar` `communications` |
 | Slack    | [Web API specifications](https://github.com/slackapi/slack-api-specs) | JSON, YAML | 2.0     | `official` `collaboration` `open-source` |
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 | Upstash  | [QStash API specification](https://upstash.com/docs/qstash/openapi.yaml) | YAML | 3.1.0 | `official` `messaging` `queues` `scheduling` |
@@ -181,11 +201,27 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Airtable | [Community specification](specs/airtable/openapi.yml); [list records](https://airtable.com/developers/web/api/list-records) · [create records](https://airtable.com/developers/web/api/create-records) | YAML | 3.1.0 | `community-maintained` `focused` `database` |
 | Algolia     | [API specifications](https://github.com/algolia/api-clients-automation/tree/main/specs) | YAML | 3.0.2 | `official` `search` `discovery` `open-source` |
 | Astrophysics Data System (ADS) | [OpenAPI specification directory](https://github.com/adsabs/adsabs-dev-api/tree/master/openapi) · [API documentation](https://ui.adsabs.harvard.edu/help/api/) | YAML | 3.0.3 | `official` `research` `astronomy` `public-data` |
+| CarAPI.dev | [API specification](https://api.carapi.dev/openapi.json); [API documentation](https://docs.carapi.dev/) | JSON | 3.1.0 | `official` `automotive` `vehicle-data` |
 | Datafast | [Community specification](specs/datafast/openapi.yml); [source docs](https://datafa.st/docs/api) | YAML | 3.2.1 | `community-maintained` `analytics` |
+| Figshare | [API specification](https://docs.figshare.com/swagger.json) · [API documentation](https://docs.figshare.com/v2/) | JSON | 3.0.3 | `official` `research` `open-science` `data-sharing` |
+| GBIF Occurrence Search API | [API specification](https://techdocs.gbif.org/openapi/occurrence-search.json) · [API documentation](https://techdocs.gbif.org/en/openapi/v1/occurrence) | JSON | 3.1.0 | `official` `biodiversity` `occurrence-data` `public-data` |
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
+| Harvard Art Museums | [Community specification](specs/harvard-art-museums/openapi.yml); [official API documentation](https://github.com/harvardartmuseums/api-docs) | YAML | 3.1.0 | `community-maintained` `focused` `cultural-heritage` `public-data` |
+| Huwise (OpenDataSoft) | [Official Explore API v2.1 specification](https://documentation-resources.huwise.com/api/explore/v2.1/swagger.json); [API reference](https://help.opendatasoft.com/apis/ods-explore-v2/) | JSON | 3.0.3 | `official` `data-catalog` `open-data` `public-data` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
+| Metabase | [API specification](https://raw.githubusercontent.com/metabase/metabase/master/resources/openapi/openapi.json); [API documentation](https://www.metabase.com/learn/metabase-basics/administration/administration-and-operation/metabase-api) | JSON | 3.1.0 | `official` `analytics` `business-intelligence` |
+| NamSor API v2 | [Official OpenAPI specification](https://v2.namsor.com/NamSorAPIv2/api2/openapi.json); [API documentation](https://namsor.app/api-documentation/) · [pricing](https://namsor.app/prices/) | JSON | 3.0.1 | `official` `name-analysis` `data-enrichment` |
+| Octopus Energy | [REST API specification](https://api.octopus.energy/v1/schema?namespaces=default) · [API reference](https://developer.octopus.energy/rest/reference/) | YAML | 3.0.3 | `official` `energy` `tariffs` `smart-meter` `consumption` |
+| OpenAIRE Graph API | [Official OpenAPI specification](https://api.openaire.eu/graph/v3/api-docs) · [API docs](https://graph.openaire.eu/docs/apis/graph-api/overview/) · [terms and rate limits](https://graph.openaire.eu/docs/apis/terms/) | JSON | 3.0.1 | `official` `research` `scholarly-data` `public-data` |
+| OpenAlex API | [Official OpenAPI specification](https://help.openalex.org/openapi.json); [API reference](https://help.openalex.org/api/) | JSON | 3.1.0 | `official` `research` `scholarly-data` `open-access` `public-data` |
+| Open Brewery DB API | [Official OpenAPI specification](https://api.openbrewerydb.org/docs/openapi.yaml); [API documentation](https://api.openbrewerydb.org/docs/) | YAML | 3.1.0 | `official` `open-source` `business-directory` `public-data` |
+| OpenCorporates | [Community specification](specs/opencorporates/openapi.yml); [API reference](https://api.opencorporates.com/documentation/API-Reference) · [pricing and access](https://opencorporates.com/pricing/) | YAML | 3.1.0 | `community-maintained` `focused` `company-data` `open-data` |
+| OpenF1 REST API | [Community specification](specs/openf1/openapi.yml); [official API documentation](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `motorsport` `open-source` `public-data` |
+| OpenIndex Wiki API | [Official OpenAPI specification](https://www.openindex.ai/openapi.json) · [developer docs](https://www.openindex.ai/docs) | JSON | 3.1.0 | `official` `knowledge-base` `search` `open-source` |
+| openrouteservice API v2 | [Official Swagger 2 specification](https://raw.githubusercontent.com/GIScience/openrouteservice-docs/master/API%20V2/swagger.json); [API documentation](https://giscience.github.io/openrouteservice/api-reference/) | JSON | 2.0 | `official` `open-source` `geospatial` `routing` `public-data` |
 | OpenSearch  | [API specification repository](https://github.com/opensearch-project/opensearch-api-specification) | YAML | 3.1 | `official` `platform` `open-source` `search` `analytics` |
+| OpenWeatherMap | [Community specification](specs/openweathermap/openapi.yml); [current weather docs](https://openweathermap.org/api/current) · [five-day forecast docs](https://openweathermap.org/api/forecast5) · [geocoding docs](https://openweathermap.org/api/geocoding-api) | YAML | 3.1.0 | `community-maintained` `weather` `forecast` |
 | Oracle REST Data Services | [Community specification](specs/oracle-rest-data-services/openapi.yml); [API docs](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/26.1/orrst/rest-endpoints.html) | YAML | 3.1.0 | `community-maintained` `focused` `database` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | PostHog     | [API specification](https://us.posthog.com/api/schema/?format=json)                    | JSON       | 3.1.0   | `official` `analytics` `product-analytics` |
@@ -204,6 +240,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Okta     | [Management API specification](https://github.com/okta/okta-management-openapi-spec) | JSON, YAML | 3.0     | `official` `identity`               |
 | Ory      | [API specifications](https://github.com/ory/sdk/tree/master/spec)                    | JSON       | 3.0     | `official` `identity` `open-source` |
 | Stytch   | [API specification](https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml) | YAML | 3.0.3 | `official` `focused` `authentication` `passkeys` `b2c` `b2b` |
+| Telefónica Open Gateway Number Verification | [Official OpenAPI specification](https://github.com/Telefonica/opengateway-developers-website/tree/main/v2/catalog/numberverification) · [API docs](https://developers.opengateway.telefonica.com/v1/docs/numberverification) | YAML | 3.0.3 | `official` `identity` `telecommunications` `fraud-prevention` |
 | WorkOS   | [API specification](https://github.com/workos/openapi-spec/blob/main/spec/open-api-spec.yaml) | YAML | 3.1.1 | `official` `identity` `authentication` `enterprise-sso` |
 
 ## Developer Tools
@@ -212,13 +249,19 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Activepieces | [API specification](https://www.activepieces.com/docs/openapi.json) | JSON | 3.1.0 | `official` `open-source` `workflow-automation` |
 | Apache Airflow | [Stable REST API specification](https://airflow.apache.org/docs/apache-airflow/stable/_static/dot-dot/src/airflow/api_fastapi/core_api/openapi/v2-rest-api-generated.yaml) · [API docs](https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html) | YAML | 3.1.0 | `official` `open-source` `workflow-orchestration` |
 | Apicurio Registry | [API specification](https://raw.githubusercontent.com/Apicurio/apicurio-registry/main/common/src/main/resources/META-INF/openapi.json) · [REST API documentation](https://www.apicur.io/registry/docs/apicurio-registry/3.4.x/index.html) | JSON | 3.0.3 | `official` `open-source` `schema-registry` `api-registry` |
+| Apigee Registry | [API specification](https://raw.githubusercontent.com/apigee/registry/main/openapi.yaml) · [API documentation](https://apigee.github.io/registry/api.html) | YAML | 3.0.3 | `official` `open-source` `api-registry` `developer-tools` |
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
 | Convex        | [Management API specification](https://api.convex.dev/v1/openapi.json)                         | JSON   | 3.1.0   | `official` `backend` `developer-platform` `beta` |
+| Debian Code Search | [API specification](https://codesearch.debian.net/openapi.yaml) · [API key documentation](https://codesearch.debian.net/apikeys/) | YAML | 3.0.1 | `official` `open-source` `code-search` `public-data` |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
 | Elastic (Kibana) | [Kibana API specification](https://raw.githubusercontent.com/elastic/kibana/main/oas_docs/output/kibana.yaml) | YAML | 3.0.3 | `official` `observability` `analytics` `work-in-progress` |
 | Grafana       | [HTTP API specification](https://github.com/grafana/grafana/blob/main/public/api-merged.json) | JSON   | 2.0     | `official` `observability` `open-source` |
 | Inngest       | [REST API v2 specification](https://api-docs.inngest.com/api-specs/v2.json)                     | JSON   | 3.0.3   | `official` `serverless-workflows` `background-jobs` |
 | LaunchDarkly  | [REST API specification](https://app.launchdarkly.com/api/v2/openapi.json)                      | JSON   | 3.0.3   | `official` `feature-management` `experimentation` |
+| n8n Public API | [Official OpenAPI source and components](https://github.com/n8n-io/n8n/tree/master/packages/cli/src/public-api/v1); [API documentation](https://docs.n8n.io/connect/n8n-api/api-reference) | YAML | 3.0.0 | `official` `self-hosted` `workflow-automation` `developer-tools` |
+| NAVER Open API | [Official Swagger 2.0 specification](https://raw.githubusercontent.com/naver/naver-openapi-guide/master/ko/naver-openapi-swagger.yaml); [API list](https://developers.naver.com/products/intro/plan/plan.md) · [terms](https://developers.naver.com/products/terms/) | YAML | 2.0 | `official` `archived` `search` `developer-platform` |
+| NewReleases.io | [Community specification](specs/newreleasesio/openapi.yml); [source docs](https://newreleases.io/api/v1) | YAML | 3.1.0 | `community-maintained` `focused` `release-monitoring` `developer-tools` |
+| OpenObserve | [Official OpenAPI specification](https://api.openobserve.ai/api-doc/openapi.json) · [API docs](https://openobserve.ai/docs/reference/api/) | JSON | 3.1.0 | `official` `observability` `open-source` |
 | PagerDuty     | [REST API specification](https://raw.githubusercontent.com/PagerDuty/api-schema/main/reference/REST/openapiv3.json) | JSON | 3.0.2 | `official` `platform` `incident-management` `on-call` `observability` |
 | Sentry        | [API schema](https://github.com/getsentry/sentry-api-schema)                                  | JSON   | 3.0     | `official` `observability` `open-source` |
 | Svix          | [API specification](https://raw.githubusercontent.com/svix/svix-webhooks/main/server/openapi.json) | JSON | 3.0.2 | `official` `webhooks` `developer-platform` `open-source` |
@@ -234,7 +277,16 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Hostinger    | [API specification](https://raw.githubusercontent.com/hostinger/api/main/openapi.json)                | JSON   | 3.0      | `official` `focused` `hosting` `domains` `cloud` |
 | Kubernetes   | [Generated OpenAPI definitions](https://github.com/kubernetes/kubernetes/tree/master/api/openapi-spec) | JSON   | 2.0      | `official` `containers` `open-source`         |
 | Microsoft Graph | [v1.0 OpenAPI specification](https://github.com/microsoftgraph/msgraph-metadata/blob/master/openapi/v1.0/openapi.yaml) | YAML | 3.0.4 | `official` `cloud` `identity` `productivity` `open-source` |
+| Neocities | [Community specification](specs/neocities/openapi.yml); [source docs](https://neocities.org/api) | YAML | 3.1.0 | `community-maintained` `static-hosting` `deployment` |
 | Neon         | [API v2 specification](https://neon.com/api_spec/release/v2.json)                                      | JSON   | 3.0.3    | `official` `database` `postgres` `serverless` |
+| NetBox REST API | [Official OpenAPI specification](https://raw.githubusercontent.com/netbox-community/netbox/main/contrib/openapi.json) · [API documentation](https://netboxlabs.com/docs/netbox/features/api-integration/) | JSON | 3.0.3 | `official` `open-source` `network-management` `infrastructure` |
+| Netlify      | [Official API specification](https://raw.githubusercontent.com/netlify/open-api/master/swagger.yml); [API documentation](https://docs.netlify.com/api-and-cli-guides/api-guides/get-started-with-api/) | YAML | 2.0 | `official` `cloud` `hosting` `deployment` `open-source` |
+| ngrok API | [Official OpenAPI specification](https://raw.githubusercontent.com/ngrok/ngrok-openapi/main/ngrok.yaml); [API documentation](https://ngrok.com/docs/api) | YAML | 3.0.0 | `official` `cloud` `developer-tools` `tunneling` `networking` |
+| Nextcloud Core OCS API | [Official OpenAPI specification](https://raw.githubusercontent.com/nextcloud/server/master/core/openapi.json); [OCS API documentation](https://docs.nextcloud.com/server/stable/developer_manual/client_apis/OCS/ocs-api-overview.html) | JSON | 3.0.3 | `official` `cloud` `self-hosted` `file-storage` `open-source` |
+| OpenHue API | [Official OpenAPI specification](https://api.redocly.com/registry/bundle/openhue/openhue/v2/openapi.yaml) · [API documentation](https://www.openhue.io/api) | YAML | 3.0.3 | `official` `open-source` `iot` `smart-home` `lighting` |
+| openITCOCKPIT | [Official OpenAPI specification](https://openitcockpit.io/api/openapi-bundled.json) · [API docs](https://openitcockpit.io/api/) | JSON | 3.0.1 | `official` `open-source` `monitoring` `infrastructure` `self-hosted` |
+| OpenStack Object Storage API | [Official OpenAPI specification](https://opendev.org/openstack/codegenerator/src/branch/master/static/openapi_specs/object-store/v1.yaml) · [API docs](https://docs.openstack.org/api-ref/object-store/) | YAML | 3.1.0 | `official` `cloud` `object-storage` `open-source` |
+| OpenWISP | [Official Swagger specification](https://demo.openwisp.io/api/v1/docs/?format=json) · [API docs](https://openwisp.io/docs/stable/controller/user/rest-api.html) | JSON | 2.0 | `official` `network-management` `open-source` |
 | PlanetScale  | [API OpenAPI specification](https://planetscale.com/docs/openapi.yaml)                                 | YAML   | 3.0.1    | `official` `database` `branching` `cloud` |
 | Render       | [Public API specification](https://api-docs.render.com/openapi/render-public-api-1.json)               | JSON   | 3.0.2    | `official` `cloud` `deployment` `hosting` |
 | Snowflake    | [REST API specifications](https://github.com/snowflakedb/snowflake-rest-api-specs/tree/main/specifications) | YAML | 3.0.0 | `official` `database` `data-warehouse` |
@@ -248,6 +300,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
 | Open Food Facts | [API v3 specification](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/docs/api/ref/api-v3.yaml) | YAML | 3.1.0 | `official` `food-database` `open-source` |
+| OpenSea API | [Official OpenAPI specification](https://api.opensea.io/api/v2/openapi.json); [developer documentation](https://docs.opensea.io/) | JSON | 3.1.0 | `official` `commerce` `marketplace` `nft` `web3` |
 
 ## Customer Support and Helpdesk
 | Provider | OpenAPI spec | Format | Version | Tags |
@@ -268,20 +321,27 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | ShipEngine | [OpenAPI downloads](https://docs.shipstation.com/apis/shipengine/openapi/downloads) | JSON, YAML | 3.x | `official` `shipping` `carriers` |
 | Shippo | [Shipping API specification](https://docs.goshippo.com/spec/shippoapi/public-api.yaml) | YAML | 3.1.0 | `official` `shipping` `labels` `tracking` |
+| Transport for NSW Trip Planner API | [Community specification](specs/transport-for-nsw/openapi.yml) · [Trip Planner API manual](https://opendata.transport.nsw.gov.au/sites/default/files/2026-04/trip-planner-api-manual-opendataproduction-v3.3.pdf) · [API access and limits](https://opendata.transport.nsw.gov.au/developers/api-basics) | YAML | 3.1.0 | `community-maintained` `transit` `trip-planning` `public-data` |
 
 ## Travel and Hospitality
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
+| OpenTripMap API | [Official OpenAPI specification](https://dev.opentripmap.org/openapi.en.json) · [API docs](https://dev.opentripmap.org/product) · [free plan](https://dev.opentripmap.org/price) | JSON | 3.0.0 | `official` `travel` `points-of-interest` `open-data` |
 
 ## Healthcare and Life Sciences
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | ClinicalTrials.gov | [Community specification](specs/clinicaltrials-gov/openapi.yml) · [API v2 documentation](https://clinicaltrials.gov/data-api/about-api) | YAML | 3.1.0 | `community-maintained` `focused` `clinical-trials` `public-data` |
 | Foundation Health | [API documentation and OpenAPI specification](https://docs.foundationhealth.com/) | JSON, YAML | 3.0.2 | `official` `healthcare` `pharmacy` |
+| NCBI Datasets API | [Official OpenAPI specification](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/openapi3/openapi3.docs.yaml); [API documentation](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/rest-api/) | YAML | 3.0.1 | `official` `life-sciences` `genomics` `public-data` |
+| openEHR EHR API | [Official OpenAPI specification](https://raw.githubusercontent.com/openEHR/specifications-ITS-REST/Release-1.1.0/computable/OAS/ehr-codegen.openapi.yaml) · [EHR API documentation](https://specifications.openehr.org/releases/ITS-REST/latest/ehr.html) | YAML | 3.0.3 | `official` `healthcare` `ehr` `interoperability` |
 | openFDA | [Community specification](specs/openfda/openapi.yml); [Drug Adverse Event API docs](https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/) | YAML | 3.1.0 | `community-maintained` `focused` `healthcare` `public-data` |
+| Open Wearables | [Official OpenAPI specification](https://raw.githubusercontent.com/the-momentum/open-wearables/main/docs/openapi.json) · [API documentation](https://openwearables.io/docs/api-reference/introduction) | JSON | 3.1.0 | `official` `healthcare` `wearables` `self-hosted` `open-source` |
+| RxNorm API | [Community specification](specs/rxnorm-api/openapi.yml); [NLM API documentation](https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html) | YAML | 3.1.0 | `community-maintained` `government` `life-sciences` `drug-data` `public-data` |
 | Tidepool | [Platform API specifications](https://github.com/tidepool-org/TidepoolApi) | YAML | 3.x | `official` `healthcare` `diabetes` `open-source` |
+| USDA FoodData Central | [Official OpenAPI specification](https://api.swaggerhub.com/apis/fdcnal/food-data_central_api/1.0.1) · [API guide](https://fdc.nal.usda.gov/api-guide/) | JSON | 3.0.0 | `official` `government` `nutrition` `public-data` |
 
 ## Education
 | Provider | OpenAPI spec | Format | Version | Tags |
@@ -294,17 +354,30 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | AEMET OpenData | [API specification](https://opendata.aemet.es/AEMET_OpenData_specification.json) · [API information](https://opendata.aemet.es/centrodedescargas/info) | JSON | 3.0.1 | `official` `government` `weather` `public-data` |
 | BART | [Community specification](specs/bart/openapi.yml) · [Real-time estimates docs](https://api.bart.gov/docs/etd/etd.aspx) | YAML | 3.1.0 | `community-maintained` `focused` `transit` `real-time` `legacy` |
+| Bureau of Labor Statistics | [Community specification](specs/bls/openapi.yml); [official API documentation](https://www.bls.gov/developers/api_signature.htm) · [version 2 signatures](https://www.bls.gov/developers/api_signature_v2.htm) | YAML | 3.1.0 | `community-maintained` `government` `economic-data` `public-data` |
 | CFPB Consumer Complaint Database | [API specification](https://raw.githubusercontent.com/cfpb/ccdb5-api/main/swagger-config.yaml) · [API documentation](https://cfpb.github.io/api/ccdb/api.html) | YAML | 3.0.0 | `official` `government` `consumer-finance` `public-data` |
 | CFPB HMDA Data Browser API | [Community specification](specs/cfpb-hmda/openapi.yml) · [Data Browser API docs](https://ffiec.cfpb.gov/documentation/api/data-browser/) | YAML | 3.1.0 | `community-maintained` `government` `mortgage-data` `public-data` |
 | Congress.gov | [API specification](https://raw.githubusercontent.com/LibraryOfCongress/api.congress.gov/main/Documentation/openapi.json) | JSON | 3.0.3 | `official` `government` `legislation` `public-data` |
+| DigitalNZ | [API specification](https://api.swaggerhub.com/apis/DigitalNZ/Records/3) · [API documentation](https://digitalnz.org/developers/api-docs-v3) | JSON | 3.0.1 | `official` `government` `cultural-heritage` `public-data` |
 | GovInfo | [OpenAPI specification and interactive documentation](https://api.govinfo.gov/docs/) | JSON | 3.x | `official` `government` `public-data` |
+| KNMI Data Platform | [Open Data API specification](https://tyk-cdn.dataplatform.knmi.nl/open-data/openapi.json); [Open Data API docs](https://developer.dataplatform.knmi.nl/open-data-api); [EDR API specification](https://api.dataplatform.knmi.nl/edr/v1/openapi.json); [EDR API docs](https://developer.dataplatform.knmi.nl/edr-api) | JSON | 3.0.3 / 3.1.0 | `official` `government` `weather` `public-data` |
 | Nager.Date | [Community API v4 specification](https://nagerholidays.com/openapi/community-v4.json) | JSON | 3.1.1 | `official` `open-source` `calendar` `public-holidays` `public-data` |
+| NASA TechPort | [Official OpenAPI specification](https://techport.nasa.gov/api/specification.json); [API documentation](https://techport.nasa.gov/help/api) | JSON | 3.0.0 | `official` `government` `technology` `public-data` |
 | National Archives Catalog API | [Swagger specification](https://catalog.archives.gov/api/v2/swagger.json) · [API documentation](https://www.archives.gov/research/catalog/help/api) | JSON | 3.0.0 | `official` `government` `archives` `public-data` |
 | National Park Service | [API specification](https://www.nps.gov/subjects/developer/customcf/swagger.json?03142019) | JSON | 2.0 | `official` `government` `parks` `public-data` |
+| NCEI Access Data Service | [Community specification](specs/ncei-access-data-service/openapi.yml) · [official API documentation](https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation) | YAML | 3.1.0 | `community-maintained` `government` `climate-data` `public-data` |
+| NCEI Climate Data Online (CDO) | [Community specification](specs/ncei-climate-data-online/openapi.yml) · [official API documentation](https://www.ncei.noaa.gov/cdo-web/webservices/v2) | YAML | 3.1.0 | `community-maintained` `government` `climate-data` `public-data` |
 | NCEI Space Weather Portal | [API specification](https://www.ncei.noaa.gov/cloud-access/space-weather-portal/api/v1/static/openapi/openapi-spot.yaml) | JSON | 3.0.0 | `official` `government` `space-weather` `public-data` |
+| NHTSA vPIC | [Community specification](specs/nhtsa-vpic/openapi.yml); [official API docs](https://vpic.nhtsa.dot.gov/api/Home/Index) · [FAQ](https://vpic.nhtsa.dot.gov/api/Home/Index/FAQ) | YAML | 3.1.0 | `community-maintained` `focused` `government` `vehicle-data` `public-data` |
 | NLR Transportation Laws and Incentives | [API specification](https://developer.nlr.gov/docs/transportation/transportation-incentives-laws-v1/spec.yml) | YAML | 2.0 | `official` `government` `energy` `transportation` `public-data` |
+| NOAA CO-OPS Data Retrieval API | [Community specification](specs/noaa-co-ops-data-api/openapi.yml) · [official API documentation](https://api.tidesandcurrents.noaa.gov/api/dev) | YAML | 3.1.0 | `community-maintained` `government` `tides` `ocean-data` `public-data` |
+| Nobel Prize API | [Official OpenAPI specification](https://api.swaggerhub.com/apis/NobelMedia/NobelMasterData/2.1) · [developer zone](https://www.nobelprize.org/about/developer-zone-2/) | JSON | 2.0 | `official` `government` `cultural-heritage` `public-data` |
 | Open-Meteo | [API specifications](https://github.com/open-meteo/open-meteo/tree/main/openapi) | YAML | 3.1.0 | `official` `open-source` `weather` `public-data` |
+| OpenSanctions | [Official OpenAPI specification](https://api.opensanctions.org/openapi.json) · [API docs and access terms](https://www.opensanctions.org/docs/api/) | JSON | 3.1.0 | `official` `open-source` `sanctions-screening` `entity-resolution` |
+| Plural Open (Open States) API v3 | [Official OpenAPI specification](https://v3.openstates.org/openapi.json); [API documentation](https://docs.openstates.org/api-v3/) | JSON | 3.0.2 | `official` `government` `legislation` `public-data` |
+| Police API (data.police.uk) | [Community specification](specs/data-police-uk/openapi.yml); [official API docs](https://data.police.uk/docs/) | YAML | 3.1.0 | `community-maintained` `focused` `crime-data` `public-data` `government` |
 | REST Countries | [Community specification](specs/rest-countries/openapi.yml) · [Countries API docs](https://restcountries.com/docs/countries) | YAML | 3.1.0 | `community-maintained` `focused` `country-data` `public-data` |
+| Trove API | [Official OpenAPI specification](https://api.trove.nla.gov.au/v3/trove-api-v3.yaml) · [API documentation](https://trove.nla.gov.au/about/create-something/using-api) | YAML | 3.0.3 | `official` `government` `cultural-heritage` `public-data` |
 | U.S. Census Bureau | [Community specification](specs/us-census-bureau/openapi.yml) · [Census Data API guide](https://www.census.gov/data/developers/guidance/api-user-guide.html) | YAML | 3.1.0 | `community-maintained` `focused` `government` `public-data` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
 
@@ -312,6 +385,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Hacker News | [Community specification](specs/hacker-news/openapi.yml); [official API documentation](https://github.com/HackerNews/API) | YAML | 3.1.0 | `community-maintained` `focused` `community` `news` |
 | Pinterest | [REST API specifications](https://github.com/pinterest/api-description/tree/main/v5) | JSON, YAML | 3.0.3 | `official` `social-media` `marketing` `open-source` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | TikTok Display API | [Community specification](specs/tiktok-display/openapi.yml) · [source docs](https://developers.tiktok.com/docs/en/display-api-overview) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `video` |
@@ -320,10 +394,19 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Media and Entertainment
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Bungie | [API specification](https://raw.githubusercontent.com/Bungie-net/api/master/openapi.json) · [API documentation](https://bungie-net.github.io/multi/index.html) | JSON | 3.0.0 | `official` `gaming` `destiny` |
 | College Football Data | [API specification](https://api.collegefootballdata.com/api-docs.json) · [API documentation](https://apinext.collegefootballdata.com/getting-started) | JSON | 3.0.0 | `official` `sports` `public-data` |
+| D&D 5e SRD API (2014) | [API specification](https://raw.githubusercontent.com/5e-bits/5e-srd-api/main/apps/docs/openapi.json); [API documentation](https://docs.dnd5eapi.co/introduction) | JSON | 3.0.1 | `official` `open-source` `gaming` `reference-data` |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
+| NASA Astronomy Picture of the Day (APOD) | [Community specification](specs/nasa-apod/openapi.yml); [official API documentation](https://api.nasa.gov/#apod) · [NASA API service repository](https://github.com/nasa/apod-api) | YAML | 3.1.0 | `community-maintained` `government` `astronomy` `public-data` |
+| NASA Image and Video Library | [Community specification](specs/nasa-image-video-library/openapi.yml); [official API documentation](https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf) · [library](https://images.nasa.gov/) | YAML | 3.1.0 | `community-maintained` `government` `media-library` `imagery` `public-data` |
+| New York Times | [Official API specifications](https://github.com/nytimes/public_api_specs); [developer portal](https://developer.nytimes.com/apis) | YAML, JSON | 2.0 | `official` `archived` `open-source` `news` `publishing` |
+| OpenDota API | [Official OpenAPI specification](https://api.opendota.com/api) · [API docs](https://docs.opendota.com/) · [API keys and limits](https://www.opendota.com/api-keys) | JSON | 3.0.3 | `official` `open-source` `gaming` `dota-2` `statistics` |
 | Open Library | [Community specification](specs/open-library/openapi.yml); [Search API docs](https://openlibrary.org/dev/docs/api/search) | YAML | 3.1.0 | `community-maintained` `focused` `books` `catalog` |
+| OpenLigaDB | [Official OpenAPI specification](https://api.openligadb.de/swagger/v1/swagger.json) · [API documentation](https://api.openligadb.de/) | JSON | 3.0.4 | `official` `sports` `football` `open-data` |
+| Open Trivia Database | [Community specification](specs/opentdb/openapi.yml) · [official API docs](https://opentdb.com/api_config.php) | YAML | 3.1.0 | `community-maintained` `open-data` `trivia` `gaming` |
+| Openverse | [Official OpenAPI specification](https://api.openverse.org/v1/schema/?format=json); [API documentation](https://api.openverse.org/v1/) | JSON | 3.0.3 | `official` `open-source` `creative-commons` `media-search` |
 | PokéAPI | [REST API specification](https://raw.githubusercontent.com/PokeAPI/pokeapi/master/openapi.yml) | YAML | 3.1.0 | `official` `open-source` `gaming` `public-data` |
 | Radarr | [API specification](https://raw.githubusercontent.com/Radarr/Radarr/develop/src/Radarr.Api.V3/openapi.json) · [project/API docs](https://github.com/Radarr/Radarr/tree/develop/src/Radarr.Api.V3) | JSON | 3.0.4 | `official` `open-source` `self-hosted` `media-management` |
 | Sonarr | [API specification](https://raw.githubusercontent.com/Sonarr/Sonarr/develop/src/Sonarr.Api.V3/openapi.json) | JSON | 3.0.1 | `official` `open-source` `media-management` `self-hosted` |
@@ -339,13 +422,21 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Maps, Geolocation and Local Services
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Country | [API specification](https://api.country.is/openapi.json) · [API documentation](https://country.is/) | JSON | 3.1.0 | `official` `open-source` `ip-geolocation` `public-data` |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+| Nominatim | [Community specification](specs/nominatim/openapi.yml) · [API docs](https://nominatim.org/release-docs/develop/api/Overview/) · [usage policy](https://operations.osmfoundation.org/policies/nominatim/) | YAML | 3.0.3 | `community-maintained` `geocoding` `open-data` |
+| OneMap Singapore | [Community specification](specs/onemap/openapi.yml) · [search docs](https://www.onemap.gov.sg/apidocs/search) · [reverse geocode docs](https://www.onemap.gov.sg/apidocs/reverseGeocode) · [API terms](https://www.onemap.gov.sg/legal/apitermsofservice.html) | YAML | 3.0.3 | `community-maintained` `focused` `geocoding` `singapore` `public-data` |
+| OpenCage Geocoding API | [Official OpenAPI specification](https://opencagedata.com/openapi.yaml) · [API docs](https://opencagedata.com/api) · [free trial limits](https://opencagedata.com/pricing) | YAML | 3.2.0 | `official` `geocoding` `location-data` |
+| Open Charge Map | [API specification](https://raw.githubusercontent.com/openchargemap/ocm-docs/refs/heads/master/Model/schema/ocm-openapi-spec.yaml) · [API documentation](https://www.openchargemap.org/develop/api) · [terms](https://www.openchargemap.org/about/terms) | YAML | 3.1.0 | `official` `open-source` `ev-charging` `geospatial` |
 
 ## Security and Compliance
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
 | CIRCL Hashlookup | [API specification](https://hashlookup.circl.lu/swagger.json) · [API documentation](https://hashlookup.circl.lu/) | JSON | 2.0 | `official` `security` `hash-lookup` `public-data` |
+| CyCAT | [API specification](https://api.cycat.org/swagger.json) · [API documentation](https://www.cycat.org/services/) | JSON | 2.0 | `official` `cybersecurity` `threat-intelligence` `public-data` |
+| MISP | [API specification](https://raw.githubusercontent.com/MISP/MISP/develop/app/webroot/doc/openapi.yaml); [API documentation](https://misp-project.org/documentation/) | YAML | 3.0.0 | `official` `open-source` `self-hosted` `threat-intelligence` |
+| Netlas | [Official OpenAPI 3.0 specification](https://cdn.netlas.io/netlas-openapi-3.0.json); [API reference](https://docs.netlas.io/api-reference/) | JSON | 3.0.3 | `official` `security` `osint` `internet-assets` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 | Permit.io | [Cloud API specification](https://api.permit.io/v2/openapi.json) | JSON | 3.1.0 | `official` `authorization` `policy-engine` `permissions` |
 | Tailscale | [API documentation and OpenAPI download](https://tailscale.com/api) | JSON | 3.x | `official` `networking` `zero-trust` `vpn` |
