@@ -335,6 +335,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| SocialRails | [API specification](https://socialrails.com/openapi.json) | JSON | 3.0.3 | `official` `social-media-management` `publishing` |
 | BulkPublish | [API specification](https://app.bulkpublish.com/openapi.json) | JSON | 3.1.0 | `social-media` `scheduling` |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
 | Postproxy | [Social Media API specification](https://postproxy.dev/openapi.json) | JSON | 3.1.0 | `official` `social-media` `publishing` |
