@@ -1,0 +1,298 @@
+openapi: 3.0.3
+info:
+  title: SharpSpring Lead Gen & CRM Open API
+  version: 1.0.0
+  description: Community-maintained OpenAPI description of the Lead Gen & CRM JSON request interface. The request
+    method selects one of the documented API methods; each method has its own parameter shape.
+externalDocs:
+  description: Official Lead Gen & CRM API overview, request format, and API reference links
+  url: https://knowledgebase.constantcontact.com/lead-gen-crm/articles/KnowledgeBase/50374-Understanding-Lead-Gen--CRM-Open-API-Overview?lang=en_US
+servers:
+- url: https://api.sharpspring.com/pubapi/v1
+  description: Version 1; date and time arguments use the company profile time zone.
+- url: https://api.sharpspring.com/pubapi/v1.2
+  description: Version 1.2; date and time arguments use UTC.
+tags:
+- name: Marketing automation
+- name: File uploads
+paths:
+  /:
+    post:
+      tags:
+      - Marketing automation
+      operationId: callLeadGenCrmMethod
+      summary: Call a Lead Gen & CRM API method
+      description: Dispatches a documented API method through the shared JSON request endpoint. The public overview
+        describes the envelope; method-specific parameter fields are maintained in the linked vendor reference.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiRequest'
+      responses:
+        '200':
+          description: The API response envelope. Method-level API errors are returned in the error field.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /uploadFiles:
+    post:
+      tags:
+      - File uploads
+      operationId: uploadFiles
+      summary: Upload files to a CRM object custom field
+      description: Uploads files for leads, accounts, or opportunities. For each upload, provide a binary part named
+        files[<index>] and a numeric form field named with that file’s filename containing the target object ID.
+        See [the official upload reference](https://knowledgebase.constantcontact.com/lead-gen-crm/articles/KnowledgeBase/54650-Understanding-Lead-Gen-CRM-Open-API-Uploading-Files?lang=en_US).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - objectType
+              - fieldSystemName
+              minProperties: 4
+              properties:
+                objectType:
+                  type: string
+                  enum:
+                  - lead
+                  - account
+                  - opportunity
+                fieldSystemName:
+                  type: string
+                id:
+                  type: string
+                  description: Request identifier shown in the vendor upload example.
+              additionalProperties:
+                oneOf:
+                - type: string
+                  format: binary
+                - type: integer
+              description: Include a binary files[<index>] part and one integer field keyed by its filename for
+                each uploaded file.
+      responses:
+        '200':
+          description: JSON response; the public upload reference does not define a response schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+  /uploadProductImage:
+    post:
+      tags:
+      - File uploads
+      operationId: uploadProductImage
+      summary: Upload an image for a product
+      description: Uploads a product image using multipart form data. See [the official upload reference](https://knowledgebase.constantcontact.com/lead-gen-crm/articles/KnowledgeBase/54650-Understanding-Lead-Gen-CRM-Open-API-Uploading-Files?lang=en_US).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - id
+              - productID
+              - productImage
+              properties:
+                id:
+                  type: string
+                  description: Caller-supplied request ID.
+                productID:
+                  type: integer
+                  description: ID of the product to update.
+                productImage:
+                  type: string
+                  format: binary
+                  description: Image file to upload.
+      responses:
+        '200':
+          description: JSON response; the public upload reference does not define a response schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+components:
+  securitySchemes:
+    accountIDQuery:
+      type: apiKey
+      in: query
+      name: accountID
+    secretKeyQuery:
+      type: apiKey
+      in: query
+      name: secretKey
+    accountIDHeader:
+      type: apiKey
+      in: header
+      name: X-Account-Id
+    secretKeyBearer:
+      type: http
+      scheme: bearer
+  schemas:
+    ApiRequest:
+      type: object
+      description: Shared request envelope used for all documented methods.
+      properties:
+        method:
+          type: string
+          enum:
+          - createAccounts
+          - deleteAccounts
+          - getAccount
+          - getAccounts
+          - getAccountsDateRange
+          - updateAccounts
+          - createCampaigns
+          - deleteCampaigns
+          - getCampaign
+          - getCampaigns
+          - getCampaignsDateRange
+          - updateCampaigns
+          - getClients
+          - createSendMail
+          - createDealStages
+          - deleteDealStages
+          - getDealStage
+          - getDealStages
+          - getDealStagesDateRange
+          - createEmail
+          - deleteEmail
+          - getEmail
+          - getEmailListing
+          - updateEmail
+          - deleteScheduleSend
+          - getEmailEvents
+          - getEmailSendEvents
+          - getEmailSendStatus
+          - getScheduleSendStatus
+          - getScheduleSends
+          - getSendCount
+          - addEmailVariable
+          - createEmailVariable
+          - createEmailVariables
+          - deleteEmailVariable
+          - getEmailVariables
+          - setEmailVariable
+          - createFields
+          - deleteFields
+          - getFields
+          - updateFields
+          - createFolder
+          - createFolders
+          - deleteFolder
+          - getFolders
+          - updateFolder
+          - getRelatedLeadsByEmail
+          - getListTags
+          - createLeads
+          - deleteLeads
+          - getLead
+          - getLeads
+          - getLeadsDateRange
+          - subscribeToLeadUpdates
+          - updateLeads
+          - updateLeadsV2
+          - createList
+          - deleteList
+          - getActiveLists
+          - updateList
+          - addListMember
+          - addListMemberEmailAddress
+          - addListMembers
+          - addListMembersEmailAddress
+          - getContactListMemberships
+          - getEmailSend
+          - getListMemberships
+          - removeListMember
+          - removeListMemberEmailAddress
+          - removeListMembers
+          - removeListMembersEmailAddress
+          - removeListMembersAll
+          - createNotes
+          - deleteNotes
+          - getAccountNotes
+          - getAccountsNotes
+          - getContactNotes
+          - getContactsNotes
+          - getOpportunitiesNotes
+          - getOpportunityNotes
+          - updateNotes
+          - createOpportunities
+          - deleteOpportunities
+          - getOpportunities
+          - getOpportunitiesDateRange
+          - getOpportunity
+          - updateOpportunities
+          - createOpportunityLeads
+          - deleteOpportunityLeads
+          - getOpportunityLead
+          - getOpportunityLeads
+          - getOpportunityLeadsDateRange
+          - createProduct
+          - createProducts
+          - deleteProduct
+          - getProducts
+          - updateProduct
+          - getUnsubscribeCategories
+          - createTasks
+          - deleteTasks
+          - getTasks
+          - updateTasks
+          - updateAccountSendLimit
+          - createClient
+          - updateClient
+          - disableAccountSending
+          - enableAccountSending
+          - logCalls
+          - getEmailJobs
+          - getLeadListMemberships
+          - getLeadTimeline
+          - getRemovedListMembers
+          - getListMembers
+          description: Name of the API method to invoke.
+        params:
+          type: object
+          description: Method-specific parameters. See the vendor method reference.
+          additionalProperties: true
+        id:
+          type: string
+          description: Caller-supplied request identifier echoed in the response.
+      required:
+      - method
+      - params
+      - id
+      additionalProperties: true
+    ApiResponse:
+      type: object
+      description: Response envelope returned by the API.
+      properties:
+        result:
+          description: Return value; its shape varies by method.
+        error:
+          type: object
+          nullable: true
+          description: API-level error, or null when no API-level error is returned.
+          additionalProperties: true
+        id:
+          type: string
+          description: Request identifier supplied in the request.
+      required:
+      - result
+      - error
+      - id
+      additionalProperties: true
+    UploadResponse:
+      type: object
+      description: JSON response for an upload operation; the public reference does not document response properties.
+      additionalProperties: true
+security:
+- accountIDQuery: []
+  secretKeyQuery: []
+- accountIDHeader: []
+  secretKeyBearer: []
