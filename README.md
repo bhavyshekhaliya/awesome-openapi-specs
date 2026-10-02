@@ -287,6 +287,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Media and Entertainment
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| OMDb | [API specification](https://www.omdbapi.com/swagger.json) | JSON | 2.0 | `official` `movies` `media` |
 | OpenF1 | [Community specification](specs/openf1/openapi.yml) Â· [source docs](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `sports` `open-source` |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
 | OpenDota | [API specification](https://api.opendota.com/api) | JSON | 3.0.3 | `official` `esports` `gaming` `open-source` |
