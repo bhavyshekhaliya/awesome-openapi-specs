@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| TicketSource | [API specification](https://raw.githubusercontent.com/ticketsource/openapi-spec/main/reference/TicketSource-API.json) | JSON | 3.1.0 | `official` `event-marketing` `ticketing` |
 | Flodesk | [API specification](https://developers.flodesk.com/) | JSON | 3.0.3 | `official` `email-marketing` `marketing-automation` |
 | Typefully | [API specification](https://typefully.com/docs/api) | JSON | 3.1.0 | `official` `social-media-management` `social-publishing` |
 | OutReachBin | [API specification](https://api.swaggerhub.com/apis/polyuno3/OutReachBin/1.1?resolved=true) | JSON | 2.0 | `official` `sales-engagement` `lead-generation` |
