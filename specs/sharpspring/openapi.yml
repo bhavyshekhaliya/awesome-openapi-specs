@@ -14,6 +14,7 @@ servers:
   description: Version 1.2; date and time arguments use UTC.
 tags:
 - name: Marketing automation
+- name: File uploads
 paths:
   /:
     post:
@@ -36,6 +37,86 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
+  /uploadFiles:
+    post:
+      tags:
+      - File uploads
+      operationId: uploadFiles
+      summary: Upload files to a CRM object custom field
+      description: Uploads files for leads, accounts, or opportunities. For each upload, provide a binary part named
+        files[<index>] and a numeric form field named with that file’s filename containing the target object ID.
+        See [the official upload reference](https://knowledgebase.constantcontact.com/lead-gen-crm/articles/KnowledgeBase/54650-Understanding-Lead-Gen-CRM-Open-API-Uploading-Files?lang=en_US).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - objectType
+              - fieldSystemName
+              minProperties: 4
+              properties:
+                objectType:
+                  type: string
+                  enum:
+                  - lead
+                  - account
+                  - opportunity
+                fieldSystemName:
+                  type: string
+                id:
+                  type: string
+                  description: Request identifier shown in the vendor upload example.
+              additionalProperties:
+                oneOf:
+                - type: string
+                  format: binary
+                - type: integer
+              description: Include a binary files[<index>] part and one integer field keyed by its filename for
+                each uploaded file.
+      responses:
+        '200':
+          description: JSON response; the public upload reference does not define a response schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+  /uploadProductImage:
+    post:
+      tags:
+      - File uploads
+      operationId: uploadProductImage
+      summary: Upload an image for a product
+      description: Uploads a product image using multipart form data. See [the official upload reference](https://knowledgebase.constantcontact.com/lead-gen-crm/articles/KnowledgeBase/54650-Understanding-Lead-Gen-CRM-Open-API-Uploading-Files?lang=en_US).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - id
+              - productID
+              - productImage
+              properties:
+                id:
+                  type: string
+                  description: Caller-supplied request ID.
+                productID:
+                  type: integer
+                  description: ID of the product to update.
+                productImage:
+                  type: string
+                  format: binary
+                  description: Image file to upload.
+      responses:
+        '200':
+          description: JSON response; the public upload reference does not define a response schema.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
 components:
   securitySchemes:
     accountIDQuery:
@@ -205,6 +286,10 @@ components:
       - result
       - error
       - id
+      additionalProperties: true
+    UploadResponse:
+      type: object
+      description: JSON response for an upload operation; the public reference does not document response properties.
       additionalProperties: true
 security:
 - accountIDQuery: []
