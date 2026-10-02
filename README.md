@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Reloadify | [API specification](https://app.reloadify.com/api-docs/v1/swagger.yaml) | YAML | 3.0.1 | `official` `e-commerce` `email-marketing` |
 | Blueshift | [API specification](https://dash.readme.com/api/v1/api-registry/5ps18xmu84hj4g) | JSON | 3.0.0 | `official` `marketing-automation` `customer-data-platform` |
 | Ometria | [Data API specification](https://dash.readme.com/api/v1/api-registry/5ps112umucrtj90) | JSON | 3.0.0 | `official` `e-commerce` `customer-data-platform` `marketing-automation` |
 | Optimizely Campaign | [REST API specification](https://dash.readme.com/api/v1/api-registry/19jhm51im5whcrv5) | JSON | 3.0.1 | `official` `marketing-automation` `email-marketing` |
