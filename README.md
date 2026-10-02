@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Flodesk | [API specification](https://developers.flodesk.com/) | JSON | 3.0.3 | `official` `email-marketing` `marketing-automation` |
 | Typefully | [API specification](https://typefully.com/docs/api) | JSON | 3.1.0 | `official` `social-media-management` `social-publishing` |
 | OutReachBin | [API specification](https://api.swaggerhub.com/apis/polyuno3/OutReachBin/1.1?resolved=true) | JSON | 2.0 | `official` `sales-engagement` `lead-generation` |
 | Omnisend | [API specification](https://dash.readme.com/api/v1/api-registry/b42jmls0kkny) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
