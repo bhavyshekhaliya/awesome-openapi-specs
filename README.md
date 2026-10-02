@@ -92,6 +92,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | lemlist | [API specification](https://developer.lemlist.com/api-reference/openapi/v2.json) | JSON | 3.0.0 | `sales-engagement` `email-marketing` |
 | Mailjet | [API specification](https://dev.mailjet.com/openapi/openapi-mailjet) | YAML | 3.1.0 | `email-marketing` `transactional-email` |
 | LeadMetrics | [API specification](https://openapi.gitbook.com/o/6jBCGy2aFiaP8ezfWrvu/spec/leadmetrics-public-api.yaml) | YAML | 3.0.3 | `lead-generation` `marketing-analytics` |
+| LinkedIn Ads | [Community specification](specs/linkedin-ads/openapi.yml) · [source docs](https://learn.microsoft.com/en-us/linkedin/marketing/) | YAML | 3.1.0 | `community-maintained` `advertising` `marketing` |
 | Bitly            | [API specification](https://dev.bitly.com/v4/v4.json) | JSON | 3.0.0 | `official` `link-management` `analytics` |
 | Buttondown       | [API specification](https://raw.githubusercontent.com/buttondown/openapi/main/openapi.json) | JSON | 3.1.0 | `official` `email-marketing` `newsletter` |
 | KlickTipp        | [API specification](https://developers.klicktipp.com/_bundle/management-api.json?download=) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
