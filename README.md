@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Churchpool | [API specification](https://api.swaggerhub.com/apis/Churchpool/Churchpool/1.0.0?resolved=true) | JSON | 3.0.0 | `official` `community-marketing` `events` |
 | HomeDrop | [API specification](https://api.swaggerhub.com/apis/HomeDrop/HomeDropDocs/1.0.0?resolved=true) | JSON | 3.0.3 | `official` `real-estate-marketing` |
 | WithFriends Events | [API specification](https://api.swaggerhub.com/apis/withfriends/Zapier-Withfriends/1.0.0?resolved=true) | JSON | 3.0.0 | `official` `event-marketing` |
 | Temso AI | [API specification](https://api.temso.ai/v1/openapi.json) | JSON | 3.1.1 | `official` `marketing-analytics` `ai-search` |
