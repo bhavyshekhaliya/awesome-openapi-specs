@@ -1,0 +1,4928 @@
+openapi: 3.0.0
+info:
+  title: SE Ranking Data API
+  description: >-
+    SEO data API for keywords, domains, backlinks, AI Search, SERP, and site
+    audit.
+  version: 1.0.0
+  contact:
+    name: SE Ranking API Support
+    url: https://seranking.com/api
+servers:
+  - url: https://api.seranking.com
+    description: Production
+components:
+  securitySchemes:
+    apikeyAuth:
+      type: apiKey
+      in: query
+      name: apikey
+security:
+  - apikeyAuth: []
+tags:
+  - name: backlinks
+    description: >-
+      # Backlinks API
+
+
+      This collection of requests allows you to conduct a comprehensive analysis
+      of the backlink profile for any given target, whether it's a root domain,
+      a specific host (subdomain), or a particular URL.
+
+
+      You can use these endpoints to retrieve high-level statistics, fetch
+      detailed backlink lists, analyze historical trends, and check authority
+      scores.
+
+
+      ### Summary & Core Metrics
+
+
+      Use these endpoints to get a quick overview of a target's backlink
+      profile. These requests support batching for up to 100 targets.
+
+
+      - **`summary`**: Returns extended statistics, including the number of
+      referring domains, IPs, top anchors, TLDs, and more.
+          
+      - **`metrics`**: Retrieves a set of key metrics, such as the total number
+      of backlinks, referring domains, and dofollow/nofollow link counts.
+          
+      - **`count`**: Provides a simple count of the total number of live
+      backlinks for a target.
+          
+
+      ### Detailed Backlink Retrieval
+
+
+      Use these endpoints to get lists of the actual backlinks pointing to a
+      target.
+
+
+      - **`all`**: Fetches a detailed list of backlinks with powerful filtering
+      and sorting options. This is ideal for getting the "top" backlinks based
+      on criteria like InLink Rank.
+          
+      - **`raw`**: Retrieves a complete, unfiltered list of all backlinks using
+      efficient cursor-based pagination. This is best for fetching an entire
+      dataset in batches.
+          
+      - **`export`**: Exports all backlinks for a target into a downloadable
+      `.csv.gz` file. This process is asynchronous and designed for very
+      large-scale data retrieval.
+          
+
+      ### Historical Data & Trends
+
+
+      Track changes in a backlink profile over time.
+
+
+      - **`history`**: Get a list of new and lost backlinks within a specified
+      date range.
+          
+      - **`history/count`**: Returns the number of new or lost backlinks for
+      each day in a given period.
+          
+      - **`history/cumulative`**: Provides the total number of live backlinks
+      for each day in a given period.
+          
+
+      ### Analyze Specific Backlink Aspects
+
+
+      Dive deeper into specific components of the backlink profile.
+
+
+      - **`anchors`**: Returns information about the anchor texts used in links
+      pointing to a target.
+          
+      - **`refdomains`**: Provides details on the unique referring domains,
+      including their authority and the number of links from each.
+          
+      - **`referring-ips`** **&** **`subnets`**: Analyzes the network
+      distribution of backlinks by IP address and C-class subnets.
+          
+      - **`indexed-pages`**: Lists the pages on the target site that have
+      received one or more backlinks.
+          
+
+      ### Authority Scores
+
+
+      Check the calculated authority of a target based on its backlink profile.
+
+
+      - **`authority`**: Retrieves both the InLink Rank (Page Authority) and
+      Domain InLink Rank (Domain Authority).
+          
+      - **`authority/domain`**: Focuses specifically on Domain Authority,
+      including its distribution and historical values.
+          
+      - **`authority/page`**: Focuses specifically on Page Authority and its
+      historical values.
+  - name: Domain Analysis
+    description: >-
+      This collection of endpoints allows you to perform in-depth competitive
+      analysis on any domain. Use these requests to uncover keyword strategies,
+      traffic trends, and competitor performance in both organic and paid
+      search.
+
+
+      ### Performance Overviews
+
+
+      Get high-level statistics about a domain's search performance.
+
+
+      - **Regional database**: Get detailed organic and paid stats for a domain
+      within a single, selected regional database.
+          
+      - **Worldwide aggregate**: Aggregate a domain's global search performance
+      metrics for the current month.
+          
+      - **History trends**: Track historical trends for keywords, traffic, and
+      cost for organic or paid search within a specific region.
+          
+
+      ### Keyword Analysis
+
+
+      Dive deep into the specific keywords a domain ranks for.
+
+
+      - **Domain keywords**: Fetch a filterable and sortable list of all organic
+      or paid keywords for a domain.
+          
+      - **Domain keywords comparison**: Compare two domains to find common
+      keywords (overlap) or identify keyword gaps.
+          
+
+      ### Competitor & Ad Analysis
+
+
+      Analyze the competitive landscape and paid advertising strategies.
+
+
+      - **Competitors**: Discover a domain's top organic or paid competitors and
+      see the number of keywords you have in common.
+          
+      - **Paid ads**: Analyze paid ads either by keyword (to see who is bidding)
+      or by domain (to see what a specific domain is bidding on).
+  - name: Keyword Research
+    description: >-
+      This collection of endpoints is designed for comprehensive keyword
+      analysis and discovery. Use these requests to retrieve performance metrics
+      for large lists of keywords or to generate new keyword ideas based on a
+      seed term.
+
+
+      This folder is divided into two main categories:
+
+
+      ### Bulk Keyword Metrics
+
+
+      - **Export Keywords Metrics**: Submit a list of up to 5,000 keywords to
+      get detailed data points for each, including search volume, CPC,
+      competition score, keyword difficulty, and historical search volume
+      trends. This is ideal for bulk analysis and data enrichment.
+          
+
+      ### Keyword Discovery
+
+
+      Use these endpoints to expand your keyword lists and uncover new ranking
+      opportunities.
+
+
+      - **Get Similar Keywords**: Find keywords that are semantically similar to
+      your seed keyword, including synonyms and close variations.
+          
+      - **Get Related Keywords**: Discover keywords that are topically related,
+      based on having a high number of overlapping URLs in their search results.
+          
+      - **Get Question Keywords**: Generate a list of keywords phrased as common
+      user questions, perfect for content marketing and FAQ creation.
+          
+      - **Get Longtail Keywords**: Find longer, more specific keyword phrases
+      that often have lower competition and higher conversion rates.
+  - name: AI search
+    description: >-
+      This collection of endpoints allows you to analyze a domain or brand's
+      visibility and performance within various Large Language Model (LLM)
+      results, such as ChatGPT, Gemini, and Perplexity. Use these tools to track
+      your presence in AI-generated answers, discover the prompts that feature
+      your brand or domain, and understand your overall AI search footprint.
+
+
+      ### Overview & Discovery
+
+
+      - **Overview**: Get a high-level summary of a domain's performance and
+      historical trends within a specific LLM, including metrics like link
+      presence, average position, and AI-driven traffic.
+          
+      - **Discover Brand by URL**: A utility endpoint to identify the primary
+      brand name associated with a target domain, useful for subsequent
+      brand-based queries.
+          
+
+      ### Prompt Analysis
+
+
+      - **Get Prompts by Target**: Retrieve a list of all prompts where a
+      specific domain, subdomain, or URL is featured as a link or mention in an
+      LLM's answer.
+          
+      - **Get Prompts by Brand**: Find all prompts where a specific brand name
+      is mentioned in an LLM's answer, allowing you to track brand visibility
+      and context.
+  - name: SERP Results
+    description: >-
+      This collection of endpoints allows you to retrieve the top 100 search
+      engine results pages (SERPs) for any keyword in real-time, without needing
+      an active project in SE Ranking. The API uses an asynchronous, task-based
+      workflow.
+
+
+      **Note:** Using the ‘Add SERP Tasks’ endpoint costs 10 credits per
+      request.
+
+
+      ### Workflow
+
+
+      1. **Add SERP Tasks**: Submit one or more keywords to the processing queue
+      to initiate a SERP scrape.
+          
+      2. **Get SERP Task Status and Results**: Use the `task_id` from the
+      previous step to check if the task is complete and retrieve the SERP data.
+          
+      3. **List SERP Tasks**: View a list of all tasks you have submitted in the
+      last 24 hours.
+          
+
+      Results include the URL, title, and snippet for each of the top 100
+      positions and are stored for 24 hours after collection.
+  - name: SERP Results > classic
+  - name: Website Audit
+    description: >-
+      This collection of endpoints provides a comprehensive suite of tools to
+      programmatically manage the full lifecycle of your technical SEO audits.
+      These requests allow you to launch new crawls, monitor their progress in
+      real-time, and retrieve detailed reports and page-level data for in-depth
+      analysis.
+
+
+      **Note on Costs:** Audits are billed on a per-page basis.
+
+
+      - **Standard Audits:** 2 credits per crawled page.
+          
+      - **Advanced Audits (with JavaScript rendering):** 20 credits per crawled
+      page.
+          
+
+      ### 1\. Create & Manage Audits
+
+
+      Use these endpoints to start new crawls, re-run previous ones, or manage
+      your list of audits.
+
+
+      - **Create Audits**: Launch a new **Standard** (HTML crawl) or
+      **Advanced** (JavaScript rendering) audit with highly customizable
+      settings.
+          
+      - **List Audits**: Retrieve a paginated list of all audits associated with
+      your account.
+          
+      - **Update Audit Title**: Change the display title of an existing audit
+      report.
+          
+      - **Delete Audit**: Permanently remove an audit and all of its associated
+      data.
+          
+      - **Recheck Audit**: Initiate a new crawl for a completed audit using its
+      original settings.
+          
+
+      ### 2\. Monitor & Retrieve Data
+
+
+      Once an audit is running or complete, use these endpoints to check its
+      progress and pull detailed results.
+
+
+      - **Get Audit Status**: Check the real-time progress of an ongoing audit.
+          
+      - **Get Audit Report**: Fetch the full, high-level report for a completed
+      audit, including the overall health score and a summary of issues.
+          
+      - **Get Audit History**: Retrieve a historical snapshot of a specific
+      audit run from a particular date.
+          
+      - **Get All Crawled Pages**: Return a complete, paginated list of every
+      URL discovered during an audit.
+          
+      - **Get Audit Pages by Issue**: Get a list of all URLs affected by a
+      single, specific issue.
+          
+      - **Get All Issues for a Specific URL**: Retrieve all errors, warnings,
+      and notices found on a single page.
+          
+      - **Get All Found Links**: Fetch a complete list of every internal and
+      external link discovered across the entire site during the audit.
+  - name: Account & system
+    description: >-
+      This collection contains endpoints for retrieving information about your
+      account status, subscription details, and current credit and API unit
+      balances. Use these requests to monitor your usage and plan details
+      programmatically.
+
+
+      ### Endpoints
+
+
+      - **Get Subscription Info**: Returns detailed information about your
+      current API subscription plan, including its status (e.g., active,
+      expired), validity dates, and the total and remaining API units available.
+          
+      - **Get Credit Balance**: Returns the current account-wide credit balance,
+      showing the total limit and the amount of credits that have been used.
+paths:
+  /v1/backlinks/summary:
+    get:
+      operationId: getBacklinksSummary
+      tags:
+        - backlinks
+      summary: summary
+      description: >-
+        Retrieves a comprehensive summary of backlink statistics for one or more
+        targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+            description: Supports multiple targets by repeating this parameter.
+          example: rubyonrails.org
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: host
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksSummary
+      tags:
+        - backlinks
+      summary: summary
+      description: >-
+        Retrieves a comprehensive summary of backlink statistics for one or more
+        targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.google.com/
+                mode: host
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/metrics:
+    get:
+      operationId: getBacklinksMetrics
+      tags:
+        - backlinks
+      summary: metrics
+      description: >-
+        Retrieves key backlink statistics (e.g., backlink, referring domain, and
+        IP counts) for one or more targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: target-rfunqmac.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksMetrics
+      tags:
+        - backlinks
+      summary: metrics
+      description: >-
+        Retrieves key backlink statistics (e.g., backlink, referring domain, and
+        IP counts) for one or more targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.seranking.com/
+                mode: url
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/all:
+    get:
+      operationId: getBacklinksAll
+      tags:
+        - backlinks
+      summary: all
+      description: >-
+        Retrieves a detailed, filterable, and sortable list of backlinks
+        pointing to a single target.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: http://accordconsultants.in/
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: url
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10000
+        - name: per_domain
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: order_by
+          in: query
+          schema:
+            type: string
+          example: inlink_rank
+        - name: url_from_filter
+          in: query
+          schema:
+            type: string
+          example: unsam.edu.ar
+        - name: url_to_filter
+          in: query
+          schema:
+            type: string
+          example: .jpg
+        - name: url_to_filter_mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - contains
+              - does_not_contain
+          example: does_not_contain
+        - name: url_from_filter_mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - contains
+              - does_not_contain
+            default: contains
+          example: contains
+        - name: anchor_filter
+          in: query
+          description: Filter by anchor text. Max 2063 characters.
+          schema:
+            type: string
+            maxLength: 2063
+        - name: anchor_filter_mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - contains
+              - does_not_contain
+            default: contains
+          example: contains
+        - name: nofollow_filter
+          in: query
+          schema:
+            type: string
+            enum:
+              - nofollow_only
+              - dofollow_only
+        - name: inlink_rank_from
+          in: query
+          description: Minimum InLink Rank (0-100).
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: inlink_rank_to
+          in: query
+          description: Maximum InLink Rank (0-100).
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: domain_inlink_rank_from
+          in: query
+          description: Minimum Domain InLink Rank (0-100).
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: domain_inlink_rank_to
+          in: query
+          description: Maximum Domain InLink Rank (0-100).
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksAll
+      tags:
+        - backlinks
+      summary: all
+      description: >-
+        Retrieves a detailed, filterable, and sortable list of backlinks
+        pointing to a single target.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com/
+                mode: domain
+                limit: 10
+                per_domain: 1
+                order_by: date_found
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/raw:
+    get:
+      operationId: getBacklinksRaw
+      tags:
+        - backlinks
+      summary: raw
+      description: >-
+        Fetches the complete list of backlinks for a target in batches using
+        cursor-based pagination.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: teilon.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: host
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: next
+          in: query
+          schema:
+            type: string
+          example: >-
+            Pju9uZR4A2dylhvnUQ1UAu1NWfBjWoutYn_z2MHcVcZqH2eGVtT6Z6j2DjgyJKqyLem4yIj_it6xfHqasMXnj7/_zbLyBX93MmSekLiLxHa_gA9MRIrnPC2sxL4mDNzCzAsbK54U4UCScqvMexsrDx2obPcxHWZMl_yU7hQDa/9GJwcutpU0_v7TbtefRP9EVw/5eFZjvsNERYxl8jORIyNxL4N5t5LK75BaM51pYQ5q8bfuw/F42rIB8xKM0vD0i090_65JHrZPsDoAkKce/XELUwhGcoDqyRgG2P3AXAbZOe5RDFV/vz0YFTyI9tqynHJtP2olEKQ079f3hwroR6YML5AgTsVPwIynxNILAd_OHU5aFTReKIy686fBoIFZWR2dsyeGgN3r/n0jolcHNg==
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+        - name: per_domain
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          example: 1
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - date_found
+              - domain_inlink_rank
+              - inlink_rank
+            default: date_found
+          example: date_found
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/count:
+    get:
+      operationId: getBacklinksCount
+      tags:
+        - backlinks
+      summary: count
+      description: Returns the total number of live backlinks for one or more targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+            description: Supports multiple targets by repeating this parameter.
+          example: anandaioga.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: url
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksCount
+      tags:
+        - backlinks
+      summary: count
+      description: Returns the total number of live backlinks for one or more targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.google.com/
+                mode: host
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/export:
+    get:
+      operationId: getBacklinksExport
+      tags:
+        - backlinks
+      summary: export
+      description: >-
+        Initiates an asynchronous task to export all backlinks for a target to a
+        downloadable CSV file.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/export/status:
+    get:
+      operationId: getBacklinksExportStatus
+      tags:
+        - backlinks
+      summary: export/status
+      description: >-
+        Status of the asynchronous task to export all backlinks for a target to
+        a downloadable CSV file.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: task_id
+          in: query
+          required: true
+          schema:
+            type: string
+          example: '1_878619'
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/history:
+    get:
+      operationId: getBacklinksHistory
+      tags:
+        - backlinks
+      summary: history
+      description: >-
+        Returns a list of new or lost backlinks for a single target within a
+        specified date range.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://www.seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: new_lost_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - new
+              - lost
+          example: new
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2024-01-14'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2025-08-28'
+        - name: link_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - href
+              - redirect
+          example: href
+        - name: anchor_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - text
+              - image
+              - undefined
+          example: text
+        - name: dofollow
+          in: query
+          schema:
+            type: string
+            enum:
+              - dofollow
+              - nofollow
+              - undefined
+          example: dofollow
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+        - name: url_from
+          in: query
+          description: Filter by referring page URL.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10000
+            default: 100
+          example: 100
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - new_lost_date
+              - domain_inlink_rank
+              - inlink_rank
+            default: new_lost_date
+          example: new_lost_date
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksHistory
+      tags:
+        - backlinks
+      summary: history
+      description: >-
+        Returns a list of new or lost backlinks for a single target within a
+        specified date range.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com
+                mode: domain
+                date_from: '2025-09-15'
+                date_to: '2025-10-01'
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/history/count:
+    get:
+      operationId: getBacklinksHistoryCount
+      tags:
+        - backlinks
+      summary: history/count
+      description: >-
+        Returns the daily count of new and lost backlinks for a target over a
+        specified period.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://www.seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: new_lost_type
+          in: query
+          schema:
+            type: string
+          example: new
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2025-09-14'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2025-10-28'
+        - name: link_type
+          in: query
+          schema:
+            type: string
+          example: href
+        - name: anchor_type
+          in: query
+          schema:
+            type: string
+          example: text
+        - name: dofollow
+          in: query
+          schema:
+            type: string
+          example: dofollow
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+        - name: url_from
+          in: query
+          description: Filter by referring page URL.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksHistoryCount
+      tags:
+        - backlinks
+      summary: history/count
+      description: >-
+        Returns the daily count of new and lost backlinks for a target over a
+        specified period.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com
+                mode: domain
+                date_from: '2025-09-15'
+                date_to: '2025-10-15'
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/history/cumulative:
+    get:
+      operationId: getBacklinksHistoryCumulative
+      tags:
+        - backlinks
+      summary: history/cumulative
+      description: >-
+        Returns the total number of live backlinks for a target for each day in
+        a specified date range.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://www.seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2024-01-14'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2024-08-28'
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksHistoryCumulative
+      tags:
+        - backlinks
+      summary: history/cumulative
+      description: >-
+        Returns the total number of live backlinks for a target for each day in
+        a specified date range.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com
+                mode: domain
+                date_from: '2024-01-14'
+                date_to: '2024-08-28'
+                output: json
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/anchors:
+    get:
+      operationId: getBacklinksAnchors
+      tags:
+        - backlinks
+      summary: anchors
+      description: >-
+        Returns information about the anchor texts used in backlinks that point
+        to a single target.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - backlinks
+              - refdomains
+          example: backlinks
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 2
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksAnchors
+      tags:
+        - backlinks
+      summary: anchors
+      description: >-
+        Returns information about the anchor texts used in backlinks that point
+        to a single target.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com/
+                order_by: backlinks
+                mode: domain
+                limit: 2
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/refdomains:
+    get:
+      operationId: getBacklinksRefdomains
+      tags:
+        - backlinks
+      summary: refdomains
+      description: >-
+        Retrieves a list of referring domains pointing to a single target, with
+        sorting options.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            enum:
+              - date_found
+              - domain_inlink_rank
+              - inlink_rank
+            default: date_found
+          example: date_found
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksRefdomains
+      tags:
+        - backlinks
+      summary: refdomains
+      description: >-
+        Retrieves a list of referring domains pointing to a single target, with
+        sorting options.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com/
+                order_by: date_found
+                mode: domain
+                limit: 2
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/refdomains/count:
+    get:
+      operationId: getBacklinksRefdomainsCount
+      tags:
+        - backlinks
+      summary: refdomains/count
+      description: >-
+        Returns the total number of unique referring domains for one or more
+        targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+            description: Supports multiple targets by repeating this parameter.
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksRefdomainsCount
+      tags:
+        - backlinks
+      summary: refdomains/count
+      description: >-
+        Returns the total number of unique referring domains for one or more
+        targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.anandaioga.com/
+                order_by: date_found
+                mode: domain
+                limit: 2
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/refdomains/history:
+    get:
+      operationId: getBacklinksRefdomainsHistory
+      tags:
+        - backlinks
+      summary: refdomains/history
+      description: >-
+        Retrieves a list of new and lost referring domains for a target within a
+        specified date range.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: new_lost_type
+          in: query
+          schema:
+            type: string
+          example: new
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2025-03-01'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2025-06-01'
+        - name: order_by
+          in: query
+          schema:
+            type: string
+          example: new_lost_date
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksRefdomainsHistory
+      tags:
+        - backlinks
+      summary: refdomains/history
+      description: >-
+        Retrieves a list of new and lost referring domains for a target within a
+        specified date range.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com
+                mode: domain
+                new_lost_type: new
+                date_from: '2025-01-15'
+                date_to: '2025-04-16'
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/refdomains/history/count:
+    get:
+      operationId: getBacklinksRefdomainsHistoryCount
+      tags:
+        - backlinks
+      summary: refdomains/history/count
+      description: >-
+        Returns the daily count of new and lost referring domains for a target
+        over a specified period.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: new_lost_type
+          in: query
+          schema:
+            type: string
+          example: new
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2025-03-01'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2025-06-01'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksRefdomainsHistoryCount
+      tags:
+        - backlinks
+      summary: refdomains/history/count
+      description: >-
+        Returns the daily count of new and lost referring domains for a target
+        over a specified period.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com
+                mode: domain
+                new_lost_type: new
+                date_from: '2025-01-15'
+                date_to: '2025-04-16'
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/referring-ips:
+    get:
+      operationId: getBacklinksReferringIps
+      tags:
+        - backlinks
+      summary: referring-ips
+      description: >-
+        Returns information about the IPv4 addresses that host backlinks
+        pointing to a single target.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: order_by
+          in: query
+          schema:
+            type: string
+          example: backlinks
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksReferringIps
+      tags:
+        - backlinks
+      summary: referring-ips
+      description: >-
+        Returns information about the IPv4 addresses that host backlinks
+        pointing to a single target.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com/
+                order_by: refdomains
+                mode: domain
+                limit: 2
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/referring-ips/count:
+    get:
+      operationId: getBacklinksReferringIpsCount
+      tags:
+        - backlinks
+      summary: referring-ips/count
+      description: >-
+        Returns the total number of unique referring IPs for one or more
+        targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+            description: Supports multiple targets by repeating this parameter.
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksReferringIpsCount
+      tags:
+        - backlinks
+      summary: referring-ips/count
+      description: >-
+        Returns the total number of unique referring IPs for one or more
+        targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.us-seranking.com/
+                mode: host
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/referring-subnets/count:
+    get:
+      operationId: getBacklinksReferringSubnetsCount
+      tags:
+        - backlinks
+      summary: referring-subnets/count
+      description: >-
+        Returns the total number of unique referring subnets (C-blocks) for one
+        or more targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+            description: Supports multiple targets by repeating this parameter.
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksReferringSubnetsCount
+      tags:
+        - backlinks
+      summary: referring-subnets/count
+      description: >-
+        Returns the total number of unique referring subnets (C-blocks) for one
+        or more targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.us-seranking.com/
+                mode: host
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/indexed-pages:
+    get:
+      operationId: getBacklinksIndexedPages
+      tags:
+        - backlinks
+      summary: indexed-pages
+      description: >-
+        Retrieves a list of pages on a target site that have received at least
+        one backlink.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: domain
+        - name: output
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: json
+          example: json
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: order_by
+          in: query
+          schema:
+            type: string
+          example: backlinks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksIndexedPages
+      tags:
+        - backlinks
+      summary: indexed-pages
+      description: >-
+        Retrieves a list of pages on a target site that have received at least
+        one backlink.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target: https://www.seranking.com/
+                order_by: backlinks
+                mode: domain
+                limit: 2
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority:
+    get:
+      operationId: getBacklinksAuthority
+      tags:
+        - backlinks
+      summary: authority
+      description: >-
+        Returns the Page Authority (InLink Rank) and Domain Authority (Domain
+        InLink Rank) for one or more targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksAuthority
+      tags:
+        - backlinks
+      summary: authority
+      description: >-
+        Returns the Page Authority (InLink Rank) and Domain Authority (Domain
+        InLink Rank) for one or more targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.seranking.com/rank-tracker/
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority/domain:
+    get:
+      operationId: getBacklinksAuthorityDomain
+      tags:
+        - backlinks
+      summary: authority/domain
+      description: >-
+        Returns the Domain Authority (Domain InLink Rank) for one or more
+        targets.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksAuthorityDomain
+      tags:
+        - backlinks
+      summary: authority/domain
+      description: >-
+        Returns the Domain Authority (Domain InLink Rank) for one or more
+        targets.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.seranking.com/rank-tracker/
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority/domain/distribution:
+    get:
+      operationId: getBacklinksAuthorityDomainDistribution
+      tags:
+        - backlinks
+      summary: authority/domain/distribution
+      description: >-
+        Returns the distribution of Domain Authority scores for all domains
+        linking to a single target.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: mode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+              - url
+            default: host
+          example: host
+        - name: histogramMode
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - host
+            default: host
+          example: host
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority/page:
+    get:
+      operationId: getBacklinksAuthorityPage
+      tags:
+        - backlinks
+      summary: authority/page
+      description: Returns the Page Authority (InLink Rank) for one or more target URLs.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      operationId: createBacklinksAuthorityPage
+      tags:
+        - backlinks
+      summary: authority/page
+      description: Returns the Page Authority (InLink Rank) for one or more target URLs.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                target:
+                  - https://www.seranking.com/
+                  - https://www.seranking.com/rank-tracker/
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority/page/history:
+    get:
+      operationId: getBacklinksAuthorityPageHistory
+      tags:
+        - backlinks
+      summary: authority/page/history
+      description: >-
+        Returns the historical Page Authority (InLink Rank) values for a single
+        target URL.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com
+        - name: date_from
+          in: query
+          schema:
+            type: string
+          example: '2025-01-01'
+        - name: date_to
+          in: query
+          schema:
+            type: string
+          example: '2025-05-30'
+        - name: granularity
+          in: query
+          schema:
+            type: string
+          example: by_week
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/backlinks/authority/domain/history:
+    get:
+      operationId: getBacklinksAuthorityDomainHistory
+      tags:
+        - backlinks
+      summary: authority/domain/history
+      description: >-
+        Returns historical Domain InLink Rank (Domain Authority) values for a
+        target domain. GET only, single target.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: date_from
+          in: query
+          schema:
+            type: string
+        - name: date_to
+          in: query
+          schema:
+            type: string
+        - name: granularity
+          in: query
+          schema:
+            type: string
+          example: by_day
+        - name: output
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/overview/db:
+    get:
+      operationId: getDomainOverviewDb
+      tags:
+        - Domain Analysis
+      summary: Regional database
+      description: >-
+        Provides a detailed breakdown of a domain's organic and paid keyword
+        performance within a single specified regional database.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: url
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com/api.html
+        - name: with_subdomains
+          in: query
+          schema:
+            type: boolean
+            default: true
+          example: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/overview/worldwide:
+    get:
+      operationId: getDomainOverviewWorldwide
+      tags:
+        - Domain Analysis
+      summary: Worldwide aggregate
+      description: >-
+        Aggregates a domain’s current global search performance statistics for
+        both organic and paid traffic.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: fields
+          in: query
+          schema:
+            type: string
+          example: price,traffic,keywords,positions_diff,positions_tops
+        - name: show_zones_list
+          in: query
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+            default: 0
+          example: 0
+        - name: currency
+          in: query
+          description: ISO 4217 currency code.
+          schema:
+            type: string
+            maxLength: 3
+            default: USD
+          example: USD
+        - name: with_subdomains
+          in: query
+          schema:
+            type: boolean
+            default: true
+          example: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/overview/worldwide/url:
+    get:
+      operationId: getDomainOverviewWorldwideUrl
+      tags:
+        - Domain Analysis
+      summary: Worldwide aggregate for URL
+      description: >-
+        Aggregates a domain’s current global search performance statistics for
+        both organic and paid traffic.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: fields
+          in: query
+          schema:
+            type: string
+          example: price,traffic,keywords
+        - name: url
+          in: query
+          schema:
+            type: string
+          example: https://seranking.com/api.html
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/overview/history:
+    get:
+      operationId: getDomainOverviewHistory
+      tags:
+        - Domain Analysis
+      summary: History Trends
+      description: >-
+        Fetches historical data, including keyword counts and traffic trends,
+        for a domain's organic or paid performance in a specific region.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - organic
+              - adv
+            default: organic
+          example: organic
+        - name: with_subdomains
+          in: query
+          schema:
+            type: boolean
+            default: true
+          example: true
+        - name: url
+          in: query
+          description: Specific URL to get history for instead of domain.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/keywords:
+    get:
+      operationId: getDomainKeywords
+      tags:
+        - Domain Analysis
+      summary: Domain keywords
+      description: >-
+        Returns a filterable and sortable list of organic or paid keywords for
+        which a specific domain ranks in a given database.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: wix.com
+        - name: url
+          in: query
+          schema:
+            type: string
+          example: https://www.mywage.de/blog/baufinanzierung-trotz-schufa
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - organic
+              - adv
+          example: organic
+        - name: with_subdomains
+          in: query
+          schema:
+            type: boolean
+          example: true
+        - name: order_field
+          in: query
+          schema:
+            type: string
+            enum:
+              - traffic
+              - volume
+              - position
+              - cpc
+              - competition
+              - kei
+              - difficulty
+          example: traffic
+        - name: order_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          example: desc
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: cols
+          in: query
+          schema:
+            type: string
+        - name: pos_change
+          in: query
+          schema:
+            type: string
+            enum:
+              - up
+              - down
+              - new
+              - lost
+              - diff
+              - same
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 500
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 2000
+        - name: filter[difficulty][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[difficulty][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[url]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+             [
+             {
+             "type": "contains",
+             "value": "/blog/"
+             }
+             ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: '[[{"type":"contains", "value":"seo"}]]'
+        - name: filter[serp_features]
+          in: query
+          schema:
+            type: string
+        - name: filter[intents]
+          in: query
+          schema:
+            type: string
+        - name: filter[keyword]
+          in: query
+          schema:
+            type: string
+          example: scholar
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[position][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[position][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[competition][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[competition][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[cpc][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[cpc][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_percent][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_percent][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[price][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[price][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[serp_features_2][mode]
+          in: query
+          schema:
+            type: string
+          example: with_link
+        - name: filter[serp_features_2][value][0]
+          in: query
+          schema:
+            type: string
+          example: sge
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/pages:
+    get:
+      operationId: getDomainPages
+      tags:
+        - Domain Analysis
+      summary: Domain pages
+      description: >-
+        Returns a filterable and sortable list of organic or paid keywords for
+        which a specific domain ranks in a given database.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: scope
+          in: query
+          schema:
+            type: string
+          example: base_domain
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: type
+          in: query
+          schema:
+            type: string
+          example: organic
+        - name: order_field
+          in: query
+          schema:
+            type: string
+          example: keywords_count
+        - name: order_type
+          in: query
+          schema:
+            type: string
+          example: desc
+        - name: offset
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 1000
+        - name: filter[domain_url]
+          in: query
+          schema:
+            type: string
+        - name: filter[domain_traffic_percent][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[domain_traffic_percent][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[keywords_count][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[keywords_count][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_sum][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_sum][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[price_sum][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[price_sum][to]
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/subdomains:
+    get:
+      operationId: getDomainSubdomains
+      tags:
+        - Domain Analysis
+      summary: Domain subdomains
+      description: >-
+        Returns a filterable and sortable list of organic or paid keywords for
+        which a specific domain ranks in a given database.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: scope
+          in: query
+          schema:
+            type: string
+          example: base_domain
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: type
+          in: query
+          schema:
+            type: string
+          example: organic
+        - name: order_field
+          in: query
+          schema:
+            type: string
+          example: keywords_count
+        - name: order_type
+          in: query
+          schema:
+            type: string
+          example: asc
+        - name: offset
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 1000
+        - name: filter[domain_url]
+          in: query
+          schema:
+            type: string
+        - name: filter[domain_traffic_percent][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[domain_traffic_percent][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[keywords_count][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[keywords_count][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_sum][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[traffic_sum][to]
+          in: query
+          schema:
+            type: string
+        - name: filter[price_sum][from]
+          in: query
+          schema:
+            type: string
+        - name: filter[price_sum][to]
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/ads:
+    get:
+      operationId: getDomainAds
+      tags:
+        - Domain Analysis
+      summary: Paid ads for domain
+      description: >-
+        Returns a list of keywords a specific domain is bidding on, along with
+        the ad creatives used for those keywords.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: booking.com
+        - name: from
+          in: query
+          schema:
+            type: string
+          example: 2023-01
+        - name: to
+          in: query
+          schema:
+            type: string
+          example: 2023-12
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+          example: us
+        - name: keyword
+          in: query
+          description: Search by keyword instead of domain. Mutually exclusive with domain.
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/competitors:
+    get:
+      operationId: getDomainCompetitors
+      tags:
+        - Domain Analysis
+      summary: Competitors
+      description: >-
+        Identifies a list of top organic or paid competitors for a specified
+        domain and shows the number of keywords they have in common.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - organic
+              - adv
+          example: organic
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+          example: us
+        - name: url
+          in: query
+          description: Specific URL to analyze instead of the full domain.
+          schema:
+            type: string
+          example: https://seranking.com/api.html
+        - name: stats
+          in: query
+          description: Include additional statistics (0 or 1).
+          schema:
+            type: integer
+            enum:
+              - 0
+              - 1
+            default: 0
+          example: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/domain/keywords/comparison:
+    get:
+      operationId: getDomainKeywordsComparison
+      tags:
+        - Domain Analysis
+      summary: Domain keyword comparison
+      description: >-
+        Compares two domains to find either their common keywords or the
+        keywords for which one ranks and the other does not.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: compare
+          in: query
+          schema:
+            type: string
+          example: samsung.com
+        - name: domain
+          in: query
+          schema:
+            type: string
+          example: apple.com
+        - name: url
+          in: query
+          description: Specific URL to compare instead of full domain.
+          schema:
+            type: string
+          example: https://www.apple.com
+        - name: type
+          in: query
+          schema:
+            type: string
+          example: organic
+        - name: diff
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: order_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          example: desc
+        - name: order_field
+          in: query
+          schema:
+            type: string
+            enum:
+              - keyword
+              - volume
+              - cpc
+              - competition
+              - difficulty
+              - position
+          example: volume
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 1
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: cols
+          in: query
+          description: Comma-separated list of columns to include in the response.
+          schema:
+            type: string
+          example: keyword,position,volume,traffic,cpc,competition
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/keywords/export:
+    post:
+      operationId: createKeywordsExport
+      tags:
+        - Keyword Research
+      summary: Export Keywords Metrics
+      description: >-
+        Retrieves bulk performance metrics like search volume, CPC, and
+        difficulty for a submitted list of up to 5,000 keywords.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - keywords[]
+              properties:
+                keywords[]:
+                  type: array
+                  items:
+                    type: string
+                  description: List of keywords (max 5,000).
+                  maxItems: 5000
+                sort:
+                  type: string
+                  enum:
+                    - volume
+                    - cpc
+                    - difficulty
+                    - competition
+                    - history_trend
+                sort_order:
+                  type: string
+                  enum:
+                    - asc
+                    - desc
+                cols:
+                  type: string
+                  description: Comma-separated list of columns to include.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+          example: us
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/keywords/similar:
+    get:
+      operationId: getKeywordsSimilar
+      tags:
+        - Keyword Research
+      summary: Get similar keywords
+      description: >-
+        Discovers semantically similar keywords, including synonyms and close
+        variations, for a given seed term.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          example: seo
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+          example: keyword
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+          example: asc
+        - name: history_trend
+          in: query
+          schema:
+            type: boolean
+          example: true
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 100000
+        - name: filter[difficulty][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[difficulty][to]
+          in: query
+          schema:
+            type: integer
+          example: 30
+        - name: filter[cpc][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[cpc][to]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[competition][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[competition][to]
+          in: query
+          schema:
+            type: number
+          example: 0.1
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 3
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 8
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 15
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 50
+        - name: filter[serp_features]
+          in: query
+          schema:
+            type: string
+          example: sge,images
+        - name: filter[intents]
+          in: query
+          schema:
+            type: string
+          example: I,C,T,L
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/keywords/related:
+    get:
+      operationId: getKeywordsRelated
+      tags:
+        - Keyword Research
+      summary: Get related keywords
+      description: >-
+        Finds topically related keywords that share a high number of overlapping
+        URLs in the search results for a given seed term.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          example: avocado
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+          example: keyword
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+          example: asc
+        - name: history_trend
+          in: query
+          schema:
+            type: boolean
+          example: true
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 100000
+        - name: filter[difficulty][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[difficulty][to]
+          in: query
+          schema:
+            type: integer
+          example: 30
+        - name: filter[cpc][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[cpc][to]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[competition][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[competition][to]
+          in: query
+          schema:
+            type: number
+          example: 0.1
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 3
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 8
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 15
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 50
+        - name: filter[serp_features]
+          in: query
+          schema:
+            type: string
+          example: sge,images
+        - name: filter[intents]
+          in: query
+          schema:
+            type: string
+          example: I,C,T,L
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/keywords/questions:
+    get:
+      operationId: getKeywordsQuestions
+      tags:
+        - Keyword Research
+      summary: Get question keywords
+      description: >-
+        Generates a list of keywords phrased as common user questions that are
+        relevant to a given seed term.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          example: avocado
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+          example: keyword
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+          example: asc
+        - name: history_trend
+          in: query
+          schema:
+            type: boolean
+          example: true
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 100000
+        - name: filter[difficulty][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[difficulty][to]
+          in: query
+          schema:
+            type: integer
+          example: 30
+        - name: filter[cpc][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[cpc][to]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[competition][from]
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: filter[competition][to]
+          in: query
+          schema:
+            type: number
+          example: 0.1
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 3
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 8
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 15
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 50
+        - name: filter[serp_features]
+          in: query
+          schema:
+            type: string
+          example: sge,images
+        - name: filter[intents]
+          in: query
+          schema:
+            type: string
+          example: I,C,T,L
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "begins",   "value": "find"  },
+                { "type": "contains", "value": "link"  }
+              ],
+              [
+                { "type": "contains", "value": "backlink" },
+                { "type": "ends",     "value": "checker" }
+              ],
+              [
+                { "type": "exact",    "value": "serankings" }
+              ]
+            ]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/keywords/longtail:
+    get:
+      operationId: getKeywordsLongtail
+      tags:
+        - Keyword Research
+      summary: Get longtail keywords
+      description: >-
+        Provides a list of longer, more specific long-tail keyword variations
+        related to a given seed term.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          example: avocado
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - keyword
+              - volume
+              - cpc
+              - difficulty
+              - competition
+          example: volume
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+          example: desc
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+        - name: filter[difficulty][from]
+          in: query
+          schema:
+            type: integer
+        - name: filter[difficulty][to]
+          in: query
+          schema:
+            type: integer
+        - name: filter[cpc][from]
+          in: query
+          schema:
+            type: number
+        - name: filter[cpc][to]
+          in: query
+          schema:
+            type: number
+        - name: filter[competition][from]
+          in: query
+          schema:
+            type: number
+        - name: filter[competition][to]
+          in: query
+          schema:
+            type: number
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+        - name: filter[serp_features]
+          in: query
+          schema:
+            type: string
+        - name: filter[intents]
+          in: query
+          schema:
+            type: string
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/overview/aggregated/time-series:
+    get:
+      tags:
+        - AI search
+      summary: overview (aggregated)
+      description: >-
+        Retrieves a high-level aggregated summary of a domain's key performance
+        metrics and historical trends across all LLM engines.
+      operationId: getAiOverviewAggregated
+      parameters:
+        - name: target
+          in: query
+          required: true
+          schema:
+            type: string
+          example: seranking.com
+        - name: source
+          in: query
+          required: true
+          schema:
+            type: string
+          example: us
+        - name: brand
+          in: query
+          schema:
+            type: string
+          example: SE Ranking
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - base_domain
+              - url
+            default: base_domain
+          example: base_domain
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/overview/by-engine/time-series:
+    get:
+      operationId: getAiSearchOverviewByEngineTimeSeries
+      tags:
+        - AI search
+      summary: overview
+      description: >-
+        Retrieves a high-level summary of a domain’s key performance metrics and
+        historical trends within a specified LLM.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: engine
+          in: query
+          schema:
+            type: string
+          example: ai-overview
+        - name: brand
+          in: query
+          schema:
+            type: string
+          example: SE Ranking
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - base_domain
+              - url
+            default: base_domain
+          example: base_domain
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/overview/leaderboard:
+    post:
+      operationId: createAiSearchOverviewLeaderboard
+      tags:
+        - AI search
+      summary: leaderboard
+      description: >-
+        Retrieves a high-level summary of a domain’s key performance metrics and
+        historical trends within a specified LLM.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                primary:
+                  target: seranking.com
+                  brand: SE Ranking
+                competitors:
+                  - target: semrush.com
+                    brand: Semrush
+                  - target: ahrefs.com
+                    brand: Ahrefs
+                scope: base_domain
+                source: us
+                engines:
+                  - ai-overview
+                  - chatgpt
+                  - perplexity
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: brand
+          in: query
+          schema:
+            type: string
+          example: SE Ranking
+        - name: scope
+          in: query
+          schema:
+            type: string
+          example: base_domain
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/discover-brand:
+    get:
+      operationId: getAiSearchDiscoverBrand
+      tags:
+        - AI search
+      summary: discover brand
+      description: >-
+        Identifies and returns the brand name associated with a given target
+        domain, subdomain, or URL.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum:
+              - domain
+              - base_domain
+              - url
+            default: domain
+          description: >-
+            base_domain (aggregate by registrable domain, includes all
+            subdomains), domain (exact host only, no subdomain aggregation), url
+            (exact URL including path and query)
+          example: domain
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/prompts-by-target:
+    get:
+      operationId: getAiSearchPromptsByTarget
+      tags:
+        - AI search
+      summary: prompts by target
+      description: >-
+        Fetches a list of prompts where a specified domain, subdomain, or URL
+        appears in the results of a chosen LLM.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: target
+          in: query
+          schema:
+            type: string
+          example: seranking.com
+        - name: scope
+          in: query
+          schema:
+            type: string
+          description: >-
+            base_domain (aggregate by registrable domain, includes all
+            subdomains), domain (exact host only, no subdomain aggregation), url
+            (exact URL including path and query)
+          example: domain
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: engine
+          in: query
+          schema:
+            type: string
+          example: ai-mode
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - volume
+              - type
+              - snippet_length
+            default: volume
+          example: volume
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+          example: desc
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+             [
+             {
+             "type": "contains",
+             "value": "seo"
+             }
+             ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "contains", "value": "backlinks" }
+              ]
+            ]
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 100000
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 5
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 8
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 15
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 50
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/ai-search/prompts-by-brand:
+    get:
+      operationId: getAiSearchPromptsByBrand
+      tags:
+        - AI search
+      summary: prompts by brand
+      description: >-
+        Retrieves a list of prompts where a specified brand name is mentioned in
+        the results of a chosen LLM.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: brand
+          in: query
+          schema:
+            type: string
+          example: SE Ranking
+        - name: source
+          in: query
+          schema:
+            type: string
+          example: us
+        - name: engine
+          in: query
+          schema:
+            type: string
+          example: perplexity
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum:
+              - volume
+              - type
+              - snippet_length
+            default: volume
+          example: volume
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+          example: desc
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: filter[multi_keyword_included]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+             [
+             {
+             "type": "contains",
+             "value": "seo"
+             }
+             ]
+            ]
+        - name: filter[multi_keyword_excluded]
+          in: query
+          schema:
+            type: string
+          example: |-
+            [
+              [
+                { "type": "contains", "value": "seo"   },
+                { "type": "contains", "value": "tools" }
+              ],
+              [
+                { "type": "contains", "value": "backlinks" }
+              ]
+            ]
+        - name: filter[volume][from]
+          in: query
+          schema:
+            type: integer
+          example: 100
+        - name: filter[volume][to]
+          in: query
+          schema:
+            type: integer
+          example: 100000
+        - name: filter[keyword_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 5
+        - name: filter[keyword_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 8
+        - name: filter[characters_count][from]
+          in: query
+          schema:
+            type: integer
+          example: 15
+        - name: filter[characters_count][to]
+          in: query
+          schema:
+            type: integer
+          example: 50
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/serp/classic/tasks:
+    post:
+      operationId: createSerpClassicTasks
+      tags:
+        - SERP Results > classic
+      summary: Add task
+      description: >-
+        Queues one or more keywords for SERP data collection and returns a
+        unique task ID for each.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                search_engine: google
+                device: desktop
+                language_code: es
+                location_id: 12998
+                query:
+                  - seo report
+                  - seo api
+                tag: test_tag
+                pingback_url: https://your-webhook.example.com?id=$id&user_tag=$tag
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      operationId: getSerpClassicTasks
+      tags:
+        - SERP Results > classic
+      summary: List tasks / Get task results
+      description: >-
+        Without task_id: returns a list of all SERP tasks submitted within the
+        last 24 hours. With task_id: returns the status or results for a
+        specific task.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{vault:api_key_project}}'
+        - name: task_id
+          in: query
+          description: >-
+            Task ID returned by the POST endpoint. When provided, returns
+            status or results for that specific task.
+          schema:
+            type: integer
+          example: 62458525
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/serp/classic/tasks/results_advanced:
+    get:
+      operationId: getSerpClassicTasksResults_advanced
+      tags:
+        - SERP Results > classic
+      summary: Get advanced results
+      description: >-
+        Checks the status of a specific task and retrieves the top 100 SERP
+        results once the task is complete.
+      parameters:
+        - name: task_id
+          in: query
+          schema:
+            type: integer
+          example: 32
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/serp/classic/tasks/html:
+    get:
+      operationId: getSerpClassicTasksHtml
+      tags:
+        - SERP Results > classic
+      summary: Get HTML dump
+      description: >-
+        Checks the status of a specific task and retrieves the top 100 SERP
+        results once the task is complete.
+      parameters:
+        - name: task_id
+          in: query
+          schema:
+            type: integer
+          example: 743834
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/serp/classic/locations:
+    get:
+      operationId: getSerpClassicLocations
+      tags:
+        - SERP Results > classic
+      summary: Get locations
+      description: >-
+        Returns a list of all SERP tasks submitted by the user within the last
+        24 hours.
+      parameters:
+        - name: country_code
+          in: query
+          schema:
+            type: string
+          example: ES
+        - name: q
+          in: query
+          schema:
+            type: string
+          example: Barcelona
+        - name: include
+          in: query
+          description: Include additional fields in the response.
+          schema:
+            type: string
+          example: google_ads_location_id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/standard:
+    post:
+      operationId: createSiteAuditAuditsStandard
+      tags:
+        - Website Audit
+      summary: Create standard audit
+      description: Launches a new website audit by crawling the site's raw HTML.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                domain: example.com
+                title: Example Audit Title
+                settings:
+                  source_site: 1
+                  source_sitemap: 1
+                  source_subdomain: 0
+                  source_file: 0
+                  check_robots: 1
+                  ignore_params: 0
+                  custom_params: utm_source,utm_medium,utm_term,utm_content,utm_campaign
+                  ignore_noindex: 0
+                  ignore_nofollow: 0
+                  user_agent: 0
+                  login: ''
+                  password: ''
+                  max_pages: 10000
+                  max_depth: 10
+                  max_req: 500
+                  max_redirects: 5
+                  min_title_len: 20
+                  max_title_len: 65
+                  min_description_len: 1
+                  max_description_len: 158
+                  max_size: 3000
+                  min_words: 250
+                  max_h1_len: 100
+                  max_h2_len: 100
+                  allow: ''
+                  disallow: ''
+                  hide: ''
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{vault:api_key_data_api}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/advanced:
+    post:
+      operationId: createSiteAuditAuditsAdvanced
+      tags:
+        - Website Audit
+      summary: Create advanced audit
+      description: >-
+        Launches a new website audit that renders JavaScript to analyze
+        dynamically-loaded content, ideal for SPAs.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                domain: example.com
+                title: Example Audit Title
+                settings:
+                  source_site: 1
+                  source_sitemap: 1
+                  source_subdomain: 0
+                  source_file: 0
+                  check_robots: 1
+                  ignore_params: 0
+                  custom_params: utm_source,utm_medium,utm_term,utm_content,utm_campaign
+                  ignore_noindex: 0
+                  ignore_nofollow: 0
+                  user_agent: 0
+                  login: ''
+                  password: ''
+                  max_pages: 100
+                  max_depth: 10
+                  max_req: 500
+                  max_redirects: 5
+                  min_title_len: 20
+                  max_title_len: 65
+                  min_description_len: 1
+                  max_description_len: 158
+                  max_size: 3000
+                  min_words: 250
+                  max_h1_len: 100
+                  max_h2_len: 100
+                  allow: ''
+                  disallow: ''
+                  hide: ''
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits:
+    get:
+      operationId: getSiteAuditAudits
+      tags:
+        - Website Audit
+      summary: List audits
+      description: >-
+        Retrieves a paginated list of all website audits associated with your
+        account, including their current status and summary stats.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+          example: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          example: 0
+        - name: search
+          in: query
+          description: Filter audits by title or URL.
+          schema:
+            type: string
+        - name: date_start
+          in: query
+          description: Filter audits created on or after this date (YYYY-MM-DD).
+          schema:
+            type: string
+            format: date
+        - name: date_end
+          in: query
+          description: Filter audits created on or before this date (YYYY-MM-DD).
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    patch:
+      operationId: updateSiteAuditAudits
+      tags:
+        - Website Audit
+      summary: Update audit
+      description: Changes the display title of an existing website audit report.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: New Example Audit Title
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700387192
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      operationId: deleteSiteAuditAudits
+      tags:
+        - Website Audit
+      summary: Delete audit
+      description: >-
+        Permanently deletes a specified website audit report and all of its
+        associated data.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700387192
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/status:
+    get:
+      operationId: getSiteAuditAuditsStatus
+      tags:
+        - Website Audit
+      summary: Get audit status
+      description: >-
+        Checks the real-time progress of a specific audit, including the number
+        of pages crawled and issues found so far.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700313923
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/report:
+    get:
+      operationId: getSiteAuditAuditsReport
+      tags:
+        - Website Audit
+      summary: Get audit report
+      description: >-
+        Retrieves the full summary report for a completed audit, including the
+        overall health score and a breakdown of all issues.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/pages:
+    get:
+      operationId: getSiteAuditAuditsPages
+      tags:
+        - Website Audit
+      summary: Get all crawled pages
+      description: >-
+        Returns a paginated list of every URL discovered during an audit, along
+        with detailed on-page and technical metrics for each.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/issue-pages:
+    get:
+      operationId: getSiteAuditAuditsIssuePages
+      tags:
+        - Website Audit
+      summary: Get audit pages by issue
+      description: >-
+        Returns a list of all URLs affected by a single, specific issue within
+        an audit report.
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+          example: title_duplicate
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/issues:
+    get:
+      operationId: getSiteAuditAuditsIssues
+      tags:
+        - Website Audit
+      summary: Get All Issues for a Specific URL
+      description: >-
+        Retrieves a detailed list of all technical and on-page issues found on a
+        single, specific page.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: url_id
+          in: query
+          schema:
+            type: integer
+          example: 50958380
+        - name: url
+          in: query
+          schema:
+            type: string
+          example: https://www.vitality.co.uk/
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: offset
+          in: query
+          schema:
+            type: integer
+          example: 0
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/links:
+    get:
+      operationId: getSiteAuditAuditsLinks
+      tags:
+        - Website Audit
+      summary: Get all found links
+      description: >-
+        Fetches a complete, filterable list of every internal and external
+        hyperlink discovered across the entire site during an audit.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: page_type
+          in: query
+          schema:
+            type: string
+            enum:
+              - all
+              - internal
+              - external
+            default: all
+          example: internal
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: 10
+        - name: filter[0][param]
+          in: query
+          schema:
+            type: string
+          example: status
+        - name: filter[0][value]
+          in: query
+          schema:
+            type: integer
+          example: 301
+        - name: filter[1][param]
+          in: query
+          schema:
+            type: string
+          example: status
+        - name: filter[1][value]
+          in: query
+          schema:
+            type: integer
+          example: 302
+        - name: filter[1][type]
+          in: query
+          schema:
+            type: string
+          example: or
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          example: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/history:
+    get:
+      operationId: getSiteAuditAuditsHistory
+      tags:
+        - Website Audit
+      summary: Get audit history by date
+      description: >-
+        Retrieves a complete historical snapshot of a specific audit run,
+        including the settings, domain data, and issue counts for that date.
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700183831
+        - name: date
+          in: query
+          schema:
+            type: string
+          example: '2025-07-29'
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/recheck/standard:
+    post:
+      operationId: createSiteAuditAuditsRecheckStandard
+      tags:
+        - Website Audit
+      summary: Recheck audit standard
+      description: >-
+        Initiates a new standard (HTML) crawl for a previously completed audit
+        using its original settings.
+      requestBody:
+        content: {}
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700237033
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/site-audit/audits/recheck/advanced:
+    post:
+      operationId: createSiteAuditAuditsRecheckAdvanced
+      tags:
+        - Website Audit
+      summary: Recheck audit advanced
+      description: >-
+        Initiates a new advanced (JavaScript rendering) crawl for a previously
+        completed audit using its original settings.
+      requestBody:
+        content: {}
+      parameters:
+        - name: audit_id
+          in: query
+          schema:
+            type: integer
+          example: 700237033
+        - name: apikey
+          in: query
+          schema:
+            type: string
+          example: '{{secret_key_data}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/account/subscription:
+    get:
+      operationId: getAccountSubscription
+      tags:
+        - Account & system
+      summary: subscription
+      description: >-
+        Retrieves detailed information about the API subscription plan,
+        including its status, dates, and remaining API units.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/account/credit-balance:
+    get:
+      operationId: getAccountCreditBalance
+      tags:
+        - Account & system
+      summary: credit-balance
+      description: >-
+        Returns the current account-wide credit balance, showing the total limit
+        and the amount of credits used.
+      parameters:
+        - name: apikey
+          in: query
+          schema:
+            type: string
+        - name: output
+          in: query
+          schema:
+            type: string
+          example: json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
