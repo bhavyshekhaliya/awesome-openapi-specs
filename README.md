@@ -74,6 +74,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
+| SendGrid         | [46 API specifications](https://github.com/twilio/sendgrid-oai/tree/main/spec)                                     | JSON, YAML | 3.1.0 | `official` `transactional-email` `email-marketing` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
 | WebinarGeek      | [Community specification](specs/webinargeek/openapi.yml); [source docs](https://static.webinargeek.com/api-documentation.html) | YAML | 3.1.0 | `community-maintained` `webinars` |
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
