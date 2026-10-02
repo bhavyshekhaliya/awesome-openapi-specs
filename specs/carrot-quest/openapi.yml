@@ -1,0 +1,1023 @@
+openapi: 3.0.3
+info:
+  title: Carrot quest Web API
+  version: "1.0.0"
+  description: >-
+    Community-maintained OpenAPI description of the documented Carrot quest Web
+    API methods. It covers the methods listed in the provider's Web API index;
+    the separate JavaScript, URL, Webhook, and Realtime Services APIs are out
+    of scope. Response payloads are endpoint-specific, so consult each linked
+    provider page for the complete object fields and current behavior.
+  contact:
+    url: https://developers.carrotquest.io/
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+externalDocs:
+  description: Carrot quest Web API documentation
+  url: https://developers.carrotquest.io/webapi/
+servers:
+  - url: https://api.carrotquest.io
+    description: Carrot quest public API
+security:
+  - AuthorizationToken: []
+  - QueryToken: []
+tags:
+  - name: Applications
+  - name: Conversations
+  - name: Users
+paths:
+  /apps/{id}/activeusers:
+    get:
+      tags: [Applications]
+      operationId: listActiveUsers
+      summary: List currently active users
+      description: Lists users currently active on the application. This endpoint supports cursor pagination in the `before` direction.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/apps/activeusers/
+      parameters:
+        - $ref: '#/components/parameters/AppID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/PaginatePosition'
+        - $ref: '#/components/parameters/PaginateCount'
+        - name: paginate_direction
+          in: query
+          description: This endpoint supports only the `before` direction.
+          schema:
+            type: string
+            enum: [before]
+            default: before
+        - $ref: '#/components/parameters/PaginateIncluding'
+        - $ref: '#/components/parameters/PaginatePageOrder'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /apps/{id}/users:
+    get:
+      tags: [Applications]
+      operationId: listLeadUsers
+      summary: List lead users
+      description: Returns application users that meet Carrot quest's documented lead criteria. Results can be filtered and paged with offset and limit.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/apps/users/
+      parameters:
+        - $ref: '#/components/parameters/AppID'
+        - $ref: '#/components/parameters/IdAsString'
+        - name: filters
+          in: query
+          description: JSON-encoded filter object. Omit it to return all users.
+          schema:
+            type: string
+        - name: sort_prop
+          in: query
+          description: User property used to order the results before pagination.
+          schema:
+            type: string
+            default: $last_seen
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: offset
+          in: query
+          description: Number of matching users to skip; the documented API caps offset plus limit at 10000.
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum number of users to return.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: convert_props_types
+          in: query
+          description: Convert property values to their detected types when true; false returns property values as strings.
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /apps/{id}/conversations:
+    get:
+      tags: [Applications, Conversations]
+      operationId: listApplicationConversations
+      summary: List application conversations
+      description: Lists conversations for an application, ordered by their most recent update. If `assistant_type` is set, the provider documents that several other filters are ignored.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/apps/conversations/
+      parameters:
+        - $ref: '#/components/parameters/AppID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/PaginatePosition'
+        - $ref: '#/components/parameters/PaginateCount'
+        - $ref: '#/components/parameters/PaginateDirection'
+        - $ref: '#/components/parameters/PaginateIncluding'
+        - $ref: '#/components/parameters/PaginatePageOrder'
+        - name: closed
+          in: query
+          description: Filter by closed state; false selects open conversations.
+          schema:
+            type: boolean
+        - name: answered
+          in: query
+          description: Filter by whether the last reply came from an administrator.
+          schema:
+            type: boolean
+        - name: delayed
+          in: query
+          description: Filter by delayed state.
+          schema:
+            type: boolean
+        - name: assigned
+          in: query
+          description: Filter by administrator ID; use `0` with `include_not_assigned=true` for unassigned conversations.
+          schema:
+            type: string
+        - name: tags
+          in: query
+          description: JSON-encoded array of tags. A conversation must have all listed tags.
+          schema:
+            type: string
+        - name: channel
+          in: query
+          description: Filter by channel ID; `0` selects conversations without a channel.
+          schema:
+            type: string
+        - name: assistant_type
+          in: query
+          description: Filter by the assistant currently controlling the conversation.
+          schema:
+            type: string
+            enum: [dialogflow, yandex_ai, lead_bot, routing_bot, facebook_bot, telegram_bot, widget_bot]
+        - name: include_no_tags
+          in: query
+          description: Include conversations that have no tags; ignored when `tags` is used.
+          schema:
+            type: boolean
+            default: false
+        - name: include_not_assigned
+          in: query
+          description: Include conversations that are not assigned to an administrator.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /apps/{id}/channels:
+    get:
+      tags: [Applications]
+      operationId: listApplicationChannels
+      summary: List application channels
+      description: Returns the channels configured for an application.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/apps/channels/
+      parameters:
+        - $ref: '#/components/parameters/AppID'
+        - $ref: '#/components/parameters/IdAsString'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}:
+    get:
+      tags: [Conversations]
+      operationId: getConversation
+      summary: Get a conversation
+      description: Returns the documented conversation object, including its default nested fields.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/conversation/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+        - $ref: '#/components/parameters/IdAsString'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/parts:
+    get:
+      tags: [Conversations]
+      operationId: listConversationParts
+      summary: List conversation parts
+      description: Returns message and system parts for a conversation, using the part ID as the cursor key.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/parts/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/PaginatePosition'
+        - $ref: '#/components/parameters/PaginateCount'
+        - $ref: '#/components/parameters/PaginateDirection'
+        - $ref: '#/components/parameters/PaginateIncluding'
+        - $ref: '#/components/parameters/PaginatePageOrder'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/reply:
+    post:
+      tags: [Conversations]
+      operationId: replyToConversation
+      summary: Reply in a conversation
+      description: Creates a reply or internal note. The provider also documents optional file attachments and quick-reply actions.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/reply/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConversationReplyForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/settyping:
+    post:
+      tags: [Conversations]
+      operationId: setConversationTyping
+      summary: Set a conversation typing status
+      description: Sets a typing indicator for a user or administrator in the conversation.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/settyping/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TypingForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/assign:
+    post:
+      tags: [Conversations]
+      operationId: assignConversation
+      summary: Assign a conversation
+      description: Assigns a conversation to an administrator. Omitting the administrator removes the current assignment.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/assign/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AssignConversationForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/tag:
+    post:
+      tags: [Conversations]
+      operationId: addConversationTag
+      summary: Add a conversation tag
+      description: Adds the named tag to a conversation. The API reports an error if the tag is already assigned.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/tag/post/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConversationTagForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      tags: [Conversations]
+      operationId: removeConversationTag
+      summary: Remove a conversation tag
+      description: Removes the named tag from a conversation. The API reports an error if the tag is not assigned.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/tag/delete/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConversationTagForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /conversations/{id}/close:
+    post:
+      tags: [Conversations]
+      operationId: closeConversation
+      summary: Close a conversation
+      description: Closes a conversation and records the corresponding system part.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/conversations/close/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CloseConversationForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}:
+    get:
+      tags: [Users]
+      operationId: getUser
+      summary: Get a user
+      description: Returns a user by Carrot quest ID or, with `by_user_id=true`, by the caller's external user ID.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/user/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/ByUserID'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/props:
+    post:
+      tags: [Users]
+      operationId: updateUserProperties
+      summary: Set user properties
+      description: Applies the supplied property operations in order; up to 250 property operations are accepted in one request.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/props/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UpdateUserPropertiesForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/events:
+    get:
+      tags: [Users]
+      operationId: listUserEvents
+      summary: List user events
+      description: Returns events recorded for a user, with cursor pagination keyed by event ID.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/events/get/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/ByUserID'
+        - $ref: '#/components/parameters/PaginatePosition'
+        - $ref: '#/components/parameters/PaginateCount'
+        - $ref: '#/components/parameters/PaginateDirection'
+        - $ref: '#/components/parameters/PaginateIncluding'
+        - $ref: '#/components/parameters/PaginatePageOrder'
+        - name: filter_name
+          in: query
+          description: Restrict results to events with this name.
+          schema:
+            type: string
+        - name: props_as_string
+          in: query
+          description: Return event property values as strings.
+          schema:
+            type: boolean
+            default: false
+        - name: app
+          in: query
+          description: Application ID; defaults to the application associated with the token.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags: [Users]
+      operationId: trackUserEvent
+      summary: Record a user event
+      description: Records an event for a user. A missing user is created automatically.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/events/post/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TrackUserEventForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/conversations:
+    get:
+      tags: [Users, Conversations]
+      operationId: listUserConversations
+      summary: List a user's conversations
+      description: Lists conversations associated with a user, paginated by the conversation's last update time.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/conversations/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+        - $ref: '#/components/parameters/IdAsString'
+        - $ref: '#/components/parameters/ByUserID'
+        - $ref: '#/components/parameters/PaginatePosition'
+        - $ref: '#/components/parameters/PaginateCount'
+        - $ref: '#/components/parameters/PaginateDirection'
+        - $ref: '#/components/parameters/PaginateIncluding'
+        - $ref: '#/components/parameters/PaginatePageOrder'
+        - name: with_user_replies_only
+          in: query
+          schema:
+            type: boolean
+            default: false
+        - name: recipient_type
+          in: query
+          description: Recipient type of the manual or automated message that started the conversation.
+          schema:
+            type: string
+            enum: [web, sdk]
+            default: web
+        - name: app
+          in: query
+          description: Application ID; defaults to the application associated with the token.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/setpresence:
+    post:
+      tags: [Users]
+      operationId: updateUserPresence
+      summary: Update user presence
+      description: Sends a user presence heartbeat and can record the current page and URL.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/setpresence/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SetUserPresenceForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/sendmessage:
+    post:
+      tags: [Users]
+      operationId: sendUserMessage
+      summary: Send a manual message to a user
+      description: Sends a manual chat or popup message to a user. The resulting conversation appears in the inbox after the user replies.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/sendmessage/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SendUserMessageForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/startconversation:
+    post:
+      tags: [Users, Conversations]
+      operationId: startUserConversation
+      summary: Start a user-initiated conversation
+      description: Creates a conversation whose first part is from the user. A missing user is created automatically.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/startconversation/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StartUserConversationForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/unsubscribeemail:
+    post:
+      tags: [Users]
+      operationId: unsubscribeUserEmail
+      summary: Unsubscribe a user from email
+      description: Unsubscribes a user who has an email address and a documented subscription status.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/unsubscribeemail/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UnsubscribeUserForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/{id}/user_consent:
+    post:
+      tags: [Users]
+      operationId: recordUserConsent
+      summary: Record user consent
+      description: Records personal-data processing consent and optional email or phone contact details for a user.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/user_consent/
+      parameters:
+        - $ref: '#/components/parameters/EntityID'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecordUserConsentForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+  /users/import:
+    post:
+      tags: [Users]
+      operationId: importUsersFromCsv
+      summary: Import users from CSV
+      description: Asynchronously imports users from a UTF-8 CSV file. The documented maximum file size is 30 MB.
+      externalDocs:
+        url: https://developers.carrotquest.io/webapi/endpoints/users/import/
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportUsersForm'
+      responses:
+        '200':
+          $ref: '#/components/responses/ApiResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+
+components:
+  securitySchemes:
+    AuthorizationToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Use `Token {API key}` or `Bearer {API key}`. The key is created in Carrot quest's developer settings.
+    QueryToken:
+      type: apiKey
+      in: query
+      name: auth_token
+      description: Alternative documented authentication parameter. Keep this credential private.
+  parameters:
+    AppID:
+      name: id
+      in: path
+      required: true
+      description: Carrot quest application identifier. The provider also uses `$self_app` in examples where the token identifies the application.
+      schema:
+        type: string
+    EntityID:
+      name: id
+      in: path
+      required: true
+      description: Resource identifier. For user endpoints, `by_user_id=true` selects the caller's external user ID.
+      schema:
+        type: string
+    IdAsString:
+      name: id_as_string
+      in: query
+      description: Return primary object IDs as strings to avoid precision loss in clients with limited integer precision.
+      schema:
+        type: boolean
+    ByUserID:
+      name: by_user_id
+      in: query
+      description: Treat the user path value as the caller's external user ID instead of a Carrot quest ID.
+      schema:
+        type: boolean
+        default: false
+    PaginatePosition:
+      name: paginate_position
+      in: query
+      description: JSON-encoded cursor position. The array contents depend on the endpoint's cursor key.
+      schema:
+        type: string
+        example: '[12345]'
+    PaginateCount:
+      name: paginate_count
+      in: query
+      description: Number of records requested per page.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 20
+    PaginateDirection:
+      name: paginate_direction
+      in: query
+      description: Direction relative to the cursor position.
+      schema:
+        type: string
+        enum: [after, before, around]
+        default: before
+    PaginateIncluding:
+      name: paginate_including
+      in: query
+      description: Include the record at the cursor position.
+      schema:
+        type: boolean
+        default: false
+    PaginatePageOrder:
+      name: paginate_page_order
+      in: query
+      description: Sort direction for records within the page.
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+  schemas:
+    ApiEnvelope:
+      type: object
+      required: [meta, data]
+      properties:
+        meta:
+          $ref: '#/components/schemas/ResponseMetadata'
+        data:
+          description: Endpoint-specific result, which may be an object, array, scalar, or empty object.
+          nullable: true
+          anyOf:
+            - type: object
+              additionalProperties: true
+            - type: array
+              items: {}
+            - type: string
+            - type: number
+            - type: boolean
+    ResponseMetadata:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status duplicated in the response envelope.
+        error:
+          type: string
+        error_message:
+          type: string
+        next_before_position:
+          type: array
+          items: {}
+        next_after_position:
+          type: array
+          items: {}
+        next_before:
+          description: Cursor for the next page in the before direction; shape varies by endpoint.
+        next_after:
+          description: Cursor for the next page in the after direction; shape varies by endpoint.
+    ConversationReplyForm:
+      type: object
+      properties:
+        body:
+          type: string
+          description: Message text; may be empty when the part contains an attachment or other content.
+        body_json:
+          type: string
+          description: JSON-encoded structured message content.
+        attachment:
+          type: string
+          format: binary
+        attachment_file_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        from_user:
+          type: string
+          description: User ID or `default_user` to send as a user.
+        from_admin:
+          type: string
+          description: Administrator ID or `default_admin` to send as an administrator.
+        type:
+          type: string
+          enum: [reply_admin, note, article]
+          default: reply_admin
+        external_id:
+          type: string
+        random_id:
+          type: integer
+          format: int32
+          default: 0
+        auto_assign:
+          type: string
+          description: Administrator ID to assign before sending the reply.
+        auto_assign_random_id:
+          type: integer
+          format: int32
+          default: 0
+        referrer:
+          type: string
+          format: uri
+        actions:
+          type: string
+          description: JSON-encoded array of documented message actions, including quick replies.
+        id_as_string:
+          type: boolean
+    TypingForm:
+      type: object
+      required: [body]
+      properties:
+        body:
+          type: string
+          description: Text currently being typed.
+        from_user:
+          type: string
+          description: User ID or `default_user`.
+        from_admin:
+          type: string
+          description: Administrator ID or `default_admin`.
+        id_as_string:
+          type: boolean
+    AssignConversationForm:
+      type: object
+      required: [from_admin]
+      properties:
+        admin:
+          type: string
+          description: Administrator ID. Omit this field to remove the current assignment.
+        from_admin:
+          type: string
+          description: Administrator ID or `default_admin` acting on the assignment.
+        random_id:
+          type: integer
+          format: int32
+          default: 0
+        id_as_string:
+          type: boolean
+    ConversationTagForm:
+      type: object
+      required: [tag]
+      properties:
+        tag:
+          type: string
+          minLength: 1
+          maxLength: 255
+        from_admin:
+          type: string
+          description: Administrator ID or `default_admin` acting on the tag.
+        random_id:
+          type: integer
+          format: int32
+          default: 0
+        id_as_string:
+          type: boolean
+    CloseConversationForm:
+      type: object
+      properties:
+        from_admin:
+          type: string
+          description: Administrator ID or `default_admin` acting on the close operation.
+        random_id:
+          type: integer
+          format: int32
+          default: 0
+        id_as_string:
+          type: boolean
+    UpdateUserPropertiesForm:
+      type: object
+      required: [operations]
+      properties:
+        by_user_id:
+          type: boolean
+          default: false
+        operations:
+          type: string
+          description: JSON-encoded array of property operations, up to 250 items.
+        double_subscribe:
+          type: boolean
+          default: false
+        parse_custom_props_type:
+          type: boolean
+          default: true
+        source:
+          type: string
+          description: JSON-encoded source object for email or phone contact updates.
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+        id_as_string:
+          type: boolean
+    TrackUserEventForm:
+      type: object
+      required: [event]
+      properties:
+        by_user_id:
+          type: boolean
+          default: false
+        event:
+          type: string
+          minLength: 1
+          maxLength: 255
+        params:
+          type: string
+          description: JSON-encoded event properties.
+        created:
+          type: number
+          description: UTC timestamp in seconds. If supplied, automated messages are not scheduled.
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+        id_as_string:
+          type: boolean
+    SetUserPresenceForm:
+      type: object
+      required: [presence]
+      properties:
+        presence:
+          type: string
+          enum: [online, idle]
+        current_page:
+          type: string
+        current_url:
+          type: string
+          format: uri
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+    SendUserMessageForm:
+      type: object
+      required: [body]
+      properties:
+        by_user_id:
+          type: boolean
+          default: false
+        body:
+          type: string
+        type:
+          type: string
+          enum: [popup_chat, popup_small, popup_big]
+          default: popup_chat
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+        id_as_string:
+          type: boolean
+    StartUserConversationForm:
+      type: object
+      properties:
+        by_user_id:
+          type: boolean
+          default: false
+        body:
+          type: string
+          description: Message text; may be empty if a file is attached.
+        file:
+          type: string
+          format: binary
+          description: Optional attachment up to 10 MB in one of the documented file types.
+        filename:
+          type: string
+          description: Required when `file` is supplied.
+        random_id:
+          type: integer
+          format: int32
+        referrer:
+          type: string
+          format: uri
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+        id_as_string:
+          type: boolean
+    UnsubscribeUserForm:
+      type: object
+      properties:
+        by_user_id:
+          type: boolean
+          default: false
+        app:
+          type: string
+          description: Application ID; defaults to the application associated with the token.
+    RecordUserConsentForm:
+      type: object
+      properties:
+        ip_address:
+          type: string
+        data_processing:
+          type: boolean
+        "contacts[email]":
+          type: string
+        "contacts[phone]":
+          type: string
+    ImportUsersForm:
+      type: object
+      required: [app, file]
+      properties:
+        app:
+          type: string
+          description: Application ID or `$self_app` to use the application associated with the token.
+        file:
+          type: string
+          format: binary
+          description: UTF-8 CSV file, up to 30 MB.
+        merge_field:
+          type: string
+          enum: [$user_id, $email]
+          default: $user_id
+        delimiter:
+          type: string
+          description: CSV delimiter; the provider documents comma, pipe, semicolon, tab, and space.
+          enum: [",", "|", ";", "\t", " "]
+          default: "\t"
+        tags:
+          type: string
+          description: JSON-encoded array of tag names to apply to imported users.
+  responses:
+    ApiResponse:
+      description: Successful API response using the provider's `meta` and endpoint-specific `data` envelope.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiEnvelope'
+    ApiError:
+      description: API error. The provider returns an HTTP error status and may include error details in `meta`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiEnvelope'
