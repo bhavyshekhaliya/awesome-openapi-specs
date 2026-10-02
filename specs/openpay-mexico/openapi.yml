@@ -1,0 +1,297 @@
+openapi: 3.1.0
+info:
+  title: Openpay Mexico API (focused)
+  version: v1
+  description: >-
+    Focused community-maintained coverage for customer create/retrieve and
+    merchant-level card charge create/retrieve operations. Other payment
+    methods and resources are documented by Openpay but are outside this spec.
+externalDocs:
+  description: Official Openpay API documentation
+  url: https://documents.openpay.mx/docs/api/index.html
+servers:
+  - url: https://sandbox-api.openpay.mx/v1/{merchantId}
+    description: Sandbox
+    variables:
+      merchantId:
+        default: your-merchant-id
+        description: Merchant identifier from the Openpay dashboard.
+  - url: https://api.openpay.mx/v1/{merchantId}
+    description: Production
+    variables:
+      merchantId:
+        default: your-merchant-id
+        description: Merchant identifier from the Openpay dashboard.
+security:
+  - basicAuth: []
+tags:
+  - name: Customers
+  - name: Card charges
+paths:
+  /charges:
+    post:
+      tags: [Card charges]
+      summary: Create a card charge
+      description: >-
+        Creates a merchant-level card charge using a stored card or a token.
+        The documented request also requires the customer's details. Send the
+        cardholder device IP in X-Forwarded-For as required by Openpay.
+      parameters:
+        - name: X-Forwarded-For
+          in: header
+          required: true
+          description: IP address of the customer's device.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardChargeRequest'
+      responses:
+        default:
+          description: Returns a transaction object on success or an Openpay error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Transaction'
+                  - $ref: '#/components/schemas/Error'
+  /charges/{transactionId}:
+    get:
+      tags: [Card charges]
+      summary: Retrieve a charge
+      description: Retrieves a charge by its transaction identifier.
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          description: Charge identifier.
+          schema:
+            type: string
+            maxLength: 45
+      responses:
+        default:
+          description: Returns a transaction object on success or an Openpay error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Transaction'
+                  - $ref: '#/components/schemas/Error'
+  /customers:
+    post:
+      tags: [Customers]
+      summary: Create a customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerRequest'
+      responses:
+        default:
+          description: Returns a customer object on success or an Openpay error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Customer'
+                  - $ref: '#/components/schemas/Error'
+  /customers/{customerId}:
+    get:
+      tags: [Customers]
+      summary: Retrieve a customer
+      parameters:
+        - name: customerId
+          in: path
+          required: true
+          description: Identifier returned when the customer was created.
+          schema:
+            type: string
+            maxLength: 45
+      responses:
+        default:
+          description: Returns a customer object on success or an Openpay error object.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Customer'
+                  - $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use the private API key as the username and leave the password blank.
+  schemas:
+    CardChargeRequest:
+      type: object
+      required: [method, source_id, amount, description, device_session_id, customer]
+      properties:
+        method:
+          type: string
+          const: card
+          description: Charge method; this focused operation documents card charges.
+        source_id:
+          type: string
+          maxLength: 45
+          description: Identifier of a stored card or a previously created token.
+        amount:
+          type: number
+          exclusiveMinimum: 0
+          multipleOf: 0.01
+          description: Charge amount with up to two decimal places.
+        currency:
+          type: string
+          enum: [MXN, USD]
+          description: Optional charge currency; Openpay documents MXN and USD.
+        description:
+          type: string
+          maxLength: 250
+        order_id:
+          type: string
+          maxLength: 100
+          description: Optional merchant identifier, unique among transactions.
+        device_session_id:
+          type: string
+          minLength: 32
+          maxLength: 32
+          description: Device session identifier generated by the Openpay JavaScript API.
+        capture:
+          type: boolean
+          default: true
+          description: Set false to authorize the amount for later capture or cancellation.
+        customer:
+          $ref: '#/components/schemas/CustomerRequest'
+    CustomerRequest:
+      type: object
+      required: [name, email]
+      properties:
+        external_id:
+          type: [string, 'null']
+          maxLength: 100
+          description: Optional merchant-assigned unique customer identifier.
+        name:
+          type: string
+          maxLength: 100
+        last_name:
+          type: [string, 'null']
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        requires_account:
+          type: boolean
+          default: false
+          description: Set true to create a customer balance account.
+        phone_number:
+          type: [string, 'null']
+          maxLength: 100
+        address:
+          $ref: '#/components/schemas/Address'
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 45
+        name:
+          type: string
+        last_name:
+          type: [string, 'null']
+        email:
+          type: [string, 'null']
+        phone_number:
+          type: [string, 'null']
+        address:
+          oneOf:
+            - $ref: '#/components/schemas/Address'
+            - type: 'null'
+        store:
+          type: object
+          properties:
+            reference:
+              type: string
+            barcode_url:
+              type: string
+              format: uri
+        clabe:
+          type: string
+        creation_date:
+          type: string
+          format: date-time
+        external_id:
+          type: [string, 'null']
+    Address:
+      type: object
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        line3:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        postal_code:
+          type: string
+        country_code:
+          type: string
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          maxLength: 45
+        amount:
+          type: number
+        authorization:
+          type: [string, 'null']
+        method:
+          type: string
+        operation_type:
+          type: string
+        transaction_type:
+          type: string
+        status:
+          type: string
+        currency:
+          type: string
+        creation_date:
+          type: string
+          format: date-time
+        operation_date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        error_message:
+          type: [string, 'null']
+        order_id:
+          type: [string, 'null']
+        customer_id:
+          type: string
+    Error:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [request, internal, gateway]
+        error_code:
+          type: integer
+        description:
+          type: string
+        http_code:
+          type: [integer, string]
+        request_id:
+          type: string
+        fraud_rules:
+          type: array
+          items:
+            type: string
