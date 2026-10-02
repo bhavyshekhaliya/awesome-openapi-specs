@@ -1,0 +1,423 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Campaigns API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Campaigns
+  description: Manage batch direct mail campaigns
+paths:
+  /campaigns/list:
+    get:
+      operationId: listCampaigns
+      summary: List campaigns
+      description: Retrieve a list of all campaigns.
+      tags:
+      - Campaigns
+      responses:
+        '200':
+          description: Campaigns retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/get/{id}:
+    get:
+      operationId: getCampaign
+      summary: Get a campaign
+      description: Retrieve details of a single campaign.
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Campaign ID
+      responses:
+        '200':
+          description: Campaign retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /campaigns/create:
+    post:
+      operationId: createCampaign
+      summary: Create a campaign
+      description: Create a new direct mail campaign targeting a recipient group.
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - name
+              - type
+              - group_id
+              properties:
+                name:
+                  type: string
+                  description: Campaign name
+                type:
+                  type: string
+                  enum:
+                  - a6-postcard
+                  - a5-postcard
+                  - letter
+                  description: Campaign type
+                template_id:
+                  type: integer
+                  description: Template ID to use for the campaign
+                file:
+                  type: string
+                  format: uri
+                  description: URL to PDF file for letters
+                front:
+                  type: string
+                  format: uri
+                  description: URL to front design for postcards
+                back:
+                  type: string
+                  format: uri
+                  description: URL to back design for postcards
+                size:
+                  type: string
+                  description: Mail piece size (when using files)
+                save:
+                  type: boolean
+                  description: Save the campaign as a draft
+                group_id:
+                  type: integer
+                  description: ID of the recipient group
+                what_recipients:
+                  type: string
+                  description: 'Filter: all, valid, not_valid, or integer count'
+                addons:
+                  type: string
+                  description: Upgrade codes (e.g. FIRST_CLASS)
+      responses:
+        '200':
+          description: Campaign created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Campaign'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/sample:
+    post:
+      operationId: getCampaignSample
+      summary: Get campaign sample
+      description: Generate a sample PDF for the campaign (valid for 30 minutes).
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Campaign ID
+      responses:
+        '200':
+          description: Sample PDF generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: string
+                    format: uri
+                    description: URL to sample PDF (valid for 30 minutes)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/approve:
+    post:
+      operationId: approveCampaign
+      summary: Approve a campaign
+      description: Approve a campaign, making it ready for booking.
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Campaign ID
+      responses:
+        '200':
+          description: Campaign approved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/cost:
+    post:
+      operationId: getCampaignCost
+      summary: Get campaign cost
+      description: Calculate the cost of a campaign including recipient breakdown and VAT.
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Campaign ID
+      responses:
+        '200':
+          description: Campaign cost calculated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      rate:
+                        type: string
+                        description: Per-item rate
+                      valid:
+                        type: integer
+                        description: Count of valid recipients
+                      invalid:
+                        type: integer
+                        description: Count of invalid recipients
+                      total:
+                        type: string
+                        description: Total cost before tax
+                      total_with_vat:
+                        type: string
+                        description: Total cost including VAT
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/availableDates:
+    post:
+      operationId: getCampaignAvailableDates
+      summary: Get available booking dates
+      description: Retrieve available dates on which a campaign can be dispatched.
+      tags:
+      - Campaigns
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                start:
+                  type: string
+                  format: date
+                  description: Start of date range (YYYY-MM-DD)
+                end:
+                  type: string
+                  format: date
+                  description: End of date range (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Available dates retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: string
+                      format: date
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/book:
+    post:
+      operationId: bookCampaign
+      summary: Book a campaign
+      description: Schedule a campaign for dispatch on a specific date.
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              - send_date
+              properties:
+                id:
+                  type: integer
+                  description: Campaign ID
+                send_date:
+                  type: string
+                  format: date
+                  description: Dispatch date (YYYY-MM-DD)
+                next_available_date:
+                  type: boolean
+                  default: true
+                  description: Use next available date if chosen date is unavailable
+                use_balance:
+                  type: boolean
+                  default: true
+                  description: Pay from account balance
+      responses:
+        '200':
+          description: Campaign booked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /campaigns/delete:
+    post:
+      operationId: deleteCampaign
+      summary: Delete a campaign
+      description: Permanently delete a campaign.
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Campaign ID
+      responses:
+        '200':
+          description: Campaign deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+          - a6-postcard
+          - a5-postcard
+          - letter
+        status:
+          type: string
+        recipients:
+          type: integer
+        cost:
+          type: string
+        created:
+          type: string
+          format: date-time
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Result value (boolean, integer, or string depending on operation)
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.
