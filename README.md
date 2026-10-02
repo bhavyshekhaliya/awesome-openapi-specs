@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Ellipsend | [API specification](https://api.ellipsend.com/v1/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Mailrith | [API specification](https://mailrith.com/openapi.json) | JSON | 3.1.0 | `email-marketing` |
 | AutoContent API | [API specification](https://api.autocontentapi.com/api-docs.json) | JSON | 3.0.0 | `content-marketing` |
 | BonusQR | [API specification](https://app.bonusqr.com/docs/api-docs.json?api-docs.json) | JSON | 3.0.0 | `loyalty` `marketing` |
