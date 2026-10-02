@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Facebook Conversions | [Community specification](specs/facebook-conversions/openapi.yml); [source docs](https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/) | YAML | 3.1.0 | `community-maintained` `advertising` `conversion-tracking` |
 | SendGrid         | [Mail API specification](https://github.com/twilio/sendgrid-oai/blob/main/spec/json/tsg_mail_v3.json)              | JSON   | 3.1.0   | `official` `focused` `transactional-email` `open-source` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                         | YAML   | 3.0.2   | `official` `email-marketing`              |
 | Postmark | [Account API](https://postmarkapp.com/swagger/account.yml); [Server API](https://postmarkapp.com/swagger/server.yml) | YAML | 2.0 | `transactional-email` |

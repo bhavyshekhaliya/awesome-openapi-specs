@@ -1,0 +1,225 @@
+openapi: 3.1.0
+info:
+  title: Facebook Conversions API
+  version: '26.0'
+  description: |
+    Community-maintained OpenAPI coverage for sending web, app, and offline
+    conversion events through Meta's Conversions API. This focused surface
+    models the event ingestion endpoint used by Facebook Conversions automation.
+    It does not describe the complete Graph or Marketing API. Event and custom
+    data fields depend on the event source and business use case.
+  contact:
+    name: Awesome OpenAPI Specs maintainers
+    url: https://github.com/bhavyshekhaliya/awesome-openapi-specs
+servers:
+  - url: https://graph.facebook.com/v26.0
+    description: Meta Graph API v26.0, current when verified on 2026-10-02
+externalDocs:
+  description: Meta Conversions API guide
+  url: https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/
+security:
+  - MetaAccessToken: []
+tags:
+  - name: Events
+paths:
+  /{pixel_id}/events:
+    post:
+      tags: [Events]
+      operationId: sendConversionEvents
+      summary: Send events to a Pixel or Dataset
+      description: Sends one or more server events to the selected Meta event source. Use the source ID shown as the Pixel or Dataset in Events Manager. Personal information fields must follow Meta's matching and hashing requirements.
+      parameters:
+        - $ref: '#/components/parameters/PixelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEventsRequest'
+      responses:
+        '200':
+          description: Event processing result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEventsResponse'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+components:
+  securitySchemes:
+    MetaAccessToken:
+      type: apiKey
+      in: query
+      name: access_token
+      description: User or system-user access token authorized for the selected event source.
+  parameters:
+    PixelId:
+      name: pixel_id
+      in: path
+      required: true
+      description: Meta Pixel or Dataset source ID
+      schema:
+        type: string
+  responses:
+    GraphApiError:
+      description: Graph API error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GraphApiError'
+  schemas:
+    SendEventsRequest:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          minItems: 1
+          description: Events to process. Each event timestamp is Unix time in seconds.
+          items:
+            $ref: '#/components/schemas/ServerEvent'
+        test_event_code:
+          type: string
+          description: Optional code from Events Manager for routing events to the Test Events view.
+        partner_agent:
+          type: string
+          description: Optional integration identifier.
+        namespace_id:
+          type: string
+        upload_id:
+          type: string
+        upload_tag:
+          type: string
+        upload_source:
+          type: string
+      additionalProperties: true
+    ServerEvent:
+      type: object
+      required: [event_name, event_time, action_source, user_data]
+      properties:
+        event_name:
+          type: string
+          description: Name of the standard or custom event.
+        event_time:
+          type: integer
+          minimum: 0
+          description: Unix timestamp in seconds when the event occurred.
+        event_id:
+          type: string
+          description: Event identifier used to deduplicate matching browser and server events.
+        event_source_url:
+          type: string
+          format: uri
+        referrer_url:
+          type: string
+          format: uri
+        action_source:
+          type: string
+          enum:
+            - website
+            - app
+            - phone_call
+            - chat
+            - email
+            - physical_store
+            - system_generated
+            - other
+            - business_messaging
+        user_data:
+          $ref: '#/components/schemas/UserData'
+        custom_data:
+          $ref: '#/components/schemas/CustomData'
+        opt_out:
+          type: boolean
+        data_processing_options:
+          type: array
+          items:
+            type: string
+        data_processing_options_country:
+          type: integer
+        data_processing_options_state:
+          type: integer
+      additionalProperties: true
+    UserData:
+      type: object
+      description: Matching data for the person associated with the event. Hash identifiers when required by Meta's documentation.
+      properties:
+        em:
+          type: array
+          description: SHA-256-hashed email identifiers.
+          items:
+            type: string
+        ph:
+          type: array
+          description: SHA-256-hashed phone identifiers.
+          items:
+            type: string
+        external_id:
+          type: array
+          description: External identifiers, hashed when required.
+          items:
+            type: string
+        client_ip_address:
+          type: string
+        client_user_agent:
+          type: string
+        fbc:
+          type: string
+        fbp:
+          type: string
+      additionalProperties: true
+    CustomData:
+      type: object
+      description: Optional commerce or business event values.
+      properties:
+        value:
+          type: number
+        currency:
+          type: string
+        content_ids:
+          type: array
+          items:
+            type: string
+        content_type:
+          type: string
+        order_id:
+          type: string
+        num_items:
+          type: integer
+        contents:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    SendEventsResponse:
+      type: object
+      properties:
+        events_received:
+          type: integer
+        messages:
+          type: array
+          items:
+            type: string
+        fbtrace_id:
+          type: string
+      additionalProperties: true
+    GraphApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            code:
+              type: integer
+            error_subcode:
+              type: integer
+            fbtrace_id:
+              type: string
+          additionalProperties: true
+      required: [error]
+      additionalProperties: true
