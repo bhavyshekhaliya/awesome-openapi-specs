@@ -1,0 +1,2710 @@
+openapi: 3.0.1
+info:
+  title: webinar.net Open API
+  description: >-
+    # Overview
+
+    The Open API of webinar.net is RESTful and uses JSON as the exchanging
+    format. It allows third party applications to manage a user’s webinars and
+    their schedules. It also provides the ability to create registrants, update
+    registrant’s profile, and retrieve registrant’s profile.
+  termsOfService: https://www.webinar.net/terms-of-service/
+  version: 2.1.3
+servers:
+  - url: https://api.webinar.net/v2
+  - url: https://eu-api.webinar.net/v2
+  - url: https://ap-api.webinar.net/v2
+tags:
+  - name: Webinars
+    description: Webinar APIs
+  - name: Schedules
+    description: Webinar Schedule APIs.
+  - name: Registrants
+    description: Webinar Registrants APIs
+  - name: Attendees
+    description: Webinar Attendees APIs
+  - name: Registration Form
+    description: Registration Form APIs
+  - name: Presenters
+    description: Webinar Presenters APIs
+  - name: Campaigns
+    description: Webinar Campaigns APIs
+  - name: Webhooks
+    description: >-
+      With webhooks, third party applications can receive notification of
+      subscribed events in real time.
+paths:
+  /webinars:
+    post:
+      tags:
+        - Webinars
+      summary: Create webinar
+      description: ''
+      operationId: createWebinar
+      requestBody:
+        description: >-
+          Webinar object that needs to create a webinar. The
+          `externalProperties` is optional.
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description: The title of this webinar
+                  type: string
+                  example: Example Webinar
+                language:
+                  $ref: '#/components/schemas/Language'
+                schedule:
+                  $ref: '#/components/schemas/InitialSchedule'
+                source:
+                  $ref: '#/components/schemas/PresentationSource'
+                screenSharingEnabled:
+                  description: >-
+                    Whether the screen sharing is available to presenters. The
+                    value of the `source` need to be `audio-only` or
+                    `webcam-and-audio`.
+                  type: boolean
+                  example: false
+                ecdnVendor:
+                  $ref: '#/components/schemas/ECDNVendor'
+                audienceSamlEnabled:
+                  description: >-
+                    Whether this webinar supports SAML SSO for the audience or
+                    not. Only available when SAML SSO for Audience is enabled.
+                  type: boolean
+                  example: false
+                greenRoomEnabled:
+                  description: >-
+                    Whether this webinar has Greem Room enabled. By default, its
+                    value is `false`. This field will only work when the Green Room feature is turned on.
+                  type: boolean
+                  example: false
+                secureContentEnabled:
+                  description: >-
+                    Whether this webinar has Secure Content enabled. By default, its
+                    value is `false`. This field will only work when the Secure Content feature is turned on.
+                  type: boolean
+                  example: false
+                externalProperties:
+                  description: >-
+                    The external properties of this webinar. This is optional.
+                    Old external properties not found in the list will be
+                    removed. Empty list will remove all existing external
+                    properties.
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExternalProperty'
+              required:
+                - title
+                - language
+                - schedule
+                - source
+        required: true
+      responses:
+        '201':
+          description: Webinar created successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  webinar:
+                    $ref: '#/components/schemas/Webinar'
+    get:
+      tags:
+        - Webinars
+      summary: Get webinars
+      description: ''
+      parameters:
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: List of webinars returned.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      webinars:
+                        description: The current page of the webinars
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Webinar'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}:
+    put:
+      tags:
+        - Webinars
+      summary: Update webinar
+      description: >-
+        Update a webinar's general settings. The `externalProperties` is
+        optional.
+      operationId: updateWebinar
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description: Updated title of the webinar
+                  type: string
+                  example: Example Webinar 2
+                language:
+                  $ref: '#/components/schemas/Language'
+                source:
+                  $ref: '#/components/schemas/PresentationSource'
+                externalProperties:
+                  description: The external properties of this webinar. This is optional.
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExternalProperty'
+      responses:
+        '200':
+          description: Webinar updated successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  webinar:
+                    $ref: '#/components/schemas/Webinar'
+    get:
+      tags:
+        - Webinars
+      summary: Get webinar
+      description: Get the general settings of a webinar
+      operationId: getWebinar
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: The general settings of the webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  webinar:
+                    $ref: '#/components/schemas/Webinar'
+    delete:
+      tags:
+        - Webinars
+      summary: Delete webinar
+      description: Delete a webinar
+      operationId: deleteWebinar
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '204':
+          description: Webinar deleted successful
+  /webinars/{webinarId}/copy:
+    post:
+      tags:
+        - Webinars
+      summary: Copy webinar
+      description: Create a new webinar by copying an existing webinar
+      operationId: copyWebinar
+      parameters:
+        - name: webinarId
+          in: path
+          description: The id of the source webinar
+          required: true
+          schema:
+            type: string
+            example: 6061bdeb37ea2e68c0f21676
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                title:
+                  description: The title of the new webinar
+                  type: string
+                  example: New Example Webinar
+                language:
+                  $ref: '#/components/schemas/Language'
+                schedule:
+                  $ref: '#/components/schemas/InitialSchedule'
+                copyMedia:
+                  description: Whether copy the presentation media of the source webinar
+                  type: boolean
+                  example: false
+                externalProperties:
+                  description: The external properties of this webinar (Optional)
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ExternalProperty'
+              required:
+                - title
+                - language
+                - schedule
+                - copyMedia
+      responses:
+        '200':
+          description: Webinar copied successfully
+          content:
+            application/json:
+              schema:
+                properties:
+                  webinar:
+                    $ref: '#/components/schemas/Webinar'
+  /webinars/{webinarId}/schedules:
+    post:
+      tags:
+        - Schedules
+      summary: Add webinar schedule
+      description: Add a new schedule to the webinar
+      operationId: addWebinarSchedule
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulePayload'
+      responses:
+        '200':
+          description: Newly created schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+    get:
+      tags:
+        - Schedules
+      summary: Get webinar schedules
+      description: Get all the schedules of a webinar
+      operationId: getWebinarSchedules
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: All the schedules of the webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  schedules:
+                    description: A list of webinar schedules
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Schedule'
+  /webinars/{webinarId}/schedules/{scheduleId}:
+    get:
+      tags:
+        - Schedules
+      summary: Get webinar schedule
+      description: Get a webinar schedule
+      operationId: getWebinarSchedule
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/ScheduleId'
+      responses:
+        '200':
+          description: The webinar schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+    put:
+      tags:
+        - Schedules
+      summary: Update webinar schedule
+      description: Update a webinar schedule
+      operationId: updateWebinarSchedule
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/ScheduleId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SchedulePayload'
+      responses:
+        '200':
+          description: Updated schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+    delete:
+      tags:
+        - Schedules
+      summary: Delete webinar schedule
+      description: Delete a webinar schedule
+      operationId: deleteWebinarSchedule
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/ScheduleId'
+      responses:
+        '204':
+          description: Webinar schedule deleted successful
+  /webinars/{webinarId}/registrants:
+    post:
+      tags:
+        - Registrants
+      summary: Create registrant
+      description: Create a registrant of a webinar
+      operationId: createRegistrant
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      requestBody:
+        description: Registrant information for creating a registrant
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantPayload'
+      responses:
+        '200':
+          description: The newly created registrant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrant'
+    get:
+      tags:
+        - Registrants
+      summary: Get registrants
+      description: Get registrants
+      operationId: getRegistrants
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: The registrants of a webinar
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      registrants:
+                        description: The registrants of current page
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Registrant'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/registrants/{registrantId}:
+    put:
+      tags:
+        - Registrants
+      summary: Update registrant
+      description: Update a webinar registrant
+      operationId: updateRegistrant
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/RegistrantId'
+      requestBody:
+        description: Registrant information for updating a registrant
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantPayload'
+      responses:
+        '200':
+          description: The detail of a updated registrant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrant'
+    get:
+      tags:
+        - Registrants
+      summary: Get registrant
+      description: Get a webinar registrant
+      operationId: getRegistrant
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/RegistrantId'
+      responses:
+        '200':
+          description: The detail of a registrant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrant'
+    delete:
+      tags:
+        - Registrants
+      summary: Delete registrant
+      description: Delete a webinar registrant by wiping out personal information
+      operationId: deleteRegistrant
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/RegistrantId'
+      responses:
+        '201':
+          description: No content
+  /webinars/{webinarId}/registration-form/fields:
+    get:
+      tags:
+        - Registration Form
+      summary: Get registration form fields
+      description: >-
+        Get the fields in the webinar's registration form. Only those fields
+        with `apiKey` will show up in the result.
+      operationId: getRegistrationFormFields
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: The fields with `apiKey` in the registration form
+          content:
+            application/json:
+              schema:
+                properties:
+                  fields:
+                    description: The list of fields returned
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FormField'
+                    example:
+                      - key: firstName
+                        label: First Name
+                        order: 1
+                        type: text-field
+                        required: true
+                      - key: lastName
+                        label: Last Name
+                        order: 2
+                        type: text-field
+                        required: true
+                      - key: emailAddress
+                        label: Email Address
+                        order: 3
+                        type: text-field
+                        required: true
+                      - key: company
+                        label: Company
+                        order: 4
+                        type: text-field
+                        required: false
+                      - key: jobTitle
+                        label: Title
+                        order: 5
+                        type: text-field
+                        required: false
+                      - key: favoriteColor
+                        label: What is your favorite color?
+                        order: 6
+                        type: radio-button
+                        required: true
+                      - key: watchedMovies
+                        label: Which movies have you watched already?
+                        order: 7
+                        type: checkbox
+                        required: false
+  /webinars/{webinarId}/webhooks:
+    post:
+      tags:
+        - Webhooks
+      summary: Create webhook
+      description: Create webhook
+      operationId: createWebhook
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      requestBody:
+        description: The information required to create a webhook
+        content:
+          application/json:
+            schema:
+              properties:
+                hookUrl:
+                  description: >-
+                    The third party application’s URL that will be invoked once
+                    the event occurs on webinar.net side.
+                  type: string
+                eventType:
+                  description: >-
+                    The type of the event this webhook is watching. Current
+                    supported webhook is `new-registrant`.
+                  type: string
+                  example: new-registrant
+                  enum:
+                    - new-registrant
+              required:
+                - hookUrl
+                - eventType
+      responses:
+        '200':
+          description: The newly created webhook
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    description: The id of the webhook
+                    type: string
+                    example: 60609eb0aa5032231899ae31
+                  hookUrl:
+                    description: The third party application URL
+                    type: string
+                  eventType:
+                    description: The type of the event this webhook listens to
+  /webinars/{webinarId}/webhooks/{webhookId}:
+    delete:
+      tags:
+        - Webhooks
+      summary: Delete webhook
+      description: Delete webhook
+      operationId: deleteWebhook
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '204':
+          description: The webhook deleted successfully
+  /webinars/{webinarId}/summary:
+    get:
+      tags:
+        - Webinars
+      summary: Get webinar summary
+      description: Get a webinar's summary
+      operationId: getWebinarSummary
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: The summary of a webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  title:
+                    description: The title of the webinar
+                    type: string
+                    example: Example Webinar
+                  folders:
+                    description: The folders this webinar is added into
+                    type: array
+                    items:
+                      type: string
+                      example: 2022 Spring Folder
+                  startDate:
+                    description: >-
+                      The date/time this webinar started. When a webinar has not
+                      started, this is the scheduled start date.
+                    type: string
+                    example: '2022-03-10T13:00:00Z'
+                  duration:
+                    description: The duration (minutes) of this webinar.
+                    type: integer
+                    example: 60
+                  numberOfRegistrants:
+                    description: The total number of registrants of this webinar
+                    type: integer
+                    example: 1000
+                  numberOfLiveAttendees:
+                    description: The total number of live attendees of this webinar
+                    type: integer
+                    example: 900
+                  numberOfOnDemandAttendees:
+                    description: The total number of on-demand attendees of this webinar
+                    type: integer
+                    example: 900
+                  numberOfNoShows:
+                    description: The total number of no shows of this webinar
+                    type: integer
+                    example: 100
+                  averageLiveDuration:
+                    description: >-
+                      The average duration (minutes) of the attendees stayed
+                      during live
+                    type: integer
+                    example: 50
+                  averageOnDemandDuration:
+                    description: >-
+                      The average duration (minutes) of the attendees stayed
+                      during on-demand
+                    type: integer
+                    example: 55
+  /webinars/{webinarId}/attendees:
+    get:
+      tags:
+        - Attendees
+      summary: Get webinar attendees
+      description: Get attendees of a webinar
+      operationId: getAttendees
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+        - description: Whether to include attendee activities in the result
+          in: query
+          name: includeActivities
+          required: false
+          schema:
+            type: boolean
+            example: false
+      responses:
+        '200':
+          description: Webinar attendees
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      attendees:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AttendeeWithActivities'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/attendees/activities:
+    get:
+      tags:
+        - Attendees
+      summary: Get attendee activities
+      description: Get attendee activities of a webinar
+      operationId: getAttendeesActivities
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Webinar attendees' activities
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      activities:
+                        description: The attendees' activities
+                        type: array
+                        items:
+                          allOf:
+                            - type: object
+                              properties:
+                                attendee:
+                                  $ref: >-
+                                    #/components/schemas/AttendeeBasicInformation
+                            - $ref: '#/components/schemas/AttendeeActivity'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/attendees/activities/export-tasks:
+    post:
+      tags:
+        - Attendees
+        - Activities
+      summary: Create attendee activities export task
+      description: >-
+        Create an attendee activities export task of a webinar. Exported
+        activities are in a zipped .json file.
+      operationId: createAttendeesActivitiesExportTask
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/RangeStart'
+        - $ref: '#/components/parameters/RangeEnd'
+      responses:
+        '200':
+          description: The export task response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitiesExportTask'
+  /webinars/{webinarId}/attendees/activities/export-tasks/{exportTaskId}:
+    get:
+      tags:
+        - Attendees
+        - Activities
+      summary: Get attendee activities export task
+      description: Get an attendee activities export task of a webinar
+      operationId: getAttendeesActivitiesExportTask
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/ExportTaskId'
+      responses:
+        '200':
+          description: The export task response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitiesExportTask'
+  /webinars/{webinarId}/attendees/activities/export-tasks/{exportTaskId}/download-url:
+    get:
+      tags:
+        - Attendees
+        - Activities
+      summary: Get attendee activities export result download URL
+      description: Get the download URL of the exported attendee activities
+      operationId: getAttendeesActivitiesExportTaskDownloadUrl
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/ExportTaskId'
+      responses:
+        '200':
+          description: The export task response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActivitiesExportTaskDownloadUrl'
+  /webinars/{webinarId}/attendees/sessions:
+    get:
+      tags:
+        - Attendees
+      summary: Get attendees viewing sessions
+      description: Get attendees viewing sessions of a webinar
+      operationId: getAttendeesSessions
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Webinar attendees' viewing sessions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      sessions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              description: The id of the session
+                              type: string
+                              example: 62cc1633a2d1266d876acf90
+                            sessionStartDate:
+                              description: The start date/time of this session
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            sessionEndDate:
+                              description: The end date/time of this session
+                              type: string
+                              example: '2022-03-10T14:10:04.012Z'
+                            durationSeconds:
+                              description: The duration of this session in seconds.
+                              type: integer
+                              example: 3240
+                            attendee:
+                              $ref: '#/components/schemas/Attendee'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/qa-questions:
+    get:
+      tags:
+        - Q&A
+      summary: Get Q&A questions
+      description: Get Q&A questions
+      operationId: getQaQuestions
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: The questions the audience asked
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      questions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              description: The id of the question
+                              type: string
+                              example: 62cc1633a2d1266d876acf90
+                            title:
+                              description: The title of this question
+                              type: string
+                              example: >-
+                                What is the release date of your flagship
+                                product?
+                            number:
+                              description: The auto-generated number of this question.
+                              type: integer
+                              example: 1
+                            questioner:
+                              description: The person who asked the question
+                              type: object
+                              properties:
+                                firstName:
+                                  description: >-
+                                    The first name of the person who asked this
+                                    question
+                                  type: string
+                                  example: John
+                                lastName:
+                                  description: >-
+                                    The last name of the person who asked this
+                                    question
+                                  type: string
+                                  example: Doe
+                                emailAddress:
+                                  description: >-
+                                    The email address of the person who asked
+                                    this question, or the presenter who seeded
+                                    this question.
+                                  type: string
+                                  example: john.doe@example.com
+                                company:
+                                  description: >-
+                                    The company of the person who asked this
+                                    question
+                                  type: string
+                                  example: Example, Inc.
+                            askedDate:
+                              description: The date/time this question was asked
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            answer:
+                              description: The answer to this question
+                              type: string
+                              example: Later this autumn.
+                            answeredDate:
+                              description: The date/time this question was answered
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            answeredBy:
+                              description: The presenter who answered the question
+                              type: object
+                              properties:
+                                firstName:
+                                  description: >-
+                                    The first name of the presenter who answered
+                                    this question
+                                  type: string
+                                  example: John
+                                lastName:
+                                  description: >-
+                                    The last name of the presenter who answered
+                                    this question
+                                  type: string
+                                  example: Doe
+                                emailAddress:
+                                  description: >-
+                                    The email address of the presenter who
+                                    answered this question
+                                  type: string
+                                  example: john.doe@example.com
+                            seeded:
+                              description: Whether this is a seed question
+                              type: boolean
+                              example: false
+                            visibleToAll:
+                              description: >-
+                                Whether this question is visible to everyone.
+                                False when only visible to the person who asked
+                                this question.
+                              type: boolean
+                              example: true
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/group-chats:
+    get:
+      tags:
+        - Group Chats
+      summary: Get group chats
+      description: Get the group chats of a webinar
+      operationId: getGroupChats
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                properties:
+                  groupChats:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: The id of the group chat
+                          type: string
+                          example: 62cc1633a2d1266d876acf90
+                        availability:
+                          description: The availability of this group chat
+                          type: string
+                          example: always
+                          enum:
+                            - always
+                            - before-and-during-live
+                            - during-live
+                        moderatedModeEnabled:
+                          description: Whether this group chat has moderate mode enabled
+                          type: boolean
+                          example: true
+                        participantNameDisplay:
+                          description: The way of displaying participants' name
+                          type: string
+                          example: first-name
+                          enum:
+                            - first-name
+                            - first-name-last-initial
+                            - full-name
+                        pinnedMessage:
+                          description: >-
+                            The pinned message of this group chat. HTML
+                            supported.
+                          type: string
+                          example: Welcome to the webinar.
+                        creationDate:
+                          description: The date/time this group chat is created
+                          type: string
+                          example: '2022-03-10T13:16:04.454Z'
+  /webinars/{webinarId}/group-chats/{groupChatId}/messages:
+    get:
+      tags:
+        - Group Chats
+      summary: Get group chat messages
+      description: Get the messages of a group chat
+      operationId: getGroupChatsMessages
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/GroupChatId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      messages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            message:
+                              description: The chat message
+                              type: string
+                              example: Hello
+                            sender:
+                              $ref: '#/components/schemas/ChatParticipant'
+                            sentDate:
+                              description: The date/time this message was sent
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/colleague-referrals:
+    get:
+      tags:
+        - Colleague Referrals
+      summary: Get colleague referrals
+      description: Get the colleague referrals
+      operationId: getReferrals
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      referrals:
+                        description: The colleague referrals
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            subject:
+                              description: The subject of the referral email
+                              type: string
+                              example: Example subject
+                            message:
+                              description: The message of the referral email
+                              type: string
+                              example: Example message
+                            recipients:
+                              description: The recipients of this referral email
+                              type: array
+                              items:
+                                description: The email address of the recipients
+                                type: string
+                                example: jane.doe@example.com
+                            sentDate:
+                              description: The date/time this referral email was sent
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            sender:
+                              $ref: '#/components/schemas/Attendee'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/campaigns:
+    get:
+      tags:
+        - Campaigns
+      summary: Get campaigns
+      description: Get the campaigns
+      operationId: getCampaigns
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: All the campaigns of a webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  campaigns:
+                    description: The active campaigns of a webinar
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: The id of the campaign
+                          type: string
+                          example: 605dd3704f7330b836ef2e01
+                        code:
+                          description: The campaign code
+                          type: string
+                          example: 2022spring
+                        registrantsCount:
+                          description: >-
+                            The number of registrants who used this campaign
+                            code
+                          type: integer
+                          example: 100
+                  totalCount:
+                    $ref: '#/components/schemas/TotalCount'
+  /webinars/{webinarId}/surveys:
+    get:
+      tags:
+        - Surveys
+      summary: Get webinar surveys
+      description: Get the surveys of a webinar
+      operationId: getSurveys
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                properties:
+                  surveys:
+                    description: The surveys in this webinar
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: The id of the survey
+                          type: string
+                          example: 62cc1633a2d1266d876acf90
+                        title:
+                          description: The title of the survey
+                          type: string
+                          example: Example Survey Title
+                        description:
+                          description: The description of the survey
+                          type: string
+                          example: Example Survey Description
+                        creationDate:
+                          description: The creation date of the survey
+                          type: string
+                          example: '2022-03-10T13:16:04.454Z'
+                        responsesCount:
+                          description: The total responses to this survey
+                          type: integer
+                          example: 1000
+                        questions:
+                          description: The questions in this survey
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                description: The id of the survey question
+                                type: string
+                                example: 62cc1633a2d1266d876acf90
+                              order:
+                                description: The display order of this survey question
+                                type: integer
+                                example: 1
+                              title:
+                                description: The title of this survey question
+                                type: string
+                                example: Example survey question 1
+                              description:
+                                description: The description of this survey question
+                                type: string
+                                example: Example survey description
+                              fieldType:
+                                description: The type of this survey question
+                                type: string
+                                example: checkbox
+                                enum:
+                                  - checkbox
+                                  - drop-down
+                                  - radio-button
+                                  - text-area
+                                  - text-field
+                              required:
+                                description: Whether this survey question is required
+                                type: boolean
+                                example: true
+                              options:
+                                description: >-
+                                  The options of this survey question. Available
+                                  when the survey question field type is
+                                  checkbox, drop-down, or radio-button.
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      description: The id of this question option
+                                      type: string
+                                      example: 62cc1633a2d1266d876acf90
+                                    order:
+                                      description: >-
+                                        The display order of this question
+                                        option
+                                      type: integer
+                                      example: 1
+                                    label:
+                                      description: The label of this question option
+                                      type: string
+                                      example: Question Option 1
+                                    selectionCount:
+                                      description: >-
+                                        The number of attendees who selected
+                                        this option
+                                      type: integer
+                                      example: 500
+                              responsesCount:
+                                description: >-
+                                  The total number of responses to this survey
+                                  questions
+                                type: integer
+                                example: 1000
+                  totalCount:
+                    $ref: '#/components/schemas/TotalCount'
+  /webinars/{webinarId}/surveys/{surveyId}/responses:
+    get:
+      tags:
+        - Surveys
+      summary: Get survey responses
+      description: Get responses of a survey
+      operationId: getSurveyResponses
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/SurveyId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Get the responses of a survey
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      responses:
+                        description: The responses of a survey
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            responseId:
+                              description: The id of the survey response
+                              type: string
+                              example: 62cc1633a2d1266d876acf90
+                            attendee:
+                              $ref: '#/components/schemas/Attendee'
+                            questions:
+                              description: The questions' responses
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  questionId:
+                                    description: The id of the survey question
+                                    type: string
+                                    example: 62cc1633a2d1266d876acf90
+                                  title:
+                                    description: The title of the survey question
+                                    type: string
+                                    example: Example survey question
+                                  selections:
+                                    description: >-
+                                      The selected options. Available when the
+                                      question field type is checkbox,
+                                      drop-down, or radio-button.
+                                    type: array
+                                    items:
+                                      type: string
+                                      example: Option 1
+                                  input:
+                                    description: >-
+                                      The attendee's input. Available when the
+                                      question field is text-area or text-field.
+                                    type: string
+                                    example: Input example
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/resources:
+    get:
+      tags:
+        - Resources
+      summary: Get resources
+      description: Get resources of a webinar
+      operationId: getResources
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: Get the resources of a webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  resources:
+                    description: The resources in a webinar
+                    type: array
+                    items:
+                      description: A resource
+                      type: object
+                      properties:
+                        id:
+                          description: The id of a resource
+                          type: string
+                          example: 62cc1633a2d1266d876acf90
+                        name:
+                          description: The name of a resource
+                          type: string
+                          example: Official website
+                        type:
+                          description: The type of the resource
+                          type: string
+                          example: url
+                          enum:
+                            - file
+                            - url
+                        path:
+                          description: >-
+                            The path of the resource. For URL type resources, it
+                            is the URL. For File type resources, it is the file
+                            download URL
+                          type: string
+                          example: https://www.webinar.net
+                        uniqueViews:
+                          description: >-
+                            The number of views by unique attendees. The views
+                            by the same attendee will be counted as one.
+                          type: integer
+                          example: 100
+                        totalViews:
+                          description: >-
+                            The number of views by attendees. The views of the
+                            same attendees will be counted separately.
+                          type: integer
+                          example: 100
+                        creationDate:
+                          description: The date/time this resource was created
+                          type: string
+                          example: '2022-03-10T13:16:04.454Z'
+                  totalCount:
+                    $ref: '#/components/schemas/TotalCount'
+  /webinars/{webinarId}/contact-us-messages:
+    get:
+      tags:
+        - Contact Us
+      summary: Get Contact Us messages
+      description: Get Contact Us messages
+      operationId: getContactUsMessages
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      messages:
+                        description: The Contact Us messages of the current page
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              description: The id of the contact us message
+                              type: string
+                              example: 605dd3704f7330b836ef2e01
+                            attendee:
+                              $ref: '#/components/schemas/Attendee'
+                            message:
+                              description: The detail of Contact Us message
+                              type: string
+                              example: This is a sample message.
+                            sentDate:
+                              description: The date/time this message was sent.
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/continuing-education/summary:
+    get:
+      tags:
+        - Continuing Education
+      summary: Get Continuing Education summary
+      description: Get Continuing Education summary
+      operationId: getContinuingEducationSummary
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                properties:
+                  totalParticipants:
+                    description: The total participants of the Continuing Education
+                    type: integer
+                    example: 1000
+                  completedParticipants:
+                    description: >-
+                      The total completed participants of the Continuing
+                      Education
+                    type: integer
+                    example: 800
+                  notCompletedParticipants:
+                    description: >-
+                      The total not completed participants of the Continuing
+                      Education
+                    type: integer
+                    example: 100
+                  failedParticipants:
+                    description: The total failed participants of the Continuing Education
+                    type: integer
+                    example: 100
+  /webinars/{webinarId}/continuing-education/participants:
+    get:
+      tags:
+        - Continuing Education
+      summary: Get Continuing Education participants
+      description: Get Continuing Education participants
+      operationId: getContinuingEducationParticipants
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: The participants of the Continuing Education
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      participants:
+                        description: The participants of the Continuing Education
+                        type: array
+                        items:
+                          $ref: >-
+                            #/components/schemas/AttendeeContinuingEducationProfile
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/polls:
+    get:
+      tags:
+        - Polls
+      summary: Get polls
+      description: Get the polls of the webinar
+      operationId: getPolls
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      polls:
+                        description: A list of polls
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              description: The id of the poll
+                              type: string
+                              example: 6061bdeb37ea2e68c0f21676
+                            title:
+                              description: The title of the poll
+                              type: string
+                              example: Example poll title
+                            description:
+                              description: The description of the poll
+                              type: string
+                              example: Example poll description
+                            fieldType:
+                              description: The field type of the poll
+                              type: string
+                              example: checkbox
+                              enum:
+                                - checkbox
+                                - drop-down
+                                - radio-button
+                                - text-area
+                                - text-field
+                            options:
+                              description: The options of the poll
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  order:
+                                    description: The order of this option
+                                    type: integer
+                                    example: 1
+                                  label:
+                                    description: The label of this option
+                                    type: string
+                                    example: Option 1
+                                  hideAfterLive:
+                                    description: >-
+                                      Whether this option will be hidden after
+                                      live presentation
+                                    type: boolean
+                                    example: false
+                                  selectionCount:
+                                    description: >-
+                                      The number of attendees who selected this
+                                      option
+                                    type: integer
+                                    example: 500
+                            responsesCount:
+                              description: The number of the responses to this poll
+                              type: integer
+                              example: 1000
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/polls/{pollId}/responses:
+    get:
+      tags:
+        - Polls
+      summary: The poll responses
+      description: The responses to the poll
+      operationId: getPollResponses
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PollId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: The responses of the poll
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      responses:
+                        description: The responses list
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              description: The id of the poll response
+                              type: string
+                              example: 6061bdeb37ea2e68c0f21676
+                            attendee:
+                              $ref: '#/components/schemas/Attendee'
+                            selections:
+                              description: The attendee's selection
+                              type: array
+                              items:
+                                type: string
+                              example:
+                                - Option 1
+                                - Option 2
+                            input:
+                              description: >-
+                                The attendee's input to the poll. Available when
+                                the poll's field type is text-area or text-field
+                              type: string
+                              example: Poll input example
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/conversations:
+    get:
+      tags:
+        - Conversations
+      summary: Get conversations
+      description: Get conversations of a webinar
+      operationId: getConversations
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: The conversations happened in this webinar
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      conversations:
+                        description: The conversations between audiences and presenters
+                        type: object
+                        items:
+                          description: A conversion between an audience and a presenter
+                          type: object
+                          properties:
+                            startedDate:
+                              description: The date/time this conversation started.
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            participants:
+                              description: The participants of this conversation
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/ChatParticipant'
+                            messagesCount:
+                              description: The number of messages sent in this conversation
+                              type: integer
+                              example: 100
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/conversations/{conversationId}/messages:
+    get:
+      tags:
+        - Conversations
+      summary: Get conversation messages
+      description: Get the messages of a conversation
+      operationId: getConversationMessages
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - name: conversationId
+          description: The id of a conversation
+          in: path
+          required: true
+          schema:
+            type: string
+            example: 6061bdeb37ea2e68c0f21676
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: The chat messages in a conversation
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      messages:
+                        description: The chat messages
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            message:
+                              description: The chat message
+                              type: string
+                              example: Hello
+                            sentDate:
+                              description: The date/time this message was sent
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                            sender:
+                              $ref: '#/components/schemas/ChatParticipant'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/presenters:
+    get:
+      tags:
+        - Presenters
+      summary: Get presenters
+      description: Get the presenters of a webinar
+      operationId: getPresenters
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: The presenters of a webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  presenters:
+                    description: A list of presenters
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Presenter'
+                  phonePresenters:
+                    description: A list of presenters who connected by phone
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PhonePresenter'
+  /webinars/{webinarId}/presenters/chat-messages:
+    get:
+      tags:
+        - Presenters
+      summary: Get presenter chat messages
+      description: Get the presenter chat messages
+      operationId: getPresenterChatMessages
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+        - $ref: '#/components/parameters/PageIndex'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - properties:
+                      messages:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            message:
+                              description: The chat message
+                              type: string
+                              example: Hello
+                            sender:
+                              $ref: '#/components/schemas/TeamChatParticipant'
+                            sentDate:
+                              description: The date/time this message was sent
+                              type: string
+                              example: '2022-03-10T13:16:04.454Z'
+                  - $ref: '#/components/schemas/PagedResult'
+  /webinars/{webinarId}/email-notifications:
+    get:
+      tags:
+        - Email Notifications
+      summary: Get email notifications
+      description: Get email notifications
+      operationId: getEmailNotifications
+      parameters:
+        - $ref: '#/components/parameters/WebinarId'
+      responses:
+        '200':
+          description: The email notifications of a webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  emailNotifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          description: The id of the email notification
+                          type: string
+                          example: 6061bdeb37ea2e68c0f21676
+                        subject:
+                          description: The subject of the email
+                          type: string
+                          example: >-
+                            Registration Confirmation: You are registered for
+                            ${webinar.title} on ${webinar.date}
+                        message:
+                          description: The message body of the email
+                          type: string
+                          example: "<p>Hi ${recipient.firstName}!</p>\r\n<p>\r\nYou are all set for the \"${webinar.title}\" event on ${webinar.date} at ${webinar.time}.\r\n</p>\r\n<p>\r\nTo join the event, just click this link: <a href=\"${webinar.link}\" target=\"_blank\">${webinar.link}</a>\r\n</p>"
+                        enabled:
+                          description: Whether this email notification is enabled or not
+                          type: boolean
+                          example: true
+                        includeReminder:
+                          description: >-
+                            Whether calendar reminders are included in the email
+                            message
+                          type: boolean
+                          example: true
+                        creationDate:
+                          description: The date/time this email notification was created
+                          type: string
+                          example: '2022-03-10T13:16:04.454Z'
+                        campaignCode:
+                          description: >-
+                            The campaign code used in the webinar link. Default
+                            empty.
+                          type: string
+                          example: 2022spring
+  /multi-registration-pages/{pageId}/webinars:
+    get:
+      tags:
+        - Multi-Registration Pages
+      summary: Get webinars in a multi-registration page
+      description: Get webinars in a multi-registratin page
+      operationId: getMultiRegistrationPageWebinars
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      responses:
+        '200':
+          description: The general settings of the webinar
+          content:
+            application/json:
+              schema:
+                properties:
+                  webinar:
+                    $ref: '#/components/schemas/Webinar'
+components:
+  parameters:
+    ExportTaskId:
+      name: exportTaskId
+      in: path
+      description: The id of an export task
+      required: true
+      schema:
+        type: string
+        example: 605dd3704f7330b836ef2e01
+    Fields:
+      name: fields
+      in: query
+      description: The additional fields to included in the result. (Optional)
+      required: false
+      schema:
+        type: string
+        example: schedules
+    GroupChatId:
+      name: groupChatId
+      in: path
+      description: The id of a group chat
+      required: true
+      schema:
+        type: string
+        example: 605dd3704f7330b836ef2e01
+    PageIndex:
+      description: The index of the page. Page Index starts from 1.
+      in: query
+      name: pageIndex
+      required: false
+      schema:
+        type: integer
+        example: 1
+    PageSize:
+      description: The size of each page. Supported value 1 to 100. Default to 50.
+      in: query
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+        example: 50
+    RangeStart:
+      description: The start of a date range. In ISO Date format, yyyy-MM-dd'T'HH:mm:ssZZ
+      in: query
+      name: start
+      required: false
+      schema:
+        type: string
+        example: '2022-03-10T13:00:00Z'
+    RangeEnd:
+      description: >-
+        The end of a date range. In ISO Date format, yyyy-MM-dd'T'HH:mm:ssZZ. If
+        not provided, default to now.
+      in: query
+      name: end
+      required: false
+      schema:
+        type: string
+        example: '2022-03-11T13:00:00Z'
+    StartDate:
+      description: The start date of a query. In ISO Date format, yyyy-MM-dd'T'HH:mm:ssZZ
+      in: query
+      name: start
+      required: false
+      schema:
+        type: string
+        example: '2022-03-10T13:00:00Z'
+    EndDate:
+      description: >-
+        The end date of a query. In ISO Date format, yyyy-MM-dd'T'HH:mm:ssZZ. If
+        not provided, default to now.
+      in: query
+      name: end
+      required: false
+      schema:
+        type: string
+        example: '2022-03-11T13:00:00Z'
+    PollId:
+      name: pollId
+      in: path
+      description: The id of a poll
+      required: true
+      schema:
+        type: string
+        example: 605dd3704f7330b836ef2e01
+    RegistrantId:
+      name: registrantId
+      in: path
+      description: The id of a webinar registrant
+      required: true
+      schema:
+        type: string
+        example: 605dd3704f7330b836ef2e01
+    ScheduleId:
+      name: scheduleId
+      in: path
+      description: The id of a webinar schedule
+      required: true
+      schema:
+        type: string
+        example: 6061bdeb37ea2e68c0f21678
+    SurveyId:
+      name: surveyId
+      in: path
+      description: The id of a survey
+      required: true
+      schema:
+        type: string
+        example: 6061bdeb37ea2e68c0f21678
+    WebhookId:
+      name: webhookId
+      in: path
+      description: The id of a webhook
+      required: true
+      schema:
+        type: string
+        example: 60546f283f78c2590f4d7764
+    WebinarId:
+      name: webinarId
+      in: path
+      description: The id of a webinar
+      required: true
+      schema:
+        type: string
+        example: 6061bdeb37ea2e68c0f21676
+    PageId:
+      name: pageId
+      in: path
+      description: The id of a multi-registration page
+      required: true
+      schema:
+        type: string
+        example: 6061bdeb37ea2e68c0f21676
+  schemas:
+    Attendee:
+      allOf:
+        - $ref: '#/components/schemas/Registrant'
+        - description: The basic information of an attendee
+          type: object
+          properties:
+            attendedLive:
+              description: Whether this attendee attended the webinar during live schedule
+              type: boolean
+              example: true
+            attendedLiveDate:
+              description: The date/time the attendee attended the live presentation
+              type: string
+              example: '2022-03-10T13:16:04.454Z'
+            attendedOnDemand:
+              description: >-
+                Whether this attendee attended the webinar during on-demand
+                schedule
+              type: boolean
+              example: true
+            attendedOnDemandDate:
+              description: The date/time the attendee attended the on-demand presentation
+              type: string
+              example: '2022-03-10T13:16:04.454Z'
+            blocked:
+              description: Whether this attendee was blocked or not
+              type: boolean
+              default: false
+            lastOnlineDate:
+              description: The date/time this attendee was last seen online
+              type: string
+              example: '2022-03-10T13:16:04.454Z'
+            liveDuration:
+              description: The live duration of this attendee
+              type: string
+              example: '00:50:00'
+            onDemandDuration:
+              description: The on-demand duration of this attendee
+              type: string
+              example: '00:34:00'
+    AttendeeWithActivities:
+      allOf:
+        - $ref: '#/components/schemas/Attendee'
+        - properties:
+            activities:
+              description: >-
+                Attendee's activities. Only available when
+                `includeActivities=true`.
+              type: array
+              items:
+                $ref: '#/components/schemas/AttendeeActivity'
+    AttendeeActivity:
+      description: An activity of an attendee
+      type: object
+      properties:
+        id:
+          description: The id of the attendee's activity
+          type: string
+          example: 62cc1633a2d1266d876acf90
+        action:
+          description: The action this attendee performed
+          type: string
+          example: login
+          enum:
+            - attended-live
+            - attended-on-demand
+            - ask-question
+            - chat
+            - join-group-chat
+            - login
+            - open-facebook
+            - open-html
+            - open-link
+            - open-linked-in
+            - open-twitter
+            - refer-colleague
+            - register
+            - send-contact-us-message
+            - share-email
+            - share-facebook
+            - share-linked-in
+            - share-twitter
+            - submit-poll-response
+            - submit-quiz-response
+            - submit-survey-response
+            - view-resource
+            - view-speaker-bio
+        target:
+          description: The target of this action.
+          type: object
+          properties:
+            id:
+              description: The id of this target
+              type: string
+              example: 62cc1633a2d1266d876acf90
+            type:
+              description: The type of this target
+              type: string
+              example: poll
+              enum:
+                - poll
+                - qa-question
+                - quiz
+                - resource
+                - survey
+            label:
+              description: The label of this target
+              type: string
+              example: Example Poll 1
+        actionDate:
+          description: The date/time of this this action
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+    ActivitiesExportTask:
+      description: The activities export task
+      type: object
+      properties:
+        id:
+          description: The id of the export task
+          type: string
+          example: 605dd3704f7330b836ef2e01
+        status:
+          description: The status of the export task
+          type: string
+          example: completed
+          enum:
+            - not-started
+            - in-progress
+            - completed
+            - failed
+            - cancelled
+        parameters:
+          description: The parameters used to create the export task
+          type: array
+          items:
+            description: The export task parameter
+            type: object
+            properties:
+              name:
+                description: The parameter name
+                type: string
+                example: webinarId|start|end
+              value:
+                description: The parameter value
+                type: string
+                example: 605dd3704f7330b836ef2e01|2022-03-10T13:16:04.454Z
+        duration:
+          description: The seconds for this task to complete.
+          type: number
+          example: 120
+        error:
+          description: >-
+            The error message of a failed export task. It will be empty for not
+            failed tasks.
+          type: string
+          example: Example error message.
+    ActivitiesExportTaskDownloadUrl:
+      description: The download URL response of an activities export task
+      type: object
+      properties:
+        url:
+          description: The download URL of the exported activities zip file.
+          type: string
+          example: >-
+            https://ng-webinar-net.s3.ca-central-1.amazonaws.com/reports/5e8b44994cedfd0011d389d2/Activities.zip?response-content-disposition=inline&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHwaDmFwLXNvdXRoZWFzdC0xIkYwRAIgY1cOwJCvkiFWPshnQ7xmP2traWo5T1cVQ6WNUShqNQ8CIBscRnEMVfBrCwKbHF7Qaue0m6esBDGCIe1CMW%2BbFX7eKo4DCNX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQARoMMDQ5MTMzODQ2MTAyIgxnA6j7C5YEd48ELioq4gLMG%2B7keoC1q56PtEoosLy2zkL%2B4PpugfRVjOHSdnae%2Bb%2F9Nf3aeWEtx95iU9Qh4lXVOr%2FL3FXkcTkYB%2BRNV5nZ%2FlxSUYM%2F2KCPHSKRSUEBAny4djZWP0zPEFNXMfAfsYhC%2Fdz1JTdWT3tuLjSyla8BBfjT5%2BCYflxJujb6Bj4ruB6W2PrvyTGsBbRbZG4U%2BZ%2Fhrg2u%2FulAAOjDC%2F59tcsr4Dct3N%2B9z4M5ZpbJWy0ZSiy%2BufyQATX%2B3NfhIkdJiHw6E3YcP8LC6VJWCzl0D93hSzMaFp%2BIpHz%2FiMlQgzmrVhzD50278CZJDIN4wnx4IlJUnvZmsk8HvOu8bIKcG%2F35FdT5Df5zcIWMGzNb45QRXGgik8%2B7sTOWCOHv4W409WSdim2wqKEPvi0KKHD%2FppeOYTV8zyW5CZPbOEWs6IqzlBZdI38QF%2FOH62CJJ08MZMQHGvNc3S4ef90QujolKqFmavgwz9icqwY6tAKOjJie3d%2B6wa670tu2JWuNsIZIc2xyJYuav2dlpuH%2BXNbW5KOk547R7W2ZGNewGNfe5%2F4PeSTT5%2BlIsfW3oE4OKzl4JYh1Y37tscuugDuVDnBClzKsAmYBEWtZRgircNYPSPjzZUmBGYbSeLmBVDFhB2NznWsVH50kY028j%2Be2Ts96eZRYh28Ek5O3h24bdJohtCdi3ZCyRvMzoaG30swo0tYg4Hej8lVKC2IOMvaK6fQ%2FXAt2ygnG3oAb9vELGGmdOBcRnAmZls2viOa45EhXyfiT7qwlgULk8Pn2PuTgFDk4RWUIdjAER6K5TGUUyP0dd2pOSs8QPLkyYvQUq13z0YpEYgWQc35MTgCGMnW%2BeVCUR8J8Nx1K1cTursX2l9DPhmZrF8jgVbyd8%2BTpHUotuwf23g%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20231129T122201Z&X-Amz-SignedHeaders=host&X-Amz-Expires=43200&X-Amz-Credential=ASIAQW4E27ZLGDDMO3G2%2F20231129%2Fca-central-1%2Fs3%2Faws4_request&X-Amz-Signature=b4aa4ac85d3f551d94c69bb7cf087561593ee3ceac39c280e344e95ca3bd30e6
+    AttendeeBasicInformation:
+      description: The basic information of an attendee
+      type: object
+      properties:
+        id:
+          description: The id of the attendee
+          type: string
+          example: 605dd3704f7330b836ef2e01
+        firstName:
+          description: The first name of the attendee
+          type: string
+          example: John
+        lastName:
+          description: The last name of the attendee
+          type: string
+          example: Doe
+        emailAddress:
+          description: The email address of the attendee
+          type: string
+          example: john.doe@example.com
+    AttendeeContinuingEducationProfile:
+      allOf:
+        - $ref: '#/components/schemas/Attendee'
+        - type: object
+          properties:
+            continuingEducation:
+              type: object
+              properties:
+                answeredPolls:
+                  description: The number of answered polls of the attendee
+                  type: integer
+                  example: 2
+                passedQuizzes:
+                  description: The number of passed quizzes of the attendee
+                  type: integer
+                  example: 10
+                failedQuizzes:
+                  description: The number of failed quizzes of the attendee
+                  type: integer
+                  example: 1
+                completedSurveys:
+                  description: The number of completed surveys of the attendee
+                  type: integer
+                  example: 1
+                liveWatchedTime:
+                  description: The live watched time of the attendee
+                  type: string
+                  example: '00:54:23'
+                onDemandWatchedTime:
+                  description: The on-demand watched time of the attendee
+                  type: string
+                  example: '00:40:23'
+                totalWatchedTime:
+                  description: The total watched time of the attendee
+                  type: string
+                  example: '01:24:46'
+                status:
+                  description: The status of the Continuing Education
+                  type: string
+                  example: completed
+                  enum:
+                    - completed
+                    - in-progress
+                    - failed
+                certificateIssued:
+                  description: Whether the certificate has been issued
+                  type: boolean
+                  example: true
+                creditsEarned:
+                  description: The total credits this attendee earned
+                  type: number
+                  example: '3.5'
+                completionDate:
+                  description: >-
+                    The date/time the attendee completed the Continuing
+                    Education. Only available when `status` is `completed`.
+                  type: string
+                  example: '2022-03-10T13:16:04.454Z'
+                certificateDownloadUrl:
+                  description: >-
+                    The URL to download the certificate. Only available when the
+                    certificate is issued.
+                  type: string
+                  example: >-
+                    https://app.webinar.net/PEAqGLEzjrb/certificate?retrieveCode=zLvp1Bgndx03wQ4LB8YlXKjAqyZPWEDe
+                eventExternalId:
+                  description: >-
+                    The id of related external event. Only available when the
+                    Legacy Education Integration is enabled.
+                  type: string
+                  example: '190203'
+    ChatParticipant:
+      description: A participant of the chat
+      type: object
+      properties:
+        id:
+          description: The id of the chat participant
+          type: string
+          example: 605dd3704f7330b836ef2e01
+        type:
+          description: The type of the chat participant
+          type: string
+          example: attendee
+          enum:
+            - attendee
+            - presenter
+        firstName:
+          description: The first name of the chat participant
+          type: string
+          example: John
+        lastName:
+          description: The last name of the chat participant
+          type: string
+          example: Doe
+        emailAddress:
+          description: The email address of the chat participant
+          type: string
+          example: john.doe@example.com
+    ECDNVendor:
+      description: >-
+        The vendor of the eCDN. <b>Only available when eCDN related feature is
+        enabled.</b>
+      type: string
+      example: hive-streaming
+      enum:
+        - peer5
+        - kollective
+        - hive-streaming
+    ExternalProperty:
+      description: The webinar's external properties. (Optional)
+      type: object
+      properties:
+        name:
+          description: The name of this external property.
+          type: string
+          example: My Test External Property
+        key:
+          description: >-
+            The unique key of the external property within the current webinar.
+            The key will be used as the webinar's property name in Get
+            Webinar(s) response.
+          type: string
+          example: myTestExternalProperty
+        type:
+          description: The type of the external property.
+          type: string
+          example: text
+          enum:
+            - text
+            - text-list
+        value:
+          description: >-
+            The value of this external property. For both `text` and
+            `text-list`, the `value` needs to be an array of strings. When it is
+            a `text`, `value` will only contain one string.
+          type: array
+          items:
+            type: string
+          example:
+            - Property Value
+    FormField:
+      description: The field of a form
+      type: object
+      properties:
+        key:
+          description: The `apiKey` of this field
+          type: string
+          example: firstName
+        label:
+          description: The label of the field
+          type: string
+          example: First Name
+        order:
+          description: The order of this field displayed in the form
+          type: integer
+          example: 1
+        type:
+          description: The type of this field
+          type: string
+          example: text-field
+          enum:
+            - checkbox
+            - drop-down
+            - text-area
+            - text-field
+            - radio-button
+        required:
+          description: Whether this field is required
+          type: boolean
+          example: true
+    InitialSchedule:
+      description: The initial schedule of this webinar.
+      type: object
+      properties:
+        type:
+          description: The type of this schedule
+          type: string
+          example: live
+          enum:
+            - live
+            - simu-live
+            - on-demand
+        start:
+          description: >-
+            The start date time of the schedule. The value must be in ISO 861
+            format with complete date plus hours, minutes and seconds.
+          type: string
+          example: '2022-03-10T13:15:00Z'
+        end:
+          description: >-
+            The end date time of the schedule. The value must be in ISO 861
+            format with complete date plus hours, minutes and seconds.
+          type: string
+          example: '2022-03-10T14:15:00Z'
+        timeZone:
+          description: >-
+            The time zone of the schedule that will be used to display to the
+            audience.
+          type: string
+          example: America/Los_Angeles
+        anonymousMode:
+          description: >-
+            Whether the webinar will be in anonymous mode within this schedule's duration. This is optional. By default
+            it is false. Anonymous Mode feature must be turned on at the account level.
+          type: boolean
+          example: false
+      required:
+        - type
+        - start
+        - end
+        - timeZone
+    Language:
+      description: The language of this webinar
+      type: string
+      example: en_US
+      enum:
+        - de_DE
+        - en_US
+        - es_NS
+        - fr_FR
+        - it_IT
+        - pt_BR
+        - zh_CN
+        - zh_TW
+        - ja_JP
+        - ko_KR
+    PagedResult:
+      properties:
+        totalCount:
+          $ref: '#/components/schemas/TotalCount'
+        pageIndex:
+          description: The page index
+          type: integer
+          example: 1
+        pageSize:
+          description: The page size
+          type: integer
+          example: 50
+        hasMore:
+          description: Whether there are more results in the next page
+          type: boolean
+          example: true
+    PhonePresenter:
+      description: A presenter who connected by phone
+      type: object
+      properties:
+        id:
+          description: The id of a phone presenter
+          type: string
+          example: 6061bdeb37ea2e68c0f21676
+        phoneNumber:
+          description: The phone number of a phone presenter
+          type: string
+          example: +001202-918-2132
+        creationDate:
+          description: The date/time the phone presenter created
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+        lastConnectedDate:
+          description: The date/time the phone connected
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+    PresentationSource:
+      description: The source of the presentation.
+      type: string
+      example: webcam-and-audio
+      enum:
+        - audio-only
+        - webcam-and-audio
+        - media-file
+        - rtmp-stream
+    Presenter:
+      description: A presenter
+      type: object
+      properties:
+        id:
+          description: The id of a presenter
+          type: string
+          example: 6061bdeb37ea2e68c0f21676
+        firstName:
+          description: The first name of a presenter
+          type: string
+          example: John
+        lastName:
+          description: The last name of a presenter
+          type: string
+          example: Doe
+        emailAddress:
+          description: The email address of a presenter
+          type: string
+          example: john.doe@example.com
+        role:
+          description: The role of a presenter
+          type: string
+          example: presenter
+          enum:
+            - presenter
+            - producer
+        creationDate:
+          description: The date/time the presenter created
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+        lastLoginDate:
+          description: The last login date of a presenter
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+        lastLoginIpAddress:
+          description: The last login IP address of a presenter
+          type: string
+          example: 1.2.3.4
+    Registrant:
+      description: A registrant of a webinar
+      type: object
+      properties:
+        id:
+          description: The id of a registrant
+          type: string
+          example: 605dd3704f7330b836ef2e01
+        firstName:
+          description: The first name of a registrant
+          type: string
+          example: John
+        lastName:
+          description: The last name of a registrant
+          type: string
+          example: Doe
+        emailAddress:
+          description: The email address of a registrant
+          type: string
+          example: john.doe@example.com
+        company:
+          description: >-
+            The company information of a registrant. Available when the
+            Registration Form contains the `company` field.
+          type: string
+          example: Example, Inc.
+        jobTitle:
+          description: >-
+            The job title of a registrant. Available when the Registration Form
+            contains the `jobTitle` field.
+          type: string
+          example: Sales Manager
+        favoriteColor:
+          description: >-
+            The favorite color of a registrant. Available when the Registration
+            Form contains the `favoriteColor` field.
+          type: string
+          example: Blue
+        watchedMovies:
+          description: >-
+            The watched movie information of a registrant. . Available when the
+            Registration Form contains the `watchedMovies` field.
+          type: array
+          items:
+            type: string
+          example:
+            - Fight Club
+            - The Matrix
+        campaignCode:
+          description: The campaign code this attendee used
+          type: string
+          example: 2022spring
+        registrationSource:
+          description: The source of the registration
+          type: string
+          example: webinar.net
+          enum:
+            - webinar.net
+            - api
+            - open-api
+            - eloqua
+            - marketo
+            - hubspot
+            - saml-sso
+            - simple-data-pass
+        registrationDate:
+          description: The date/time the attendee registered to the webinar
+          type: string
+          example: '2022-03-10T13:16:04.454Z'
+        ipAddress:
+          description: The IP address of the registrant
+          type: string
+          example: 1.2.3.4
+    RegistrantPayload:
+      description: The detail to add/update a registrant
+      type: object
+      properties:
+        fields:
+          description: The fields matches those in the registration form.
+          type: array
+          items:
+            type: object
+            properties:
+              key:
+                description: The API Key of a registration field.
+                type: string
+              value:
+                description: "The value of the field. \r\n - For input fields, such as text fields, text areas, the value must be a string. \r\n - For drop downs, radio buttons, the value should match one of the field’s option labels. \r\n - For checkbox lists, the value should match the field’s option labels. Multiple labels can be concatenated by comma into a single string, as shown in the example watchedMovies above. Or, they can be put inside an array of strings. For example, [\"Fight Club\", \"The Matrix\"]."
+                type: string
+            required:
+              - key
+              - value
+          example:
+            - key: firstName
+              value: John
+            - key: lastName
+              value: Doe
+            - key: emailAddress
+              value: john.doe@example.com
+            - key: company
+              value: Example, Inc.
+            - key: jobTitle
+              value: Sales Manager
+            - key: favoriteColor
+              value: Blue
+            - key: watchedMovies
+              value: Fight Club, The Matrix
+        mcc:
+          description: The Marketing Campaign Code.
+          type: string
+          example: 2022spring
+    Schedule:
+      description: A schedule of the webinar
+      type: object
+      properties:
+        id:
+          description: The id of the webinar schedule
+          type: string
+          example: 6061bdeb37ea2e68c0f21677
+        type:
+          $ref: '#/components/schemas/ScheduleType'
+        status:
+          $ref: '#/components/schemas/ScheduleStatus'
+        start:
+          $ref: '#/components/schemas/ScheduleStart'
+        end:
+          $ref: '#/components/schemas/ScheduleEnd'
+        timeZone:
+          $ref: '#/components/schemas/ScheduleTimeZone'
+        anonymousMode:
+          $ref: '#/components/schemas/ScheduleAnonymousMode'
+    SchedulePayload:
+      description: The details information to add/update a webinar schedule
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ScheduleType'
+        start:
+          $ref: '#/components/schemas/ScheduleStart'
+        end:
+          $ref: '#/components/schemas/ScheduleEnd'
+        timeZone:
+          $ref: '#/components/schemas/ScheduleTimeZone'
+        anonymousMode:
+          $ref: '#/components/schemas/ScheduleAnonymousMode'
+    ScheduleStart:
+      description: >-
+        The start date time of a schedule. The value must be in ISO 861 format
+        with complete date plus hours, minutes and seconds.
+      type: string
+      example: '2022-03-10T13:15:00Z'
+    ScheduleEnd:
+      description: >-
+        The end date time of a schedule. The value must be in ISO 861 format
+        with complete date plus hours, minutes and seconds.
+      type: string
+      example: '2022-03-10T14:15:00Z'
+    ScheduleTimeZone:
+      description: The time zone of a schedule.
+      type: string
+      example: America/Los_Angeles
+    ScheduleType:
+      description: The type of a schedule
+      type: string
+      example: live
+      enum:
+        - live
+        - simu-live
+        - on-demand
+    ScheduleStatus:
+      description: The status of a schedule
+      type: string
+      example: not-started
+      enum:
+        - not-started
+        - started
+        - ended
+    ScheduleAnonymousMode:
+      description: >-
+        Whether the webinar will be in anonymous mode within this schedule's duration. This is optional. By default
+        it is false. Anonymous Mode feature must be turned on at the account level.
+      type: boolean
+      example: false
+    TeamChatParticipant:
+      description: A participant of the team chat
+      type: object
+      properties:
+        firstName:
+          description: The first name of the chat participant
+          type: string
+          example: John
+        lastName:
+          description: The last name of the chat participant
+          type: string
+          example: Doe
+        emailAddress:
+          description: The email address of the chat participant
+          type: string
+          example: john.doe@example.com
+    TotalCount:
+      description: The total number of list items
+      type: integer
+      example: 200
+    Webinar:
+      description: >-
+        The webinar model. The `myTestExternalProperty` and
+        `myTestExternalPropertyList` are *External Properties* passed through
+        Create/Update Webinar API.
+      type: object
+      properties:
+        id:
+          description: The id of the webinar
+          type: string
+          example: 6061bdeb37ea2e68c0f21676
+        title:
+          description: The title of the webinar
+          type: string
+          example: Demo Webinar
+        webinarKey:
+          description: The unique key of the webinar
+          type: string
+          example: '943731392'
+        language:
+          description: The language of the webinar
+          type: string
+          example: en_US
+        source:
+          description: The source of the presentation.
+          type: string
+          example: webcam-and-audio
+          enum:
+            - audio-only
+            - webcam-and-audio
+            - media-file
+            - rtmp-stream
+        latestSchedule:
+          $ref: '#/components/schemas/Schedule'
+        urls:
+          $ref: '#/components/schemas/WebinarUrls'
+        ecdnVendor:
+          $ref: '#/components/schemas/ECDNVendor'
+        screenSharingEnabled:
+          description: Whether this webinar has screen sharing enabled.
+          type: boolean
+          example: false
+        audienceSamlEnabled:
+          description: Whether this webinar enables audience SAML SSO enabled. Only available when the account has the SAML SSO feature enabled.
+          type: boolean
+          example: false
+        bilingualEnabled:
+          description: Whether this webinar has the Bilingual enabled. Only available when the account has the Bilingual feature enabled.
+          type: boolean
+          example: false
+        secondaryLanguage:
+          description: The secondary language of this webinar
+          type: string
+          example: fr_CA
+        subtitleAutoGenerationEnabled:
+          description: Whether the subtitle auto generation has been enabled. Only available when the account has Subtitle Generation feature enabled.
+          type: boolean
+          example: false
+        greenRoomEnabled:
+          description: Whether the Green Room has been enabled. Only available when the account has the Green Room feature enabled.
+          type: boolean
+          example: false
+        secureContentEnabled:
+          description: Whether the secure content has been enabled. Only available when the account has the Secure Content feature enabled.
+          type: boolean
+          example: false
+        myTestExternalProperty:
+          description: >-
+            The external property `myTestExternalProperty` passed in create
+            webinar API.
+          type: string
+          example: Property Value
+        myTestExternalPropertyList:
+          description: >-
+            The external property `myTestExternalPropertyList` passed in create
+            webinar API.
+          type: array
+          items:
+            type: string
+          example:
+            - Property Value 1
+            - Property Value 2
+    WebinarUrls:
+      description: The URLs of the webinar
+      type: object
+      properties:
+        presenter:
+          description: The URL of the Presenter Console
+          type: string
+          example: https://present.webinar.net/ydlLjlEK28b
+        audience:
+          description: The URL of the Audience Interface
+          type: string
+          example: https://app.webinar.net/6P05wPMjQNd
+        reporting:
+          description: The URL of the Reporting
+          type: string
+          example: https://reporting.webinar.net/QNenzm5zaP4
+        autoJoin:
+          description: The URL for Audience to Auto Join
+          type: string
+          example: https://join.webinar.net/6P05wPMjQNd/launch
+        integration:
+          description: >-
+            The URL for the Integrated Registration API. <b>Only available when
+            Integrated Registration feature is enabled.</b>
+          type: string
+          example: >-
+            https://registration.webinar.net/integration/fb481b09-2c3d-4f8d-aed2-5e87e71ae542/63041bf772857f10eb04a667
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >-
+        The account owner can manage API credentials. <a href="https://help.webinar.net/en/articles/8015014-manage-api-credentials" target="_blank">Learn more about it here</a>.
+        To learn more about HTTP Basic Authentication, <a href="https://swagger.io/docs/specification/authentication/basic-authentication/" target="_blank">Click here</a>.
+        <br><br>
+security:
+  - basicAuth: []
