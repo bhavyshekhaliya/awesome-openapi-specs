@@ -149,6 +149,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
+| OpenFIGI | [API specification](https://api.openfigi.com/schema) | JSON | 3.0.0 | `official` `securities` `identifier-mapping` `market-data` |
 | Plaid    | [API specification](https://github.com/plaid/plaid-openapi)              | YAML   | 3.0     | `official` `fintech`    |
 | TrustMRR | [Community specification](specs/trustmrr/openapi.yml); [source docs](https://trustmrr.com/docs/api) | YAML | 3.2.1 | `community-maintained` `startup-data` `revenue` |
 | Xero     | [Accounting API specifications](https://github.com/XeroAPI/Xero-OpenAPI) | YAML   | 3.0     | `official` `accounting` |
@@ -167,11 +168,14 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
 | ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
+| OpenAlex | [API specification](https://help.openalex.org/openapi.json) | JSON | 3.1.0 | `official` `research` `scholarly-data` `public-data` |
 | Datafast | [Community specification](specs/datafast/openapi.yml); [source docs](https://datafa.st/docs/api) | YAML | 3.2.1 | `community-maintained` `analytics` |
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
+| Open Brewery DB | [API specification](https://api.openbrewerydb.org/docs/openapi.yaml) | YAML | 3.1.0 | `official` `public-data` `open-source` `business-directory` |
 | OpenSearch  | [API specification repository](https://github.com/opensearch-project/opensearch-api-specification) | YAML | 3.1 | `official` `platform` `open-source` `search` `analytics` |
+| OpenWeather | [Community specification](specs/openweather/openapi.yml); [source docs](https://openweathermap.org/api/one-call-4) | YAML | 3.1.0 | `community-maintained` `weather` `forecast` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
 | Qdrant      | [REST API specification](https://github.com/qdrant/qdrant/tree/master/docs/redoc)      | YAML       | 3.0     | `official` `open-source` `vector-database` |
 | Typesense   | [Specification repository](https://github.com/typesense/typesense-api-spec)            | YAML       | 3.0     | `official` `open-source` `search`          |
@@ -257,10 +261,12 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | LearnHouse | [API specification](https://api.learnhouse.io/openapi.json) | JSON | 3.1.0 | `official` `education` `learning-management` |
 | Open Education API | [Open Education API specification](https://raw.githubusercontent.com/open-education-api/specification/main/oeapi.yaml) | YAML | 3.1.1 | `official` `education` `open-source` |
+| Open Trivia Database | [Community specification](specs/opentdb/openapi.yml) Â· [source docs](https://opentdb.com/api_config.php) | YAML | 3.1.0 | `community-maintained` `trivia` `quiz` |
 
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Open States | [API specification](https://v3.openstates.org/openapi.json) | JSON | 3.0.2 | `official` `government` `legislative-data` `open-data` `open-source` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
 
 ## Social Media and Online Communities
@@ -273,9 +279,11 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Media and Entertainment
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| OpenF1 | [Community specification](specs/openf1/openapi.yml) Â· [source docs](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `sports` `open-source` |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
-| OpenF1 | [Community specification](specs/openf1/openapi.yml) · [source docs](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `sports` `open-source` |
+| OpenDota | [API specification](https://api.opendota.com/api) | JSON | 3.0.3 | `official` `esports` `gaming` `open-source` |
 | Mux | [API specification](https://www.mux.com/api-spec.json) | JSON | 3.1.0 | `official` `video` `media` |
+| Open Library | [Community specification](specs/openlibrary/openapi.yml) Â· [source docs](https://openlibrary.org/developers/api) | YAML | 3.1.0 | `community-maintained` `books` `catalog` `open-source` |
 
 ## Content Management and CMS
 | Provider | OpenAPI spec | Format | Version | Tags |
@@ -286,11 +294,14 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+| OpenRouteService | [Community specification](specs/openrouteservice/openapi.yml); [source docs](https://giscience.github.io/openrouteservice/api-reference/) | YAML | 3.1.0 | `community-maintained` `routing` `geospatial` `open-source` |
+| OpenStreetMap | [Editing API community specification](specs/openstreetmap/openapi.yml); [source docs](https://wiki.openstreetmap.org/wiki/API_v0.6); [usage policy](https://operations.osmfoundation.org/policies/api/) | YAML | 3.1.0 | `community-maintained` `map-editing` `open-source` |
 
 ## Security and Compliance
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Cerbos | [API specification](https://docs.cerbos.dev/cerbos/latest/api/index.html) | JSON, YAML | 3.0 | `official` `authorization` `policy-engine` `open-source` |
+| ONYPHE | [Community specification](specs/onyphe/openapi.yml) Â· [source docs](https://search.onyphe.io/docs/general-apis/search) | YAML | 3.1.0 | `community-maintained` `threat-intelligence` `security` |
 | OpenFGA | [API specification repository](https://github.com/openfga/api) | JSON, YAML | 3.0 | `official` `authorization` `permissions` `open-source` |
 | Permit.io | [Cloud API specification](https://api.permit.io/v2/openapi.json) | JSON | 3.1.0 | `official` `authorization` `policy-engine` `permissions` |
 | Tailscale | [API documentation and OpenAPI download](https://tailscale.com/api) | JSON | 3.x | `official` `networking` `zero-trust` `vpn` |
