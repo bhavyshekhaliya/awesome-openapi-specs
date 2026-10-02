@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -128,6 +128,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Typefully | [API specification](https://typefully.com/docs/api) | JSON | 3.1.0 | `official` `social-media-management` `social-publishing` |
 | OutReachBin | [API specification](https://api.swaggerhub.com/apis/polyuno3/OutReachBin/1.1?resolved=true) | JSON | 2.0 | `official` `sales-engagement` `lead-generation` |
 | Omnisend | [API specification](https://dash.readme.com/api/v1/api-registry/b42jmls0kkny) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
+| Drip | [Community specification](specs/drip/openapi.yml); [source docs](https://developer.drip.com/) | YAML | 3.1.0 | `community-maintained` `email-marketing` `marketing-automation` |
 | Dub | [API specification](https://spec.speakeasy.com/dub/dub/dub-with-code-samples) | JSON | 3.0.3 | `official` `url-shortener` `link-management` |
 | EmailOctopus | [API specification](https://emailoctopus.com/api-documentation/v2) | JSON | 3.1.0 | `official` `email-marketing` |
 | Enginemailer | [Zapier API v1 specification](https://connect.enginemailer.com/swagger/Zapierv1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `transactional-email` |
