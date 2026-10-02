@@ -1,0 +1,232 @@
+openapi: 3.1.0
+info:
+  title: OpenCorporates Company Search API
+  version: 0.4.8
+  description: >-
+    Focused community-maintained specification for company name search and
+    company lookup. An API token is required. OpenCorporates documents free API
+    accounts for open-data projects whose products or databases use an open
+    share-alike licence with attribution. Commercial use outside those terms
+    requires a paid plan; at-scale public-benefit access may be requested from
+    OpenCorporates. Limits depend on the account plan.
+  externalDocs:
+    description: OpenCorporates API Reference
+    url: https://api.opencorporates.com/documentation/API-Reference
+servers:
+  - url: https://api.opencorporates.com/v0.4
+    description: OpenCorporates API version 0.4
+security:
+  - apiToken: []
+tags:
+  - name: Companies
+    description: Search and retrieve company records.
+paths:
+  /companies/search:
+    get:
+      tags:
+        - Companies
+      operationId: searchCompanies
+      summary: Search companies by name
+      description: >-
+        Searches company names and supports documented pagination, sorting, and
+        filters. Results can vary by jurisdiction and data coverage.
+      externalDocs:
+        description: Company search documentation and examples
+        url: https://api.opencorporates.com/documentation/API-Reference
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Company name search term. A trailing asterisk enables prefix matching.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: Page number for paginated results.
+          schema:
+            type: integer
+            minimum: 1
+        - name: per_page
+          in: query
+          required: false
+          description: Number of results per page.
+          schema:
+            type: integer
+            minimum: 1
+        - name: jurisdiction_code
+          in: query
+          required: false
+          description: Restrict results to a jurisdiction code.
+          schema:
+            type: string
+        - name: country_code
+          in: query
+          required: false
+          description: Restrict results to a country code.
+          schema:
+            type: string
+        - name: company_type
+          in: query
+          required: false
+          description: Restrict results to a company type.
+          schema:
+            type: string
+        - name: current_status
+          in: query
+          required: false
+          description: Restrict results to a company status.
+          schema:
+            type: string
+        - name: inactive
+          in: query
+          required: false
+          description: Filter for inactive companies; false excludes inactive companies.
+          schema:
+            type: boolean
+        - name: order
+          in: query
+          required: false
+          description: Sort order. Documented options include score and date fields.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching company records and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySearchResponse'
+        '401':
+          description: The API token is invalid.
+        '403':
+          description: The request has been refused, including during rate limiting.
+  /companies/{jurisdiction_code}/{company_number}:
+    get:
+      tags:
+        - Companies
+      operationId: getCompany
+      summary: Get a company by jurisdiction and number
+      description: Returns the core data for a company registration.
+      externalDocs:
+        description: Company lookup documentation and examples
+        url: https://api.opencorporates.com/documentation/API-Reference
+      parameters:
+        - name: jurisdiction_code
+          in: path
+          required: true
+          description: Jurisdiction code, such as a country or subnational code.
+          schema:
+            type: string
+        - name: company_number
+          in: path
+          required: true
+          description: Company identifier assigned by the company register.
+          schema:
+            type: string
+        - name: sparse
+          in: query
+          required: false
+          description: When true, requests a smaller response without filings and related data.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Company record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyResponse'
+        '401':
+          description: The API token is invalid.
+        '403':
+          description: The request has been refused, including during rate limiting.
+        '404':
+          description: The URI or company resource does not exist.
+        '503':
+          description: The service is unavailable or the company record is temporarily redacted.
+components:
+  securitySchemes:
+    apiToken:
+      type: apiKey
+      in: query
+      name: api_token
+      description: API token supplied with every request.
+  schemas:
+    CompanySearchResponse:
+      type: object
+      properties:
+        api_version:
+          type: string
+        results:
+          $ref: '#/components/schemas/CompanySearchResults'
+      required:
+        - results
+    CompanySearchResults:
+      type: object
+      properties:
+        companies:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompanySearchItem'
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total_count:
+          type: integer
+        total_pages:
+          type: integer
+      additionalProperties: true
+    CompanySearchItem:
+      type: object
+      properties:
+        company:
+          $ref: '#/components/schemas/Company'
+      required:
+        - company
+    CompanyResponse:
+      type: object
+      properties:
+        api_version:
+          type: string
+        results:
+          type: object
+          properties:
+            company:
+              $ref: '#/components/schemas/Company'
+          required:
+            - company
+      required:
+        - results
+    Company:
+      type: object
+      description: Fields can vary by jurisdiction and available registry data.
+      properties:
+        name:
+          type: [string, 'null']
+        company_number:
+          type: [string, 'null']
+        jurisdiction_code:
+          type: [string, 'null']
+        company_type:
+          type: [string, 'null']
+        current_status:
+          type: [string, 'null']
+        incorporation_date:
+          type: [string, 'null']
+          format: date
+        dissolution_date:
+          type: [string, 'null']
+          format: date
+        inactive:
+          type: [boolean, 'null']
+        opencorporates_url:
+          type: [string, 'null']
+          format: uri
+        registered_address_in_full:
+          type: [string, 'null']
+        registry_url:
+          type: [string, 'null']
+          format: uri
+      additionalProperties: true
