@@ -1,0 +1,347 @@
+openapi: 3.2.0
+info:
+  title: Snapchat Conversions Conversion Events API
+  description: The Snapchat Conversions API (CAPI) is a structured, privacy-centric interface that allows advertisers to pass web, app, and offline conversion events directly to Snap via a server-to-server integration. It helps optimize ad campaigns, improve targeting, and measure conversions while supporting first-party custom audience population in real-time. Version 3 is the current version; v2 was deprecated in early 2025.
+  version: '3.0'
+  contact:
+    name: Snap for Developers
+    url: https://developers.snap.com
+  termsOfService: https://snap.com/en-US/terms
+servers:
+- url: https://tr.snapchat.com/v3
+  description: Conversions API v3 Production Server
+security:
+- accessToken: []
+tags:
+- name: Conversion Events
+  description: Endpoints for sending web, app, and offline conversion events to Snap for campaign measurement and optimization.
+paths:
+  /{pixel_id}/events:
+    post:
+      operationId: sendWebConversionEvents
+      summary: Send Web Conversion Events
+      description: Sends one or more web conversion events to Snap using a Pixel ID. Events can include purchases, page views, add-to-cart actions, sign-ups, and other custom conversion events. Multiple events can be sent in a single request (up to 2,000 per request). Events can have a timestamp of up to 37 days in the past.
+      tags:
+      - Conversion Events
+      parameters:
+      - $ref: '#/components/parameters/pixelId'
+      - $ref: '#/components/parameters/accessTokenQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionEventRequest'
+      responses:
+        '200':
+          description: Events received successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionEventResponse'
+        '400':
+          description: Bad request - invalid event data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or missing access token
+        '429':
+          description: Rate limit exceeded
+  /{snap_app_id}/events:
+    post:
+      operationId: sendAppConversionEvents
+      summary: Send App Conversion Events
+      description: Sends one or more app conversion events to Snap using a Snap App ID. Used for tracking in-app events such as app installs, purchases, level completions, and other app-specific conversion events. Multiple events can be sent in a single request (up to 2,000 per request).
+      tags:
+      - Conversion Events
+      parameters:
+      - $ref: '#/components/parameters/snapAppId'
+      - $ref: '#/components/parameters/accessTokenQuery'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionEventRequest'
+      responses:
+        '200':
+          description: Events received successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionEventResponse'
+        '400':
+          description: Bad request - invalid event data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - invalid or missing access token
+        '429':
+          description: Rate limit exceeded
+components:
+  schemas:
+    ConversionEventRequest:
+      type: object
+      description: The request body for sending conversion events. Contains an array of one or more event objects.
+      required:
+      - data
+      properties:
+        data:
+          type: array
+          description: Array of conversion event objects. Maximum 2,000 events per request.
+          maxItems: 2000
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ConversionEvent'
+    AppData:
+      type: object
+      description: App-specific data for mobile app conversion events.
+      properties:
+        advertiser_tracking_enabled:
+          type: boolean
+          description: Whether the user has enabled advertiser tracking.
+        application_tracking_enabled:
+          type: boolean
+          description: Whether the app has tracking enabled.
+        extinfo:
+          type: array
+          description: Extended device information array.
+          items:
+            type: string
+    CustomData:
+      type: object
+      description: Custom data associated with the conversion event, such as purchase amount, currency, and product information.
+      properties:
+        currency:
+          type: string
+          description: ISO 4217 currency code (e.g., USD, EUR).
+          pattern: ^[A-Z]{3}$
+        price:
+          type: number
+          format: double
+          description: The value or price associated with the event.
+        transaction_id:
+          type: string
+          description: A unique transaction identifier for deduplication.
+        search_string:
+          type: string
+          description: The search query string for SEARCH events.
+        sign_up_method:
+          type: string
+          description: The method used for sign-up (e.g., email, google, facebook).
+        num_items:
+          type: integer
+          description: Number of items associated with the event.
+        payment_info_available:
+          type: integer
+          description: Whether payment info is available (1 or 0).
+          enum:
+          - 0
+          - 1
+        contents:
+          type: array
+          description: Array of product or content items associated with the event.
+          items:
+            $ref: '#/components/schemas/ContentItem'
+    ContentItem:
+      type: object
+      description: A product or content item associated with a conversion event.
+      properties:
+        id:
+          type: string
+          description: The product or content identifier.
+        quantity:
+          type: integer
+          description: The quantity of the item.
+          minimum: 1
+        item_price:
+          type: number
+          format: double
+          description: The price of the individual item.
+        brand:
+          type: string
+          description: The brand name of the item.
+        category:
+          type: string
+          description: The category of the item.
+    ConversionEventResponse:
+      type: object
+      description: Response returned after successfully submitting conversion events.
+      properties:
+        status:
+          type: string
+          description: The status of the request
+        reason:
+          type: string
+          description: Additional details about the response
+    UserData:
+      type: object
+      description: User identification data for matching conversion events to Snapchat users. All personally identifiable information should be hashed using SHA-256 before sending.
+      properties:
+        em:
+          type: string
+          description: SHA-256 hashed lowercase email address of the user.
+        ph:
+          type: string
+          description: SHA-256 hashed phone number in E.164 format.
+        fn:
+          type: string
+          description: SHA-256 hashed lowercase first name of the user.
+        ln:
+          type: string
+          description: SHA-256 hashed lowercase last name of the user.
+        ge:
+          type: string
+          description: SHA-256 hashed gender (m or f).
+        db:
+          type: string
+          description: SHA-256 hashed date of birth in YYYYMMDD format.
+        ct:
+          type: string
+          description: SHA-256 hashed lowercase city name.
+        st:
+          type: string
+          description: SHA-256 hashed lowercase two-letter state code.
+        zp:
+          type: string
+          description: SHA-256 hashed five-digit zip code.
+        country:
+          type: string
+          description: SHA-256 hashed lowercase two-letter country code.
+        external_id:
+          type: string
+          description: SHA-256 hashed external ID for the user.
+        client_ip_address:
+          type: string
+          description: The IP address of the user's browser or device.
+        client_user_agent:
+          type: string
+          description: The user agent string of the user's browser.
+        sc_click_id:
+          type: string
+          description: The Snapchat click ID from the ad click URL parameter.
+        sc_cookie1:
+          type: string
+          description: The Snapchat first-party cookie value.
+        idfv:
+          type: string
+          description: iOS identifier for vendor.
+        idfa:
+          type: string
+          description: iOS identifier for advertisers.
+        madid:
+          type: string
+          description: Mobile advertising device ID (Android).
+    ConversionEvent:
+      type: object
+      description: A single conversion event with event details, user data, and optional custom data.
+      required:
+      - event_name
+      - event_time
+      - action_source
+      properties:
+        event_name:
+          type: string
+          description: The name of the conversion event being reported.
+          enum:
+          - PAGE_VIEW
+          - VIEW_CONTENT
+          - ADD_CART
+          - ADD_TO_WISHLIST
+          - SIGN_UP
+          - SEARCH
+          - PURCHASE
+          - ADD_BILLING
+          - COMPLETE_TUTORIAL
+          - SUBSCRIBE
+          - AD_CLICK
+          - AD_VIEW
+          - START_CHECKOUT
+          - RATE
+          - LIST_VIEW
+          - ADD_TO_CART
+          - LEVEL_COMPLETE
+          - ACHIEVEMENT_UNLOCKED
+          - SPEND_CREDITS
+          - SAVE
+          - SHARE
+          - INVITE
+          - LOGIN
+          - RESERVE
+          - START_TRIAL
+          - CUSTOM_EVENT_1
+          - CUSTOM_EVENT_2
+          - CUSTOM_EVENT_3
+          - CUSTOM_EVENT_4
+          - CUSTOM_EVENT_5
+        event_time:
+          type: integer
+          description: Unix timestamp in seconds when the event occurred. Events can be up to 37 days in the past.
+        event_source_url:
+          type: string
+          format: uri
+          description: The URL of the web page where the event occurred. Required for web events.
+        event_id:
+          type: string
+          description: A unique identifier for the event, used for deduplication.
+        action_source:
+          type: string
+          description: The source of the conversion event.
+          enum:
+          - WEB
+          - MOBILE_APP
+          - OFFLINE
+        user_data:
+          $ref: '#/components/schemas/UserData'
+        custom_data:
+          $ref: '#/components/schemas/CustomData'
+        app_data:
+          $ref: '#/components/schemas/AppData'
+    ErrorResponse:
+      type: object
+      description: Error response returned when conversion event submission fails.
+      properties:
+        status:
+          type: string
+          description: The error status
+        reason:
+          type: string
+          description: Human-readable error message
+        param:
+          type: string
+          description: The parameter that caused the error
+  parameters:
+    pixelId:
+      name: pixel_id
+      in: path
+      required: true
+      description: The Snap Pixel ID used for tracking web conversion events.
+      schema:
+        type: string
+    snapAppId:
+      name: snap_app_id
+      in: path
+      required: true
+      description: The Snap App ID used for tracking app conversion events.
+      schema:
+        type: string
+    accessTokenQuery:
+      name: access_token
+      in: query
+      required: true
+      description: The static long-lived access token for authentication.
+      schema:
+        type: string
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      in: query
+      name: access_token
+      description: Static long-lived access token generated from the Business Details page of Ads Manager.
+externalDocs:
+  description: Snapchat Conversions API Documentation
+  url: https://developers.snap.com/api/marketing-api/Conversions-API/Introduction
