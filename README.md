@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| MailerSend | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1) | JSON | 3.1.0 | `email-delivery` `transactional-email` |
 | Dotdigital | [API specification](https://r1-api.dotdigital.com/contacts/v3/swagger.json) | JSON | 3.0.1 | `marketing-automation` `email-marketing` |
 | Sympla | [API specification](https://developers.sympla.com.br/api-docs/v1.6.0) | JSON | 3.1.0 | `event-management` `ticketing` |
 | lemlist | [API specification](https://developer.lemlist.com/api-reference/openapi/v2.json) | JSON | 3.0.0 | `sales-engagement` `email-marketing` |
