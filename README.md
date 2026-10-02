@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -201,6 +201,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Roaspy | [Public API specification](https://api.roaspy.com/documentation/public.json) | JSON | 3.0.3 | `official` `advertising-analytics` `marketing` |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
+| Scaleway Transactional Email | [Community specification](specs/scaleway-transactional-email/openapi.yml) · [source docs](https://www.scaleway.com/en/developers/api/transactional-email) | YAML | 3.1.0 | `community-maintained` `transactional-email` |
 | SendGrid         | [46 API specifications](https://github.com/twilio/sendgrid-oai/tree/main/spec)                                     | JSON, YAML | 3.1.0 | `official` `transactional-email` `email-marketing` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
 | WebinarGeek      | [Community specification](specs/webinargeek/openapi.yml); [source docs](https://static.webinargeek.com/api-documentation.html) | YAML | 3.1.0 | `community-maintained` `webinars` |
