@@ -1,0 +1,413 @@
+openapi: 3.1.0
+info:
+  title: Scaleway Transactional Email API - Emails
+  version: v1alpha1
+  description: >-
+    Community-maintained specification for the documented email operations
+    of Scaleway Transactional Email. Other product areas, including domain
+    administration, webhooks, blocklists, and offers, are outside this scope.
+  externalDocs:
+    description: Scaleway Transactional Email API documentation
+    url: https://www.scaleway.com/en/developers/api/transactional-email
+servers:
+  - url: https://api.scaleway.com
+    description: Scaleway API
+security:
+  - apiKeyAuth: []
+tags:
+  - name: Emails
+    description: Send and manage transactional email records.
+paths:
+  /transactional-email/v1alpha1/regions/{region}/emails:
+    parameters:
+      - $ref: '#/components/parameters/Region'
+    get:
+      tags: [Emails]
+      summary: List emails
+      description: Retrieve emails matching the supplied filters.
+      operationId: listTransactionalEmails
+      externalDocs:
+        description: Endpoint documentation
+        url: https://www.scaleway.com/en/developers/api/transactional-email/emails
+      parameters:
+        - name: page
+          in: query
+          description: Page number.
+          schema:
+            type: integer
+            format: int32
+        - name: page_size
+          in: query
+          description: Number of emails per page.
+          schema:
+            type: integer
+            format: uint32
+        - name: project_id
+          in: query
+          description: Filter by project UUID.
+          schema:
+            type: string
+            format: uuid
+        - name: domain_id
+          in: query
+          description: Filter by domain UUID.
+          schema:
+            type: string
+            format: uuid
+        - name: message_id
+          in: query
+          description: Filter by message UUID.
+          schema:
+            type: string
+            format: uuid
+        - name: since
+          in: query
+          description: Return emails created after this RFC 3339 timestamp.
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          description: Return emails created before this RFC 3339 timestamp.
+          schema:
+            type: string
+            format: date-time
+        - name: mail_from
+          in: query
+          description: Filter by sender address.
+          schema:
+            type: string
+            format: email
+        - name: mail_to
+          in: query
+          deprecated: true
+          description: Deprecated recipient filter; use mail_rcpt.
+          schema:
+            type: string
+            format: email
+        - name: mail_rcpt
+          in: query
+          description: Filter by recipient address.
+          schema:
+            type: string
+            format: email
+        - name: statuses
+          in: query
+          description: Return emails having any of these statuses.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/EmailStatus'
+        - name: subject
+          in: query
+          description: Filter by exact subject.
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search across email fields.
+          schema:
+            type: string
+        - name: order_by
+          in: query
+          description: Sort criterion; defaults to created_at_desc.
+          schema:
+            type: string
+            default: created_at_desc
+        - name: flags
+          in: query
+          description: Return emails carrying any of these flags.
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: A page of emails matching the filters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEmailsResponse'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Missing or invalid API key.
+    post:
+      tags: [Emails]
+      summary: Send an email
+      description: >-
+        Send a transactional email from a checked domain in the selected
+        project. At least one recipient list must be supplied.
+      operationId: sendTransactionalEmail
+      externalDocs:
+        description: Endpoint documentation
+        url: https://www.scaleway.com/en/developers/api/transactional-email/emails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEmailRequest'
+      responses:
+        '200':
+          description: Email created for delivery.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEmailResponse'
+        '400':
+          description: Invalid request body.
+        '401':
+          description: Missing or invalid API key.
+  /transactional-email/v1alpha1/regions/{region}/emails/{email_id}:
+    parameters:
+      - $ref: '#/components/parameters/Region'
+      - name: email_id
+        in: path
+        required: true
+        description: UUID of the email record.
+        schema:
+          type: string
+          format: uuid
+    get:
+      tags: [Emails]
+      summary: Get an email
+      operationId: getTransactionalEmail
+      externalDocs:
+        description: Endpoint documentation
+        url: https://www.scaleway.com/en/developers/api/transactional-email/emails
+      responses:
+        '200':
+          description: Email record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Missing or invalid API key.
+  /transactional-email/v1alpha1/regions/{region}/emails/{email_id}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/Region'
+      - name: email_id
+        in: path
+        required: true
+        description: UUID of the email record.
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags: [Emails]
+      summary: Cancel an email
+      description: Cancels an email that has not yet been sent.
+      operationId: cancelTransactionalEmailByPath
+      externalDocs:
+        description: Endpoint documentation
+        url: https://www.scaleway.com/en/developers/api/transactional-email/emails
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              description: The provider example sends an empty JSON object.
+      responses:
+        '200':
+          description: Updated email record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Missing or invalid API key.
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Auth-Token
+      description: Scaleway API secret key.
+  parameters:
+    Region:
+      name: region
+      in: path
+      required: true
+      description: Region hosting the Transactional Email service.
+      schema:
+        type: string
+        enum: [fr-par]
+  schemas:
+    ListEmailsResponse:
+      type: object
+      required: [total_count, emails]
+      properties:
+        total_count:
+          type: integer
+          format: uint32
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+    CreateEmailRequest:
+      type: object
+      required: [from, project_id]
+      anyOf:
+        - required: [to]
+        - required: [cc]
+        - required: [bcc]
+      properties:
+        from:
+          $ref: '#/components/schemas/Address'
+          description: Sender address; it must belong to a checked domain.
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        subject:
+          type: string
+          description: Email subject.
+        text:
+          type: string
+          description: Plain-text body.
+        html:
+          type: string
+          description: HTML body.
+        project_id:
+          type: string
+          format: uuid
+          description: Project in which to create the email.
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+        send_before:
+          type: [string, 'null']
+          format: date-time
+          description: Maximum delivery time, in RFC 3339 format.
+        additional_headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailHeader'
+    Address:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: [string, 'null']
+          description: Optional display name.
+    Attachment:
+      type: object
+      required: [name, type, content]
+      properties:
+        name:
+          type: string
+          description: Filename.
+        type:
+          type: string
+          description: MIME type.
+        content:
+          type: string
+          contentEncoding: base64
+          description: Base64-encoded attachment content.
+    EmailHeader:
+      type: object
+      required: [key, value]
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    CreateEmailResponse:
+      type: object
+      required: [emails]
+      properties:
+        emails:
+          type: array
+          items:
+            $ref: '#/components/schemas/Email'
+    Email:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Technical email record ID.
+        message_id:
+          type: string
+          description: Message ID.
+        project_id:
+          type: string
+        mail_from:
+          type: string
+          format: email
+        mail_rcpt:
+          type: string
+          format: email
+        rcpt_to:
+          type: string
+          format: email
+          deprecated: true
+        rcpt_type:
+          $ref: '#/components/schemas/RecipientType'
+        subject:
+          type: string
+        created_at:
+          type: [string, 'null']
+          format: date-time
+        updated_at:
+          type: [string, 'null']
+          format: date-time
+        status:
+          $ref: '#/components/schemas/EmailStatus'
+        status_details:
+          type: [string, 'null']
+        try_count:
+          type: integer
+          format: uint32
+        last_tries:
+          type: array
+          description: Information about the last three send attempts.
+          items:
+            $ref: '#/components/schemas/EmailTry'
+        flags:
+          type: array
+          items:
+            type: string
+    EmailTry:
+      type: object
+      properties:
+        rank:
+          type: integer
+          format: uint32
+        tried_at:
+          type: [string, 'null']
+          format: date-time
+        code:
+          type: integer
+          format: int32
+          description: SMTP status code, or zero if no SMTP server was reached.
+        message:
+          type: string
+    RecipientType:
+      type: string
+      enum: [unknown_rcpt_type, to, cc, bcc]
+    EmailStatus:
+      type: string
+      enum: [unknown, new, sending, sent, failed, canceled]
