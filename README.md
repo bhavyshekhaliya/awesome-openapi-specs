@@ -183,6 +183,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Slack    | [Web API specifications](https://github.com/slackapi/slack-api-specs) | JSON, YAML | 2.0     | `official` `collaboration` `open-source` |
 | Twilio   | [API specifications](https://github.com/twilio/twilio-oai)            | JSON       | 3.0     | `official` `communications`              |
 | Upstash  | [QStash API specification](https://upstash.com/docs/qstash/openapi.yaml) | YAML | 3.1.0 | `official` `messaging` `queues` `scheduling` |
+| Vibes | [Platform API specification](https://dash.readme.com/api/v1/api-registry/2utm1gsa6mtvx4vnu) | JSON | 3.0.0 | `official` `mobile-marketing` `messaging` |
 
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
