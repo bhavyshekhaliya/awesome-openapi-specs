@@ -1,0 +1,2377 @@
+openapi: 3.1.0
+info:
+  title: Drip REST API
+  version: v2 and v3
+externalDocs:
+  url: https://developer.drip.com/
+servers:
+- url: https://api.getdrip.com
+security:
+- basicAuth: []
+- bearerAuth: []
+tags:
+- name: Batch API
+- name: Accounts
+- name: Single-Email Campaigns (aka Broadcasts)
+- name: Email Series Campaigns
+- name: Custom Fields
+- name: Conversions
+- name: Events
+- name: Forms
+- name: Metrics
+- name: Orders (Legacy)
+- name: Segments
+- name: Subscribers
+- name: Tags
+- name: Users
+- name: Workflows
+- name: Webhooks
+- name: Cart Activity
+- name: Order Activity
+- name: Product Activity
+paths:
+  /v2/accounts:
+    get:
+      operationId: get_v2_accounts
+      summary: List all accounts
+      tags:
+      - Accounts
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/accounts/{account_id}:
+    get:
+      operationId: get_v2_accounts_account_id
+      summary: Fetch an account
+      tags:
+      - Accounts
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/user:
+    get:
+      operationId: get_v2_user
+      summary: Fetch the authenticated user
+      tags:
+      - Users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts:
+    get:
+      operationId: get_v2_account_id_broadcasts
+      summary: List all Single-Email Campaigns
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_account_id_broadcasts
+      summary: Create a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                subject:
+                  type: string
+                content:
+                  type: object
+                  additionalProperties: true
+                preheader:
+                  type: string
+                postal_address:
+                  type: string
+              additionalProperties: true
+              required:
+              - name
+              - subject
+              - content
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts/{broadcast_id}:
+    get:
+      operationId: get_v2_account_id_broadcasts_broadcast_id
+      summary: Fetch a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    patch:
+      operationId: patch_v2_account_id_broadcasts_broadcast_id
+      summary: Update a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                subject:
+                  type: string
+                content:
+                  type: object
+                  additionalProperties: true
+                preheader:
+                  type: string
+                postal_address:
+                  type: string
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    delete:
+      operationId: delete_v2_account_id_broadcasts_broadcast_id
+      summary: Delete a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts/{broadcast_id}/audience:
+    put:
+      operationId: put_v2_account_id_broadcasts_broadcast_id_audience
+      summary: Set the audience
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Argument:
+                  type: string
+                filter:
+                  type: array
+                  items: {}
+                confirm:
+                  type: boolean
+              additionalProperties: true
+              required:
+              - filter
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    get:
+      operationId: get_v2_account_id_broadcasts_broadcast_id_audience
+      summary: Fetch the audience
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts/{broadcast_id}/schedule:
+    post:
+      operationId: post_v2_account_id_broadcasts_broadcast_id_schedule
+      summary: Schedule a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Argument:
+                  type: string
+                send_at:
+                  type: string
+                localize_sending_time:
+                  type: boolean
+                send_immediately:
+                  type: boolean
+                auto_resend:
+                  type: boolean
+                resend_subject:
+                  type: string
+                resend_delay:
+                  type: string
+              additionalProperties: true
+              required:
+              - localize_sending_time
+              - resend_delay
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts/{broadcast_id}/send_test:
+    post:
+      operationId: post_v2_account_id_broadcasts_broadcast_id_send_test
+      summary: Send a test email
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to_emails:
+                  type: array
+                  items: {}
+                preview_as:
+                  type: string
+              additionalProperties: true
+              required:
+              - to_emails
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/broadcasts/{broadcast_id}/unschedule:
+    post:
+      operationId: post_v2_account_id_broadcasts_broadcast_id_unschedule
+      summary: Unschedule a Single-Email Campaign
+      tags:
+      - Single-Email Campaigns (aka Broadcasts)
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: broadcast_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/campaigns:
+    get:
+      operationId: get_v2_account_id_campaigns
+      summary: List all Email Series Campaigns
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/campaigns/{campaign_id}:
+    get:
+      operationId: get_v2_account_id_campaigns_campaign_id
+      summary: Fetch an Email Series Campaign
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/campaigns/{campaign_id}/activate:
+    post:
+      operationId: post_v2_account_id_campaigns_campaign_id_activate
+      summary: Activate an Email Series Campaign
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/campaigns/{campaign_id}/pause:
+    post:
+      operationId: post_v2_account_id_campaigns_campaign_id_pause
+      summary: Pause an Email Series Campaign
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/campaigns/{campaign_id}/subscribers:
+    get:
+      operationId: get_v2_account_id_campaigns_campaign_id_subscribers
+      summary: List all subscribers subscribed to an Email Series Campaign
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_account_id_campaigns_campaign_id_subscribers
+      summary: Subscribe someone to an Email Series Campaign
+      tags:
+      - Email Series Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                user_id:
+                  type: string
+                time_zone:
+                  type: string
+                double_optin:
+                  type: boolean
+                starting_email_index:
+                  type: integer
+                custom_fields:
+                  type: object
+                  additionalProperties: true
+                tags:
+                  type: array
+                  items: {}
+                reactivate_if_removed:
+                  type: string
+                prospect:
+                  type: boolean
+                base_lead_score:
+                  type: integer
+                eu_consent:
+                  type: boolean
+                eu_consent_message:
+                  type: string
+              additionalProperties: true
+              required:
+              - email
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: campaign_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/custom_field_identifiers:
+    get:
+      operationId: get_v2_account_id_custom_field_identifiers
+      summary: List all custom field identifiers used in an account
+      tags:
+      - Custom Fields
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/event_actions:
+    get:
+      operationId: get_v2_account_id_event_actions
+      summary: List all custom events actions used in an account
+      tags:
+      - Events
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/events:
+    post:
+      operationId: post_v2_account_id_events
+      summary: Record an event
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                action:
+                  type: string
+                prospect:
+                  type: boolean
+                properties:
+                  type: object
+                  additionalProperties: true
+                occurred_at:
+                  type: string
+              additionalProperties: true
+              required:
+              - action
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/events/batches:
+    post:
+      operationId: post_v2_account_id_events_batches
+      summary: Record a batch of events
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                events:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - events
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/forms:
+    get:
+      operationId: get_v2_account_id_forms
+      summary: List all forms
+      tags:
+      - Forms
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/forms/{form_id}:
+    get:
+      operationId: get_v2_account_id_forms_form_id
+      summary: Fetch a form
+      tags:
+      - Forms
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: form_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/goals:
+    get:
+      operationId: get_v2_account_id_goals
+      summary: List all conversions
+      tags:
+      - Conversions
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/goals/{conversion_id}:
+    get:
+      operationId: get_v2_account_id_goals_conversion_id
+      summary: Fetch a conversion
+      tags:
+      - Conversions
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: conversion_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/metrics/email:
+    get:
+      operationId: get_v2_account_id_metrics_email
+      summary: Fetch email metrics
+      tags:
+      - Metrics
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: broadcast_ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items: {}
+        style: form
+        explode: false
+      - name: workflow_ids
+        in: query
+        required: false
+        schema:
+          type: array
+          items: {}
+        style: form
+        explode: false
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '503':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/orders:
+    post:
+      operationId: post_v2_account_id_orders
+      summary: Create or update an order
+      tags:
+      - Orders (Legacy)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Property:
+                  type: string
+                email:
+                  type: string
+                id:
+                  type: string
+                amount:
+                  type: number
+                provider:
+                  type: string
+                tax:
+                  type: number
+                fees:
+                  type: number
+                discount:
+                  type: number
+                permalink:
+                  type: string
+                currency_code:
+                  type: string
+                upstream_id:
+                  type: string
+                identifier:
+                  type: string
+                properties:
+                  type: object
+                  additionalProperties: true
+                occurred_at:
+                  type: string
+                closed_at:
+                  type: string
+                cancelled_at:
+                  type: string
+                financial_state:
+                  type: string
+                billing_address:
+                  type: number
+                shipping_address:
+                  type: number
+                items:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - amount
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/orders/batches:
+    post:
+      operationId: post_v2_account_id_orders_batches
+      summary: Create or update a batch of orders (Legacy)
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - orders
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/refunds:
+    post:
+      operationId: post_v2_account_id_refunds
+      summary: Create or update a refund
+      tags:
+      - Orders (Legacy)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Property:
+                  type: string
+                provider:
+                  type: string
+                order_upstream_id:
+                  type: string
+                amount:
+                  type: number
+                upstream_id:
+                  type: string
+                note:
+                  type: string
+                processed_at:
+                  type: string
+              additionalProperties: true
+              required:
+              - provider
+              - order_upstream_id
+              - amount
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/segments:
+    get:
+      operationId: get_v2_account_id_segments
+      summary: List all segments
+      tags:
+      - Segments
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Argument
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: q
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/segments/{segment_id}:
+    get:
+      operationId: get_v2_account_id_segments_segment_id
+      summary: Fetch a segment
+      tags:
+      - Segments
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: segment_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers:
+    post:
+      operationId: post_v2_account_id_subscribers
+      summary: Create or update a subscriber
+      tags:
+      - Subscribers
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                visitor_uuid:
+                  type: string
+                new_email:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                zip:
+                  type: string
+                country:
+                  type: string
+                phone:
+                  type: number
+                sms_number:
+                  type: number
+                sms_consent:
+                  type: boolean
+                user_id:
+                  type: string
+                time_zone:
+                  type: string
+                lifetime_value:
+                  type: number
+                ip_address:
+                  type: string
+                custom_fields:
+                  type: object
+                  additionalProperties: true
+                tags:
+                  type: array
+                  items: {}
+                remove_tags:
+                  type: array
+                  items: {}
+                prospect:
+                  type: boolean
+                base_lead_score:
+                  type: integer
+                eu_consent:
+                  type: boolean
+                eu_consent_message:
+                  type: string
+                status:
+                  type: string
+                initial_status:
+                  type: string
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    get:
+      operationId: get_v2_account_id_subscribers
+      summary: List all subscribers
+      tags:
+      - Subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: array
+          items: {}
+        style: form
+        explode: false
+      - name: subscribed_before
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: subscribed_after
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/batches:
+    post:
+      operationId: post_v2_account_id_subscribers_batches
+      summary: Create or update a batch of subscribers
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscribers:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/{id_or_email_or_visitor_uuid}:
+    get:
+      operationId: get_v2_account_id_subscribers_id_or_email_or_visitor_uuid
+      summary: Fetch a subscriber
+      tags:
+      - Subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_or_email_or_visitor_uuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/{id_or_email}:
+    delete:
+      operationId: delete_v2_account_id_subscribers_id_or_email
+      summary: Delete a subscriber
+      tags:
+      - Subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_or_email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/subscribers/{id_or_email}/remove:
+    post:
+      operationId: post_v2_account_id_subscribers_id_or_email_remove
+      summary: Remove a subscriber from one or all Email Series Campaigns
+      tags:
+      - Subscribers
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                campaign_id:
+                  type: string
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_or_email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/{id_or_email}/unsubscribe_all:
+    post:
+      operationId: post_v2_account_id_subscribers_id_or_email_unsubscribe_all
+      summary: Unsubscribe from all mailings
+      tags:
+      - Subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_or_email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/{subscriber_id}/campaign_subscriptions:
+    get:
+      operationId: get_v2_account_id_subscribers_subscriber_id_campaign_subscriptions
+      summary: List all of a subscriber's Email Series Campaign subscriptions
+      tags:
+      - Email Series Campaigns
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: subscriber_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/tags:
+    get:
+      operationId: get_v2_account_id_tags
+      summary: List all tags used in an account
+      tags:
+      - Tags
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_account_id_tags
+      summary: Apply a tag to a subscriber
+      tags:
+      - Tags
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                tag:
+                  type: string
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/unsubscribes/batches:
+    post:
+      operationId: post_v2_account_id_unsubscribes_batches
+      summary: Unsubscribe a batch of subscribers
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscribers:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - subscribers
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/webhooks:
+    get:
+      operationId: get_v2_account_id_webhooks
+      summary: List all webhooks
+      tags:
+      - Webhooks
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_account_id_webhooks
+      summary: Create a new webhook
+      tags:
+      - Webhooks
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_url:
+                  type: string
+                include_received_email:
+                  type: boolean
+                events:
+                  type: array
+                  items: {}
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/webhooks/{webhook_id}:
+    get:
+      operationId: get_v2_account_id_webhooks_webhook_id
+      summary: Fetch a webhook
+      tags:
+      - Webhooks
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: webhook_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    delete:
+      operationId: delete_v2_account_id_webhooks_webhook_id
+      summary: Destroy a webhook
+      tags:
+      - Webhooks
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: webhook_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/workflows:
+    get:
+      operationId: get_v2_account_id_workflows
+      summary: List all workflows
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/workflows/{workflow_id}:
+    get:
+      operationId: get_v2_account_id_workflows_workflow_id
+      summary: Fetch a workflow
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/workflows/{workflow_id}/activate:
+    post:
+      operationId: post_v2_account_id_workflows_workflow_id_activate
+      summary: Activate a workflow
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/workflows/{workflow_id}/details:
+    get:
+      operationId: get_v2_account_id_workflows_workflow_id_details
+      summary: Fetch a workflow's details
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '304':
+          description: Not modified
+  /v2/{account_id}/workflows/{workflow_id}/pause:
+    post:
+      operationId: post_v2_account_id_workflows_workflow_id_pause
+      summary: Pause a workflow
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/workflows/{workflow_id}/subscribers:
+    post:
+      operationId: post_v2_account_id_workflows_workflow_id_subscribers
+      summary: Start someone on a workflow
+      tags:
+      - Workflows
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                address1:
+                  type: string
+                address2:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                zip:
+                  type: string
+                country:
+                  type: string
+                phone:
+                  type: number
+                user_id:
+                  type: string
+                time_zone:
+                  type: string
+                custom_fields:
+                  type: object
+                  additionalProperties: true
+                tags:
+                  type: array
+                  items: {}
+                prospect:
+                  type: boolean
+                eu_consent:
+                  type: boolean
+                eu_consent_message:
+                  type: string
+              additionalProperties: true
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/workflows/{workflow_id}/subscribers/{id_or_email}:
+    delete:
+      operationId: delete_v2_account_id_workflows_workflow_id_subscribers_id_or_email
+      summary: Remove a subscriber from a workflow
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: id_or_email
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+  /v2/{account_id}/workflows/{workflow_id}/triggers:
+    get:
+      operationId: get_v2_account_id_workflows_workflow_id_triggers
+      summary: List all workflow triggers
+      tags:
+      - Workflows
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_account_id_workflows_workflow_id_triggers
+      summary: Create a workflow trigger
+      tags:
+      - Workflows
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider:
+                  type: string
+                trigger_type:
+                  type: string
+                properties:
+                  type: object
+                  additionalProperties: true
+              additionalProperties: true
+              required:
+              - provider
+              - trigger_type
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/workflows/{workflow_id}/triggers/{trigger_id}:
+    put:
+      operationId: put_v2_account_id_workflows_workflow_id_triggers_trigger_id
+      summary: Update a workflow trigger
+      tags:
+      - Workflows
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                provider:
+                  type: string
+                trigger_type:
+                  type: string
+                properties:
+                  type: object
+                  additionalProperties: true
+              additionalProperties: true
+              required:
+              - provider
+              - trigger_type
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workflow_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: trigger_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/cart:
+    post:
+      operationId: post_v3_account_id_shopper_activity_cart
+      summary: Create or update a cart
+      tags:
+      - Cart Activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Property:
+                  type: string
+                provider:
+                  type: string
+                person_id:
+                  type: string
+                email:
+                  type: string
+                initial_status:
+                  type: string
+                action:
+                  type: string
+                cart_id:
+                  type: string
+                occurred_at:
+                  type: string
+                cart_public_id:
+                  type: string
+                grand_total:
+                  type: number
+                total_discounts:
+                  type: number
+                currency:
+                  type: string
+                cart_url:
+                  type: string
+                items:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - provider
+              - action
+              - cart_id
+              - cart_url
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/cart/batch:
+    post:
+      operationId: post_v3_account_id_shopper_activity_cart_batch
+      summary: Create or update a batch of carts
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                carts:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - carts
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/order:
+    post:
+      operationId: post_v3_account_id_shopper_activity_order
+      summary: Create or update an order
+      tags:
+      - Order Activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Property:
+                  type: string
+                provider:
+                  type: string
+                person_id:
+                  type: string
+                email:
+                  type: string
+                initial_status:
+                  type: string
+                action:
+                  type: string
+                occurred_at:
+                  type: string
+                order_id:
+                  type: string
+                order_public_id:
+                  type: string
+                grand_total:
+                  type: number
+                total_discounts:
+                  type: number
+                total_taxes:
+                  type: number
+                total_fees:
+                  type: number
+                total_shipping:
+                  type: number
+                refund_amount:
+                  type: number
+                currency:
+                  type: string
+                order_url:
+                  type: string
+                items:
+                  type: array
+                  items: {}
+                billing_address:
+                  type: number
+                shipping_address:
+                  type: number
+              additionalProperties: true
+              required:
+              - provider
+              - action
+              - order_id
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/order/batch:
+    post:
+      operationId: post_v3_account_id_shopper_activity_order_batch
+      summary: Create or update a batch of orders
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - orders
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/product:
+    post:
+      operationId: post_v3_account_id_shopper_activity_product
+      summary: Create or update a product
+      tags:
+      - Product Activity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Property:
+                  type: string
+                provider:
+                  type: string
+                action:
+                  type: string
+                occurred_at:
+                  type: string
+                product_id:
+                  type: string
+                product_variant_id:
+                  type: string
+                sku:
+                  type: string
+                name:
+                  type: string
+                brand:
+                  type: string
+                categories:
+                  type: array
+                  items: {}
+                currency:
+                  type: string
+                price:
+                  type: number
+                inventory:
+                  type: integer
+                product_url:
+                  type: string
+                image_url:
+                  type: string
+              additionalProperties: true
+              required:
+              - provider
+              - action
+              - product_id
+              - product_variant_id
+              - name
+              - price
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v3/{account_id}/shopper_activity/product/batch:
+    post:
+      operationId: post_v3_account_id_shopper_activity_product_batch
+      summary: Create or update a batch of products
+      tags:
+      - Batch API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items: {}
+              additionalProperties: true
+              required:
+              - products
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/{account_id}/subscribers/{email}/tags/{tag}:
+    delete:
+      operationId: delete_v2_account_id_subscribers_email_tags_tag
+      summary: Remove a tag from a subscriber
+      tags:
+      - Tags
+      parameters:
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: email
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: tag
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No content
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
