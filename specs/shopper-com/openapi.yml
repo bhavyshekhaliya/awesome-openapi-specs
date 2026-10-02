@@ -1,0 +1,585 @@
+openapi: 3.1.0
+info:
+  title: Shopper.com API
+  version: v1
+  description: >-
+    Community-maintained description of the documented Shopper.com v1 user,
+    subscriber, product, and collection read APIs. Storefront endpoints are
+    documented as public read-only APIs; the documentation also describes
+    account API credentials for authenticated requests. API access through
+    account credentials requires a premium plan.
+externalDocs:
+  description: Shopper.com API documentation
+  url: https://www.shopper.com/api-docs/
+servers:
+  - url: https://api.shopper.com
+    description: Shopper.com API
+tags:
+  - name: Products
+  - name: Collections
+  - name: Subscribers
+  - name: User
+paths:
+  /v1/products:
+    get:
+      operationId: listProducts
+      summary: List store products
+      description: >-
+        Returns a paginated list of products. The documentation says this
+        endpoint returns product details without collection details, although
+        its sample response includes a collection object.
+      tags:
+        - Products
+      security:
+        - {}
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: order_by
+          in: query
+          description: Sort by creation date or name; prefix a value with `-` for reverse order.
+          required: false
+          schema:
+            type: string
+            enum:
+              - create_date
+              - -create_date
+              - name
+              - -name
+      responses:
+        '200':
+          description: Paginated product records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1/collections:
+    get:
+      operationId: listCollections
+      summary: List store collections
+      description: Returns collection records without their products.
+      tags:
+        - Collections
+      security:
+        - {}
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: order_by
+          in: query
+          description: Sort field; prefix a value with `-` for reverse order.
+          required: false
+          schema:
+            type: string
+            enum:
+              - create_date
+              - -create_date
+              - name
+              - -name
+              - order
+              - -order
+              - products
+              - -products
+              - views
+              - -views
+      responses:
+        '200':
+          description: Paginated collection records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1/collections/{collection-id}/products:
+    get:
+      operationId: listCollectionProducts
+      summary: List products in a collection
+      description: Returns paginated product records for one collection.
+      tags:
+        - Products
+        - Collections
+      security:
+        - {}
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      parameters:
+        - name: collection-id
+          in: path
+          description: Collection identifier.
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: order_by
+          in: query
+          description: Sort by creation date or name; prefix a value with `-` for reverse order.
+          required: false
+          schema:
+            type: string
+            enum:
+              - create_date
+              - -create_date
+              - name
+              - -name
+      responses:
+        '200':
+          description: Paginated products from the selected collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1/products/{product-id}:
+    get:
+      operationId: getProduct
+      summary: Get product details
+      tags:
+        - Products
+      security:
+        - {}
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      parameters:
+        - name: product-id
+          in: path
+          description: Product identifier.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Details of the requested product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDetailsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1/user/subscribers:
+    get:
+      operationId: listSubscribers
+      summary: List store subscribers
+      description: Returns subscriber email addresses and subscription dates.
+      tags:
+        - Subscribers
+      security:
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: order_by
+          in: query
+          description: Sort by subscription date; prefix with `-` for reverse order.
+          required: false
+          schema:
+            type: string
+            enum:
+              - subscribe_date
+              - -subscribe_date
+      responses:
+        '200':
+          description: Paginated subscribers for the authenticated store.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /v1/user/:
+    get:
+      operationId: getUserDetails
+      summary: Get profile details
+      tags:
+        - User
+      security:
+        - shopperApiCredentials: []
+          shopperApiSecret: []
+          shopperAppId: []
+      responses:
+        '200':
+          description: Profile or store details for the authenticated account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  securitySchemes:
+    shopperApiCredentials:
+      type: apiKey
+      in: header
+      name: api-key
+      description: Shopper.com API key from the account dashboard.
+    shopperApiSecret:
+      type: apiKey
+      in: header
+      name: api-secret
+      description: Shopper.com API secret from the account dashboard.
+    shopperAppId:
+      type: apiKey
+      in: header
+      name: app-id
+      description: Application ID associated with the API request.
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Zero-based page number.
+      required: false
+      schema:
+        type: integer
+        default: 0
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of results to return.
+      required: false
+      schema:
+        type: integer
+        default: 100
+  responses:
+    BadRequest:
+      description: Invalid request parameters.
+    Unauthorized:
+      description: Invalid authentication parameters.
+    Forbidden:
+      description: The caller is not permitted to access the resource.
+    NotFound:
+      description: The requested resource was not found.
+    MethodNotAllowed:
+      description: The API method is not enabled for the account.
+    ServerError:
+      description: Internal server error.
+  schemas:
+    ProductPage:
+      type: object
+      required:
+        - products
+      properties:
+        status:
+          type: integer
+          const: 200
+        message:
+          type: string
+        current:
+          type: integer
+        start:
+          type: integer
+        end:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        next_page:
+          type: string
+          format: uri
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    CollectionPage:
+      type: object
+      required:
+        - collections
+      properties:
+        current:
+          type: integer
+        start:
+          type: integer
+        end:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        next_page:
+          type: string
+          format: uri
+        collections:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+    SubscriberPage:
+      type: object
+      required:
+        - subscribers
+      properties:
+        status:
+          type: integer
+          const: 200
+        message:
+          type: string
+        current:
+          type: integer
+        start:
+          type: integer
+        end:
+          type: integer
+        limit:
+          type: integer
+        total:
+          type: integer
+        next_page:
+          type: string
+          format: uri
+        subscribers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscriber'
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+          format: uri
+        featured:
+          type: boolean
+        create_date:
+          type: string
+          format: date-time
+        product_url:
+          type: string
+          format: uri
+        url:
+          type: string
+          format: uri
+        collection:
+          $ref: '#/components/schemas/ProductCollection'
+        store:
+          $ref: '#/components/schemas/Store'
+        store_active:
+          type: boolean
+        affiliate_url:
+          type: string
+          format: uri
+        description:
+          type: string
+        offer:
+          $ref: '#/components/schemas/Offer'
+    ProductDetailsResponse:
+      allOf:
+        - $ref: '#/components/schemas/Product'
+        - type: object
+          properties:
+            status:
+              type: integer
+              const: 200
+            message:
+              type: string
+    ProductCollection:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    Store:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        url:
+          type: string
+          format: uri
+        image:
+          type: string
+          format: uri
+    Offer:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        type:
+          type: string
+        url:
+          type: string
+          format: uri
+    Collection:
+      type: object
+      description: >-
+        The sample uses `private`, while the response-field description names
+        `is_secret`; both documented names are represented because the source is
+        inconsistent.
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        order:
+          type: integer
+        name:
+          type: string
+        private:
+          type: boolean
+        is_secret:
+          type: boolean
+        description:
+          type: string
+        views:
+          type: integer
+        create_date:
+          type: string
+          format: date-time
+        tag_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagDetail'
+        products:
+          type: integer
+        cover_image:
+          type: string
+          format: uri
+    TagDetail:
+      type: object
+      properties:
+        tag:
+          type: string
+        slug:
+          type: string
+        count:
+          type: string
+        url:
+          type: string
+          format: uri
+    Subscriber:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        subscribe_date:
+          type: string
+          format: date-time
+    UserDetails:
+      type: object
+      properties:
+        country:
+          type: string
+        profile_name:
+          type: string
+        user_name:
+          type: string
+        u_id:
+          type: string
+        email:
+          type: string
+          format: email
+        description:
+          type: string
+        is_private:
+          type: boolean
+        avatar:
+          type: string
+          format: uri
+        cover_image:
+          type: string
+          format: uri
+        statistics:
+          type: object
+          properties:
+            followers:
+              type: integer
+            following:
+              type: integer
+            product_count:
+              type: integer
+            collection_count:
+              type: integer
+        social_channels:
+          type: array
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+              link:
+                type: string
+                format: uri
