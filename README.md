@@ -309,6 +309,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Travel and Hospitality
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Universe | [REST API](https://dash.readme.com/api/v1/api-registry/1qz7y2qplt7f12sf) ? [Ticketmanager API](https://dash.readme.com/api/v1/api-registry/1mld74kq6vjc4y) ? [OAuth API](https://dash.readme.com/api/v1/api-registry/1mld74kq6vtujq) | JSON | 3.0.3, 3.1.0 | `official` `events` `ticketing` |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
 | TktPlz by Dreamcast | [Zapier API v1](https://apis-events.diy.godreamcast.com/storage/api-docs/zapier?api-docs-zapier.json) ? [Event Management API v2](https://apis-events.diy.godreamcast.com/storage/api-docs/default/V2?api-docs-v2.json) | JSON | 3.0.0 | `official` `event-management` `ticketing` |
