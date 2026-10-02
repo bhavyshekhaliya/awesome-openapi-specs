@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Eventleaf | [API specification](https://api.eventleaf.com/swagger/docs/v1) | JSON | 2.0 | `event-management` |
 | GetResponse | [API specification](https://apireference.getresponse.com/open-api.json) | JSON | 3.0.0 | `email-marketing` |
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
