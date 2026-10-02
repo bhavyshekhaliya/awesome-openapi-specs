@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Meser 10 | [JSON API specification](https://www.meser10.co.il/api-docs/meser10-json-api.json) | JSON | 3.1.0 | `official` `email-marketing` `sms` |
 | Collectform | [Zapier API specification](https://collectform.com/zapier-openapi.yaml) | YAML | 3.1.0 | `official` `lead-forms` `lead-generation` |
 | Flyn | [API specification](https://www.flyn.to/api/openapi.json) | JSON | 3.1.0 | `official` `link-management` `url-shortener` `analytics` |
 | ZAP POST | [API specification](https://api.zappost.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `official` `direct-mail` `marketing` |
