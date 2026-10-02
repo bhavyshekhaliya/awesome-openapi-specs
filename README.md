@@ -61,6 +61,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Iterable         | [API specification](https://api.iterable.com/api-docs)                                                           | JSON   | 2.0     | `official` `marketing-automation`         |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
+| LeadConnector    | [API specifications](https://github.com/GoHighLevel/highlevel-api-docs/tree/main/apps) | JSON | 3.0.0 | `official` `crm` `marketing-automation` |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
 | Livestorm        | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml)                                            | YAML   | 3.0.3   | `official` `webinars`                     |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
