@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -157,6 +157,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | MoEngage | [Data APIs](https://www.moengage.com/docs/api/data/data.yaml); [Business Events v5](https://www.moengage.com/docs/api/business-events/business-events-v5/business-events-v5.yaml); [Campaigns](https://www.moengage.com/docs/api/campaigns/campaigns.yaml); [Content APIs](https://www.moengage.com/docs/api/content-apis/content-apis.yaml); [Email Templates v2](https://www.moengage.com/docs/api/email-templates-2/email-templates-2.yaml); [Flows](https://www.moengage.com/docs/api/flows/flows.yaml); [Push Templates](https://www.moengage.com/docs/api/push-templates/push-templates.yaml); [Campaign Stats](https://www.moengage.com/docs/api/stats-report/stats-report.yaml) | YAML | 3.0.0, 3.0.3, 3.1.0 | `official` `marketing-automation` `customer-engagement` |
 | GetResponse      | [API v3 specification](https://apireference.getresponse.com/open-api.json) | JSON   | 3.0.0   | `official` `marketing-automation` `email-marketing` |
 | Attentive        | [API v2 specification](https://docs.attentive.com/openapi/attentive-api-bundled-v2.yaml) | JSON   | 3.0.3   | `official` `sms-marketing` `marketing-automation` |
+| Perspective | [Community specification](specs/perspective/openapi.yml) · [source docs](https://developers.perspective.co/api-reference/overview) | YAML | 3.1.0 | `community-maintained` `marketing-automation` `lead-generation` |
 | Twilio Segment  | [Official OpenAPI spec snapshot](specs/twilio-segment/openapi.json); [source docs](https://docs.segmentapis.com/) | JSON   | 73.5.0   | `official` `marketing-automation` `customer-data-platform` |
 | Mailtrap         | [API specifications](https://github.com/mailtrap/mailtrap-openapi/tree/main/specs)                                  | YAML   | 3.1.0   | `official` `email-marketing` `transactional-email` |
 | Constant Contact | [V3 API specification](https://api.cc.email/v3/swagger.yaml)                                                       | YAML   | 2.0     | `official` `email-marketing`              |
