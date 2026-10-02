@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| U2L AI | [API specification](https://u2l.ai/developers/openapi.json) | JSON | 3.1.0 | `marketing-automation` `ai` |
 | Spotler UK | [API specification](https://communigator.github.io/API-Documentation/swagger.json) | JSON | 2.0 | `email-marketing` `marketing-automation` |
 | Gathr | [API specification](https://gathr.com/assets/downloads/gathr-openapi.yaml) | YAML | 3.0.3 | `event-management` |
 | Topia | [API specification](https://api.topia.io/api-docs/swagger.yaml) | YAML | 3.0.0 | `event-management` `virtual-events` |
