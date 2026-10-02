@@ -1,0 +1,128 @@
+openapi: 3.2.0
+info:
+  title: SparkPost & Relay Webhooks Inbound Domains API
+  description: Configure inbound email processing by associating inbound domains with relay webhooks that forward received messages as HTTP POST events to your application.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/inbound-domains/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Inbound Domains
+paths:
+  /inbound-domains:
+    post:
+      operationId: createInboundDomain
+      summary: Create an Inbound Domain
+      description: Register a new inbound domain for receiving inbound email via relay webhooks.
+      tags:
+      - Inbound Domains
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+                  description: Domain name to register for inbound email
+      responses:
+        '200':
+          description: Inbound domain created
+        '409':
+          description: Domain already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: listInboundDomains
+      summary: List All Inbound Domains
+      description: Retrieve a list of all registered inbound domains.
+      tags:
+      - Inbound Domains
+      responses:
+        '200':
+          description: List of inbound domains
+  /inbound-domains/{domain}:
+    get:
+      operationId: getInboundDomain
+      summary: Retrieve an Inbound Domain
+      description: Retrieve details about a specific inbound domain.
+      tags:
+      - Inbound Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Inbound domain name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Inbound domain details
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteInboundDomain
+      summary: Delete an Inbound Domain
+      description: Remove an inbound domain registration.
+      tags:
+      - Inbound Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Inbound domain name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Inbound domain deleted
+        '404':
+          description: Domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Domain is associated with a relay webhook
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

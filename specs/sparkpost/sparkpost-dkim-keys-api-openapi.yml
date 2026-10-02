@@ -1,0 +1,217 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Sending Domains DKIM Keys API
+  description: Add and verify custom sending domains via DKIM signing. Required for domain-based email authentication and custom bounce domain configuration.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/sending-domains/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: DKIM Keys
+paths:
+  /sending-domains/{domain}/dkim-keys:
+    get:
+      operationId: listDkimKeys
+      summary: List DKIM Keys
+      description: List all DKIM keys for a sending domain.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of DKIM keys
+        '404':
+          description: Domain not found
+    post:
+      operationId: createDkimKey
+      summary: Create a DKIM Key
+      description: Add a new DKIM key to a sending domain.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DkimKeyRequest'
+      responses:
+        '200':
+          description: DKIM key created
+        '400':
+          description: Invalid request
+        '404':
+          description: Domain not found
+        '422':
+          description: Validation error
+  /sending-domains/{domain}/dkim-keys/{key_id}:
+    get:
+      operationId: getDkimKey
+      summary: Retrieve a DKIM Key
+      description: Retrieve details about a specific DKIM key.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      - name: key_id
+        in: path
+        required: true
+        description: DKIM key ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: DKIM key details
+        '404':
+          description: Domain or key not found
+    put:
+      operationId: updateDkimKey
+      summary: Update a DKIM Key
+      description: Update an existing DKIM key configuration.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      - name: key_id
+        in: path
+        required: true
+        description: DKIM key ID
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DkimKeyUpdateRequest'
+      responses:
+        '200':
+          description: DKIM key updated
+        '400':
+          description: Invalid request
+        '404':
+          description: Domain or key not found
+    delete:
+      operationId: deleteDkimKey
+      summary: Delete a DKIM Key
+      description: Remove a DKIM key from a sending domain.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      - name: key_id
+        in: path
+        required: true
+        description: DKIM key ID
+        schema:
+          type: string
+      responses:
+        '204':
+          description: DKIM key deleted
+        '400':
+          description: Invalid request
+        '404':
+          description: Domain or key not found
+  /sending-domains/{domain}/dkim-keys/{key_id}/verify:
+    post:
+      operationId: verifyDkimKey
+      summary: Verify a DKIM Key
+      description: Verify that a DKIM key is properly published in DNS.
+      tags:
+      - DKIM Keys
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      - name: key_id
+        in: path
+        required: true
+        description: DKIM key ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Verification result
+        '400':
+          description: Invalid request
+        '404':
+          description: Domain or key not found
+components:
+  schemas:
+    DkimKeyUpdateRequest:
+      type: object
+      properties:
+        signing_domain:
+          type: string
+        headers:
+          type: string
+        private:
+          type: string
+        public:
+          type: string
+        selector:
+          type: string
+    DkimKeyRequest:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: Unique key identifier
+        signing_domain:
+          type: string
+        headers:
+          type: string
+        private:
+          type: string
+        public:
+          type: string
+        selector:
+          type: string
+        dkim_key_length:
+          type: integer
+          default: 2048
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

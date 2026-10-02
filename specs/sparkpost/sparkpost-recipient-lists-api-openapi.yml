@@ -1,0 +1,329 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Recipient Lists API
+  description: Create and manage stored recipient lists for use with Transmissions. Lists can include substitution data per recipient for personalized sending campaigns.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/recipient-lists/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Recipient Lists
+paths:
+  /recipient-lists:
+    post:
+      operationId: createRecipientList
+      summary: Create a Recipient List
+      description: Create a new stored recipient list for use in transmissions.
+      tags:
+      - Recipient Lists
+      parameters:
+      - name: num_rcpt_errors
+        in: query
+        required: false
+        description: Maximum number of recipient errors to return (default 3)
+        schema:
+          type: integer
+          default: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipientListRequest'
+      responses:
+        '200':
+          description: Recipient list created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientListCreateResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: listRecipientLists
+      summary: List All Recipient Lists
+      description: Retrieve a summary list of all stored recipient lists.
+      tags:
+      - Recipient Lists
+      responses:
+        '200':
+          description: List of recipient lists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientListsResponse'
+  /recipient-lists/{id}:
+    get:
+      operationId: getRecipientList
+      summary: Retrieve a Recipient List
+      description: Retrieve a stored recipient list by ID.
+      tags:
+      - Recipient Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Recipient list ID (case sensitive)
+        schema:
+          type: string
+      - name: show_recipients
+        in: query
+        required: false
+        description: If true, includes the recipient entries (default true)
+        schema:
+          type: boolean
+          default: true
+      responses:
+        '200':
+          description: Recipient list details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecipientListResponse'
+        '404':
+          description: Recipient list not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      operationId: updateRecipientList
+      summary: Update a Recipient List
+      description: Update the metadata or recipients of a stored recipient list.
+      tags:
+      - Recipient Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Recipient list ID (case sensitive)
+        schema:
+          type: string
+      - name: num_rcpt_errors
+        in: query
+        required: false
+        description: Maximum number of recipient errors to return (default 3)
+        schema:
+          type: integer
+          default: 3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipientListUpdateRequest'
+      responses:
+        '200':
+          description: Recipient list updated
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Recipient list not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Recipient list is in use
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteRecipientList
+      summary: Delete a Recipient List
+      description: Delete a stored recipient list.
+      tags:
+      - Recipient Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Recipient list ID (case sensitive)
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Recipient list deleted
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Recipient list is referenced by a transmission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    RecipientListResponse:
+      type: object
+      properties:
+        results:
+          allOf:
+          - $ref: '#/components/schemas/RecipientListSummary'
+          - type: object
+            properties:
+              attributes:
+                type: object
+              recipients:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipient'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    Recipient:
+      type: object
+      required:
+      - address
+      properties:
+        address:
+          oneOf:
+          - type: string
+            format: email
+          - type: object
+            properties:
+              email:
+                type: string
+                format: email
+              name:
+                type: string
+              header_to:
+                type: string
+        tags:
+          type: array
+          items:
+            type: string
+          description: Tags for recipient grouping
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Per-recipient metadata
+        substitution_data:
+          type: object
+          additionalProperties: true
+          description: Per-recipient substitution data for templates
+    RecipientListRequest:
+      type: object
+      required:
+      - recipients
+      properties:
+        id:
+          type: string
+          maxLength: 64
+          description: Unique alphanumeric ID (auto-generated if not provided)
+        name:
+          type: string
+          maxLength: 64
+          description: Display name
+        description:
+          type: string
+          maxLength: 1024
+          description: Description of the list
+        attributes:
+          type: object
+          additionalProperties: true
+          description: Arbitrary metadata for the list
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipient'
+          description: List of recipient objects
+    RecipientListUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 64
+        description:
+          type: string
+          maxLength: 1024
+        attributes:
+          type: object
+          additionalProperties: true
+          description: Replaces all existing attributes
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recipient'
+          description: Replaces all existing recipients
+    RecipientListCreateResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            total_rejected_recipients:
+              type: integer
+            total_accepted_recipients:
+              type: integer
+            id:
+              type: string
+            name:
+              type: string
+    RecipientListSummary:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        total_accepted_recipients:
+          type: integer
+    RecipientListsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecipientListSummary'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

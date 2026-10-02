@@ -1,0 +1,360 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Templates API
+  description: Create, retrieve, update, delete, and preview stored email templates. Templates support dynamic substitution data and both text and HTML parts.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/templates/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Templates
+paths:
+  /templates:
+    post:
+      operationId: createTemplate
+      summary: Create a Template
+      description: Create a new email template with HTML, text, and AMP HTML parts.
+      tags:
+      - Templates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateRequest'
+      responses:
+        '200':
+          description: Template created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateCreateResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: listTemplates
+      summary: List All Templates
+      description: Retrieve a list of all stored templates.
+      tags:
+      - Templates
+      parameters:
+      - name: draft
+        in: query
+        required: false
+        description: If true, returns drafts in addition to published templates
+        schema:
+          type: boolean
+      - name: shared_with_subaccounts
+        in: query
+        required: false
+        description: Filter by templates shared with subaccounts
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: List of templates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateListResponse'
+  /templates/{id}:
+    get:
+      operationId: getTemplate
+      summary: Retrieve a Template
+      description: Retrieve a stored template by its ID.
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Template ID
+        schema:
+          type: string
+      - name: draft
+        in: query
+        required: false
+        description: If true, returns the draft version
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: Template details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateResponse'
+    put:
+      operationId: updateTemplate
+      summary: Update a Template
+      description: Update a draft or published template. Use update_published=true to update a published template directly.
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Template ID
+        schema:
+          type: string
+      - name: update_published
+        in: query
+        required: false
+        description: If true, updates the published version directly
+        schema:
+          type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateUpdateRequest'
+      responses:
+        '200':
+          description: Template updated
+    delete:
+      operationId: deleteTemplate
+      summary: Delete a Template
+      description: Delete a stored template.
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Template ID
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Template deleted
+        '409':
+          description: Template is in use by an active transmission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /templates/{id}/preview:
+    post:
+      operationId: previewTemplate
+      summary: Preview a Template
+      description: Render a template with substitution data to preview the output.
+      tags:
+      - Templates
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Template ID
+        schema:
+          type: string
+      - name: draft
+        in: query
+        required: false
+        description: If true, previews the draft version
+        schema:
+          type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                substitution_data:
+                  type: object
+                  additionalProperties: true
+                  description: Variables to substitute into the template
+      responses:
+        '200':
+          description: Rendered template preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplatePreviewResponse'
+  /utils/content-previewer:
+    post:
+      operationId: previewInlineTemplate
+      summary: Preview Inline Template
+      description: Preview an inline template with substitution data without saving it.
+      tags:
+      - Templates
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                substitution_data:
+                  type: object
+                  additionalProperties: true
+                content:
+                  $ref: '#/components/schemas/TemplateContent'
+      responses:
+        '200':
+          description: Rendered inline template preview
+components:
+  schemas:
+    TemplatePreviewResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            subject:
+              type: string
+            html:
+              type: string
+            text:
+              type: string
+            amp_html:
+              type: string
+            from:
+              type: string
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    TemplateRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique alphanumeric ID (auto-generated if not provided)
+        name:
+          type: string
+          description: Display name for the template
+        description:
+          type: string
+          description: Template description
+        content:
+          $ref: '#/components/schemas/TemplateContent'
+        options:
+          $ref: '#/components/schemas/TemplateOptions'
+        shared_with_subaccounts:
+          type: boolean
+          description: Whether this template is shared with subaccounts
+    TemplateCreateResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            id:
+              type: string
+    TemplateContent:
+      type: object
+      properties:
+        html:
+          type: string
+          description: HTML part of the email
+        text:
+          type: string
+          description: Plain text part of the email
+        amp_html:
+          type: string
+          description: AMP HTML part of the email
+        subject:
+          type: string
+          description: Email subject line (supports substitution variables)
+        from:
+          oneOf:
+          - type: string
+          - type: object
+            properties:
+              email:
+                type: string
+              name:
+                type: string
+          description: Sender address
+        reply_to:
+          type: string
+          description: Reply-to address
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Additional email headers
+    TemplateListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateResponse'
+    TemplateResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            published:
+              type: boolean
+            content:
+              $ref: '#/components/schemas/TemplateContent'
+            options:
+              $ref: '#/components/schemas/TemplateOptions'
+            shared_with_subaccounts:
+              type: boolean
+            last_update_time:
+              type: string
+              format: date-time
+    TemplateOptions:
+      type: object
+      properties:
+        transactional:
+          type: boolean
+        open_tracking:
+          type: boolean
+        click_tracking:
+          type: boolean
+    TemplateUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        content:
+          $ref: '#/components/schemas/TemplateContent'
+        options:
+          $ref: '#/components/schemas/TemplateOptions'
+        shared_with_subaccounts:
+          type: boolean
+        published:
+          type: boolean
+          description: Set to true to publish the draft
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization

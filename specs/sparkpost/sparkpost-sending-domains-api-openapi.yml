@@ -1,0 +1,344 @@
+openapi: 3.2.0
+info:
+  title: SparkPost Sending Domains API
+  description: Add and verify custom sending domains via DKIM signing. Required for domain-based email authentication and custom bounce domain configuration.
+  version: 1.0.0
+  contact:
+    name: SparkPost Developer Support
+    url: https://developers.sparkpost.com/api/sending-domains/
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+- url: https://api.sparkpost.com/api/v1
+  description: SparkPost Production API
+security:
+- ApiKeyAuth: []
+tags:
+- name: Sending Domains
+paths:
+  /sending-domains:
+    post:
+      operationId: createSendingDomain
+      summary: Create a Sending Domain
+      description: Add a new custom sending domain with optional DKIM key generation.
+      tags:
+      - Sending Domains
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingDomainRequest'
+      responses:
+        '200':
+          description: Sending domain created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendingDomainResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      operationId: listSendingDomains
+      summary: List All Sending Domains
+      description: Retrieve a list of all sending domains with optional filtering by verification status.
+      tags:
+      - Sending Domains
+      parameters:
+      - name: ownership_verified
+        in: query
+        required: false
+        description: Filter by ownership verification status
+        schema:
+          type: boolean
+      - name: dkim_status
+        in: query
+        required: false
+        description: Filter by DKIM verification status
+        schema:
+          type: string
+      - name: cname_status
+        in: query
+        required: false
+        description: Filter by CNAME verification status
+        schema:
+          type: string
+      - name: mx_status
+        in: query
+        required: false
+        description: Filter by MX record status
+        schema:
+          type: string
+      - name: abuse_at_status
+        in: query
+        required: false
+        description: Filter by abuse@ mailbox verification status
+        schema:
+          type: string
+      - name: postmaster_at_status
+        in: query
+        required: false
+        description: Filter by postmaster@ mailbox verification status
+        schema:
+          type: string
+      - name: compliance_status
+        in: query
+        required: false
+        description: Filter by compliance status
+        schema:
+          type: string
+      - name: is_default_bounce_domain
+        in: query
+        required: false
+        description: Filter by whether domain is default bounce domain
+        schema:
+          type: boolean
+      responses:
+        '200':
+          description: List of sending domains
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendingDomainsListResponse'
+  /sending-domains/{domain}:
+    get:
+      operationId: getSendingDomain
+      summary: Retrieve a Sending Domain
+      description: Retrieve details about a specific sending domain.
+      tags:
+      - Sending Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Sending domain details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendingDomainResponse'
+    put:
+      operationId: updateSendingDomain
+      summary: Update a Sending Domain
+      description: Update configuration for a sending domain.
+      tags:
+      - Sending Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingDomainUpdateRequest'
+      responses:
+        '200':
+          description: Sending domain updated
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      operationId: deleteSendingDomain
+      summary: Delete a Sending Domain
+      description: Remove a sending domain.
+      tags:
+      - Sending Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Sending domain deleted
+        '404':
+          description: Sending domain not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /sending-domains/{domain}/verify:
+    post:
+      operationId: verifySendingDomain
+      summary: Verify a Sending Domain
+      description: Initiate or check verification for a sending domain via DKIM, CNAME, or mailbox verification.
+      tags:
+      - Sending Domains
+      parameters:
+      - name: domain
+        in: path
+        required: true
+        description: Sending domain name
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingDomainVerifyRequest'
+      responses:
+        '200':
+          description: Verification result
+components:
+  schemas:
+    SendingDomainsListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SendingDomainDetails'
+    SendingDomainUpdateRequest:
+      type: object
+      properties:
+        tracking_domain:
+          type: string
+        dkim:
+          type: object
+        shared_with_subaccounts:
+          type: boolean
+        is_default_bounce_domain:
+          type: boolean
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+              code:
+                type: string
+              description:
+                type: string
+    SendingDomainRequest:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          description: The sending domain name
+        tracking_domain:
+          type: string
+          description: Tracking domain to associate with this sending domain
+        dkim:
+          type: object
+          description: DKIM key configuration
+          properties:
+            private:
+              type: string
+            public:
+              type: string
+            selector:
+              type: string
+            headers:
+              type: string
+        generate_dkim:
+          type: boolean
+          default: true
+          description: Whether to auto-generate a DKIM key
+        dkim_key_length:
+          type: integer
+          default: 2048
+          description: Length of generated DKIM key in bits
+        shared_with_subaccounts:
+          type: boolean
+          default: false
+          description: Whether this domain is shared with subaccounts
+    SendingDomainDetails:
+      type: object
+      properties:
+        domain:
+          type: string
+        tracking_domain:
+          type: string
+        status:
+          type: object
+          properties:
+            ownership_verified:
+              type: boolean
+            dkim_status:
+              type: string
+            cname_status:
+              type: string
+            mx_status:
+              type: string
+            compliance_status:
+              type: string
+            spf_status:
+              type: string
+            abuse_at_status:
+              type: string
+            postmaster_at_status:
+              type: string
+            verification_mailbox_status:
+              type: string
+        dkim:
+          type: object
+          properties:
+            signing_domain:
+              type: string
+            selector:
+              type: string
+            headers:
+              type: string
+            public:
+              type: string
+        shared_with_subaccounts:
+          type: boolean
+        is_default_bounce_domain:
+          type: boolean
+    SendingDomainVerifyRequest:
+      type: object
+      properties:
+        dkim_verify:
+          type: boolean
+        cname_verify:
+          type: boolean
+        verification_mailbox_verify:
+          type: boolean
+        verification_mailbox:
+          type: string
+        postmaster_at_verify:
+          type: boolean
+        abuse_at_verify:
+          type: boolean
+        verification_mailbox_token:
+          type: string
+        postmaster_at_token:
+          type: string
+        abuse_at_token:
+          type: string
+    SendingDomainResponse:
+      type: object
+      properties:
+        results:
+          $ref: '#/components/schemas/SendingDomainDetails'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
