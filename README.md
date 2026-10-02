@@ -450,6 +450,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Post Bridge | [API specification](https://api.post-bridge.com/openapi.json) | JSON | 3.0.0 | `official` `social-media` `scheduling` |
 | Pinterest | [REST API specifications](https://github.com/pinterest/api-description/tree/main/v5) | JSON, YAML | 3.0.3 | `official` `social-media` `marketing` `open-source` |
 | TikTok Display API | [Community specification](specs/tiktok-display/openapi.yml) Â· [source docs](https://developers.tiktok.com/docs/en/display-api-overview) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `video` |
 | Hootsuite | [API specification](https://platform.hootsuite.com/docs/api/swagger.yaml) | YAML | 2.0 | `social-media` |
