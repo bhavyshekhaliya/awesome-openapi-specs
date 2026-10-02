@@ -402,6 +402,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| ShoutOut | [API specification](https://apidocs.shoutout.social/spec.json) | JSON | 3.0.0 | `social-media` |
 | sona.to | [API specification](https://developers.sona.to/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
 | WoopSocial | [API specification](https://api.woopsocial.com/v1/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
 | GaggleAMP | [API specification](https://secure6.gaggleamp.com/api/v1/swagger.json) | JSON | 2.0 | `employee-advocacy` `social-media` |
