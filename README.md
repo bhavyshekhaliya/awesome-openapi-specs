@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Constant Contact | [V3 API specification](https://api.cc.email/v3/swagger.yaml)                                                       | YAML   | 2.0     | `official` `email-marketing`              |
 | Manychat         | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `official` `chat-marketing` `marketing-automation` |
 | Mailchimp Transactional | [API specification](https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json) | JSON | 3.1.0 | `official` `transactional-email` |
 | Lettermint       | [Sending API specification](https://lettermint.co/docs/api-reference/sending/0.0.1/lettermint-sending-openapi.json); [Team API specification](https://lettermint.co/docs/api-reference/team/0.0.1/lettermint-team-openapi.json) | JSON | 3.1.0 | `official` `transactional-email` |
