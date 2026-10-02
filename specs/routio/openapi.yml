@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info:
+  title: Routio Lead Ingestion API
+  version: '1.0'
+  description: >-
+    Community-maintained OpenAPI description of Routio's documented supplier
+    endpoint for submitting a lead. The endpoint host is a seller-specific
+    placeholder in the source documentation and must be replaced before use.
+externalDocs:
+  description: Routio Lead Ingestion API documentation
+  url: https://routio.io/api-docs
+servers:
+  - url: https://{host}
+    description: Routio API host; replace the documented placeholder with the host for your integration.
+    variables:
+      host:
+        default: your-domain.com
+        description: The source's example uses this placeholder domain.
+security:
+  - bearerAuth: []
+tags:
+  - name: Leads
+    description: Submit leads to an active seller campaign.
+paths:
+  /api/leads:
+    post:
+      operationId: submitLead
+      summary: Submit a lead
+      description: >-
+        Submits lead data to the campaign identified by `seller` and `category`.
+        Lead fields may be sent in the JSON body or as query parameters. When a
+        field is supplied in both places, the body value takes precedence.
+        Additional required fields can depend on the campaign category.
+      tags:
+        - Leads
+      parameters:
+        - name: seller
+          in: query
+          description: Seller code or seller slug; the code is stable when a seller renames.
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Active campaign category.
+          required: false
+          schema:
+            type: string
+        - name: firstName
+          in: query
+          description: Lead's first name.
+          required: false
+          schema:
+            type: string
+        - name: lastName
+          in: query
+          description: Lead's last name.
+          required: false
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Lead's email address.
+          required: false
+          schema:
+            type: string
+            format: email
+        - name: phone
+          in: query
+          description: Lead's contact phone number.
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: Two-letter state code.
+          required: false
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+        - name: zip
+          in: query
+          description: Lead's ZIP code.
+          required: false
+          schema:
+            type: string
+        - name: city
+          in: query
+          description: Lead's city.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: false
+        description: >-
+          JSON lead data. The documented fields are shown below; additional
+          campaign-specific fields may be accepted.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadInput'
+            example:
+              seller: ACME1234
+              category: Auto Insurance
+              firstName: John
+              lastName: Doe
+              email: john.doe@email.com
+              phone: 555-123-4567
+              state: TX
+              zip: '75001'
+              city: Dallas
+      responses:
+        '200':
+          description: Lead accepted; it may already be sold or still be pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadResponse'
+              examples:
+                sold:
+                  summary: Accepted and sold to a buyer
+                  value:
+                    success: true
+                    lead_id: abc123
+                    status: sold
+                    price: 45.0
+                    buyer_ids:
+                      - buyer-uuid-1
+                pending:
+                  summary: Accepted with no buyer available yet
+                  value:
+                    success: true
+                    lead_id: abc123
+                    status: pending
+        '400':
+          description: The category has no matching active campaign or a required field is missing.
+        '401':
+          description: The API key is missing or invalid.
+        '429':
+          description: The per-key rate limit was exceeded; the documented limit is 60 requests per minute.
+          headers:
+            X-RateLimit-Remaining:
+              description: Remaining requests in the current rate-limit window.
+              schema:
+                type: string
+            X-RateLimit-Reset:
+              description: Rate-limit reset information.
+              schema:
+                type: string
+        '500':
+          description: Internal server error.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key provided by the seller.
+  schemas:
+    LeadInput:
+      type: object
+      required:
+        - seller
+        - category
+        - firstName
+        - lastName
+        - phone
+        - state
+      properties:
+        seller:
+          type: string
+          description: Eight-character seller code is recommended; a seller slug is also accepted.
+        category:
+          type: string
+          description: Must identify an active campaign.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        state:
+          type: string
+          minLength: 2
+          maxLength: 2
+          description: Two-letter state code, such as TX or CA.
+        zip:
+          type: string
+        city:
+          type: string
+      additionalProperties: true
+    LeadResponse:
+      type: object
+      required:
+        - success
+        - lead_id
+        - status
+      properties:
+        success:
+          type: boolean
+          const: true
+        lead_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - sold
+            - pending
+        price:
+          type: number
+          description: Present in the documented sold response.
+        buyer_ids:
+          type: array
+          description: Present in the documented sold response.
+          items:
+            type: string
