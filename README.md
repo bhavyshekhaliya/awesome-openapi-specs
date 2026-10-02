@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| lemlist | [API specification](https://developer.lemlist.com/api-reference/openapi/v2.json) | JSON | 3.0.0 | `sales-engagement` `email-marketing` |
 | Mailjet | [API specification](https://dev.mailjet.com/openapi/openapi-mailjet) | YAML | 3.1.0 | `email-marketing` `transactional-email` |
 | LeadMetrics | [API specification](https://openapi.gitbook.com/o/6jBCGy2aFiaP8ezfWrvu/spec/leadmetrics-public-api.yaml) | YAML | 3.0.3 | `lead-generation` `marketing-analytics` |
 | Bitly            | [API specification](https://dev.bitly.com/v4/v4.json) | JSON | 3.0.0 | `official` `link-management` `analytics` |
