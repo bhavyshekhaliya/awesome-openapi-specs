@@ -1,0 +1,158 @@
+openapi: 3.1.0
+info:
+  title: Facebook Messenger Send API
+  version: '26.0'
+  description: |
+    Community-maintained, focused OpenAPI coverage for sending text messages
+    from a Facebook Page through Meta's Messenger Send API. This specification
+    does not describe the complete Graph API or Messenger Platform. It models
+    the page-message action supported by the Zapier integration; webhook setup
+    and inbound message event delivery are not included.
+  contact:
+    name: Awesome OpenAPI Specs maintainers
+    url: https://github.com/bhavyshekhaliya/awesome-openapi-specs
+servers:
+  - url: https://graph.facebook.com/v26.0
+    description: Meta Graph API v26.0, released July 29, 2026
+externalDocs:
+  description: Meta Messenger Platform Send API documentation
+  url: https://developers.facebook.com/docs/messenger-platform/reference/send-api/
+security:
+  - PageAccessToken: []
+tags:
+  - name: Messaging
+paths:
+  /{page_id}/messages:
+    post:
+      tags: [Messaging]
+      operationId: sendMessageFromPage
+      summary: Send a message from a Page
+      description: |
+        Sends a Messenger message from the specified Facebook Page to a person
+        identified by their Page-scoped ID (PSID). The request requires a Page
+        access token with the `pages_messaging` permission. The recipient must
+        have messaged the Page within the standard 24-hour window or have
+        separately opted in to receive messages outside that window. This
+        focused operation covers the Zapier text-message action.
+      parameters:
+        - name: page_id
+          in: path
+          required: true
+          description: Facebook Page ID that sends the message.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+            examples:
+              textMessage:
+                summary: Send a text message to a Page-scoped user
+                value:
+                  recipient:
+                    id: PAGE_SCOPED_USER_ID
+                  message:
+                    text: Your order has shipped.
+      responses:
+        '200':
+          description: Message accepted by the Send API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendMessageResponse'
+              examples:
+                accepted:
+                  value:
+                    recipient_id: PAGE_SCOPED_USER_ID
+                    message_id: m_EXAMPLE_MESSAGE_ID
+        default:
+          $ref: '#/components/responses/GraphApiError'
+components:
+  securitySchemes:
+    PageAccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: Page Access Token
+      description: |
+        Page access token for a person or system user with the `MESSAGE` task
+        on the Page and the `pages_messaging` permission.
+  responses:
+    GraphApiError:
+      description: Meta Graph API error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GraphApiError'
+  schemas:
+    SendMessageRequest:
+      type: object
+      required: [recipient, message]
+      properties:
+        recipient:
+          $ref: '#/components/schemas/Recipient'
+        message:
+          $ref: '#/components/schemas/Message'
+        messaging_type:
+          type: string
+          description: |
+            Optional message type accepted by the Send API. The appropriate
+            value depends on the reason for messaging and Meta's messaging
+            policies; consult the linked documentation before using values
+            other than the standard response flow.
+          example: RESPONSE
+      additionalProperties: true
+    Recipient:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: Recipient's Page-scoped ID (PSID).
+      additionalProperties: true
+    Message:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          description: Text to send to the recipient.
+      additionalProperties: true
+    SendMessageResponse:
+      type: object
+      required: [recipient_id, message_id]
+      properties:
+        recipient_id:
+          type: string
+          description: Page-scoped ID of the message recipient.
+        message_id:
+          type: string
+          description: ID assigned to the accepted message.
+      additionalProperties: true
+    GraphApiError:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [message, type, code]
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            code:
+              type: integer
+            error_subcode:
+              type: integer
+            is_transient:
+              type: boolean
+            error_user_title:
+              type: string
+            error_user_msg:
+              type: string
+            fbtrace_id:
+              type: string
+          additionalProperties: true
+      additionalProperties: true

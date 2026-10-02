@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -554,6 +554,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Facebook Messenger | [Community specification](specs/facebook-messenger/openapi.yml); [source docs](https://developers.facebook.com/docs/messenger-platform/reference/send-api/) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `marketing` `messaging` |
 | Hacker News | [Community specification](specs/hacker-news/openapi.yml); [official API documentation](https://github.com/HackerNews/API) | YAML | 3.1.0 | `community-maintained` `focused` `community` `news` |
 | Post Bridge | [API specification](https://api.post-bridge.com/openapi.json) | JSON | 3.0.0 | `official` `social-media` `scheduling` |
 | Pinterest | [REST API specifications](https://github.com/pinterest/api-description/tree/main/v5) | JSON, YAML | 3.0.3 | `official` `social-media` `marketing` `open-source` |
