@@ -277,6 +277,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | --- | --- | --- | --- | --- |
 | Amadeus | [Self-Service API specifications](https://github.com/amadeus4dev/amadeus-open-api-specification) | JSON, YAML | 3.x | `official` `travel` `flights` `hotels` `archived` |
 | Booking.com | [Demand API OpenAPI description](https://developers.booking.com/demand/docs/open-api/3.2/demand-api) | JSON, YAML | 3.x | `official` `travel` `accommodation` `car-rental` |
+| TktPlz by Dreamcast | [Zapier API v1](https://apis-events.diy.godreamcast.com/storage/api-docs/zapier?api-docs-zapier.json) ? [Event Management API v2](https://apis-events.diy.godreamcast.com/storage/api-docs/default/V2?api-docs-v2.json) | JSON | 3.0.0 | `official` `event-management` `ticketing` |
 
 ## Healthcare and Life Sciences
 | Provider | OpenAPI spec | Format | Version | Tags |
