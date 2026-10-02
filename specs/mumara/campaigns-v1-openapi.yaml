@@ -1,0 +1,3886 @@
+openapi: 3.1.0
+info:
+  title: Mumara Campaigns API (V1 - Legacy)
+  description: |
+    Enterprise-grade Email Marketing Automation Platform API.
+
+    ## Authentication
+    All API requests require authentication using an API token. You can pass the token in one of three ways:
+
+    **1. Query Parameter (Recommended for GET requests)**
+    ```
+    GET /api/getLists?api_token=YOUR_API_TOKEN
+    ```
+
+    **2. Request Body (Recommended for POST/PUT requests)**
+    ```json
+    {
+      "api_token": "YOUR_API_TOKEN",
+      "name": "My List"
+    }
+    ```
+
+    **3. Bearer Token Header**
+    ```
+    Authorization: Bearer YOUR_API_TOKEN
+    ```
+
+    ## Rate Limiting
+    API requests are rate-limited based on your token configuration. Default: 60 requests/minute.
+
+    Response headers include:
+    - `X-RateLimit-Limit`: Maximum requests per minute
+    - `X-RateLimit-Remaining`: Remaining requests in current window
+    - `X-RateLimit-Reset`: Unix timestamp when the rate limit resets
+    - `Retry-After`: Seconds to wait (when rate limited, HTTP 429)
+
+    ## Pagination
+    List endpoints support pagination with the following parameters:
+    - `limit_start`: Offset (number of records to skip). Default: 0
+    - `limit_count`: Number of records to return. Default: 25
+
+    ## Response Format
+    All responses are in JSON format.
+
+    **Success Response:**
+    ```json
+    {
+      "status": "success",
+      "result": "Operation completed successfully",
+      "response": { /* optional data object */ }
+    }
+    ```
+
+    **Error Response:**
+    ```json
+    {
+      "status": "error",
+      "result": "Error message or validation errors object"
+    }
+    ```
+
+    
+  version: 1.0.0
+  contact:
+    name: Mumara Support
+    url: https://support.mumara.com
+    email: support@mumara.com
+  license:
+    name: Proprietary
+    url: https://mumara.com/terms
+
+servers:
+  - url: '{protocol}://{host}/api'
+    description: Mumara Campaigns API V1
+    variables:
+      protocol:
+        default: https
+        enum:
+          - https
+          - http
+        description: HTTP protocol
+      host:
+        default: your-domain.com
+        description: Your Mumara installation domain (e.g. campaigns.example.com)
+
+tags:
+  - name: Authentication
+    description: API authentication and verification
+  - name: Lists
+    description: Manage contact lists and list groups
+  - name: Contacts
+    description: Manage subscribers/contacts
+  - name: Broadcasts
+    description: Email campaigns and broadcasts
+  - name: Statistics
+    description: Campaign statistics and analytics
+  - name: Sending Nodes
+    description: SMTP and ESP sending configurations
+  - name: Sending Domains
+    description: Domain management for email sending
+  - name: Bounce Management
+    description: Bounce addresses and rules
+  - name: Suppression
+    description: Email and domain suppression lists
+  - name: Custom Fields
+    description: Custom contact fields
+  - name: Profile Fields
+    description: User profile fields management
+  - name: Spin Tags
+    description: Dynamic content spin tags
+  - name: Feedback Loop
+    description: FBL (Feedback Loop) mailbox management
+  - name: Segments
+    description: Contact segmentation
+  - name: Groups
+    description: Groups for organizing lists, broadcasts, etc.
+  - name: Automation
+    description: Drips, triggers, and autoresponders
+  - name: Web Forms
+    description: Subscription forms
+  - name: Users
+    description: User management (Admin only)
+
+security:
+  - apiKeyQuery: []
+  - apiKeyBody: []
+  - bearerAuth: []
+
+paths:
+  # ============================================
+  # AUTHENTICATION
+  # ============================================
+  /:
+    get:
+      summary: Verify Authentication
+      description: Verify that your API credentials are valid
+      operationId: verifyAuth
+      tags:
+        - Authentication
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Verify Authentication (POST)
+      description: Verify that your API credentials are valid via POST
+      operationId: verifyAuthPost
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+                  description: Your API token
+              required:
+                - api_token
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /routes:
+    get:
+      summary: List Available Routes
+      description: Get a list of all available API endpoints
+      operationId: getRoutes
+      tags:
+        - Authentication
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: List of routes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  routes:
+                    type: array
+                    items:
+                      type: string
+
+  # ============================================
+  # LISTS
+  # ============================================
+  /addList:
+    post:
+      summary: Create List
+      description: |
+        Create a new contact list. Requires:
+        - A valid sending domain for the owner_email
+        - A valid bounce email address (except for Commercial ESP package)
+      operationId: addList
+      tags:
+        - Lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListCreate'
+            example:
+              api_token: "your_api_token"
+              list_name: "My Newsletter"
+              owner_name: "John Doe"
+              owner_email: "john@yourdomain.com"
+              bounce_email: "bounce@yourdomain.com"
+              reply_email: "reply@yourdomain.com"
+              group_name: "Marketing Lists"
+              additional_fields: "first_name,last_name"
+              response: "1"
+      responses:
+        '200':
+          description: List created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+              example:
+                status: success
+                result: "List has been created."
+                response:
+                  id: 1
+                  name: "My Newsletter"
+                  owner_name: "John Doe"
+                  owner_email: "john@yourdomain.com"
+                  reply_email: "reply@yourdomain.com"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /getLists:
+    get:
+      summary: Get All Lists
+      description: Retrieve all contact lists with optional filtering
+      operationId: getLists
+      tags:
+        - Lists
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: list_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific list ID
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+        - name: group_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by group ID
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Lists retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: No lists found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /getList/{id}:
+    get:
+      summary: Get List
+      description: Retrieve a specific list by ID
+      operationId: getList
+      tags:
+        - Lists
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /updateList/{id}:
+    put:
+      summary: Update List
+      description: Update an existing list
+      operationId: updateList
+      tags:
+        - Lists
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListUpdate'
+      responses:
+        '200':
+          description: List updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /deleteList/{id}/{type}:
+    delete:
+      summary: Delete List
+      description: |
+        Delete a list. The list cannot be deleted if it's being used by triggers or segments.
+        Currently only 'hard' delete is supported (deletes subscribers).
+      operationId: deleteList
+      tags:
+        - Lists
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: path
+          required: false
+          schema:
+            type: string
+            enum: [hard]
+            default: hard
+          description: Delete type (currently only 'hard' is supported)
+      responses:
+        '200':
+          description: List deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: List is in use by triggers or segments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /getListGroups:
+    get:
+      summary: Get List Groups
+      description: Retrieve all list groups with the count of lists in each group
+      operationId: getListGroups
+      tags:
+        - Lists
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific group ID
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: List groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ListGroup'
+
+  /deleteListGroup/{id}/{delete_lists}:
+    delete:
+      summary: Delete List Group
+      description: |
+        Delete a list group. Options:
+        - If `delete_lists=1`: Delete all lists in the group (fails if any list is used by triggers/segments)
+        - If `delete_lists=0` or omitted: Move lists to "Unsorted" group
+      operationId: deleteListGroup
+      tags:
+        - Lists
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Group ID to delete
+        - name: delete_lists
+          in: path
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 0
+          description: Whether to delete lists (1) or move to Unsorted (0)
+      responses:
+        '200':
+          description: Group deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '404':
+          description: Group not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ============================================
+  # CONTACTS/SUBSCRIBERS
+  # ============================================
+  /addContact:
+    post:
+      summary: Add Contact
+      description: Add a new contact to a list
+      operationId: addContact
+      tags:
+        - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactCreate'
+      responses:
+        '200':
+          description: Contact added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /getContacts:
+    get:
+      summary: Get All Contacts
+      description: Retrieve contacts with optional filtering
+      operationId: getContacts
+      tags:
+        - Contacts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: list_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by list ID
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [subscribed, unsubscribed, bounced, complaint]
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Contacts retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsResponse'
+
+  /getContact/{ids}:
+    get:
+      summary: Get Contact(s)
+      description: Retrieve one or more contacts by ID
+      operationId: getContact
+      tags:
+        - Contacts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+      responses:
+        '200':
+          description: Contact(s) retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /searchContacts:
+    get:
+      summary: Search Contacts
+      description: Search contacts by various criteria
+      operationId: searchContacts
+      tags:
+        - Contacts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query (email, name, etc.)
+        - name: list_id
+          in: query
+          schema:
+            type: integer
+        - name: field
+          in: query
+          schema:
+            type: string
+          description: Specific field to search
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsResponse'
+
+  /updateContact/{id}:
+    put:
+      summary: Update Contact
+      description: Update contact information by ID
+      operationId: updateContact
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactUpdate'
+      responses:
+        '200':
+          description: Contact updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+
+  /updateContactByEmail/{email}:
+    put:
+      summary: Update Contact by Email
+      description: Update contact using email address
+      operationId: updateContactByEmail
+      tags:
+        - Contacts
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactUpdate'
+      responses:
+        '200':
+          description: Contact updated successfully
+
+  /deleteContact/{ids}:
+    delete:
+      summary: Delete Contact(s)
+      description: Delete one or more contacts by ID
+      operationId: deleteContact
+      tags:
+        - Contacts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+      responses:
+        '200':
+          description: Contact(s) deleted successfully
+
+  /deleteContactByEmail/{email}/{recursive}/{list_id}:
+    delete:
+      summary: Delete Contact by Email
+      description: Delete contact using email address
+      operationId: deleteContactByEmail
+      tags:
+        - Contacts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: recursive
+          in: path
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 0
+          description: Delete from all lists (1) or specific list (0)
+        - name: list_id
+          in: path
+          required: false
+          schema:
+            type: integer
+          description: Specific list to delete from (when recursive=0)
+      responses:
+        '200':
+          description: Contact deleted successfully
+
+  /markAsBounced/{id}:
+    put:
+      summary: Mark as Bounced
+      description: Mark a contact as bounced
+      operationId: markAsBounced
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+      responses:
+        '200':
+          description: Contact marked as bounced
+
+  /markAsUnsubscribed/{id}:
+    put:
+      summary: Mark as Unsubscribed
+      description: Mark a contact as unsubscribed
+      operationId: markAsUnsubscribed
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+      responses:
+        '200':
+          description: Contact marked as unsubscribed
+
+  /markAsComplaint/{id}:
+    put:
+      summary: Mark as Complaint
+      description: Mark a contact as complaint/spam report
+      operationId: markAsComplaint
+      tags:
+        - Contacts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+      responses:
+        '200':
+          description: Contact marked as complaint
+
+  /importContacts:
+    post:
+      summary: Import Contacts
+      description: Bulk import contacts to a list
+      operationId: importContacts
+      tags:
+        - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactImport'
+      responses:
+        '200':
+          description: Import started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  imported:
+                    type: integer
+                  failed:
+                    type: integer
+                  message:
+                    type: string
+
+  # ============================================
+  # SEGMENTS
+  # ============================================
+  /createSegment:
+    post:
+      summary: Create Segment
+      description: Create a new contact segment with conditions
+      operationId: createSegment
+      tags:
+        - Segments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentCreate'
+            example:
+              api_token: "your_api_token"
+              name: "Active Subscribers"
+              list_ids: "1,2,3"
+              conditions:
+                - field: "status"
+                  operator: "equals"
+                  value: "subscribed"
+      responses:
+        '200':
+          description: Segment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: string
+
+  # ============================================
+  # BROADCASTS/CAMPAIGNS
+  # ============================================
+  /addBroadcast:
+    post:
+      summary: Create Broadcast
+      description: Create a new email broadcast/campaign
+      operationId: addBroadcast
+      tags:
+        - Broadcasts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastCreate'
+      responses:
+        '200':
+          description: Broadcast created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResponse'
+
+  /getBroadcasts:
+    get:
+      summary: Get All Broadcasts
+      description: Retrieve all broadcasts/campaigns
+      operationId: getBroadcasts
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, scheduled, sending, sent, paused]
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Broadcasts retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastsResponse'
+
+  /getBroadcast/{id}:
+    get:
+      summary: Get Broadcast
+      description: Retrieve a specific broadcast by ID
+      operationId: getBroadcast
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Broadcast retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /updateBroadcast/{id}:
+    put:
+      summary: Update Broadcast
+      description: Update an existing broadcast
+      operationId: updateBroadcast
+      tags:
+        - Broadcasts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastUpdate'
+      responses:
+        '200':
+          description: Broadcast updated successfully
+
+  /deleteBroadcasts/{id}:
+    delete:
+      summary: Delete Broadcast
+      description: Delete a broadcast
+      operationId: deleteBroadcast
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Broadcast deleted successfully
+
+  /broadcastSchedule:
+    post:
+      summary: Schedule Broadcast
+      description: Schedule a broadcast for sending
+      operationId: scheduleBroadcast
+      tags:
+        - Broadcasts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BroadcastSchedule'
+      responses:
+        '200':
+          description: Broadcast scheduled successfully
+
+  /getScheduledBroadcasts:
+    get:
+      summary: Get Scheduled Broadcasts
+      description: Retrieve all scheduled broadcasts
+      operationId: getScheduledBroadcasts
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Scheduled broadcasts retrieved
+
+  /getBroadcastGroups:
+    get:
+      summary: Get Broadcast Groups
+      description: Retrieve broadcast groups with campaign count
+      operationId: getBroadcastGroups
+      tags:
+        - Broadcasts
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific group ID
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Broadcast groups retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BroadcastGroup'
+
+  # ============================================
+  # GROUPS (Generic)
+  # ============================================
+  /getGroups/{module}:
+    get:
+      summary: Get Groups by Module
+      description: |
+        Retrieve groups for a specific module type.
+
+        Supported modules:
+        - `list` - List groups
+        - `broadcast` - Broadcast/campaign groups
+        - `sendingNode` - Sending node groups
+        - `customField` - Custom field groups
+      operationId: getGroups
+      tags:
+        - Groups
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: module
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [list, broadcast, sendingNode, customField]
+          description: Module type
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific group ID
+        - name: module_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific module item ID
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        module_name:
+                          type: string
+                          description: Comma-separated names of items in this group
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+        '400':
+          description: Invalid module name
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  result:
+                    type: string
+                  suggested module name:
+                    type: array
+                    items:
+                      type: string
+                    example: ["list", "sendingNode", "customField", "broadcast"]
+
+  # ============================================
+  # STATISTICS
+  # ============================================
+  /getBroadcastStatsSummary/{schedule_id}:
+    get:
+      summary: Get Stats Summary
+      description: Get summary statistics for a broadcast schedule
+      operationId: getStatsSummary
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Statistics summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsSummary'
+
+  /getBroadcastStatsBounced/{schedule_id}:
+    get:
+      summary: Get Bounce Stats
+      description: Get bounce statistics for a broadcast
+      operationId: getStatsBounced
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Bounce statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsDetail'
+
+  /getBroadcastStatsOpened/{schedule_id}:
+    get:
+      summary: Get Open Stats
+      description: Get open statistics for a broadcast
+      operationId: getStatsOpened
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Open statistics
+
+  /getBroadcastStatsClicked/{schedule_id}:
+    get:
+      summary: Get Click Stats
+      description: Get click statistics for a broadcast
+      operationId: getStatsClicked
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Click statistics
+
+  /getBroadcastStatsUnsubscribed/{schedule_id}:
+    get:
+      summary: Get Unsubscribe Stats
+      description: Get unsubscribe statistics for a broadcast
+      operationId: getStatsUnsubscribed
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Unsubscribe statistics
+
+  /getBroadcastStatsComplaints/{schedule_id}:
+    get:
+      summary: Get Complaint Stats
+      description: Get complaint/spam report statistics
+      operationId: getStatsComplaints
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Complaint statistics
+
+  /getBroadcastStatsLogs/{schedule_id}:
+    get:
+      summary: Get Stats Logs
+      description: Get detailed sending logs for a broadcast
+      operationId: getStatsLogs
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Sending logs
+
+  /getBroadcastStatsGlobal:
+    get:
+      summary: Get Global Stats
+      description: Get global statistics across all broadcasts
+      operationId: getGlobalStats
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Global statistics
+
+  /getLogsByIds/{ids}:
+    get:
+      summary: Get Logs by IDs
+      description: Retrieve campaign schedule logs by their IDs
+      operationId: getLogsByIds
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+      responses:
+        '200':
+          description: Logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      type: object
+        '404':
+          description: Logs not found
+
+  # ============================================
+  # SPIN TAGS
+  # ============================================
+  /getSpinTags:
+    get:
+      summary: Get Spin Tags
+      description: Retrieve all spin tags for dynamic content rotation
+      operationId: getSpinTags
+      tags:
+        - Spin Tags
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific spin tag ID
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+          description: Filter by user ID (admin only)
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Spin tags retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SpinTag'
+
+  /addSpinTag:
+    post:
+      summary: Add Spin Tag
+      description: Create a new spin tag for dynamic content
+      operationId: addSpinTag
+      tags:
+        - Spin Tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpinTagCreate'
+            example:
+              api_token: "your_api_token"
+              place_holder: "greeting"
+              word_list: "Hello,Hi,Hey,Greetings"
+              response: "1"
+      responses:
+        '200':
+          description: Spin tag created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: string
+                    example: "Spintag has been added."
+                  response:
+                    $ref: '#/components/schemas/SpinTag'
+        '400':
+          description: Validation error or spin tag already exists
+
+  /updateSpinTag/{id}:
+    put:
+      summary: Update Spin Tag
+      description: Update an existing spin tag's word list
+      operationId: updateSpinTag
+      tags:
+        - Spin Tags
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpinTagUpdate'
+      responses:
+        '200':
+          description: Spin tag updated successfully
+        '404':
+          description: Spin tag not found
+
+  /deleteSpinTags/{ids}:
+    delete:
+      summary: Delete Spin Tags
+      description: Delete one or more spin tags
+      operationId: deleteSpinTags
+      tags:
+        - Spin Tags
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+      responses:
+        '200':
+          description: Spin tag(s) deleted successfully
+
+  # ============================================
+  # FEEDBACK LOOP (FBL)
+  # ============================================
+  /getFBLAccounts:
+    get:
+      summary: Get FBL Accounts
+      description: Retrieve all Feedback Loop mailbox accounts
+      operationId: getFBLAccounts
+      tags:
+        - Feedback Loop
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: query
+          schema:
+            type: integer
+          description: Filter by specific FBL account ID
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: FBL accounts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FBLAccount'
+
+  /addFBLAccount:
+    post:
+      summary: Add FBL Account
+      description: Add a new Feedback Loop mailbox account
+      operationId: addFBLAccount
+      tags:
+        - Feedback Loop
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FBLAccountCreate'
+            example:
+              api_token: "your_api_token"
+              email: "fbl@yourdomain.com"
+              host: "imap.yourdomain.com"
+              port: 993
+              username: "fbl@yourdomain.com"
+              password: "your_password"
+              method: "IMAP"
+              encryption: "ssl"
+              status: 1
+              response: "1"
+      responses:
+        '200':
+          description: FBL account created successfully
+        '400':
+          description: Validation error or account already exists
+
+  /updateFBLAccount/{id}:
+    put:
+      summary: Update FBL Account
+      description: Update an existing FBL account
+      operationId: updateFBLAccount
+      tags:
+        - Feedback Loop
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FBLAccountUpdate'
+      responses:
+        '200':
+          description: FBL account updated successfully
+        '404':
+          description: FBL account not found
+
+  /deleteFBLAccounts/{ids}:
+    delete:
+      summary: Delete FBL Accounts
+      description: Delete one or more FBL accounts
+      operationId: deleteFBLAccounts
+      tags:
+        - Feedback Loop
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+      responses:
+        '200':
+          description: FBL account(s) deleted successfully
+
+  # ============================================
+  # PROFILE FIELDS
+  # ============================================
+  /getProfileFields:
+    get:
+      summary: Get Profile Fields
+      description: Retrieve all user profile fields
+      operationId: getProfileFields
+      tags:
+        - Profile Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Profile fields retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProfileField'
+
+  /getProfileField/{id}:
+    get:
+      summary: Get Profile Field
+      description: Retrieve a specific profile field by ID
+      operationId: getProfileField
+      tags:
+        - Profile Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Profile field retrieved successfully
+        '404':
+          description: Profile field not found
+
+  /addProfileField:
+    post:
+      summary: Add Profile Field
+      description: Create a new user profile field
+      operationId: addProfileField
+      tags:
+        - Profile Fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileFieldCreate'
+            example:
+              api_token: "your_api_token"
+              name: "Company Name"
+              type: "text"
+              is_required: 0
+              status: 1
+      responses:
+        '200':
+          description: Profile field created successfully
+        '400':
+          description: Validation error
+
+  /updateProfileField/{id}:
+    put:
+      summary: Update Profile Field
+      description: Update an existing profile field
+      operationId: updateProfileField
+      tags:
+        - Profile Fields
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileFieldUpdate'
+      responses:
+        '200':
+          description: Profile field updated successfully
+        '404':
+          description: Profile field not found
+
+  /deleteProfileFields/{ids}:
+    delete:
+      summary: Delete Profile Fields
+      description: Delete one or more profile fields
+      operationId: deleteProfileFields
+      tags:
+        - Profile Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Single ID or comma-separated IDs
+      responses:
+        '200':
+          description: Profile field(s) deleted successfully
+
+  # ============================================
+  # SENDING NODES
+  # ============================================
+  /addSendingNode/{provider}:
+    post:
+      summary: Add Sending Node
+      description: |
+        Add a new SMTP or ESP sending node.
+
+        Supported providers:
+        - `smtp` - Standard SMTP server
+        - `amazonSES` - Amazon Simple Email Service
+        - `sendGrid` - SendGrid
+        - `mailGun` - Mailgun
+        - `sparkPost` - SparkPost
+        - `postMark` - Postmark
+        - `mailJet` - Mailjet
+        - `elasticEmail` - Elastic Email
+        - `smtp2Go` - SMTP2GO
+      operationId: addSendingNode
+      tags:
+        - Sending Nodes
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [smtp, amazonSES, sendGrid, mailGun, sparkPost, postMark, mailJet, elasticEmail, smtp2Go]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingNodeCreate'
+      responses:
+        '200':
+          description: Sending node added successfully
+
+  /getSendingNodes:
+    get:
+      summary: Get All Sending Nodes
+      description: Retrieve all configured sending nodes
+      operationId: getSendingNodes
+      tags:
+        - Sending Nodes
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+      responses:
+        '200':
+          description: Sending nodes retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SendingNode'
+
+  /getSendingNode/{id}:
+    get:
+      summary: Get Sending Node
+      description: Retrieve a specific sending node
+      operationId: getSendingNode
+      tags:
+        - Sending Nodes
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Sending node retrieved
+
+  /updateSendingNode/{id}:
+    put:
+      summary: Update Sending Node
+      description: Update sending node configuration
+      operationId: updateSendingNode
+      tags:
+        - Sending Nodes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingNodeUpdate'
+      responses:
+        '200':
+          description: Sending node updated
+
+  /deleteSendingNodes/{ids}:
+    delete:
+      summary: Delete Sending Nodes
+      description: Delete one or more sending nodes
+      operationId: deleteSendingNodes
+      tags:
+        - Sending Nodes
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sending nodes deleted
+
+  # ============================================
+  # SENDING DOMAINS
+  # ============================================
+  /getSendingDomains:
+    get:
+      summary: Get Sending Domains
+      description: Retrieve all sending domains
+      operationId: getSendingDomains
+      tags:
+        - Sending Domains
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Sending domains retrieved
+
+  /addSendingDomain:
+    post:
+      summary: Add Sending Domain
+      description: Add a new sending domain
+      operationId: addSendingDomain
+      tags:
+        - Sending Domains
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingDomain'
+      responses:
+        '200':
+          description: Domain added successfully
+
+  /editSendingDomain/{id}:
+    post:
+      summary: Edit Sending Domain
+      description: Update sending domain settings (uses POST method)
+      operationId: editSendingDomain
+      tags:
+        - Sending Domains
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendingDomain'
+      responses:
+        '200':
+          description: Domain updated
+
+  /deleteSendingDomain/{id}:
+    delete:
+      summary: Delete Sending Domain
+      description: Delete a sending domain
+      operationId: deleteSendingDomain
+      tags:
+        - Sending Domains
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Domain deleted
+
+  # ============================================
+  # BOUNCE MANAGEMENT
+  # ============================================
+  /getBounceAddresses:
+    get:
+      summary: Get Bounce Addresses
+      description: Retrieve all bounce mailbox addresses
+      operationId: getBounceAddresses
+      tags:
+        - Bounce Management
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Bounce addresses retrieved
+
+  /addBounceAddress:
+    post:
+      summary: Add Bounce Address
+      description: Add a bounce mailbox address
+      operationId: addBounceAddress
+      tags:
+        - Bounce Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BounceAddress'
+      responses:
+        '200':
+          description: Bounce address added
+
+  /updateBounceAddress/{id}:
+    put:
+      summary: Update Bounce Address
+      description: Update bounce mailbox settings
+      operationId: updateBounceAddress
+      tags:
+        - Bounce Management
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BounceAddress'
+      responses:
+        '200':
+          description: Bounce address updated
+
+  /deleteBounceAddresses/{ids}:
+    delete:
+      summary: Delete Bounce Addresses
+      description: Delete bounce mailbox addresses
+      operationId: deleteBounceAddresses
+      tags:
+        - Bounce Management
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bounce addresses deleted
+
+  /getBounceRules:
+    get:
+      summary: Get Bounce Rules
+      description: Retrieve custom bounce rules
+      operationId: getBounceRules
+      tags:
+        - Bounce Management
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Bounce rules retrieved
+
+  /addBounceRule:
+    post:
+      summary: Add Bounce Rule
+      description: Add a custom bounce rule
+      operationId: addBounceRule
+      tags:
+        - Bounce Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BounceRule'
+      responses:
+        '200':
+          description: Bounce rule added
+
+  /updateBounceRule/{id}:
+    put:
+      summary: Update Bounce Rule
+      description: Update a bounce rule
+      operationId: updateBounceRule
+      tags:
+        - Bounce Management
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BounceRule'
+      responses:
+        '200':
+          description: Bounce rule updated
+
+  /deleteBounceRules/{ids}:
+    delete:
+      summary: Delete Bounce Rules
+      description: Delete bounce rules
+      operationId: deleteBounceRules
+      tags:
+        - Bounce Management
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bounce rules deleted
+
+  # ============================================
+  # SUPPRESSION
+  # ============================================
+  /suppress:
+    post:
+      summary: Add to Suppression List
+      description: Add email or domain to suppression list
+      operationId: suppress
+      tags:
+        - Suppression
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SuppressionAdd'
+      responses:
+        '200':
+          description: Added to suppression list
+
+  /getSuppressed:
+    get:
+      summary: Get Suppressed
+      description: Get suppressed emails and domains
+      operationId: getSuppressed
+      tags:
+        - Suppression
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Suppression list retrieved
+
+  /getSuppressedEmails/{id}:
+    get:
+      summary: Get Suppressed Emails
+      description: Get suppressed email addresses
+      operationId: getSuppressedEmails
+      tags:
+        - Suppression
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Suppressed emails retrieved
+
+  /getSuppressedDomains/{id}:
+    get:
+      summary: Get Suppressed Domains
+      description: Get suppressed domains
+      operationId: getSuppressedDomains
+      tags:
+        - Suppression
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Suppressed domains retrieved
+
+  /deleteSuppressed/{type}:
+    delete:
+      summary: Delete Suppressed
+      description: Remove from suppression list
+      operationId: deleteSuppressed
+      tags:
+        - Suppression
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: type
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [email, domain]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+                ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Removed from suppression list
+
+  # ============================================
+  # CUSTOM FIELDS
+  # ============================================
+  /getCustomFields:
+    get:
+      summary: Get Custom Fields
+      description: Retrieve all custom fields
+      operationId: getCustomFields
+      tags:
+        - Custom Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Custom fields retrieved
+
+  /getCustomField/{id}:
+    get:
+      summary: Get Custom Field
+      description: Retrieve a specific custom field
+      operationId: getCustomField
+      tags:
+        - Custom Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Custom field retrieved
+
+  /getListCustomFields/{list_id}:
+    get:
+      summary: Get List Custom Fields
+      description: Get custom fields assigned to a specific list
+      operationId: getListCustomFields
+      tags:
+        - Custom Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: list_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List custom fields retrieved
+
+  /addCustomField:
+    post:
+      summary: Add Custom Field
+      description: Create a new custom field
+      operationId: addCustomField
+      tags:
+        - Custom Fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomField'
+      responses:
+        '200':
+          description: Custom field created
+
+  /addCustomFieldToList:
+    post:
+      summary: Add Custom Field to List
+      description: Assign a custom field to a list
+      operationId: addCustomFieldToList
+      tags:
+        - Custom Fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+                list_id:
+                  type: integer
+                field_id:
+                  type: integer
+      responses:
+        '200':
+          description: Custom field added to list
+
+  /updateCustomField/{id}:
+    put:
+      summary: Update Custom Field
+      description: Update a custom field
+      operationId: updateCustomField
+      tags:
+        - Custom Fields
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomField'
+      responses:
+        '200':
+          description: Custom field updated
+
+  /deleteCustomField/{id}/{force}:
+    delete:
+      summary: Delete Custom Field
+      description: Delete a custom field
+      operationId: deleteCustomField
+      tags:
+        - Custom Fields
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: force
+          in: path
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+      responses:
+        '200':
+          description: Custom field deleted
+
+  # ============================================
+  # AUTOMATION - DRIPS
+  # ============================================
+  /getDrips:
+    get:
+      summary: Get Drips
+      description: Retrieve all drip campaigns
+      operationId: getDrips
+      tags:
+        - Automation
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Drips retrieved
+
+  /addDrip:
+    post:
+      summary: Add Drip
+      description: Create a new drip campaign
+      operationId: addDrip
+      tags:
+        - Automation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DripCreate'
+      responses:
+        '200':
+          description: Drip created
+
+  /deleteDrips/{ids}:
+    delete:
+      summary: Delete Drips
+      description: Delete drip campaigns
+      operationId: deleteDrips
+      tags:
+        - Automation
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Drips deleted
+
+  # ============================================
+  # AUTOMATION - TRIGGERS
+  # ============================================
+  /getTriggers:
+    get:
+      summary: Get Triggers
+      description: Retrieve all triggers
+      operationId: getTriggers
+      tags:
+        - Automation
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Triggers retrieved
+
+  /getTrigger/{id}:
+    get:
+      summary: Get Trigger
+      description: Retrieve a specific trigger
+      operationId: getTrigger
+      tags:
+        - Automation
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Trigger retrieved
+
+  /addTrigger:
+    post:
+      summary: Add Trigger
+      description: Create a new trigger
+      operationId: addTrigger
+      tags:
+        - Automation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TriggerCreate'
+      responses:
+        '200':
+          description: Trigger created
+
+  /deleteTriggers/{ids}:
+    delete:
+      summary: Delete Triggers
+      description: Delete triggers
+      operationId: deleteTriggers
+      tags:
+        - Automation
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: ids
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Triggers deleted
+
+  # ============================================
+  # WEB FORMS
+  # ============================================
+  /getWebForms:
+    get:
+      summary: Get Web Forms
+      description: Retrieve all web forms
+      operationId: getWebForms
+      tags:
+        - Web Forms
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Web forms retrieved
+
+  /getWebForm/{id}:
+    get:
+      summary: Get Web Form
+      description: Retrieve a specific web form
+      operationId: getWebForm
+      tags:
+        - Web Forms
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Web form retrieved
+
+  /deleteWebForms/{id}:
+    delete:
+      summary: Delete Web Forms
+      description: Delete web forms
+      operationId: deleteWebForms
+      tags:
+        - Web Forms
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Web forms deleted
+
+  # ============================================
+  # USERS (ADMIN)
+  # ============================================
+  /addUser:
+    post:
+      summary: Create User
+      description: Create a new user account (Admin only)
+      operationId: addUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: User created
+
+  /create-user:
+    post:
+      summary: Create User (Alias)
+      description: Create a new user account (Admin only) - alias for /addUser
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: User created
+
+  /getUsers:
+    get:
+      summary: Get Users
+      description: Retrieve all users (Admin only)
+      operationId: getUsers
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+      responses:
+        '200':
+          description: Users retrieved
+
+  /getUser/{idOrEmail}:
+    get:
+      summary: Get User
+      description: Retrieve a user by ID or email
+      operationId: getUser
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: idOrEmail
+          in: path
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User retrieved
+
+  /deleteUser/{idOrEmail}/{type}:
+    delete:
+      summary: Delete User
+      description: Delete a user account
+      operationId: deleteUser
+      tags:
+        - Users
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - name: idOrEmail
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: path
+          required: false
+          schema:
+            type: string
+            enum: [soft, hard]
+      responses:
+        '200':
+          description: User deleted
+
+  /update-user-account:
+    post:
+      summary: Update User Account
+      description: Update user account details
+      operationId: updateUserAccount
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated
+
+  /update-user-status:
+    post:
+      summary: Update User Status
+      description: |
+        Set a user's status. The user is identified by `email`.
+
+        - `suspended`, `closed` or `terminated`: every campaign of the user that is not finished (`complete`, `StoppedByPolicy`) or already paused is paused, and the user is logged out. Finished campaigns keep their status.
+        - `active`: the user can log in again. Campaigns paused by an earlier status change stay paused until they are resumed.
+
+        `terminated` only sets the status; it does not delete the account. To delete it, use the V2 API: `DELETE /v2/users/{idOrEmail}?type=hard`.
+      operationId: updateUserStatus
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - status
+              properties:
+                api_token:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                  description: Email address of the user to update
+                  example: john@example.com
+                status:
+                  type: string
+                  enum: [active, suspended, closed, terminated]
+      responses:
+        '200':
+          description: |
+            `success` (plain text) when the status was updated. An unknown email or an invalid status returns `{"status": "error", "result": "..."}` instead, also with HTTP 200.
+
+  /update-user-password:
+    post:
+      summary: Update User Password
+      description: Update user password
+      operationId: updateUserPassword
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+                user_id:
+                  type: integer
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Password updated
+
+  /update-user-package:
+    post:
+      summary: Update User Package
+      description: Update user subscription package
+      operationId: updateUserPackage
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_token:
+                  type: string
+                user_id:
+                  type: integer
+                package_id:
+                  type: integer
+      responses:
+        '200':
+          description: Package updated
+
+  # ============================================
+  # EMAIL SENDING
+  # ============================================
+  /sendEmail:
+    post:
+      summary: Send Email
+      description: Send a transactional email
+      operationId: sendEmail
+      tags:
+        - Broadcasts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmail'
+      responses:
+        '200':
+          description: Email sent successfully
+
+  /dynamicTemplate/{id}:
+    post:
+      summary: Send Template Email
+      description: Send email using a template
+      operationId: sendTemplateEmail
+      tags:
+        - Broadcasts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Template ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendTemplateEmail'
+      responses:
+        '200':
+          description: Template email sent
+
+  # ============================================
+  # ACTIVITY LOGS
+  # ============================================
+  /getActivityLogs:
+    get:
+      summary: Get Activity Logs
+      description: Retrieve activity logs
+      operationId: getActivityLogs
+      tags:
+        - Statistics
+      parameters:
+        - $ref: '#/components/parameters/ApiToken'
+        - $ref: '#/components/parameters/LimitStart'
+        - $ref: '#/components/parameters/LimitCount'
+        - name: type
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Activity logs retrieved
+
+# COMPONENTS
+# ============================================
+components:
+  securitySchemes:
+    apiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_token
+      description: API token passed as query parameter
+    apiKeyBody:
+      type: apiKey
+      in: header
+      name: X-API-Token
+      description: API token in request body (use api_token field)
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: Bearer token authentication
+
+  parameters:
+    ApiToken:
+      name: api_token
+      in: query
+      required: false
+      schema:
+        type: string
+      description: API token (can also be passed in request body)
+    LimitStart:
+      name: limit_start
+      in: query
+      schema:
+        type: integer
+        default: 0
+      description: Pagination offset (number of records to skip)
+    LimitCount:
+      name: limit_count
+      in: query
+      schema:
+        type: integer
+        default: 25
+      description: Number of records to return
+
+  responses:
+    Unauthorized:
+      description: Authentication failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            result: "Invalid API key"
+
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            status: error
+            result: "Resource not found"
+
+  schemas:
+    # ============================================
+    # EXISTING API SCHEMAS
+    # ============================================
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        result:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        result:
+          oneOf:
+            - type: string
+            - type: object
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        result:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+
+    AuthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Authentication successful
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+            email:
+              type: string
+            name:
+              type: string
+
+    # LIST SCHEMAS
+    ListCreate:
+      type: object
+      required:
+        - list_name
+        - owner_name
+        - owner_email
+        - reply_email
+      properties:
+        api_token:
+          type: string
+        list_name:
+          type: string
+          example: "My Newsletter"
+        owner_name:
+          type: string
+          example: "John Doe"
+        owner_email:
+          type: string
+          format: email
+          description: Must use a verified sending domain
+        bounce_email:
+          type: string
+          format: email
+          description: Required unless using Commercial ESP package
+        reply_email:
+          type: string
+          format: email
+        group_name:
+          type: string
+          description: Group name (will be created if doesn't exist)
+        user_id:
+          type: integer
+          description: User ID to create list for (admin only)
+        additional_fields:
+          type: string
+          description: Comma-separated custom field tags to assign
+        additional_headers:
+          type: string
+          description: JSON object of additional email headers
+        response:
+          type: string
+          enum: ["0", "1"]
+          description: Set to "1" to include created list in response
+
+    ListUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        list_name:
+          type: string
+        owner_name:
+          type: string
+        owner_email:
+          type: string
+          format: email
+        bounce_email:
+          type: string
+          format: email
+        reply_email:
+          type: string
+          format: email
+        group_name:
+          type: string
+        additional_fields:
+          type: string
+        additional_headers:
+          type: string
+        response:
+          type: string
+          enum: ["0", "1"]
+
+    ListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                $ref: '#/components/schemas/List'
+        response:
+          $ref: '#/components/schemas/List'
+
+    ListsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/List'
+
+    List:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        owner_name:
+          type: string
+        owner_email:
+          type: string
+        reply_email:
+          type: string
+        user_id:
+          type: integer
+        group_id:
+          type: integer
+        group_name:
+          type: string
+        total_subscribers:
+          type: integer
+        bounce_id:
+          type: integer
+        bounce_email:
+          type: string
+        custom_fields:
+          type: object
+          additionalProperties:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ListGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        user_id:
+          type: integer
+        number_of_lists_in_group:
+          type: integer
+
+    BroadcastGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        user_id:
+          type: integer
+        number_of_campaigns_in_group:
+          type: integer
+
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+
+    # CONTACT SCHEMAS
+    ContactCreate:
+      type: object
+      required:
+        - email
+        - list_id
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        list_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        custom_fields:
+          type: object
+          additionalProperties:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [subscribed, unsubscribed]
+          default: subscribed
+
+    ContactUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        custom_fields:
+          type: object
+          additionalProperties:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [subscribed, unsubscribed]
+
+    ContactResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Contact'
+            - type: array
+              items:
+                $ref: '#/components/schemas/Contact'
+
+    ContactsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+
+    Contact:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        status:
+          type: string
+        list_id:
+          type: integer
+        custom_fields:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ContactImport:
+      type: object
+      required:
+        - list_id
+        - contacts
+      properties:
+        api_token:
+          type: string
+        list_id:
+          type: integer
+        contacts:
+          type: array
+          items:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                format: email
+              first_name:
+                type: string
+              last_name:
+                type: string
+              custom_fields:
+                type: object
+        update_existing:
+          type: boolean
+          default: false
+        skip_duplicates:
+          type: boolean
+          default: true
+
+    # SEGMENT SCHEMAS
+    SegmentCreate:
+      type: object
+      required:
+        - name
+        - list_ids
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        list_ids:
+          type: string
+          description: Comma-separated list IDs
+        conditions:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              operator:
+                type: string
+              value:
+                type: string
+
+    # BROADCAST SCHEMAS
+    BroadcastCreate:
+      type: object
+      required:
+        - name
+        - subject
+        - from_name
+        - from_email
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        subject:
+          type: string
+        from_name:
+          type: string
+        from_email:
+          type: string
+          format: email
+        reply_to:
+          type: string
+          format: email
+        html_content:
+          type: string
+        text_content:
+          type: string
+        template_id:
+          type: integer
+        list_ids:
+          type: array
+          items:
+            type: integer
+        segment_ids:
+          type: array
+          items:
+            type: integer
+        sending_node_id:
+          type: integer
+        group_id:
+          type: integer
+
+    BroadcastUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        subject:
+          type: string
+        from_name:
+          type: string
+        from_email:
+          type: string
+          format: email
+        reply_to:
+          type: string
+          format: email
+        html_content:
+          type: string
+        text_content:
+          type: string
+
+    BroadcastResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Broadcast'
+
+    BroadcastsResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Broadcast'
+
+    Broadcast:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        subject:
+          type: string
+        from_name:
+          type: string
+        from_email:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    BroadcastSchedule:
+      type: object
+      required:
+        - broadcast_id
+      properties:
+        api_token:
+          type: string
+        broadcast_id:
+          type: integer
+        schedule_at:
+          type: string
+          format: date-time
+          description: If not provided, sends immediately
+        timezone:
+          type: string
+          example: America/New_York
+        throttle:
+          type: integer
+          description: Emails per hour limit
+
+    # SPIN TAG SCHEMAS
+    SpinTag:
+      type: object
+      properties:
+        id:
+          type: integer
+        place_holder:
+          type: string
+        tag:
+          type: string
+          description: Auto-generated tag for use in emails
+        word_list:
+          type: string
+          description: Newline-separated list of words
+        user_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    SpinTagCreate:
+      type: object
+      required:
+        - place_holder
+        - word_list
+      properties:
+        api_token:
+          type: string
+        place_holder:
+          type: string
+          description: Placeholder name (no special characters)
+        word_list:
+          type: string
+          description: Comma-separated list of words to rotate
+        user_id:
+          type: integer
+          description: User ID (admin only)
+        response:
+          type: string
+          enum: ["0", "1"]
+
+    SpinTagUpdate:
+      type: object
+      required:
+        - word_list
+      properties:
+        api_token:
+          type: string
+        word_list:
+          type: string
+          description: Comma-separated list of words
+        user_id:
+          type: integer
+          description: User ID (admin only)
+        response:
+          type: string
+          enum: ["0", "1"]
+
+    # FBL SCHEMAS
+    FBLAccount:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: Email address
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        processing_protocols:
+          type: string
+          enum: [IMAP, POP]
+        fbl_encryption:
+          type: string
+          enum: [none, ssl, tls]
+        folder:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        delete_emails:
+          type: integer
+          enum: [0, 1]
+        validate_certificates:
+          type: integer
+          enum: [0, 1]
+        user_id:
+          type: integer
+
+    FBLAccountCreate:
+      type: object
+      required:
+        - email
+        - host
+        - port
+        - username
+        - method
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        method:
+          type: string
+          enum: [IMAP, POP, imap, pop]
+        encryption:
+          type: string
+          enum: [none, ssl, tls, SSL, TLS]
+        folder:
+          type: string
+          default: INBOX
+        status:
+          type: integer
+          enum: [0, 1]
+          description: 0=inactive, 1=active
+        delete_emails:
+          type: integer
+          enum: [0, 1]
+        validate_certificates:
+          type: integer
+          enum: [0, 1]
+        response:
+          type: string
+          enum: ["0", "1"]
+
+    FBLAccountUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        processing:
+          type: string
+          enum: [IMAP, POP, imap, pop]
+        encryption:
+          type: string
+          enum: [none, ssl, tls, SSL, TLS]
+        folder:
+          type: string
+        delete_emails:
+          type: integer
+          enum: [0, 1]
+        validate_certificates:
+          type: integer
+          enum: [0, 1]
+        response:
+          type: string
+          enum: ["0", "1"]
+
+    # PROFILE FIELD SCHEMAS
+    ProfileField:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tag:
+          type: string
+        type:
+          type: string
+          enum: [text, textarea, checkbox, radio, json, select, date]
+        options:
+          type: string
+        is_required:
+          type: integer
+          enum: [0, 1]
+        field_order:
+          type: integer
+        status:
+          type: integer
+          enum: [0, 1]
+        is_default:
+          type: integer
+        user_id:
+          type: integer
+
+    ProfileFieldCreate:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+          description: Field name (must start with letter, can contain spaces/underscores/numbers)
+        type:
+          type: string
+          enum: [text, textarea, checkbox, radio, json, select, date]
+        options:
+          type: string
+          description: Comma-separated options (required for radio, select, checkbox)
+        is_required:
+          type: integer
+          enum: [0, 1]
+          default: 0
+        field_order:
+          type: integer
+          minimum: 1
+        status:
+          type: integer
+          enum: [0, 1]
+          default: 0
+
+    ProfileFieldUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [text, textarea, checkbox, radio, json, select, date]
+        options:
+          type: string
+        is_required:
+          type: integer
+          enum: [0, 1]
+        field_order:
+          type: integer
+        status:
+          type: integer
+          enum: [0, 1]
+
+    # STATISTICS SCHEMAS
+    StatsSummary:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: object
+          properties:
+            total_sent:
+              type: integer
+            delivered:
+              type: integer
+            bounced:
+              type: integer
+            opened:
+              type: integer
+            clicked:
+              type: integer
+            unsubscribed:
+              type: integer
+            complaints:
+              type: integer
+            open_rate:
+              type: number
+              format: float
+            click_rate:
+              type: number
+              format: float
+            bounce_rate:
+              type: number
+              format: float
+
+    StatsDetail:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: array
+          items:
+            type: object
+
+    # SENDING NODE SCHEMAS
+    SendingNodeCreate:
+      type: object
+      required:
+        - name
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        host:
+          type: string
+          description: SMTP host (for SMTP provider)
+        port:
+          type: integer
+          description: SMTP port
+        username:
+          type: string
+        password:
+          type: string
+        encryption:
+          type: string
+          enum: [none, ssl, tls]
+        api_key:
+          type: string
+          description: API key (for ESP providers)
+        region:
+          type: string
+          description: AWS region (for Amazon SES)
+        hourly_limit:
+          type: integer
+        daily_limit:
+          type: integer
+
+    SendingNodeUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        encryption:
+          type: string
+        api_key:
+          type: string
+        hourly_limit:
+          type: integer
+        daily_limit:
+          type: integer
+
+    SendingNode:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        provider:
+          type: string
+        host:
+          type: string
+        port:
+          type: integer
+        status:
+          type: string
+        hourly_limit:
+          type: integer
+        daily_limit:
+          type: integer
+
+    SendingDomain:
+      type: object
+      required:
+        - domain
+      properties:
+        api_token:
+          type: string
+        domain:
+          type: string
+          example: mail.example.com
+        dkim_enabled:
+          type: boolean
+        tracking_enabled:
+          type: boolean
+
+    BounceAddress:
+      type: object
+      required:
+        - email
+        - host
+        - username
+        - password
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        host:
+          type: string
+        port:
+          type: integer
+          default: 993
+        username:
+          type: string
+        password:
+          type: string
+        encryption:
+          type: string
+          enum: [none, ssl, tls]
+          default: ssl
+        process_interval:
+          type: integer
+          description: Minutes between processing
+
+    BounceRule:
+      type: object
+      required:
+        - pattern
+        - bounce_type
+      properties:
+        api_token:
+          type: string
+        pattern:
+          type: string
+          description: Regex pattern to match
+        bounce_type:
+          type: string
+          enum: [hard, soft]
+        action:
+          type: string
+          enum: [unsubscribe, suppress, ignore]
+
+    SuppressionAdd:
+      type: object
+      properties:
+        api_token:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+        domains:
+          type: array
+          items:
+            type: string
+
+    CustomField:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        tag:
+          type: string
+          description: Merge tag for the field
+        type:
+          type: string
+          enum: [text, number, date, dropdown, checkbox, textarea]
+        default_value:
+          type: string
+        required:
+          type: boolean
+          default: false
+        options:
+          type: array
+          items:
+            type: string
+          description: Options for dropdown type
+
+    DripCreate:
+      type: object
+      required:
+        - name
+        - list_id
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        list_id:
+          type: integer
+        trigger_type:
+          type: string
+          enum: [subscription, date_field, manual]
+        emails:
+          type: array
+          items:
+            type: object
+            properties:
+              subject:
+                type: string
+              content:
+                type: string
+              delay_days:
+                type: integer
+              delay_hours:
+                type: integer
+
+    TriggerCreate:
+      type: object
+      required:
+        - name
+        - event
+        - action
+      properties:
+        api_token:
+          type: string
+        name:
+          type: string
+        event:
+          type: string
+          enum: [subscribe, unsubscribe, open, click, bounce]
+        action:
+          type: string
+          enum: [send_email, add_to_list, remove_from_list, update_field]
+        conditions:
+          type: object
+        action_params:
+          type: object
+
+    UserCreate:
+      type: object
+      required:
+        - email
+        - password
+        - name
+      properties:
+        api_token:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        name:
+          type: string
+        role:
+          type: string
+        package_id:
+          type: integer
+
+    UserUpdate:
+      type: object
+      properties:
+        api_token:
+          type: string
+        user_id:
+          type: integer
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          type: string
+
+    SendEmail:
+      type: object
+      required:
+        - to
+        - subject
+        - from_email
+      properties:
+        api_token:
+          type: string
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        from_name:
+          type: string
+        from_email:
+          type: string
+          format: email
+        reply_to:
+          type: string
+          format: email
+        html_content:
+          type: string
+        text_content:
+          type: string
+        sending_node_id:
+          type: integer
+
+    SendTemplateEmail:
+      type: object
+      required:
+        - to
+      properties:
+        api_token:
+          type: string
+        to:
+          type: string
+          format: email
+        from_name:
+          type: string
+        from_email:
+          type: string
+          format: email
+        variables:
+          type: object
+          additionalProperties:
+            type: string
+          description: Template variable replacements
+        sending_node_id:
+          type: integer
+
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        per_page:
+          type: integer
+        total:
+          type: integer
+        total_pages:
+          type: integer
+        has_more:
+          type: boolean
