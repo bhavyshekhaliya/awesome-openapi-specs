@@ -1,0 +1,260 @@
+openapi: 3.2.1
+info:
+  title: OKX Public Market Data REST API
+  version: 1.0.0
+  description: >-
+    A focused description of unauthenticated OKX REST market-data operations.
+    The provider documents these public endpoints as not requiring
+    authentication. Private account and trading operations are not included.
+  externalDocs:
+    description: OKX API documentation
+    url: https://www.okx.com/docs-v5/en/
+servers:
+  - url: https://openapi.okx.com
+    description: Global production API
+  - url: https://us.okx.com
+    description: US and Australia API
+  - url: https://eea.okx.com
+    description: EEA API
+  - url: https://tr.okx.com
+    description: Turkey API
+tags:
+  - name: Market data
+    description: Public, unauthenticated market-data operations.
+paths:
+  /api/v5/market/ticker:
+    get:
+      operationId: getTicker
+      tags: [Market data]
+      summary: Get one instrument ticker
+      description: Retrieve the latest price snapshot and 24-hour trading summary.
+      parameters:
+        - name: instId
+          in: query
+          required: true
+          description: Instrument ID, for example `BTC-USD-SWAP`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API response envelope with the ticker in `data`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickerResponse'
+  /api/v5/market/tickers:
+    get:
+      operationId: getTickers
+      tags: [Market data]
+      summary: Get tickers by instrument type
+      description: Retrieve price and 24-hour volume snapshots for an instrument type.
+      parameters:
+        - name: instType
+          in: query
+          required: true
+          description: Instrument type.
+          schema:
+            type: string
+            enum: [SPOT, SWAP, FUTURES, OPTION, EVENTS]
+        - name: instFamily
+          in: query
+          description: Instrument family; applicable to futures, swaps, and options.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API response envelope with ticker records in `data`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TickersResponse'
+  /api/v5/market/books:
+    get:
+      operationId: getOrderBook
+      tags: [Market data]
+      summary: Get an instrument order book
+      description: Retrieve order-book depth for one instrument.
+      parameters:
+        - name: instId
+          in: query
+          required: true
+          description: Instrument ID, for example `BTC-USDT`.
+          schema:
+            type: string
+        - name: sz
+          in: query
+          description: Order-book depth per side; the documented maximum is 5000.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: API response envelope with the order book in `data`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderBookResponse'
+  /api/v5/market/candles:
+    get:
+      operationId: getCandles
+      tags: [Market data]
+      summary: Get recent candlesticks
+      description: Retrieve up to 1440 recent candle entries for an instrument.
+      parameters:
+        - name: instId
+          in: query
+          required: true
+          description: Instrument ID, for example `BTC-USDT`.
+          schema:
+            type: string
+        - name: bar
+          in: query
+          description: Candle interval; defaults to `1m`.
+          schema:
+            type: string
+            default: 1m
+        - name: after
+          in: query
+          description: Return records earlier than this timestamp.
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Return records newer than this timestamp.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum 300 records; defaults to 100.
+          schema:
+            type: string
+            default: '100'
+        - name: adjust
+          in: query
+          description: Set `forward` to request forward-adjusted prices for equity perpetual contracts.
+          schema:
+            type: string
+            enum: [forward]
+      responses:
+        '200':
+          description: API response envelope with candle rows in `data`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CandlesResponse'
+  /api/v5/public/time:
+    get:
+      operationId: getServerTime
+      tags: [Market data]
+      summary: Get API server time
+      description: Retrieve the current API server time.
+      responses:
+        '200':
+          description: API response envelope with the server timestamp in `data`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerTimeResponse'
+components:
+  schemas:
+    ResponseEnvelope:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code:
+          type: string
+          description: API response code.
+        msg:
+          type: string
+          description: API response message.
+    TickerResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticker'
+    TickersResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ticker'
+    Ticker:
+      type: object
+      properties:
+        instType: {type: string}
+        instId: {type: string}
+        last: {type: string}
+        lastSz: {type: string}
+        askPx: {type: string}
+        askSz: {type: string}
+        bidPx: {type: string}
+        bidSz: {type: string}
+        open24h: {type: string}
+        high24h: {type: string}
+        low24h: {type: string}
+        volCcy24h: {type: string}
+        vol24h: {type: string}
+        sodUtc0: {type: string}
+        sodUtc8: {type: string}
+        ts: {type: string}
+    OrderBookResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OrderBook'
+    OrderBook:
+      type: object
+      properties:
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevels'
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevels'
+        ts:
+          type: string
+    BookLevels:
+      type: array
+      description: Price, quantity, and order count for each level, as documented by OKX.
+      items:
+        type: string
+    CandlesResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/Candle'
+    Candle:
+      type: array
+      description: Values are ordered as ts, open, high, low, close, vol, volCcy, volCcyQuote, confirm.
+      minItems: 9
+      maxItems: 9
+      items:
+        type: string
+    ServerTimeResponse:
+      allOf:
+        - $ref: '#/components/schemas/ResponseEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                type: object
+                properties:
+                  ts:
+                    type: string
