@@ -128,6 +128,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## AI
 | Provider     | OpenAPI spec                                                                  | Format     | Version | Tags                          |
 | ------------ | ----------------------------------------------------------------------------- | ---------- | ------- | ----------------------------- |
+| AI Connector | [Client Mode API specification](https://dash.readme.com/api/v1/api-registry/s2c2jd0mtmywx7k) | JSON | 3.1.0 | `official` `marketing-automation` `automation` |
 | AssemblyAI   | [API specification](https://www.assemblyai.com/docs/openapi.json)             | JSON       | 3.1     | `official` `speech-ai`        |
 | Browserbase  | [API specification](https://docs.browserbase.com/reference/api/openapi.v1.yaml) | YAML     | 3.0.0   | `official` `ai` `browser-automation` `web-research` |
 | Cohere       | [API specification](https://github.com/cohere-ai/cohere-developer-experience) | YAML       | 3.1     | `official` `ai`               |
