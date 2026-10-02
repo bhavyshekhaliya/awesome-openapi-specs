@@ -214,6 +214,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Cloud and Infrastructure
 | Provider     | OpenAPI spec                                                                                           | Format | Version  | Tags                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------ | ------ | -------- | --------------------------------------------- |
+| OpenWISP     | [API specification](https://demo.openwisp.io/api/v1/docs.json)                                           | JSON   | 2.0      | `official` `network-management` `open-source`  |
 | Cloudflare   | [API schemas](https://github.com/cloudflare/api-schemas)                                               | YAML   | 3.0      | `official` `cloud` `open-source`              |
 | DigitalOcean | [Public API specification](https://github.com/digitalocean/openapi)                                    | YAML   | 3.0      | `official` `cloud` `open-source`              |
 | Fly.io       | [Machines API specification](https://docs.machines.dev/openapi.json)                                    | JSON   | 3.0.1    | `official` `cloud` `containers` `virtual-machines` |
