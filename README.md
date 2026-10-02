@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -560,6 +560,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | TikTok Display API | [Community specification](specs/tiktok-display/openapi.yml) Â· [source docs](https://developers.tiktok.com/docs/en/display-api-overview) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `video` |
 | Hootsuite | [API specification](https://platform.hootsuite.com/docs/api/swagger.yaml) | YAML | 2.0 | `social-media` |
 | Zernio | [API specification](https://docs.zernio.com/api/openapi) | JSON | 3.1.0 | `social-media` `scheduling` |
+| Planable | [Official OpenAPI specification](https://api.planable.io/api/v1/openapi.json); [API docs](https://planable.io/guides/planable-public-api/) | JSON | 3.1.0 | `official` `social-media-management` `social-publishing` |
 | Agorapulse | [API specification](https://api.beta.agorapulse.com/docs/open-api.yml) | YAML | 3.1.0 | `social-media` `experimental` |
 | TwitterShots | [API specification](https://twittershots.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `content-generation` |
 | Publora | [API specification](https://docs.publora.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `scheduling` |
