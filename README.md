@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
 | Sessionboard | [API specification](https://apidocs.sessionboard.com/api-reference/openapi.yaml) | YAML | 3.1.0 | `event-management` |
 | Kundenschreiber | [API specification](https://api.kundenschreiber.de/functions/v1/public-api/openapi.json) | JSON | 3.0.3 | `email-marketing` `email-verification` |
 | Ellipsend | [API specification](https://api.ellipsend.com/v1/swagger.yaml) | YAML | 2.0 | `email-marketing` |
