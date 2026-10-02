@@ -1,0 +1,425 @@
+openapi: 3.1.0
+info:
+  title: OpenWeather Current Weather, Forecast, and Geocoding API
+  version: 1.0.0
+  description: >-
+    Community-maintained specification for OpenWeather's documented JSON
+    current-weather, five-day forecast, and geocoding endpoints. An API key
+    and free account are required. Deprecated city-name, city-ID, and postal
+    code lookups on the weather endpoints and non-free products are omitted.
+  contact:
+    name: OpenWeather Support
+    url: https://openweathermap.org/faq
+externalDocs:
+  description: OpenWeather current weather API documentation
+  url: https://openweathermap.org/api/current
+servers:
+  - url: https://api.openweathermap.org
+    description: OpenWeather API
+security:
+  - AppId: []
+tags:
+  - name: Current weather
+  - name: Forecast
+  - name: Geocoding
+paths:
+  /data/2.5/weather:
+    get:
+      tags: [Current weather]
+      summary: Get current weather by coordinates
+      externalDocs:
+        description: Current weather API documentation
+        url: https://openweathermap.org/api/current
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude of the location.
+          schema:
+            type: number
+        - name: lon
+          in: query
+          required: true
+          description: Longitude of the location.
+          schema:
+            type: number
+        - name: units
+          in: query
+          description: Units of measurement; defaults to standard units.
+          schema:
+            type: string
+            enum: [standard, metric, imperial]
+        - name: lang
+          in: query
+          description: Language for the city name and weather description.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Current weather data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentWeather'
+  /data/2.5/forecast:
+    get:
+      tags: [Forecast]
+      summary: Get a five-day forecast in three-hour steps by coordinates
+      externalDocs:
+        description: Five-day forecast API documentation
+        url: https://openweathermap.org/api/forecast5
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude of the location.
+          schema:
+            type: number
+        - name: lon
+          in: query
+          required: true
+          description: Longitude of the location.
+          schema:
+            type: number
+        - name: units
+          in: query
+          description: Units of measurement; defaults to standard units.
+          schema:
+            type: string
+            enum: [standard, metric, imperial]
+        - name: cnt
+          in: query
+          description: Number of forecast timestamps to return.
+          schema:
+            type: integer
+        - name: lang
+          in: query
+          description: Language for city names and weather descriptions.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Five-day forecast data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Forecast'
+  /geo/1.0/direct:
+    get:
+      tags: [Geocoding]
+      summary: Convert a location name to coordinates
+      externalDocs:
+        description: Geocoding API documentation
+        url: https://openweathermap.org/api/geocoding-api
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Location name, optionally followed by US state and country codes.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of matching locations to return (up to five).
+          schema:
+            type: integer
+            maximum: 5
+      responses:
+        '200':
+          description: Matching locations, which may be an empty array.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+  /geo/1.0/reverse:
+    get:
+      tags: [Geocoding]
+      summary: Find location names near coordinates
+      externalDocs:
+        description: Geocoding API documentation
+        url: https://openweathermap.org/api/geocoding-api
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          description: Latitude of the location.
+          schema:
+            type: number
+        - name: lon
+          in: query
+          required: true
+          description: Longitude of the location.
+          schema:
+            type: number
+        - name: limit
+          in: query
+          description: Maximum number of nearby location names to return.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Nearby locations, which may be an empty array.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+  /geo/1.0/zip:
+    get:
+      tags: [Geocoding]
+      summary: Convert a postal code to coordinates
+      externalDocs:
+        description: Geocoding API documentation
+        url: https://openweathermap.org/api/geocoding-api
+      parameters:
+        - name: zip
+          in: query
+          required: true
+          description: Postal code followed by an ISO 3166 country code, separated by a comma.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resolved postal-code location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostalLocation'
+components:
+  securitySchemes:
+    AppId:
+      type: apiKey
+      in: query
+      name: appid
+      description: OpenWeather API key issued to a free account.
+  schemas:
+    Coordinates:
+      type: object
+      properties:
+        lon:
+          type: number
+          description: Longitude.
+        lat:
+          type: number
+          description: Latitude.
+    WeatherCondition:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Weather condition identifier.
+        main:
+          type: string
+          description: Weather condition group.
+        description:
+          type: string
+          description: Weather condition description.
+        icon:
+          type: string
+          description: Weather icon identifier.
+    Measurements:
+      type: object
+      description: Temperature units follow the units query parameter.
+      properties:
+        temp:
+          type: number
+        feels_like:
+          type: number
+        temp_min:
+          type: number
+        temp_max:
+          type: number
+        pressure:
+          type: number
+          description: Atmospheric pressure in hPa.
+        humidity:
+          type: number
+          description: Humidity percentage.
+        sea_level:
+          type: number
+          description: Sea-level atmospheric pressure in hPa.
+        grnd_level:
+          type: number
+          description: Ground-level atmospheric pressure in hPa.
+    Wind:
+      type: object
+      description: Speed units follow the units query parameter.
+      properties:
+        speed:
+          type: number
+        deg:
+          type: number
+          description: Wind direction in meteorological degrees.
+        gust:
+          type: number
+    Clouds:
+      type: object
+      properties:
+        all:
+          type: number
+          description: Cloudiness percentage.
+    Precipitation:
+      type: object
+      properties:
+        '1h':
+          type: number
+          description: Precipitation volume for the last hour in millimeters.
+        '3h':
+          type: number
+          description: Precipitation volume for the last three hours in millimeters.
+    CurrentWeather:
+      type: object
+      properties:
+        coord:
+          $ref: '#/components/schemas/Coordinates'
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+        base:
+          type: string
+        main:
+          $ref: '#/components/schemas/Measurements'
+        visibility:
+          type: integer
+        wind:
+          $ref: '#/components/schemas/Wind'
+        clouds:
+          $ref: '#/components/schemas/Clouds'
+        rain:
+          $ref: '#/components/schemas/Precipitation'
+        snow:
+          $ref: '#/components/schemas/Precipitation'
+        dt:
+          type: integer
+          description: Data calculation time in Unix UTC seconds.
+        sys:
+          type: object
+          properties:
+            type:
+              type: integer
+            id:
+              type: integer
+            country:
+              type: string
+            sunrise:
+              type: integer
+            sunset:
+              type: integer
+        timezone:
+          type: integer
+          description: Shift in seconds from UTC.
+        id:
+          type: integer
+          description: City identifier; built-in city lookup is deprecated.
+        name:
+          type: string
+          description: City name; built-in city lookup is deprecated.
+        cod:
+          oneOf:
+            - type: integer
+            - type: string
+    Forecast:
+      type: object
+      properties:
+        cod:
+          oneOf:
+            - type: integer
+            - type: string
+        message:
+          type: number
+        cnt:
+          type: integer
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForecastPeriod'
+        city:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            coord:
+              $ref: '#/components/schemas/Coordinates'
+            country:
+              type: string
+            population:
+              type: integer
+            timezone:
+              type: integer
+            sunrise:
+              type: integer
+            sunset:
+              type: integer
+    ForecastPeriod:
+      type: object
+      properties:
+        dt:
+          type: integer
+          description: Forecast time in Unix UTC seconds.
+        main:
+          $ref: '#/components/schemas/Measurements'
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+        clouds:
+          $ref: '#/components/schemas/Clouds'
+        wind:
+          $ref: '#/components/schemas/Wind'
+        visibility:
+          type: integer
+        pop:
+          type: number
+          description: Probability of precipitation from zero to one.
+          minimum: 0
+          maximum: 1
+        rain:
+          $ref: '#/components/schemas/Precipitation'
+        snow:
+          $ref: '#/components/schemas/Precipitation'
+        sys:
+          type: object
+          properties:
+            pod:
+              type: string
+              description: Part of day, n for night or d for day.
+        dt_txt:
+          type: string
+          description: Forecast time in UTC ISO format.
+    Location:
+      type: object
+      properties:
+        name:
+          type: string
+        local_names:
+          type: object
+          description: Names by language code; may include ascii and feature_name fields.
+          additionalProperties:
+            type: string
+        lat:
+          type: number
+        lon:
+          type: number
+        country:
+          type: string
+        state:
+          type: string
+    PostalLocation:
+      type: object
+      properties:
+        zip:
+          type: string
+        name:
+          type: string
+        lat:
+          type: number
+        lon:
+          type: number
+        country:
+          type: string

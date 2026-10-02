@@ -1,0 +1,334 @@
+openapi: 3.1.0
+info:
+  title: NASA Image and Video Library API
+  version: 1.0.0
+  description: >-
+    Community-maintained specification for NASA's public Image and Video
+    Library API. The provider guide documents JSON responses for media search,
+    asset manifests, metadata locations, captions locations, and albums. At
+    least one search parameter is required; result metadata varies by asset.
+  externalDocs:
+    description: Official NASA Image and Video Library API documentation
+    url: https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf
+servers:
+  - url: https://images-api.nasa.gov
+    description: NASA Image and Video Library API
+paths:
+  /search:
+    get:
+      operationId: searchMedia
+      summary: Search NASA media
+      description: >-
+        Searches indexed NASA media metadata. Supply at least one query
+        parameter; each parameter is individually optional. Values are
+        URL-encoded by the client. Media type filters accept comma-separated
+        values.
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Free-text terms searched across indexed metadata.
+          schema:
+            type: string
+        - name: center
+          in: query
+          required: false
+          description: NASA center that published the media.
+          schema:
+            type: string
+        - name: description
+          in: query
+          required: false
+          description: Terms searched in Description fields.
+          schema:
+            type: string
+        - name: description_508
+          in: query
+          required: false
+          description: Terms searched in 508 Description fields.
+          schema:
+            type: string
+        - name: keywords
+          in: query
+          required: false
+          description: Comma-separated terms searched in Keywords fields.
+          schema:
+            type: string
+        - name: location
+          in: query
+          required: false
+          description: Terms searched in Location fields.
+          schema:
+            type: string
+        - name: media_type
+          in: query
+          required: false
+          description: Filter by one or more media types.
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [image, video, audio]
+        - name: nasa_id
+          in: query
+          required: false
+          description: NASA ID of a media asset.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: One-based result page.
+          schema:
+            type: integer
+            minimum: 1
+        - name: page_size
+          in: query
+          required: false
+          description: Number of results per page; defaults to 100.
+          schema:
+            type: integer
+            default: 100
+        - name: photographer
+          in: query
+          required: false
+          description: Primary photographer's name.
+          schema:
+            type: string
+        - name: secondary_creator
+          in: query
+          required: false
+          description: Secondary photographer or videographer's name.
+          schema:
+            type: string
+        - name: title
+          in: query
+          required: false
+          description: Terms searched in Title fields.
+          schema:
+            type: string
+        - name: year_start
+          in: query
+          required: false
+          description: Start year for results, in YYYY format.
+          schema:
+            type: string
+            pattern: '^\d{4}$'
+        - name: year_end
+          in: query
+          required: false
+          description: End year for results, in YYYY format.
+          schema:
+            type: string
+            pattern: '^\d{4}$'
+      responses:
+        '200':
+          description: Search results and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '400':
+          $ref: '#/components/responses/ApiError'
+        '500':
+          $ref: '#/components/responses/ApiError'
+        '502':
+          $ref: '#/components/responses/ApiError'
+        '503':
+          $ref: '#/components/responses/ApiError'
+        '504':
+          $ref: '#/components/responses/ApiError'
+  /asset/{nasa_id}:
+    get:
+      operationId: getAssetManifest
+      summary: Get a media asset manifest
+      description: Returns links to the available asset files and metadata.
+      parameters:
+        - $ref: '#/components/parameters/nasaId'
+      responses:
+        '200':
+          description: Asset manifest.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '404':
+          $ref: '#/components/responses/ApiError'
+        '500':
+          $ref: '#/components/responses/ApiError'
+        '502':
+          $ref: '#/components/responses/ApiError'
+        '503':
+          $ref: '#/components/responses/ApiError'
+        '504':
+          $ref: '#/components/responses/ApiError'
+  /metadata/{nasa_id}:
+    get:
+      operationId: getAssetMetadataLocation
+      summary: Get a media asset metadata location
+      description: Returns the URL of the asset's metadata JSON file.
+      parameters:
+        - $ref: '#/components/parameters/nasaId'
+      responses:
+        '200':
+          description: Metadata file location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '404':
+          $ref: '#/components/responses/ApiError'
+        '500':
+          $ref: '#/components/responses/ApiError'
+        '502':
+          $ref: '#/components/responses/ApiError'
+        '503':
+          $ref: '#/components/responses/ApiError'
+        '504':
+          $ref: '#/components/responses/ApiError'
+  /captions/{nasa_id}:
+    get:
+      operationId: getVideoCaptionsLocation
+      summary: Get a video captions location
+      description: Returns the URL of the video's VTT or SRT captions file.
+      parameters:
+        - $ref: '#/components/parameters/nasaId'
+      responses:
+        '200':
+          description: Captions file location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationResponse'
+        '404':
+          $ref: '#/components/responses/ApiError'
+        '500':
+          $ref: '#/components/responses/ApiError'
+        '502':
+          $ref: '#/components/responses/ApiError'
+        '503':
+          $ref: '#/components/responses/ApiError'
+        '504':
+          $ref: '#/components/responses/ApiError'
+  /album/{album_name}:
+    get:
+      operationId: getAlbumContents
+      summary: Get media album contents
+      description: Album names are case-sensitive; page is one-based.
+      parameters:
+        - name: album_name
+          in: path
+          required: true
+          description: Case-sensitive media album name.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: One-based result page.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Album items and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '404':
+          $ref: '#/components/responses/ApiError'
+        '500':
+          $ref: '#/components/responses/ApiError'
+        '502':
+          $ref: '#/components/responses/ApiError'
+        '503':
+          $ref: '#/components/responses/ApiError'
+        '504':
+          $ref: '#/components/responses/ApiError'
+components:
+  parameters:
+    nasaId:
+      name: nasa_id
+      in: path
+      required: true
+      description: NASA media asset identifier.
+      schema:
+        type: string
+  responses:
+    ApiError:
+      description: Error response. Most error responses include a reason.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  schemas:
+    CollectionResponse:
+      type: object
+      properties:
+        collection:
+          type: object
+          properties:
+            href:
+              type: string
+              format: uri
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionItem'
+            links:
+              type: array
+              items:
+                $ref: '#/components/schemas/CollectionLink'
+            metadata:
+              type: object
+              properties:
+                total_hits:
+                  type: integer
+            version:
+              type: string
+      required:
+        - collection
+    CollectionItem:
+      type: object
+      properties:
+        data:
+          type: array
+          description: Asset metadata fields vary by media item.
+          items:
+            type: object
+            additionalProperties: true
+        href:
+          type: string
+          format: uri
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionLink'
+    CollectionLink:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri
+        prompt:
+          type: string
+        rel:
+          type: string
+        render:
+          type: string
+    LocationResponse:
+      type: object
+      properties:
+        location:
+          type: string
+          format: uri
+      required:
+        - location
+    ApiError:
+      type: object
+      properties:
+        reason:
+          type: string
