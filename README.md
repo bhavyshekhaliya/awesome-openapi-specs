@@ -62,6 +62,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Cardly | [API specification](https://api.card.ly/openapi/en-AU/2.2.0/yaml) | YAML | 3.1.0 | `direct-mail` `marketing` |
 | Connectif | [API specification](https://api-docs.connectif.cloud/swagger.json) | JSON | 2.0 | `marketing-automation` |
 | UpContent | [API specification](https://docs.upcontent.com/api/public.yaml) | YAML | 2.0 | `content-marketing` |
+| Are.na | [OpenAPI specification](specs/arena/openapi.json); [official source](https://api.are.na/v3/openapi.json); [API explorer](https://www.are.na/developers/explore/system/openapi-json) | JSON | 3.1.0 | `official` `content-marketing` `social-media` |
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
 | TLY Link Shortener | [API specification](https://t.ly/static_docs/openapi.yaml) | YAML | 3.0.3 | `url-management` |
 | Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
