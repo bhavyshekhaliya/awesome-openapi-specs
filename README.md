@@ -96,6 +96,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
 | ManyChat | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `chat-marketing` `experimental` |
 | MarketGo | [API specification](https://api.marketgo.ai/api/v1/openapi.json) | JSON | 3.1.0 | `marketing-automation` |
+| Marketo | [REST API specification](https://raw.githubusercontent.com/AdobeDocs/marketo-apis/main/static/swagger-mapi.json) | JSON | 2.0 | `official` `marketing-automation` |
 | Pulseem | [API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `email-marketing` `marketing-automation` |
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
 | BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
