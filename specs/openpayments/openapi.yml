@@ -1,0 +1,322 @@
+openapi: 3.0.3
+info:
+  title: Open Payments Domestic Payment Initiation API
+  version: 2026-10-02
+  description: >-
+    Community-maintained, focused specification for the documented domestic
+    payment initiation and single-payment authorisation flow. The provider does
+    not publish a version for this endpoint set. Access tokens require the
+    paymentinitiation scope and a private or corporate context; production
+    access requires provider approval and a client certificate.
+externalDocs:
+  description: Open Payments payment initiation documentation
+  url: https://docs.openpayments.io/docs/quickstart_pis
+servers:
+  - url: https://api.openbankingplatform.com
+    description: Production; requires approved production access and a client certificate.
+  - url: https://api.sandbox.openbankingplatform.com
+    description: Sandbox; use sandbox credentials and simulated data.
+security:
+  - bearerAuth: []
+paths:
+  /psd2/paymentinitiation/v1/payments/domestic:
+    post:
+      operationId: createDomesticPayment
+      summary: Create a domestic payment
+      description: Requires an access token with the paymentinitiation scope and PSU context.
+      parameters:
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/XBicFi'
+        - $ref: '#/components/parameters/PsuId'
+        - $ref: '#/components/parameters/PsuCorporateId'
+        - $ref: '#/components/parameters/TppRedirectPreferred'
+        - $ref: '#/components/parameters/PsuIpAddress'
+        - $ref: '#/components/parameters/PsuUserAgent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomesticPaymentRequest'
+      responses:
+        default:
+          description: >-
+            Provider response example; the documentation does not specify the
+            HTTP status code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentCreated'
+  /psd2/paymentinitiation/v1/payments/domestic/{paymentId}/authorisations:
+    post:
+      operationId: createDomesticPaymentAuthorisation
+      summary: Start payment authorisation
+      description: Creates an SCA authorisation process for a domestic payment.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/XBicFi'
+        - $ref: '#/components/parameters/PsuId'
+        - $ref: '#/components/parameters/PsuCorporateId'
+        - $ref: '#/components/parameters/TppRedirectPreferred'
+        - $ref: '#/components/parameters/PsuIpAddress'
+        - $ref: '#/components/parameters/PsuUserAgent'
+      responses:
+        default:
+          description: >-
+            Provider response example; the documentation does not specify the
+            HTTP status code.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorisationCreated'
+  /psd2/paymentinitiation/v1/payments/domestic/{paymentId}/authorisations/{authorisationId}:
+    put:
+      operationId: startDomesticPaymentAuthorisation
+      summary: Select an authentication method
+      description: Starts the bank's authorisation flow using a returned SCA method.
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/AuthorisationId'
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/XBicFi'
+        - $ref: '#/components/parameters/PsuId'
+        - $ref: '#/components/parameters/PsuCorporateId'
+        - $ref: '#/components/parameters/TppRedirectPreferred'
+        - $ref: '#/components/parameters/PsuIpAddress'
+        - $ref: '#/components/parameters/PsuUserAgent'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - authenticationMethodId
+              properties:
+                authenticationMethodId:
+                  type: string
+      responses:
+        default:
+          description: >-
+            Provider response example; the documentation does not specify the
+            HTTP status code.
+          headers:
+            aspsp-sca-approach:
+              description: Indicates whether the bank uses a redirect SCA flow.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorisationStarted'
+    get:
+      operationId: getDomesticPaymentAuthorisationStatus
+      summary: Get authorisation status
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/AuthorisationId'
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/XBicFi'
+        - $ref: '#/components/parameters/PsuId'
+        - $ref: '#/components/parameters/PsuCorporateId'
+        - $ref: '#/components/parameters/TppRedirectPreferred'
+        - $ref: '#/components/parameters/PsuIpAddress'
+        - $ref: '#/components/parameters/PsuUserAgent'
+      responses:
+        default:
+          description: >-
+            Provider response example; the documentation does not specify the
+            HTTP status code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scaStatus:
+                    type: string
+  /psd2/paymentinitiation/v1/payments/domestic/{paymentId}/status:
+    get:
+      operationId: getDomesticPaymentStatus
+      summary: Get domestic payment status
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+        - $ref: '#/components/parameters/XRequestId'
+        - $ref: '#/components/parameters/XBicFi'
+        - $ref: '#/components/parameters/PsuId'
+        - $ref: '#/components/parameters/PsuCorporateId'
+        - $ref: '#/components/parameters/TppRedirectPreferred'
+        - $ref: '#/components/parameters/PsuIpAddress'
+        - $ref: '#/components/parameters/PsuUserAgent'
+      responses:
+        default:
+          description: >-
+            Provider response example; the documentation does not specify the
+            HTTP status code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactionStatus:
+                    type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: OAuth 2.0 access token with paymentinitiation and PSU-context scopes.
+  parameters:
+    XRequestId:
+      name: X-Request-ID
+      in: header
+      description: Unique request identifier.
+      schema:
+        type: string
+        format: uuid
+    XBicFi:
+      name: X-BicFi
+      in: header
+      description: BIC of the bank receiving the request.
+      schema:
+        type: string
+    PsuId:
+      name: PSU-ID
+      in: header
+      description: Identifier of the payment service user at the bank.
+      schema:
+        type: string
+    PsuCorporateId:
+      name: PSU-Corporate-ID
+      in: header
+      description: Corporate identifier when acting for an organisation.
+      schema:
+        type: string
+    TppRedirectPreferred:
+      name: TPP-Redirect-Preferred
+      in: header
+      description: Indicates a preference for redirect-based SCA.
+      schema:
+        type: boolean
+    PsuIpAddress:
+      name: PSU-IP-Address
+      in: header
+      description: PSU IP address forwarded to the bank.
+      schema:
+        type: string
+        format: ipv4
+    PsuUserAgent:
+      name: PSU-User-Agent
+      in: header
+      description: User agent forwarded from the PSU's request.
+      schema:
+        type: string
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      description: Identifier of the created payment.
+      schema:
+        type: string
+        format: uuid
+    AuthorisationId:
+      name: authorisationId
+      in: path
+      required: true
+      description: Identifier of the authorisation process.
+      schema:
+        type: string
+  schemas:
+    DomesticPaymentRequest:
+      type: object
+      properties:
+        instructedAmount:
+          $ref: '#/components/schemas/Amount'
+        debtorAccount:
+          $ref: '#/components/schemas/Account'
+        creditorAccount:
+          $ref: '#/components/schemas/Account'
+        creditorName:
+          type: string
+        requestedExecutionDate:
+          type: string
+          format: date
+        remittanceInformationUnstructured:
+          type: string
+    Amount:
+      type: object
+      properties:
+        amount:
+          type: string
+        currency:
+          type: string
+    Account:
+      type: object
+      properties:
+        iban:
+          type: string
+        currency:
+          type: string
+    PaymentCreated:
+      type: object
+      properties:
+        transactionStatus:
+          type: string
+        paymentId:
+          type: string
+          format: uuid
+        _links:
+          type: object
+          properties:
+            startAuthorisationWithTransactionAuthorisation:
+              $ref: '#/components/schemas/Link'
+            self:
+              $ref: '#/components/schemas/Link'
+            status:
+              $ref: '#/components/schemas/Link'
+    AuthorisationCreated:
+      type: object
+      properties:
+        authorisationId:
+          type: string
+        scaStatus:
+          type: string
+        scaMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScaMethod'
+        _links:
+          type: object
+          properties:
+            authoriseTransaction:
+              $ref: '#/components/schemas/Link'
+            scaStatus:
+              $ref: '#/components/schemas/Link'
+    AuthorisationStarted:
+      type: object
+      properties:
+        chosenScaMethod:
+          $ref: '#/components/schemas/ScaMethod'
+        _links:
+          type: object
+          properties:
+            scaStatus:
+              $ref: '#/components/schemas/Link'
+            scaOAuth:
+              $ref: '#/components/schemas/Link'
+        scaStatus:
+          type: string
+    ScaMethod:
+      type: object
+      properties:
+        authenticationType:
+          type: string
+        authenticationMethodId:
+          type: string
+        name:
+          type: string
+    Link:
+      type: object
+      properties:
+        href:
+          type: string
+          format: uri-reference
