@@ -342,6 +342,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Sendible | [Zapier API specification](https://assets.sendible.com/api/documentation/swagger/sendible_zapier_api.yaml) | YAML | 3.0.0 | `official` `social-media-management` |
 | Iconosquare | [API specification](https://dash.readme.com/api/v1/api-registry/3ev15rmuo475i6) | JSON | 3.0.3 | `official` `social-media` `analytics` |
 | SocialRails | [API specification](https://socialrails.com/openapi.json) | JSON | 3.0.3 | `official` `social-media-management` `publishing` |
 | BulkPublish | [API specification](https://app.bulkpublish.com/openapi.json) | JSON | 3.1.0 | `social-media` `scheduling` |
