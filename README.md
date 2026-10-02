@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| UpContent | [API specification](https://docs.upcontent.com/api/public.yaml) | YAML | 2.0 | `content-marketing` |
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
 | TLY Link Shortener | [API specification](https://t.ly/static_docs/openapi.yaml) | YAML | 3.0.3 | `url-management` |
 | Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
