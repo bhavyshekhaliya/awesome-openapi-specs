@@ -1,0 +1,355 @@
+openapi: 3.1.0
+info:
+  title: Harvard Art Museums API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained definition for object, person, exhibition,
+    and gallery resources, including documented object subresources. Requests
+    require an API key. The provider limits use to noncommercial applications
+    and 2,500 requests per day.
+externalDocs:
+  description: Official Harvard Art Museums API documentation
+  url: https://github.com/harvardartmuseums/api-docs
+servers:
+  - url: https://api.harvardartmuseums.org
+security:
+  - ApiKey: []
+tags:
+  - name: Objects
+  - name: People
+  - name: Exhibitions
+  - name: Galleries
+paths:
+  /object:
+    get:
+      tags: [Objects]
+      summary: Search objects
+      operationId: listObjects
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - name: q
+          in: query
+          description: Search query documented for object records.
+          schema:
+            type: string
+        - name: person
+          in: query
+          description: Filter objects by person identifier.
+          schema:
+            type: string
+        - name: classification
+          in: query
+          description: Filter objects by classification.
+          schema:
+            type: string
+        - name: yearmade
+          in: query
+          description: Filter objects by year or year range.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated object records and available aggregations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get an object
+      operationId: getObject
+      responses:
+        '200':
+          description: An object record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceRecord'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/colors:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get colors extracted from an object's primary image
+      operationId: getObjectColors
+      responses:
+        '200':
+          description: Color records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/exhibitions:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get exhibitions featuring an object
+      operationId: getObjectExhibitions
+      responses:
+        '200':
+          description: Exhibition records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/images:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get images associated with an object
+      operationId: getObjectImages
+      responses:
+        '200':
+          description: Image records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/people:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get people associated with an object
+      operationId: getObjectPeople
+      responses:
+        '200':
+          description: Person records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/publications:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get publications featuring an object
+      operationId: getObjectPublications
+      responses:
+        '200':
+          description: Publication records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /object/{id}/videos:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Objects]
+      summary: Get videos about or featuring an object
+      operationId: getObjectVideos
+      responses:
+        '200':
+          description: Video records associated with the object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubsectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /person:
+    get:
+      tags: [People]
+      summary: Search people
+      operationId: listPeople
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - name: q
+          in: query
+          description: Search query documented for people records.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated people records and available aggregations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /person/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [People]
+      summary: Get a person
+      operationId: getPerson
+      responses:
+        '200':
+          description: A person record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceRecord'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /exhibition:
+    get:
+      tags: [Exhibitions]
+      summary: Search exhibitions
+      operationId: listExhibitions
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - name: venue
+          in: query
+          description: Filter exhibitions by venue.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated exhibition records and available aggregations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /exhibition/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Exhibitions]
+      summary: Get an exhibition
+      operationId: getExhibition
+      responses:
+        '200':
+          description: An exhibition record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceRecord'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /gallery:
+    get:
+      tags: [Galleries]
+      summary: Search galleries
+      operationId: listGalleries
+      parameters:
+        - $ref: '#/components/parameters/Size'
+        - $ref: '#/components/parameters/Page'
+        - name: floor
+          in: query
+          description: Filter galleries by floor.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated gallery records and available aggregations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /gallery/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    get:
+      tags: [Galleries]
+      summary: Get a gallery
+      operationId: getGallery
+      responses:
+        '200':
+          description: A gallery record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceRecord'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      description: Resource identifier used in the documented path.
+      schema:
+        type: string
+    Size:
+      name: size
+      in: query
+      description: Number of records per page; defaults to 10 and accepts up to 100.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    Page:
+      name: page
+      in: query
+      description: Page number, starting at 1.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+  responses:
+    Unauthorized:
+      description: The API key is missing, invalid, or malformed.
+  schemas:
+    ResourceRecord:
+      type: object
+      additionalProperties: true
+    CollectionResponse:
+      type: object
+      properties:
+        info:
+          type: object
+          properties:
+            totalrecordsperquery:
+              type: integer
+            totalrecords:
+              type: integer
+            pages:
+              type: integer
+            page:
+              type: integer
+            next:
+              type: string
+            prev:
+              type: string
+            responsetime:
+              type: string
+        records:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceRecord'
+        aggregations:
+          type: object
+          additionalProperties: true
+    SubsectionResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ResourceRecord'
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: query
+      name: apikey
+      description: API key requested through the official API documentation.
