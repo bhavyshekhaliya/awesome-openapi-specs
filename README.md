@@ -301,6 +301,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Maps, Geolocation and Local Services
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| OneMap | [Community specification](specs/onemap/openapi.yml) Â· [source docs](https://www.onemap.gov.sg/apidocs/) | YAML | 3.2.1 | `community-maintained` `geocoding` `routing` `public-data` |
 | Overpass API | [Community specification](specs/overpass/openapi.yml) Â· [source docs](https://dev.overpass-api.de/command_line.html) | YAML | 3.1.0 | `community-maintained` `geospatial` `openstreetmap` |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
 | OpenRouteService | [Community specification](specs/openrouteservice/openapi.yml); [source docs](https://giscience.github.io/openrouteservice/api-reference/) | YAML | 3.1.0 | `community-maintained` `routing` `geospatial` `open-source` |
