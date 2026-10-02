@@ -1,0 +1,940 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Landbot APIchat",
+    "version": "1.0.0",
+    "description": "APIs for integrating a Landbot APIchat channel with any external messaging platform. Authenticate with the channel token from your APIchat channel configuration."
+  },
+  "servers": [
+    {
+      "url": "https://chat.landbot.io/v1"
+    }
+  ],
+  "security": [
+    {
+      "channelToken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Send",
+      "description": "Push messages from your external channel into Landbot."
+    },
+    {
+      "name": "Agents",
+      "description": "Look up agent profiles."
+    },
+    {
+      "name": "Customers",
+      "description": "Create, update, and mark customers as read."
+    }
+  ],
+  "paths": {
+    "/send/{customer_token}/": {
+      "post": {
+        "tags": [
+          "Send"
+        ],
+        "summary": "Send message",
+        "operationId": "send-message",
+        "x-mint": {
+          "href": "/api-reference/send/send-message"
+        },
+        "description": "Sends a message to the customer identified by `customer_token`. If the customer doesn't exist (or no token is provided), a new customer is created.\n\nThe shape of `message` depends on `message.type`. See the request examples for each supported type.",
+        "parameters": [
+          {
+            "name": "customer_token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Customer token. If unknown, pass any unique value — a new customer will be created."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "customer": {
+                    "type": "object",
+                    "description": "Optional customer fields used when creating a new customer.",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "message": {
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/TextMessage"
+                      },
+                      {
+                        "$ref": "#/components/schemas/LocationMessage"
+                      },
+                      {
+                        "$ref": "#/components/schemas/MultipleImagesMessage"
+                      },
+                      {
+                        "$ref": "#/components/schemas/MediaMessage"
+                      }
+                    ],
+                    "discriminator": {
+                      "propertyName": "type",
+                      "mapping": {
+                        "text": "#/components/schemas/TextMessage",
+                        "location": "#/components/schemas/LocationMessage",
+                        "multiple_images": "#/components/schemas/MultipleImagesMessage",
+                        "image": "#/components/schemas/MediaMessage",
+                        "document": "#/components/schemas/MediaMessage",
+                        "video": "#/components/schemas/MediaMessage",
+                        "audio": "#/components/schemas/MediaMessage"
+                      }
+                    }
+                  }
+                }
+              },
+              "examples": {
+                "text": {
+                  "summary": "Text",
+                  "value": {
+                    "customer": {
+                      "name": "Samuel"
+                    },
+                    "message": {
+                      "type": "text",
+                      "message": "Hello",
+                      "payload": "$1"
+                    }
+                  }
+                },
+                "location": {
+                  "summary": "Location",
+                  "value": {
+                    "customer": {
+                      "name": "Samuel"
+                    },
+                    "message": {
+                      "type": "location",
+                      "latitude": 0,
+                      "longitude": 0,
+                      "message": "Hi"
+                    }
+                  }
+                },
+                "multiple_images": {
+                  "summary": "Multiple images",
+                  "value": {
+                    "customer": {
+                      "name": "Sam"
+                    },
+                    "message": {
+                      "type": "multiple_images",
+                      "urls": [
+                        "https://octodex.github.com/images/dojocat.jpg",
+                        "https://www.helloumi.com/wp-content/uploads/2016/07/logo-helloumi-web.png"
+                      ],
+                      "message": "What's up"
+                    }
+                  }
+                },
+                "media": {
+                  "summary": "Image / document / video / audio",
+                  "value": {
+                    "message": {
+                      "type": "image",
+                      "url": "https://octodex.github.com/images/dojocat.jpg",
+                      "message": "Hey there"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message accepted. Returns the customer (created if necessary).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "customer": {
+                    "id": 42,
+                    "name": "Samuel",
+                    "phone": "34697882898",
+                    "email": "sam@helloumi.com",
+                    "postal_code": "46021",
+                    "country": "GB",
+                    "token": "SDFRL4TOMFTEWERY262NF"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request body failed validation (e.g. unknown `message.type`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Invalid message type"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agents/{agent_id}/": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Get agent",
+        "description": "Returns the agent identified by `agent_id`.",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Identifier of the agent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "agent": {
+                      "$ref": "#/components/schemas/Agent"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "agent": {
+                    "id": 42,
+                    "name": "Enemesio",
+                    "avatar": "https://octodex.github.com/images/dojocat.jpg"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Create customer",
+        "description": "Creates a new customer. All fields are optional; a random `token` is generated when one isn't provided.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerCreateRequest"
+              },
+              "example": {
+                "name": "Sam",
+                "phone": "34697882898",
+                "email": "sam@helloumi.com",
+                "postal_code": "46021",
+                "country": "GB",
+                "token": "SDFRL4TOMFTEWERY262NF"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Customer created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "customer": {
+                    "id": 42,
+                    "name": "Sam",
+                    "phone": "34697882898",
+                    "email": "sam@helloumi.com",
+                    "postal_code": "46021",
+                    "country": "GB",
+                    "token": "SDFRL4TOMFTEWERY262NF"
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A customer with the same identifying field already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "success": false,
+                  "error": "Customer already exists"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_token}/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Update customer",
+        "description": "Updates fields on the customer identified by `customer_token`. Pass `null` to clear a field.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerToken"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerUpdateRequest"
+              },
+              "example": {
+                "postal_code": "46021",
+                "phone": null,
+                "country": "ES"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Customer updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "customer": {
+                    "id": 42,
+                    "name": "Sam",
+                    "phone": null,
+                    "email": "sam@helloumi.com",
+                    "postal_code": "46021",
+                    "country": "GB",
+                    "token": "SDFRL4TOMFTEWERY262NF"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_token}/read/": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Mark customer as read",
+        "description": "Marks the conversation with the customer identified by `customer_token` as read.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerToken"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Conversation marked as read.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "channelToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Send `Token <channel_token>`, where `<channel_token>` is the token of your APIchat channel."
+      }
+    },
+    "parameters": {
+      "CustomerToken": {
+        "name": "customer_token",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "Token that uniquely identifies the customer in this channel."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "postal_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code."
+          },
+          "token": {
+            "type": "string",
+            "description": "Customer token. Use this for subsequent calls."
+          }
+        }
+      },
+      "CustomerCreateRequest": {
+        "type": "object",
+        "description": "All fields optional.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "postal_code": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "description": "ISO 3166-1 alpha-2 country code."
+          },
+          "token": {
+            "type": "string",
+            "description": "Optional custom token. A random one is generated if omitted."
+          }
+        }
+      },
+      "CustomerUpdateRequest": {
+        "type": "object",
+        "description": "Any subset of customer fields. Pass `null` to clear a value.",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email"
+          },
+          "postal_code": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "country": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          }
+        }
+      },
+      "TextMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "message"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Message body."
+          },
+          "payload": {
+            "type": "string",
+            "description": "Optional payload string returned to your bot flow."
+          }
+        }
+      },
+      "LocationMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "latitude",
+          "longitude"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "location"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional caption."
+          }
+        }
+      },
+      "MultipleImagesMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "urls"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "multiple_images"
+            ]
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional caption applied to the gallery."
+          }
+        }
+      },
+      "MediaMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "url"
+        ],
+        "description": "Single-media message: image, document, video, or audio.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "document",
+              "video",
+              "audio"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "message": {
+            "type": "string",
+            "description": "Optional caption."
+          }
+        }
+      },
+      "ApichatWebhookCustomer": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "The customer this conversation belongs to: Landbot identifiers plus the customer's Field bag. Custom Fields set by a Set-Field block appear as ADDITIONAL top-level keys (only on webhooks emitted after the block runs) and may be type-mangled — treat values as strings unless guaranteed otherwise. No Platform-style metadata (agent_id/is_external/country/url/archived).",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Landbot-assigned internal customer ID, stable across messages."
+          },
+          "token": {
+            "type": "string",
+            "description": "The `customer_token` from POST /send/{customer_token}/ — use it to correlate envelopes."
+          },
+          "register_date": {
+            "type": "number",
+            "description": "Unix epoch seconds (integer floor)."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Default placeholder Field; null if unset."
+          },
+          "phone": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Default placeholder Field; null if unset."
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Default placeholder Field; null if unset."
+          }
+        }
+      },
+      "ApichatWebhookChannel": {
+        "type": "object",
+        "description": "The APIchat channel. Note: there is NO `channel.type` field — its absence is the reliable discriminator that you're reading an APIchat (not Platform) envelope.",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ApichatWebhookAgent": {
+        "type": "object",
+        "required": [
+          "id",
+          "type"
+        ],
+        "description": "Who emitted the message — shared across the whole envelope (APIchat has no per-message sender). Conditional shape: bot envelopes carry only { id, type }; human-agent envelopes also carry { name, email } from the agent's Landbot account. Switch on `type` for attribution.",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Bot ID for bot-sent; agent user-account ID for human-sent. Positive integer."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "bot",
+              "human"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "Human agent's account display name. Present only when type == \"human\"."
+          },
+          "email": {
+            "type": "string",
+            "description": "Human agent's account email. Present only when type == \"human\"."
+          }
+        }
+      },
+      "ApichatWebhookTextMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "message"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch seconds with fractional microseconds (e.g. 1780054017.039184). Not a string, not milliseconds."
+          },
+          "message": {
+            "type": "string",
+            "description": "Text content — flat on the message, no `data.body` wrapper."
+          }
+        }
+      },
+      "ApichatWebhookDialogMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "title",
+          "buttons",
+          "payloads"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "dialog"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch seconds with fractional microseconds (e.g. 1780054017.039184). Not a string, not milliseconds."
+          },
+          "title": {
+            "type": "string",
+            "description": "Dialog prompt."
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Labels; parallel-indexed with payloads."
+          },
+          "payloads": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Send the chosen payload back via POST /send/ with the matching button label. (No urls/attachments/rich_text on APIchat.)"
+          }
+        }
+      },
+      "ApichatWebhookImageMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "url"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch seconds with fractional microseconds (e.g. 1780054017.039184). Not a string, not milliseconds."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Publicly-fetchable GCS URL (…/<workspaceId>/channels/<uuid>.<ext>)."
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Caption; null when none. NOTE: multiple images in one block fire multiple `image` POSTs ~30ms apart — group by customer.token + time window."
+          }
+        }
+      },
+      "ApichatWebhookMessage": {
+        "description": "A single APIchat webhook message (flat fields, discriminated on `type`). Observed bot-side: text, dialog, image.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ApichatWebhookTextMessage"
+          },
+          {
+            "$ref": "#/components/schemas/ApichatWebhookDialogMessage"
+          },
+          {
+            "$ref": "#/components/schemas/ApichatWebhookImageMessage"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "text": "#/components/schemas/ApichatWebhookTextMessage",
+            "dialog": "#/components/schemas/ApichatWebhookDialogMessage",
+            "image": "#/components/schemas/ApichatWebhookImageMessage"
+          }
+        }
+      },
+      "ApichatWebhookPayload": {
+        "type": "object",
+        "required": [
+          "messages",
+          "customer",
+          "channel",
+          "agent"
+        ],
+        "description": "APIchat webhook delivery body. Unlike Platform, customer/channel/agent are TOP-LEVEL, not nested per message. Always exactly one entry in `messages` (no batching).",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApichatWebhookMessage"
+            }
+          },
+          "customer": {
+            "$ref": "#/components/schemas/ApichatWebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ApichatWebhookChannel"
+          },
+          "agent": {
+            "$ref": "#/components/schemas/ApichatWebhookAgent"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "message": {
+      "post": {
+        "summary": "Webhook delivery (bot → your middleware)",
+        "operationId": "apichat-webhook-message",
+        "description": "When the bot emits a message, Landbot POSTs this payload to the webhook URL configured on the APIchat channel.\n\n**Outbound only — bot messages only.** Customer messages you push to `POST /send/{customer_token}/` advance the flow but do NOT fire a webhook back.\n**No authenticity header:** APIchat sends **no `Authorization` header** and has no outbound-secret field. Authenticate by other means (hard-to-guess URL suffix, IP allowlist of GCP egress ranges, reverse-proxy gate). `User-Agent: landbot/webhooks`.\n**Retries (diverges from Platform):** **any non-`2xx`, including `4xx`, is retried** on linear backoff (deltas ~5/10/15/20/25 s, ≥6 attempts). To reject permanently you must still return `2xx` and discard internally. Timeout ≥30 s. Dedupe on the `sentry-trace` header (stable across retries).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApichatWebhookPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Acknowledged. Return any 2xx; body ignored. Remember 4xx is also retried."
+          }
+        }
+      }
+    }
+  },
+  "x-ext-urls": {}
+}
