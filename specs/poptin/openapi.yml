@@ -1,0 +1,5869 @@
+openapi: 3.1.0
+info:
+  title: Poptin Public API
+  version: 1.0.0
+externalDocs:
+  url: https://developers.poptin.com/reference
+servers:
+- url: https://api.popt.in/v1
+security:
+- bearerAuth: []
+tags:
+- name: Bulk jobs
+- name: Campaigns
+- name: Contacts
+- name: Conversions
+- name: Emails
+- name: Poptins
+- name: Preferences
+- name: Properties
+paths:
+  /poptins/stats/refresh:
+    post:
+      operationId: refreshPoptins
+      summary: Refresh poptin stats
+      tags:
+      - Poptins
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinStatsRefreshResponse'
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinStatsRefreshResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+        '500':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Server error.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+  /poptins:
+    get:
+      operationId: listPoptins
+      summary: List poptins
+      tags:
+      - Poptins
+      parameters:
+      - name: stat_from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: stat_to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: device
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - desktop
+          - mobile
+          - null
+      - name: type
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - popup
+          - form
+          - null
+      - name: domain
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: status
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: created_from
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: created_to
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinListResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /poptins/{uid}/pause:
+    post:
+      operationId: pausePoptin
+      summary: Pause poptin
+      tags:
+      - Poptins
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /poptins/{uid}/resume:
+    post:
+      operationId: resumePoptin
+      summary: Resume poptin
+      tags:
+      - Poptins
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /poptins/{uid}:
+    get:
+      operationId: showPoptin
+      summary: Show poptin
+      tags:
+      - Poptins
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: stat_from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: stat_to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: device
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - desktop
+          - mobile
+          - null
+      - name: type
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - popup
+          - form
+          - null
+      - name: domain
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinSingleResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    patch:
+      operationId: renamePoptin
+      summary: Rename poptin
+      tags:
+      - Poptins
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RenamePoptinRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deletePoptin
+      summary: Delete poptin
+      tags:
+      - Poptins
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /poptins/analytics:
+    get:
+      operationId: poptinAnalytics
+      summary: Poptin Analytics
+      tags:
+      - Poptins
+      parameters:
+      - name: stat_from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: stat_to
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: device
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - desktop
+          - mobile
+          - null
+      - name: type
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - popup
+          - form
+          - null
+      - name: domain
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoptinAnalyticsResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /conversions:
+    get:
+      operationId: listConversions
+      summary: List conversions
+      tags:
+      - Conversions
+      parameters:
+      - name: created_from
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: created_to
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: poptin_uid
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 191
+      - name: type
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - lead
+          - click
+          - null
+      - name: device
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          enum:
+          - desktop
+          - mobile
+          - null
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListConversionsResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /conversions/bulk-delete:
+    post:
+      operationId: bulkDeleteConversions
+      summary: Bulk delete conversions (JSON)
+      tags:
+      - Conversions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkDeleteConversionsRequest'
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobQueuedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobInProgressError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /conversions/{uid}:
+    get:
+      operationId: showConversion
+      summary: Show conversion
+      tags:
+      - Conversions
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowConversionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deleteConversion
+      summary: Delete conversion
+      tags:
+      - Conversions
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /properties:
+    get:
+      operationId: listProperties
+      summary: List properties
+      tags:
+      - Properties
+      parameters:
+      - name: type
+        in: query
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/PropertyDataTypeEnum'
+          - type: 'null'
+      - name: custom_only
+        in: query
+        schema:
+          type:
+          - boolean
+          - 'null'
+      - name: label
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+      - name: page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPropertiesResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    post:
+      operationId: createProperty
+      summary: Create property
+      tags:
+      - Properties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StoreFieldRequest'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyCreatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /properties/{uid}:
+    get:
+      operationId: showProperty
+      summary: Show property
+      tags:
+      - Properties
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    put:
+      operationId: updateProperty
+      summary: Update property
+      tags:
+      - Properties
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFieldRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyUpdatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deleteProperty
+      summary: Delete property
+      tags:
+      - Properties
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '406':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyCannotBeDeletedError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts:
+    get:
+      operationId: listContacts
+      summary: List contacts
+      tags:
+      - Contacts
+      parameters:
+      - name: status
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: email
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: email
+          maxLength: 255
+      - name: cursor
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListContactsResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    post:
+      operationId: upsertContact
+      summary: Create or update contact
+      tags:
+      - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertContactRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactUpdatedResponse'
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactCreatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactBlocklistedUpsertError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts/bulk:
+    post:
+      operationId: bulkUpsertContacts
+      summary: Bulk import contacts (JSON)
+      tags:
+      - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkUpsertContactsRequest'
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobQueuedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobInProgressError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactLimitReachedError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts/bulk-import:
+    post:
+      operationId: bulkImportContactsCsv
+      summary: Bulk import contacts (CSV)
+      tags:
+      - Contacts
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BulkImportContactsCsvRequest'
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CSVBulkImportQueuedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobInProgressError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactLimitReachedError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts/bulk-delete:
+    post:
+      operationId: bulkDeleteContacts
+      summary: Bulk delete contacts (JSON)
+      tags:
+      - Contacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkDeleteContactsRequest'
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobQueuedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobInProgressError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts/{uid}:
+    get:
+      operationId: showContact
+      summary: Show contact
+      tags:
+      - Contacts
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deleteContact
+      summary: Delete contact
+      tags:
+      - Contacts
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /contacts/{uid}/status:
+    patch:
+      operationId: updateContactStatus
+      summary: Update contact status
+      tags:
+      - Contacts
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContactStatusRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactUpdatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactBlocklistedError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /bulk-jobs:
+    get:
+      operationId: showBulkJob
+      summary: Show bulk job status
+      tags:
+      - Bulk jobs
+      parameters:
+      - name: object_id
+        in: query
+        required: true
+        schema:
+          type: integer
+          minimum: 10000000000
+          maximum: 99999999999
+      - name: object_name
+        in: query
+        required: true
+        schema:
+          type: string
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkJobStatusResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /preferences:
+    get:
+      operationId: listPreferences
+      summary: List preferences
+      tags:
+      - Preferences
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 200
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPreferencesResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    post:
+      operationId: createPreference
+      summary: Create preference
+      tags:
+      - Preferences
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StorePreferenceRequest'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreferenceCreatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /preferences/{uid}:
+    get:
+      operationId: showPreference
+      summary: Show preference
+      tags:
+      - Preferences
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreferenceResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    put:
+      operationId: updatePreference
+      summary: Update preference
+      tags:
+      - Preferences
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePreferenceRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreferenceUpdatedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deletePreference
+      summary: Delete preference
+      tags:
+      - Preferences
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '423':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountProcessingError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      summary: List campaigns
+      tags:
+      - Campaigns
+      parameters:
+      - name: status
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: name
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+      - name: created_from
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: created_to
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+      - name: per_page
+        in: query
+        schema:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          maximum: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCampaignsResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/{uid}:
+    get:
+      operationId: showCampaign
+      summary: Show campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShowCampaignResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+    delete:
+      operationId: deleteCampaign
+      summary: Delete campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Successful response
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/{uid}/pause:
+    post:
+      operationId: pauseCampaign
+      summary: Pause campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/{uid}/resume:
+    post:
+      operationId: resumeCampaign
+      summary: Resume campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/{uid}/end:
+    post:
+      operationId: endCampaign
+      summary: End campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignActionResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/{uid}/send-test-email:
+    post:
+      operationId: sendCampaignTestEmail
+      summary: Send campaign test email
+      tags:
+      - Campaigns
+      parameters:
+      - name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendCampaignTestEmailRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignTestEmailSentResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /campaigns/analytics:
+    get:
+      operationId: campaignAnalytics
+      summary: Campaign Analytics
+      tags:
+      - Campaigns
+      parameters:
+      - name: created_from
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      - name: created_to
+        in: query
+        schema:
+          type:
+          - string
+          - 'null'
+          format: date
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignAnalyticsResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: The given data was invalid.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+  /emails/send:
+    post:
+      operationId: sendTemplateEmail
+      summary: Send template email to contact
+      tags:
+      - Emails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendTemplateEmailRequest'
+      responses:
+        '202':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateEmailQueuedResponse'
+        '401':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    const: Unauthenticated.
+                  data:
+                    type: 'null'
+                  meta:
+                    type: 'null'
+                  errors:
+                    type: 'null'
+                required:
+                - success
+                - message
+                - data
+                - errors
+                - meta
+        '403':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForbiddenError'
+        '404':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResourceNotFoundError'
+        '409':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateEmailDuplicateSendError'
+        '422':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '429':
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TooManyRequestsError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    ForbiddenError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: This account is restricted.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ForbiddenError
+    PoptinRefreshResource:
+      type: object
+      properties:
+        refresh_status:
+          type: string
+        last_updated_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - refresh_status
+      - last_updated_at
+      title: PoptinRefreshResource
+    PoptinStatsRefreshResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            refresh:
+              $ref: '#/components/schemas/PoptinRefreshResource'
+          required:
+          - refresh
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PoptinStatsRefreshResponse
+    TooManyRequestsError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: Too Many Requests
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: TooManyRequestsError
+    PoptinListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            poptins:
+              type: array
+              items:
+                $ref: '#/components/schemas/PoptinResource'
+          required:
+          - poptins
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            last_page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+          required:
+          - current_page
+          - last_page
+          - per_page
+          - total
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PoptinListResponse
+    PoptinResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        domain:
+          type: string
+        status:
+          type: string
+        ab_test:
+          type: boolean
+        ab_test_parent_uid:
+          type:
+          - string
+          - 'null'
+        ab_test_parent:
+          type:
+          - object
+          - 'null'
+          additionalProperties: {}
+        variants:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+        stats:
+          type: object
+          properties:
+            visitors:
+              type: integer
+            views:
+              type: integer
+            conversions:
+              type: integer
+            conversion_rate:
+              type: number
+            conversion_breakdown:
+              type: string
+          required:
+          - visitors
+          - views
+          - conversions
+          - conversion_rate
+          - conversion_breakdown
+        created_at:
+          type:
+          - string
+          - 'null'
+        timeseries:
+          type: string
+        last_updated_at:
+          type: string
+        refresh_status:
+          type: string
+      required:
+      - uid
+      - name
+      - type
+      - domain
+      - status
+      - ab_test
+      - ab_test_parent_uid
+      - ab_test_parent
+      - variants
+      - stats
+      - created_at
+      - timeseries
+      - last_updated_at
+      - refresh_status
+      title: PoptinResource
+    PoptinActionResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        type:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - popup
+            - form
+        status:
+          type: string
+          enum:
+          - active
+          - inactive
+          - draft
+      required:
+      - uid
+      - name
+      - type
+      - status
+      title: PoptinActionResource
+    PoptinActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            poptin:
+              $ref: '#/components/schemas/PoptinActionResource'
+          required:
+          - poptin
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PoptinActionResponse
+    ResourceNotFoundError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: Resource not found.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ResourceNotFoundError
+    ValidationErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: The given data was invalid.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ValidationErrorResponse
+    PoptinSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            poptin:
+              $ref: '#/components/schemas/PoptinResource'
+          required:
+          - poptin
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PoptinSingleResponse
+    RenamePoptinRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 256
+      required:
+      - name
+      title: RenamePoptinRequest
+    AccountProcessingError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: We're currently making some changes to your account.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: AccountProcessingError
+    PoptinAnalyticsResource:
+      type: object
+      properties:
+        visitors:
+          type: integer
+        views:
+          type: integer
+        conversions:
+          type: integer
+        conversion_rate:
+          type: number
+        growth:
+          type: object
+          properties:
+            visitors:
+              type: number
+            views:
+              type: number
+            conversions:
+              type: number
+            conversion_rate:
+              type: number
+          required:
+          - visitors
+          - views
+          - conversions
+          - conversion_rate
+        last_updated_at:
+          type:
+          - string
+          - 'null'
+        refresh_status:
+          type: string
+          enum:
+          - idle
+          - refreshing
+        conversion_breakdown:
+          type: object
+          properties:
+            leads:
+              type: integer
+            clicks:
+              type: integer
+            buttons:
+              type: object
+              properties:
+                submit:
+                  type: integer
+                button2:
+                  type: integer
+                button3:
+                  type: integer
+                button4:
+                  type: integer
+                button5:
+                  type: integer
+                button6:
+                  type: integer
+                close_btn:
+                  type: integer
+                coupon:
+                  type: integer
+              required:
+              - submit
+              - button2
+              - button3
+              - button4
+              - button5
+              - button6
+              - close_btn
+              - coupon
+          required:
+          - leads
+          - clicks
+          - buttons
+        timeseries:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              visitors:
+                type: integer
+              views:
+                type: integer
+              conversions:
+                type: integer
+            required:
+            - date
+            - visitors
+            - views
+            - conversions
+      required:
+      - visitors
+      - views
+      - conversions
+      - conversion_rate
+      - growth
+      - last_updated_at
+      - refresh_status
+      title: PoptinAnalyticsResource
+    PoptinAnalyticsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            performance:
+              $ref: '#/components/schemas/PoptinAnalyticsResource'
+          required:
+          - performance
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PoptinAnalyticsResponse
+    ConversionExtraFieldResource:
+      type: object
+      properties:
+        tag:
+          type: string
+        label:
+          type: string
+        value:
+          type: string
+      required:
+      - tag
+      - label
+      - value
+      title: ConversionExtraFieldResource
+    ConversionResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        poptin_uid:
+          type: string
+        poptin_name:
+          type: string
+        type:
+          type: string
+          enum:
+          - lead
+          - click
+        email:
+          type:
+          - string
+          - 'null'
+        name:
+          type:
+          - string
+          - 'null'
+        phone:
+          type:
+          - string
+          - 'null'
+        message:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+        referrer:
+          type:
+          - string
+          - 'null'
+        device:
+          anyOf:
+          - type: string
+          - type: 'null'
+          - type: string
+            enum:
+            - desktop
+            - mobile
+        ip:
+          type: string
+        traffic_source:
+          anyOf:
+          - type: string
+          - type: 'null'
+          - type: string
+            enum:
+            - direct_link
+            - social_media
+            - search_engine
+            - google_ads
+            - ai_engines
+            - unknown
+        consent:
+          type:
+          - string
+          - 'null'
+          enum:
+          - 'yes'
+          - 'no'
+          - null
+        user_agent:
+          type: string
+        created_at:
+          type:
+          - string
+          - 'null'
+        extra_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversionExtraFieldResource'
+      required:
+      - uid
+      - poptin_uid
+      - poptin_name
+      - type
+      - email
+      - name
+      - phone
+      - message
+      - url
+      - referrer
+      - device
+      - ip
+      - traffic_source
+      - consent
+      - user_agent
+      - created_at
+      - extra_fields
+      title: ConversionResource
+    ListConversionsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            conversions:
+              type: array
+              items:
+                $ref: '#/components/schemas/ConversionResource'
+          required:
+          - conversions
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            per_page:
+              type: integer
+            next_cursor:
+              type:
+              - string
+              - 'null'
+            prev_cursor:
+              type:
+              - string
+              - 'null'
+            has_more:
+              type: boolean
+          required:
+          - per_page
+          - next_cursor
+          - prev_cursor
+          - has_more
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ListConversionsResponse
+    BulkDeleteConversionsRequest:
+      type: object
+      properties:
+        uids:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 2000
+          uniqueItems: true
+      required:
+      - uids
+      title: BulkDeleteConversionsRequest
+    BulkJobInProgressError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: A bulk job is already in progress for this account.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: BulkJobInProgressError
+    BulkJobQueuedResource:
+      type: object
+      properties:
+        object_id:
+          type: integer
+        object_name:
+          type: string
+        status:
+          type: string
+      required:
+      - object_id
+      - object_name
+      - status
+      title: BulkJobQueuedResource
+    BulkJobQueuedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Bulk contact import queued.
+        data:
+          type: object
+          properties:
+            bulk_job:
+              $ref: '#/components/schemas/BulkJobQueuedResource'
+          required:
+          - bulk_job
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: BulkJobQueuedResponse
+    ShowConversionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            conversion:
+              $ref: '#/components/schemas/ConversionResource'
+          required:
+          - conversion
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ShowConversionResponse
+    FieldResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        label:
+          type: string
+        tag:
+          type: string
+        type:
+          type: string
+        is_default:
+          type: string
+        is_recurring:
+          type: string
+        allows_multiple:
+          type: boolean
+        default_value:
+          type: string
+        property_options:
+          type: object
+          additionalProperties: {}
+        created_at:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - uid
+      - label
+      - tag
+      - type
+      - is_default
+      - is_recurring
+      - allows_multiple
+      - default_value
+      - property_options
+      - created_at
+      - updated_at
+      title: FieldResource
+    ListPropertiesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            properties:
+              type: array
+              items:
+                $ref: '#/components/schemas/FieldResource'
+          required:
+          - properties
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            last_page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+          required:
+          - current_page
+          - last_page
+          - per_page
+          - total
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ListPropertiesResponse
+    PropertyDataTypeEnum:
+      type: string
+      enum:
+      - text
+      - number
+      - date
+      - boolean
+      title: PropertyDataTypeEnum
+    PropertyCreatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Property was successfully created
+        data:
+          type: object
+          properties:
+            property:
+              $ref: '#/components/schemas/FieldResource'
+          required:
+          - property
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PropertyCreatedResponse
+    StoreFieldRequest:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/PropertyDataTypeEnum'
+        label:
+          type: string
+          maxLength: 50
+        allow_multiple:
+          type:
+          - boolean
+          - 'null'
+        is_recurring:
+          type:
+          - boolean
+          - 'null'
+        default_value:
+          type:
+          - string
+          - 'null'
+          maxLength: 255
+        property_options:
+          type:
+          - array
+          - 'null'
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                maxLength: 255
+              value:
+                type: string
+                maxLength: 255
+            required:
+            - label
+            - value
+          uniqueItems: true
+      required:
+      - type
+      - label
+      title: StoreFieldRequest
+    PropertyResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            property:
+              $ref: '#/components/schemas/FieldResource'
+          required:
+          - property
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PropertyResponse
+    PropertyUpdatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Property was successfully updated
+        data:
+          type: object
+          properties:
+            property:
+              $ref: '#/components/schemas/FieldResource'
+          required:
+          - property
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PropertyUpdatedResponse
+    UpdateFieldRequest:
+      type: object
+      properties:
+        label:
+          type:
+          - string
+          - 'null'
+          maxLength: 50
+        default_value:
+          type: string
+        property_options:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+                maxLength: 255
+              value:
+                type: string
+            required:
+            - label
+          uniqueItems: true
+      title: UpdateFieldRequest
+    PropertyCannotBeDeletedError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: Default property cannot be deleted
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PropertyCannotBeDeletedError
+    ContactInfoResource:
+      type: object
+      properties:
+        EMAIL:
+          type:
+          - string
+          - 'null'
+        FIRST_NAME:
+          type:
+          - string
+          - 'null'
+        LAST_NAME:
+          type:
+          - string
+          - 'null'
+        PHONE_NUMBER:
+          type:
+          - string
+          - 'null'
+        BIRTHDAY:
+          type:
+          - string
+          - 'null'
+        GENDER:
+          type:
+          - string
+          - 'null'
+        COUNTRY:
+          type:
+          - string
+          - 'null'
+        CONTACT_SOURCE:
+          type:
+          - string
+          - 'null'
+        MESSAGE:
+          anyOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+        STATE:
+          type:
+          - string
+          - 'null'
+        CITY:
+          type:
+          - string
+          - 'null'
+        ADDRESS:
+          type:
+          - string
+          - 'null'
+        ZIP_CODE:
+          type:
+          - string
+          - 'null'
+        OPERATING_SYSTEM:
+          type:
+          - string
+          - 'null'
+        DEVICE:
+          type:
+          - string
+          - 'null'
+        BROWSER:
+          type:
+          - string
+          - 'null'
+      required:
+      - EMAIL
+      - FIRST_NAME
+      - LAST_NAME
+      - PHONE_NUMBER
+      - BIRTHDAY
+      - GENDER
+      - COUNTRY
+      - CONTACT_SOURCE
+      - MESSAGE
+      - STATE
+      - CITY
+      - ADDRESS
+      - ZIP_CODE
+      - OPERATING_SYSTEM
+      - DEVICE
+      - BROWSER
+      title: ContactInfoResource
+    ContactResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        status:
+          $ref: '#/components/schemas/ContactStatus'
+        info:
+          $ref: '#/components/schemas/ContactInfoResource'
+        custom:
+          type: object
+          additionalProperties:
+            anyOf:
+            - type: string
+            - type: boolean
+            - type: integer
+            - type: number
+            - type: array
+              items:
+                type: string
+            - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        preferences:
+          type: array
+          items:
+            type: string
+        created_at:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - uid
+      - status
+      - info
+      - custom
+      - tags
+      - preferences
+      - created_at
+      - updated_at
+      title: ContactResource
+    ContactStatus:
+      type: string
+      enum:
+      - subscribed
+      - unconfirmed
+      - unsubscribed
+      - blocklisted
+      - spam-reported
+      - restricted
+      title: ContactStatus
+    ListContactsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            contacts:
+              type: array
+              items:
+                $ref: '#/components/schemas/ContactResource'
+          required:
+          - contacts
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            per_page:
+              type: integer
+            next_cursor:
+              type:
+              - string
+              - 'null'
+            prev_cursor:
+              type:
+              - string
+              - 'null'
+            has_more:
+              type: boolean
+          required:
+          - per_page
+          - next_cursor
+          - prev_cursor
+          - has_more
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ListContactsResponse
+    ContactBlocklistedUpsertError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: This email address is blocklisted and cannot be added or updated.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactBlocklistedUpsertError
+    ContactCreatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Contact was successfully created
+        data:
+          type: object
+          properties:
+            contact:
+              $ref: '#/components/schemas/ContactResource'
+          required:
+          - contact
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactCreatedResponse
+    ContactUpdatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Contact was successfully updated
+        data:
+          type: object
+          properties:
+            contact:
+              $ref: '#/components/schemas/ContactResource'
+          required:
+          - contact
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactUpdatedResponse
+    UpsertContactRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - subscribed
+          - unconfirmed
+          - unsubscribed
+          default: unconfirmed
+        info:
+          type: object
+          properties:
+            EMAIL:
+              type: string
+              format: email
+          required:
+          - EMAIL
+        custom:
+          type:
+          - array
+          - 'null'
+          default: []
+          items:
+            type: string
+        tags:
+          type:
+          - array
+          - 'null'
+          default: []
+          items:
+            type: string
+          uniqueItems: true
+        preferences:
+          type:
+          - array
+          - 'null'
+          default: []
+          items:
+            type: string
+          uniqueItems: true
+      required:
+      - status
+      - info
+      title: UpsertContactRequest
+    BulkUpsertContactsRequest:
+      type: object
+      properties:
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                enum:
+                - subscribed
+                - unconfirmed
+                - unsubscribed
+              info:
+                type: object
+                properties:
+                  EMAIL:
+                    type: string
+                    format: email
+                required:
+                - EMAIL
+              custom:
+                type:
+                - array
+                - 'null'
+                items:
+                  type: string
+              tags:
+                type:
+                - array
+                - 'null'
+                items:
+                  type: string
+                uniqueItems: true
+              preferences:
+                type:
+                - array
+                - 'null'
+                items:
+                  type: string
+                uniqueItems: true
+            required:
+            - status
+            - info
+          minItems: 1
+          maxItems: 100
+      required:
+      - contacts
+      title: BulkUpsertContactsRequest
+    ContactLimitReachedError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: This account has reached its contact limit.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactLimitReachedError
+    BulkImportContactsCsvRequest:
+      type: object
+      properties:
+        repeat_contact_action:
+          anyOf:
+          - $ref: '#/components/schemas/RepeatedLeadsSetting'
+          - type: 'null'
+        file:
+          type: string
+          format: binary
+          contentMediaType: application/octet-stream
+      required:
+      - file
+      title: BulkImportContactsCsvRequest
+    CSVBulkImportQueuedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: CSV contact import queued.
+        data:
+          type: object
+          properties:
+            bulk_job:
+              $ref: '#/components/schemas/BulkJobQueuedResource'
+          required:
+          - bulk_job
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: CSVBulkImportQueuedResponse
+    RepeatedLeadsSetting:
+      type: string
+      enum:
+      - update_empty_fields
+      - replace_previous_entries
+      - ignore
+      title: RepeatedLeadsSetting
+    BulkDeleteContactsRequest:
+      type: object
+      properties:
+        uids:
+          type: array
+          items:
+            type: string
+          minItems: 1
+          maxItems: 2000
+          uniqueItems: true
+      required:
+      - uids
+      title: BulkDeleteContactsRequest
+    ContactResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            contact:
+              $ref: '#/components/schemas/ContactResource'
+          required:
+          - contact
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactResponse
+    ContactBlocklistedError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: Blocklisted contacts cannot be updated.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ContactBlocklistedError
+    UpdateContactStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - subscribed
+          - unconfirmed
+          - unsubscribed
+      required:
+      - status
+      title: UpdateContactStatusRequest
+    BulkJobResource:
+      type: object
+      properties:
+        object_id:
+          type: integer
+        object_name:
+          type: string
+        status:
+          type: string
+          enum:
+          - new
+          - running
+          - done
+          - failed
+          - cancelled
+        type:
+          type: string
+          enum:
+          - json_bulk_contacts
+          - csv_import_contacts
+          - json_bulk_delete_contacts
+          - json_bulk_delete_conversions
+          - json_send_template_emails
+        progress:
+          type: object
+          properties:
+            total:
+              type: integer
+            processed:
+              type: integer
+            created:
+              type: integer
+            updated:
+              type: integer
+            failed:
+              type: integer
+            skipped:
+              type: integer
+            deleted:
+              type: integer
+            not_found:
+              type: integer
+            percent:
+              type: number
+          required:
+          - total
+          - processed
+          - created
+          - updated
+          - failed
+          - skipped
+          - deleted
+          - not_found
+          - percent
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              uid:
+                type: string
+              email:
+                type: string
+              message:
+                type: string
+            required:
+            - message
+        started_at:
+          type:
+          - string
+          - 'null'
+        finished_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - object_id
+      - object_name
+      - status
+      - type
+      - progress
+      - errors
+      - started_at
+      - finished_at
+      title: BulkJobResource
+    BulkJobStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            bulk_job:
+              $ref: '#/components/schemas/BulkJobResource'
+          required:
+          - bulk_job
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: BulkJobStatusResponse
+    ListPreferencesResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            preferences:
+              type: array
+              items:
+                $ref: '#/components/schemas/PreferenceResource'
+          required:
+          - preferences
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            last_page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+          required:
+          - current_page
+          - last_page
+          - per_page
+          - total
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ListPreferencesResponse
+    PreferenceResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        contacts_count:
+          type: integer
+        created_at:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - uid
+      - name
+      - description
+      - created_at
+      - updated_at
+      title: PreferenceResource
+    PreferenceCreatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Preference was successfully created
+        data:
+          type: object
+          properties:
+            preference:
+              $ref: '#/components/schemas/PreferenceResource'
+          required:
+          - preference
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PreferenceCreatedResponse
+    StorePreferenceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 60
+      required:
+      - name
+      title: StorePreferenceRequest
+    PreferenceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            preference:
+              $ref: '#/components/schemas/PreferenceResource'
+          required:
+          - preference
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PreferenceResponse
+    PreferenceUpdatedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Preference was successfully updated
+        data:
+          type: object
+          properties:
+            preference:
+              $ref: '#/components/schemas/PreferenceResource'
+          required:
+          - preference
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: PreferenceUpdatedResponse
+    UpdatePreferenceRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 60
+      required:
+      - name
+      title: UpdatePreferenceRequest
+    CampaignListResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        sender:
+          type: object
+          properties:
+            from_email:
+              type: string
+            from_name:
+              type: string
+            reply_to:
+              type: string
+          required:
+          - from_email
+          - from_name
+          - reply_to
+        status:
+          $ref: '#/components/schemas/CampaignStatusEnum'
+        subject:
+          type: string
+        pretext:
+          type: string
+        run_at:
+          type:
+          - string
+          - 'null'
+        delivery_at:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type:
+          - string
+          - 'null'
+      required:
+      - uid
+      - name
+      - sender
+      - status
+      - subject
+      - pretext
+      - run_at
+      - delivery_at
+      - created_at
+      - updated_at
+      title: CampaignListResource
+    CampaignStatusEnum:
+      type: string
+      enum:
+      - draft
+      - queued
+      - sending
+      - scheduled
+      - error
+      - completed
+      - paused
+      - under review
+      title: CampaignStatusEnum
+    ListCampaignsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            campaigns:
+              type: array
+              items:
+                $ref: '#/components/schemas/CampaignListResource'
+          required:
+          - campaigns
+        errors:
+          type: 'null'
+        meta:
+          type: object
+          properties:
+            current_page:
+              type: integer
+            last_page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+          required:
+          - current_page
+          - last_page
+          - per_page
+          - total
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ListCampaignsResponse
+    CampaignResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        sender:
+          type: object
+          properties:
+            from_email:
+              type: string
+            from_name:
+              type: string
+            reply_to:
+              type: string
+          required:
+          - from_email
+          - from_name
+          - reply_to
+        status:
+          $ref: '#/components/schemas/CampaignStatusEnum'
+        subject:
+          type: string
+        pretext:
+          type: string
+        run_at:
+          type:
+          - string
+          - 'null'
+        delivery_at:
+          type:
+          - string
+          - 'null'
+        created_at:
+          type:
+          - string
+          - 'null'
+        updated_at:
+          type:
+          - string
+          - 'null'
+        stats:
+          $ref: '#/components/schemas/CampaignStatsResource'
+      required:
+      - uid
+      - name
+      - sender
+      - status
+      - subject
+      - pretext
+      - run_at
+      - delivery_at
+      - created_at
+      - updated_at
+      - stats
+      title: CampaignResource
+    CampaignStatsResource:
+      type: object
+      properties:
+        counts:
+          type: object
+          properties:
+            submitted:
+              type: string
+            sent:
+              type: string
+            delivered:
+              type: string
+            opened:
+              type: string
+            clicked:
+              type: string
+            bounced:
+              type: string
+            spam_complaints:
+              type: string
+            unsubscribed:
+              type: string
+            failed:
+              type: string
+          required:
+          - submitted
+          - sent
+          - delivered
+          - opened
+          - clicked
+          - bounced
+          - spam_complaints
+          - unsubscribed
+          - failed
+        rates:
+          type: object
+          properties:
+            delivery_rate:
+              type: string
+            open_rate:
+              type: string
+            click_rate:
+              type: string
+            ctr:
+              type: string
+            cto:
+              type: string
+            bounce_rate:
+              type: string
+            complaint_rate:
+              type: string
+            unsubscribe_rate:
+              type: string
+            failure_rate:
+              type: string
+          required:
+          - delivery_rate
+          - open_rate
+          - click_rate
+          - ctr
+          - cto
+          - bounce_rate
+          - complaint_rate
+          - unsubscribe_rate
+          - failure_rate
+      required:
+      - counts
+      - rates
+      title: CampaignStatsResource
+    ShowCampaignResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            campaign:
+              $ref: '#/components/schemas/CampaignResource'
+          required:
+          - campaign
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: ShowCampaignResponse
+    CampaignActionResource:
+      type: object
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/CampaignStatusEnum'
+      required:
+      - uid
+      - name
+      - status
+      title: CampaignActionResource
+    CampaignActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            campaign:
+              $ref: '#/components/schemas/CampaignActionResource'
+          required:
+          - campaign
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: CampaignActionResponse
+    CampaignTestEmailSentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Test email was successfully sent
+        data:
+          type: object
+          properties:
+            ? ''
+            : type: object
+          required:
+          - ''
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: CampaignTestEmailSentResponse
+    SendCampaignTestEmailRequest:
+      type: object
+      properties:
+        emails:
+          type: array
+          items:
+            type: string
+            format: email
+          minItems: 1
+          maxItems: 5
+          uniqueItems: true
+        contact_uid:
+          type:
+          - string
+          - 'null'
+      required:
+      - emails
+      title: SendCampaignTestEmailRequest
+    CampaignAnalyticsResource:
+      type: object
+      properties:
+        counts:
+          type: object
+          properties:
+            submitted:
+              type: string
+            sent:
+              type: string
+            delivered:
+              type: string
+            opened:
+              type: string
+            clicked:
+              type: string
+            bounced:
+              type: string
+            spam_complaints:
+              type: string
+            unsubscribed:
+              type: string
+            failed:
+              type: string
+          required:
+          - submitted
+          - sent
+          - delivered
+          - opened
+          - clicked
+          - bounced
+          - spam_complaints
+          - unsubscribed
+          - failed
+        rates:
+          type: object
+          properties:
+            delivery_rate:
+              type: string
+            open_rate:
+              type: string
+            click_rate:
+              type: string
+            ctr:
+              type: string
+            cto:
+              type: string
+            bounce_rate:
+              type: string
+            complaint_rate:
+              type: string
+            unsubscribe_rate:
+              type: string
+            failure_rate:
+              type: string
+          required:
+          - delivery_rate
+          - open_rate
+          - click_rate
+          - ctr
+          - cto
+          - bounce_rate
+          - complaint_rate
+          - unsubscribe_rate
+          - failure_rate
+      required:
+      - counts
+      - rates
+      title: CampaignAnalyticsResource
+    CampaignAnalyticsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Request completed successfully.
+        data:
+          type: object
+          properties:
+            performance:
+              $ref: '#/components/schemas/CampaignAnalyticsResource'
+          required:
+          - performance
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: CampaignAnalyticsResponse
+    SendTemplateEmailRequest:
+      type: object
+      properties:
+        template_uid:
+          type: string
+        from_name:
+          type: string
+          maxLength: 255
+        from_email:
+          type: string
+          format: email
+          maxLength: 255
+        reply_to:
+          type:
+          - string
+          - 'null'
+          format: email
+          maxLength: 255
+        recipient:
+          type: string
+          maxLength: 255
+        subject:
+          type: string
+          minLength: 1
+          maxLength: 200
+        pretext:
+          type:
+          - string
+          - 'null'
+          maxLength: 500
+        merge_tags:
+          type:
+          - object
+          - 'null'
+          default: null
+          additionalProperties:
+            type:
+            - string
+            - number
+            - boolean
+        force:
+          type: boolean
+          default: false
+      required:
+      - template_uid
+      - from_name
+      - from_email
+      - recipient
+      - subject
+      title: SendTemplateEmailRequest
+    TemplateEmailDuplicateSendError:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+          const: A template email to this contact was recently queued. Use force to send again.
+        data:
+          type: 'null'
+        meta:
+          type: 'null'
+        errors:
+          type: 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: TemplateEmailDuplicateSendError
+    TemplateEmailQueuedResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          const: true
+        message:
+          type: string
+          const: Template email send queued.
+        data:
+          type: object
+          properties:
+            bulk_job:
+              $ref: '#/components/schemas/BulkJobQueuedResource'
+          required:
+          - bulk_job
+        errors:
+          type: 'null'
+        meta:
+          type:
+          - object
+          - 'null'
+      required:
+      - success
+      - message
+      - data
+      - errors
+      - meta
+      title: TemplateEmailQueuedResponse
