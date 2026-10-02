@@ -101,6 +101,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
 | Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
+| Cvent | [REST API specification](specs/cvent/openapi.yaml); [official source](https://github.com/cvent/rest-sdks/blob/main/cvent-public-spec/openapi.yaml); [developer docs](https://developers.cvent.com/docs/rest-api/overview) | YAML | 3.0.2 | `official` `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
 | Mailchimp Transactional | [API specification](https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json) | JSON | 3.1.0 | `transactional-email` |
 | MailerSend | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1) | JSON | 3.1.0 | `email-delivery` `transactional-email` |
