@@ -1,0 +1,132 @@
+openapi: 3.1.0
+info:
+  title: SEC EDGAR Data APIs
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for the SEC's public EDGAR
+    submissions and XBRL data APIs. The SEC documents these JSON endpoints as
+    requiring no authentication or API key. Automated clients must identify
+    themselves with a descriptive User-Agent and follow the SEC's fair-access
+    policy, including its 10-requests-per-second limit.
+  externalDocs:
+    description: SEC EDGAR API documentation
+    url: https://www.sec.gov/search-filings/edgar-application-programming-interfaces
+servers:
+  - url: https://data.sec.gov
+    description: SEC EDGAR public data APIs
+paths:
+  /submissions/CIK{cik}.json:
+    get:
+      operationId: getSubmissionsByCik
+      summary: Get filing history for a company
+      description: >-
+        Returns a company's current filing history. CIK values are ten digits,
+        including leading zeroes. Older filing history may be linked in the
+        response when it exceeds the recent-filing window.
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - $ref: '#/components/parameters/Cik'
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonObject'
+  /api/xbrl/companyfacts/CIK{cik}.json:
+    get:
+      operationId: getCompanyFacts
+      summary: Get company XBRL facts
+      description: Returns all company concepts aggregated from SEC filings.
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - $ref: '#/components/parameters/Cik'
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonObject'
+  /api/xbrl/companyconcept/CIK{cik}/{taxonomy}/{tag}.json:
+    get:
+      operationId: getCompanyConcept
+      summary: Get one company XBRL concept
+      description: >-
+        Returns a company's disclosures for one standard taxonomy and concept,
+        grouped by reported unit.
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - $ref: '#/components/parameters/Cik'
+        - name: taxonomy
+          in: path
+          required: true
+          description: Standard taxonomy, such as `us-gaap`, `ifrs-full`, `dei`, or `srt`.
+          schema:
+            type: string
+        - name: tag
+          in: path
+          required: true
+          description: Taxonomy concept name.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonObject'
+  /api/xbrl/frames/{taxonomy}/{tag}/{unit}/{period}.json:
+    get:
+      operationId: getXbrlFrame
+      summary: Get a cross-company XBRL data frame
+      description: >-
+        Returns the most recently filed fact for each reporting entity that
+        best matches the requested annual, quarterly, or instantaneous period.
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: taxonomy
+          in: path
+          required: true
+          description: Standard taxonomy, such as `us-gaap` or `ifrs-full`.
+          schema:
+            type: string
+        - name: tag
+          in: path
+          required: true
+          description: Taxonomy concept name.
+          schema:
+            type: string
+        - name: unit
+          in: path
+          required: true
+          description: Unit of measure, such as USD.
+          schema:
+            type: string
+        - name: period
+          in: path
+          required: true
+          description: >-
+            Requested period, for example `CY2019`, `CY2019Q1`, or
+            `CY2019Q1I`.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/JsonObject'
+components:
+  parameters:
+    UserAgent:
+      name: User-Agent
+      in: header
+      required: true
+      description: >-
+        Identify the organization or application and include a contact address,
+        as required by the [SEC developer guidance](https://www.sec.gov/about/developer-resources).
+      schema:
+        type: string
+    Cik:
+      name: cik
+      in: path
+      required: true
+      description: Ten-digit Central Index Key, including leading zeroes.
+      schema:
+        type: string
+        pattern: '^\d{10}$'
+  responses:
+    JsonObject:
+      description: JSON response; exact fields vary by endpoint and reporting entity.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true

@@ -1,0 +1,106 @@
+openapi: 3.1.0
+info:
+  title: openFDA Drug Adverse Event API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for the documented Drug
+    Adverse Event endpoint. The public endpoint can be used without an API
+    key; a free key raises the documented request limits. Returned report
+    fields vary. openFDA says not to rely on its data to make medical-care
+    decisions.
+  externalDocs:
+    description: Drug Adverse Event API documentation
+    url: https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/
+servers:
+  - url: https://api.fda.gov
+    description: openFDA API
+paths:
+  /drug/event.json:
+    get:
+      operationId: queryDrugAdverseEvents
+      summary: Search drug adverse event reports
+      description: >-
+        Searches public drug adverse event reports or counts unique field
+        values. The report fields and their order can vary. These reports are
+        not a basis for medical-care decisions.
+      externalDocs:
+        description: Endpoint instructions, searchable fields, and examples
+        url: https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/
+      parameters:
+        - name: search
+          in: query
+          required: false
+          description: >-
+            openFDA query expression. Field names and searchable values are
+            documented for this endpoint.
+          schema:
+            type: string
+        - name: sort
+          in: query
+          required: false
+          description: >-
+            Sort a search result by a field, using `:asc` or `:desc` as the
+            documented order modifier.
+          schema:
+            type: string
+        - name: count
+          in: query
+          required: false
+          description: >-
+            Count unique values of the specified field for matching records.
+            Count results contain `term` and `count` values.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Number of matching records to return; the maximum is 1000.
+          schema:
+            type: integer
+            maximum: 1000
+        - name: skip
+          in: query
+          required: false
+          description: >-
+            Number of matching records to skip before returning results; the
+            maximum is 25000.
+          schema:
+            type: integer
+            maximum: 25000
+        - name: api_key
+          in: query
+          required: false
+          description: >-
+            Optional free API key. Without a key, the documented limit is
+            1000 requests per day per IP address; with a key, it is 120000
+            requests per day per key.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching adverse event reports or count results.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    description: Response metadata; fields vary by query.
+                    additionalProperties: true
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      description: >-
+                        A report with documented header, patient, drug, and
+                        reaction sections, or a count result containing term
+                        and count. Report fields vary.
+                      properties:
+                        term:
+                          type: string
+                          description: Counted unique value, when count is used.
+                        count:
+                          type: integer
+                          description: Number of records for the counted value.
+                      additionalProperties: true
