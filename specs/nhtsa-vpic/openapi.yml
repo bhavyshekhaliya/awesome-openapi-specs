@@ -1,0 +1,488 @@
+openapi: 3.1.0
+info:
+  title: NHTSA vPIC API
+  version: 1.0.0
+  description: >-
+    Community-maintained, JSON-focused specification for the NHTSA Product
+    Information Catalog Vehicle Listing (vPIC) API. The provider defaults to
+    XML, so these operations require `format=json`. This scope covers VIN,
+    manufacturer, make, model, equipment-code, and vehicle-reference lookups.
+    The Canadian vehicle specifications method is excluded because its data
+    comes from Transport Canada's separate database. NHTSA says no fee,
+    registration, or daily query limit is required; its method page notes that
+    automated traffic controls can still apply to protect the service.
+  externalDocs:
+    description: Official NHTSA vPIC API methods and examples
+    url: https://vpic.nhtsa.dot.gov/api/Home/Index
+servers:
+  - url: https://vpic.nhtsa.dot.gov/api
+    description: NHTSA Product Information Catalog Vehicle Listing API
+paths:
+  /vehicles/DecodeVin/{vin}:
+    get:
+      operationId: decodeVin
+      summary: Decode a vehicle identification number
+      description: >-
+        Returns decoded VIN information as variable/value pairs. Partial VINs
+        are supported; use `*` for unavailable characters. NHTSA recommends
+        supplying the model year.
+      parameters:
+        - $ref: '#/components/parameters/vin'
+        - $ref: '#/components/parameters/modelYear'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/DecodeVinValues/{vin}:
+    get:
+      operationId: decodeVinValues
+      summary: Decode a VIN into flat values
+      description: Returns VIN decode output in a flat format.
+      parameters:
+        - $ref: '#/components/parameters/vin'
+        - $ref: '#/components/parameters/modelYear'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/DecodeVinExtended/{vin}:
+    get:
+      operationId: decodeVinExtended
+      summary: Decode a VIN with extended details
+      description: >-
+        Returns VIN decode information with additional variables related to
+        other NHTSA programs.
+      parameters:
+        - $ref: '#/components/parameters/vin'
+        - $ref: '#/components/parameters/modelYear'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/DecodeVinValuesExtended/{vin}:
+    get:
+      operationId: decodeVinValuesExtended
+      summary: Decode a VIN into extended flat values
+      parameters:
+        - $ref: '#/components/parameters/vin'
+        - $ref: '#/components/parameters/modelYear'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/DecodeWMI/{wmi}:
+    get:
+      operationId: decodeWmi
+      summary: Decode a World Manufacturer Identifier
+      description: A WMI is three characters or six characters containing positions 1–3 and 12–14 of a VIN.
+      parameters:
+        - $ref: '#/components/parameters/wmi'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetWMIsForManufacturer/{manufacturer}:
+    get:
+      operationId: getWmisForManufacturer
+      summary: Get WMIs for a manufacturer
+      description: >-
+        Returns registered WMIs for a manufacturer. The manufacturer path
+        value may be an ID or a partial or full name; vehicleType may be an
+        ID or partial or full name.
+      parameters:
+        - $ref: '#/components/parameters/manufacturer'
+        - $ref: '#/components/parameters/queryVehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetAllMakes:
+    get:
+      operationId: getAllMakes
+      summary: List makes
+      description: Returns all makes available in the vPIC dataset.
+      parameters:
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetParts:
+    get:
+      operationId: getParts
+      summary: Search manufacturer organization letters
+      description: >-
+        Returns organization records with a letter date in the requested range
+        and type. Up to 1,000 results are returned per page.
+      parameters:
+        - name: type
+          in: query
+          required: true
+          description: Organization letter type documented by NHTSA.
+          schema:
+            type: integer
+            enum: [565, 566]
+        - name: fromDate
+          in: query
+          required: false
+          description: Include letters dated on or after this value.
+          schema:
+            type: string
+        - name: toDate
+          in: query
+          required: false
+          description: Include letters dated on or before this value.
+          schema:
+            type: string
+        - name: manufacturer
+          in: query
+          required: false
+          description: Manufacturer ID or partial or full manufacturer name.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetAllManufacturers:
+    get:
+      operationId: getAllManufacturers
+      summary: List manufacturers
+      description: Returns manufacturers in the vPIC dataset, optionally filtered by manufacturer type.
+      parameters:
+        - name: ManufacturerType
+          in: query
+          required: false
+          description: Manufacturer type ID, name, or part of a name.
+          schema:
+            type: string
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetManufacturerDetails/{manufacturer}:
+    get:
+      operationId: getManufacturerDetails
+      summary: Get manufacturer details
+      description: The manufacturer path value may be an ID or a partial or full name.
+      parameters:
+        - $ref: '#/components/parameters/manufacturer'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetMakeForManufacturer/{manufacturer}:
+    get:
+      operationId: getMakesForManufacturer
+      summary: Get makes for a manufacturer
+      description: The manufacturer path value may be an ID or a partial or full name.
+      parameters:
+        - $ref: '#/components/parameters/manufacturer'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetMakesForManufacturerAndYear/{manufacturer}:
+    get:
+      operationId: getMakesForManufacturerAndYear
+      summary: Get a manufacturer's makes for a year
+      description: Returns makes whose year range includes the requested year.
+      parameters:
+        - $ref: '#/components/parameters/manufacturer'
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetMakesForVehicleType/{vehicleType}:
+    get:
+      operationId: getMakesForVehicleType
+      summary: Get makes for a vehicle type
+      description: The vehicle type may be a partial or full name.
+      parameters:
+        - $ref: '#/components/parameters/vehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMake/{makeName}:
+    get:
+      operationId: getModelsForMake
+      summary: Get models for a make
+      description: The make name may be partial or full; `*` requests models for all makes and may be slow.
+      parameters:
+        - $ref: '#/components/parameters/makeName'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeId/{makeId}:
+    get:
+      operationId: getModelsForMakeId
+      summary: Get models for a make ID
+      description: Use make ID 0 to request models for all makes; this may be slow.
+      parameters:
+        - $ref: '#/components/parameters/makeId'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeYear/make/{makeName}/modelyear/{modelYear}:
+    get:
+      operationId: getModelsForMakeAndYear
+      summary: Get models for a make and model year
+      parameters:
+        - $ref: '#/components/parameters/makeName'
+        - $ref: '#/components/parameters/modelYearPath'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeYear/make/{makeName}/vehicletype/{vehicleType}:
+    get:
+      operationId: getModelsForMakeAndVehicleType
+      summary: Get models for a make and vehicle type
+      parameters:
+        - $ref: '#/components/parameters/makeName'
+        - $ref: '#/components/parameters/vehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeYear/make/{makeName}/modelyear/{modelYear}/vehicletype/{vehicleType}:
+    get:
+      operationId: getModelsForMakeYearAndVehicleType
+      summary: Get models for a make, model year, and vehicle type
+      parameters:
+        - $ref: '#/components/parameters/makeName'
+        - $ref: '#/components/parameters/modelYearPath'
+        - $ref: '#/components/parameters/vehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeIdYear/makeId/{makeId}/modelyear/{modelYear}:
+    get:
+      operationId: getModelsForMakeIdAndYear
+      summary: Get models for a make ID and model year
+      parameters:
+        - $ref: '#/components/parameters/makeId'
+        - $ref: '#/components/parameters/modelYearPath'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeIdYear/makeId/{makeId}/vehicletype/{vehicleType}:
+    get:
+      operationId: getModelsForMakeIdAndVehicleType
+      summary: Get models for a make ID and vehicle type
+      parameters:
+        - $ref: '#/components/parameters/makeId'
+        - $ref: '#/components/parameters/vehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetModelsForMakeIdYear/makeId/{makeId}/modelyear/{modelYear}/vehicletype/{vehicleType}:
+    get:
+      operationId: getModelsForMakeIdYearAndVehicleType
+      summary: Get models for a make ID, model year, and vehicle type
+      parameters:
+        - $ref: '#/components/parameters/makeId'
+        - $ref: '#/components/parameters/modelYearPath'
+        - $ref: '#/components/parameters/vehicleType'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetVehicleTypesForMake/{makeName}:
+    get:
+      operationId: getVehicleTypesForMake
+      summary: Get vehicle types for a make
+      description: The make name may be partial or full.
+      parameters:
+        - $ref: '#/components/parameters/makeName'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetVehicleTypesForMakeId/{makeId}:
+    get:
+      operationId: getVehicleTypesForMakeId
+      summary: Get vehicle types for a make ID
+      parameters:
+        - $ref: '#/components/parameters/makeId'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetVehicleVariableList:
+    get:
+      operationId: getVehicleVariableList
+      summary: List vehicle variables
+      description: Returns vehicle variables with their names, descriptions, and types.
+      parameters:
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetVehicleVariableValuesList/{variable}:
+    get:
+      operationId: getVehicleVariableValues
+      summary: List accepted values for a vehicle variable
+      description: The variable path value may be a variable name or ID; use this for lookup-type variables.
+      parameters:
+        - $ref: '#/components/parameters/variable'
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+  /vehicles/GetEquipmentPlantCodes/{year}:
+    get:
+      operationId: getEquipmentPlantCodes
+      summary: List equipment plant codes
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: NHTSA documents support for 2016 and later.
+          schema:
+            type: integer
+            minimum: 2016
+        - name: equipmentType
+          in: query
+          required: false
+          description: Documented equipment type identifier.
+          schema:
+            type: integer
+            enum: [1, 3, 13, 16]
+        - name: reportType
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [New, Updated, Closed, All]
+        - $ref: '#/components/parameters/jsonFormat'
+      responses:
+        '200':
+          $ref: '#/components/responses/VehicleJsonResponse'
+components:
+  parameters:
+    jsonFormat:
+      name: format
+      in: query
+      required: true
+      description: This focused specification documents JSON responses only.
+      schema:
+        type: string
+        enum: [json]
+    vin:
+      name: vin
+      in: path
+      required: true
+      description: VIN; partial values may use `*` for unavailable characters.
+      schema:
+        type: string
+    modelYear:
+      name: modelyear
+      in: query
+      required: false
+      description: Model year used to select the applicable VIN decoding range.
+      schema:
+        type: integer
+    modelYearPath:
+      name: modelYear
+      in: path
+      required: true
+      description: Model year; NHTSA documents values greater than 1995 for these model lookups.
+      schema:
+        type: integer
+        minimum: 1996
+    wmi:
+      name: wmi
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 3
+        maxLength: 6
+    manufacturer:
+      name: manufacturer
+      in: path
+      required: true
+      description: Manufacturer ID or partial or full manufacturer name.
+      schema:
+        type: string
+    queryVehicleType:
+      name: vehicleType
+      in: query
+      required: false
+      description: Vehicle type ID or partial or full name.
+      schema:
+        type: string
+    vehicleType:
+      name: vehicleType
+      in: path
+      required: true
+      description: Vehicle type name, which may be partial or full.
+      schema:
+        type: string
+    makeName:
+      name: makeName
+      in: path
+      required: true
+      description: Make name, which may be partial or full.
+      schema:
+        type: string
+    makeId:
+      name: makeId
+      in: path
+      required: true
+      description: Make ID from the vPIC dataset.
+      schema:
+        type: integer
+    variable:
+      name: variable
+      in: path
+      required: true
+      description: Variable name or ID; URL-encode variable names containing spaces.
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      required: false
+      description: One-based result page.
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    VehicleJsonResponse:
+      description: NHTSA vPIC JSON response. Result fields vary by method.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VehicleResponse'
+  schemas:
+    VehicleResponse:
+      type: object
+      properties:
+        Count:
+          type: integer
+        Message:
+          type: string
+        SearchCriteria:
+          type: string
+        Results:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      required:
+        - Results
