@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| TrekkSoft | [API specification](https://developer.trekksoft.com/js/swagger.yaml) | YAML | 3.0.0 | `official` `travel` `booking` `event-management` |
 | VBO Tickets | [API specification](https://vboblobprod.blob.core.windows.net/awsvboticketscom/_images/master/v1.json) | JSON | 2.0 | `official` `event-ticketing` `events` |
 | Feedly | [API specification](https://dash.readme.com/api/v1/api-registry/gbzx1fmrdkepna) | JSON | 3.0.3 | `official` `content-discovery` `marketing-research` |
 | SendFox | [API specification](https://sendfox.com/openapi.yaml) | YAML | 3.0.3 | `official` `email-marketing` |
