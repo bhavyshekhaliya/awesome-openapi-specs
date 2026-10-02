@@ -1,0 +1,405 @@
+openapi: 3.1.0
+info:
+  title: Transport for NSW Trip Planner API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for the five documented Trip
+    Planner operations: stop search, trip planning, departures, service alerts,
+    and nearby locations. A registered API key is required in the
+    `Authorization` header using the `apikey <key>` value format. The provider
+    documents a default Bronze account plan; account limits can change. Other
+    Transport for NSW APIs and GTFS feeds are not covered here.
+  externalDocs:
+    description: Trip Planner API technical manual, version 3.3
+    url: https://opendata.transport.nsw.gov.au/sites/default/files/2026-04/trip-planner-api-manual-opendataproduction-v3.3.pdf
+servers:
+  - url: https://api.transport.nsw.gov.au/v1/tp
+    description: Transport for NSW Trip Planner API
+security:
+  - apiKey: []
+tags:
+  - name: Trip planning
+    description: Search locations, plan journeys, and retrieve transit information.
+paths:
+  /stop_finder:
+    get:
+      tags:
+        - Trip planning
+      operationId: findStopsAndLocations
+      summary: Search for stops and places
+      description: Searches for public transport stops, places of interest, and other locations.
+      parameters:
+        - $ref: '#/components/parameters/outputFormat'
+        - $ref: '#/components/parameters/coordOutputFormat'
+        - name: name_sf
+          in: query
+          required: true
+          description: Location name or search text.
+          schema:
+            type: string
+        - name: type_sf
+          in: query
+          required: false
+          description: Search type; the manual uses `any` in its example.
+          schema:
+            type: string
+        - name: anyMaxSizeHitList
+          in: query
+          required: false
+          description: Maximum number of results in the hit list.
+          schema:
+            type: integer
+        - name: odvSugMacro
+          in: query
+          required: false
+          description: Enables the documented location suggestion mode when set to 1.
+          schema:
+            type: integer
+            enum: [1]
+        - name: TfNSWSF
+          in: query
+          required: false
+          description: Parameter set to `true` in the provider's example.
+          schema:
+            type: string
+            enum: ['true']
+      responses:
+        '200':
+          description: Matching locations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+        '401':
+          description: The API key is missing or invalid, or the account quota has been exceeded.
+        '403':
+          description: The request was refused, including when the rate limit is exceeded.
+  /trip:
+    get:
+      tags:
+        - Trip planning
+      operationId: planTrip
+      summary: Find public transport journeys
+      description: Plans journeys between two locations for a specified date and time.
+      parameters:
+        - $ref: '#/components/parameters/outputFormat'
+        - $ref: '#/components/parameters/coordOutputFormat'
+        - name: depArrMacro
+          in: query
+          required: true
+          description: Whether the requested time is a departure time or arrival time.
+          schema:
+            type: string
+            enum: [dep, arr]
+        - name: itdDate
+          in: query
+          required: true
+          description: Date formatted as YYYYMMDD.
+          schema:
+            type: string
+            pattern: '^\\d{8}$'
+        - name: itdTime
+          in: query
+          required: true
+          description: Time formatted as HHMM using a 24-hour clock.
+          schema:
+            type: string
+            pattern: '^\\d{4}$'
+        - name: type_origin
+          in: query
+          required: true
+          description: Type of the origin location.
+          schema:
+            type: string
+        - name: name_origin
+          in: query
+          required: true
+          description: Origin location name or identifier.
+          schema:
+            type: string
+        - name: type_destination
+          in: query
+          required: true
+          description: Type of the destination location.
+          schema:
+            type: string
+        - name: name_destination
+          in: query
+          required: true
+          description: Destination location name or identifier.
+          schema:
+            type: string
+        - name: TfNSWTR
+          in: query
+          required: false
+          description: Parameter set to `true` in the provider's example.
+          schema:
+            type: string
+            enum: ['true']
+      responses:
+        '200':
+          description: Available journey options.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '401':
+          description: The API key is missing or invalid, or the account quota has been exceeded.
+        '403':
+          description: The request was refused, including when the rate limit is exceeded.
+  /departure_mon:
+    get:
+      tags:
+        - Trip planning
+      operationId: getDepartures
+      summary: Get upcoming departures
+      description: Returns upcoming departures for a stop or platform.
+      parameters:
+        - $ref: '#/components/parameters/outputFormat'
+        - $ref: '#/components/parameters/coordOutputFormat'
+        - name: mode
+          in: query
+          required: false
+          description: Mode value used by the provider's departure example.
+          schema:
+            type: string
+        - name: type_dm
+          in: query
+          required: true
+          description: Departure location type, such as `stop`.
+          schema:
+            type: string
+        - name: name_dm
+          in: query
+          required: true
+          description: Stop or platform identifier.
+          schema:
+            type: string
+        - name: depArrMacro
+          in: query
+          required: true
+          description: Departure or arrival mode.
+          schema:
+            type: string
+            enum: [dep, arr]
+        - name: itdDate
+          in: query
+          required: true
+          description: Date formatted as YYYYMMDD.
+          schema:
+            type: string
+            pattern: '^\\d{8}$'
+        - name: itdTime
+          in: query
+          required: true
+          description: Time formatted as HHMM using a 24-hour clock.
+          schema:
+            type: string
+            pattern: '^\\d{4}$'
+        - name: TfNSWDM
+          in: query
+          required: false
+          description: Parameter set to `true` in the provider's example.
+          schema:
+            type: string
+            enum: ['true']
+      responses:
+        '200':
+          description: Upcoming stop events.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartureResponse'
+        '401':
+          description: The API key is missing or invalid, or the account quota has been exceeded.
+        '403':
+          description: The request was refused, including when the rate limit is exceeded.
+  /add_info:
+    get:
+      tags:
+        - Trip planning
+      operationId: getServiceAlerts
+      summary: Get public transport service alerts
+      description: Returns service alerts and information for the transport network.
+      parameters:
+        - $ref: '#/components/parameters/outputFormat'
+        - $ref: '#/components/parameters/coordOutputFormat'
+        - name: filterDateValid
+          in: query
+          required: false
+          description: Filter date in DD-MM-YYYY format.
+          schema:
+            type: string
+            pattern: '^\\d{2}-\\d{2}-\\d{4}$'
+        - name: filterPublicationStatus
+          in: query
+          required: false
+          description: Filter by publication status; the manual uses `current` for active alerts.
+          schema:
+            type: string
+        - name: itdLPxx_selStop
+          in: query
+          required: false
+          description: Restrict alerts to the supplied stop identifier.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Service alert information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceAlertsResponse'
+        '401':
+          description: The API key is missing or invalid, or the account quota has been exceeded.
+        '403':
+          description: The request was refused, including when the rate limit is exceeded.
+  /coord:
+    get:
+      tags:
+        - Trip planning
+      operationId: findNearbyLocations
+      summary: Find locations near a coordinate
+      description: Finds transport stops, places of interest, or Opal resellers near a coordinate.
+      parameters:
+        - $ref: '#/components/parameters/outputFormat'
+        - $ref: '#/components/parameters/coordOutputFormat'
+        - name: coord
+          in: query
+          required: true
+          description: Coordinate string in EPSG:4326; the manual's example orders longitude before latitude.
+          schema:
+            type: string
+            example: '151.206290:-33.884080:EPSG:4326'
+        - name: type_1
+          in: query
+          required: true
+          description: Location type; the manual uses `GIS_POINT` in its example.
+          schema:
+            type: string
+        - name: radius_1
+          in: query
+          required: true
+          description: Search radius in metres.
+          schema:
+            type: integer
+        - name: inclFilter
+          in: query
+          required: false
+          description: Optional location filter flag used in the provider's example.
+          schema:
+            type: integer
+            enum: [1]
+        - name: inclDrawClasses_1
+          in: query
+          required: false
+          description: Optional draw class filter; the manual uses 74 to return Opal resellers.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Locations near the supplied coordinate.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationsResponse'
+        '401':
+          description: The API key is missing or invalid, or the account quota has been exceeded.
+        '403':
+          description: The request was refused, including when the rate limit is exceeded.
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Send the header as `Authorization: apikey <key>`."
+  parameters:
+    outputFormat:
+      name: outputFormat
+      in: query
+      required: true
+      description: The provider's JSON response format.
+      schema:
+        type: string
+        enum: [rapidJSON]
+    coordOutputFormat:
+      name: coordOutputFormat
+      in: query
+      required: true
+      description: Coordinate output format documented for Trip Planner API calls.
+      schema:
+        type: string
+        enum: ['EPSG:4326']
+  schemas:
+    LocationsResponse:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+      additionalProperties: true
+    Location:
+      type: object
+      properties:
+        id:
+          type: [integer, string]
+        name:
+          type: string
+        type:
+          type: string
+        isBest:
+          type: boolean
+        matchQuality:
+          type: number
+        coord:
+          type: array
+          items:
+            type: number
+      additionalProperties: true
+    TripResponse:
+      type: object
+      properties:
+        journeys:
+          type: array
+          items:
+            type: object
+            description: A journey with itinerary legs.
+            additionalProperties: true
+      additionalProperties: true
+    DepartureResponse:
+      type: object
+      properties:
+        stopEvents:
+          type: array
+          items:
+            type: object
+            description: A departure event for a stop.
+            additionalProperties: true
+      additionalProperties: true
+    ServiceAlertsResponse:
+      type: object
+      properties:
+        infos:
+          type: object
+          properties:
+            current:
+              type: array
+              items:
+                type: object
+                properties:
+                  subtitle:
+                    type: string
+                  url:
+                    type: string
+                    format: uri
+                  timestamps:
+                    type: object
+                    additionalProperties: true
+                  affected:
+                    type: object
+                    additionalProperties: true
+                additionalProperties: true
+          additionalProperties: true
+      additionalProperties: true

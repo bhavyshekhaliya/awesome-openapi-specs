@@ -1,0 +1,438 @@
+﻿openapi: 3.1.0
+info:
+  title: NewReleases API
+  version: '1'
+  description: >-
+    Focused definition of the documented v1 project and release endpoints. GET
+    requests consume one hourly quota unit and other requests consume ten;
+    quota responses may include X-Ratelimit-* and Retry-After headers.
+  externalDocs:
+    description: NewReleases API v1 documentation
+    url: https://newreleases.io/api/v1
+servers:
+  - url: https://api.newreleases.io/v1
+    description: NewReleases API v1
+security:
+  - xKey: []
+  - apiKeyBasic: []
+tags:
+  - name: Projects
+  - name: Releases
+paths:
+  /projects:
+    get:
+      tags: [Projects]
+      operationId: listProjects
+      summary: List tracked projects
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Reverse'
+        - name: tag
+          in: query
+          required: false
+          description: Filter by tag ID.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Projects and total page count.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectList'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags: [Projects]
+      operationId: addProject
+      summary: Track a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewProject'
+      responses:
+        '200':
+          description: The newly tracked project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/search:
+    get:
+      tags: [Projects]
+      operationId: searchProjects
+      summary: Search projects
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: provider
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching projects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectSearch'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Projects]
+      operationId: getProject
+      summary: Get a tracked project by ID
+      responses:
+        '200':
+          description: The requested project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags: [Projects]
+      operationId: updateProject
+      summary: Update a tracked project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectSettings'
+      responses:
+        '200':
+          description: The updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      tags: [Projects]
+      operationId: deleteProject
+      summary: Stop tracking a project
+      responses:
+        '200':
+          description: The project was removed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/{id}/releases:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+    get:
+      tags: [Releases]
+      operationId: listProjectReleases
+      summary: List releases for a tracked project
+      parameters:
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Releases and total page count.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/{id}/releases/{version}:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Releases]
+      operationId: getProjectRelease
+      summary: Get a release
+      responses:
+        '200':
+          description: The requested release.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Release'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/{id}/latest-release:
+    get:
+      tags: [Releases]
+      operationId: getLatestRelease
+      summary: Get the latest non-excluded release
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Latest release not excluded by project settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Release'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /projects/{id}/releases/{version}/note:
+    parameters:
+      - $ref: '#/components/parameters/ProjectId'
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Releases]
+      operationId: getReleaseNote
+      summary: Get a release note
+      responses:
+        '200':
+          description: Release note content and source URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseNote'
+        default:
+          $ref: '#/components/responses/ApiError'
+components:
+  securitySchemes:
+    xKey:
+      type: apiKey
+      in: header
+      name: X-Key
+      description: API key.
+    apiKeyBasic:
+      type: http
+      scheme: basic
+      description: The API key may be supplied as the Basic Auth username or password.
+  parameters:
+    ProjectId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    Order:
+      name: order
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [name, updated, added]
+        default: updated
+    Reverse:
+      name: reverse
+      in: query
+      required: false
+      allowEmptyValue: true
+      description: Presence reverses sort order; the documented flag has no value.
+      schema:
+        type: boolean
+  schemas:
+    ProjectSettings:
+      type: object
+      properties:
+        email_notification:
+          type: string
+          enum: [none, instant, hourly, daily, weekly, default]
+        slack_channels:
+          type: array
+          items:
+            type: string
+        telegram_chats:
+          type: array
+          items:
+            type: string
+        discord_channels:
+          type: array
+          items:
+            type: string
+        hangouts_chat_webhooks:
+          type: array
+          items:
+            type: string
+        microsoft_teams_webhooks:
+          type: array
+          items:
+            type: string
+        mattermost_webhooks:
+          type: array
+          items:
+            type: string
+        rocketchat_webhooks:
+          type: array
+          items:
+            type: string
+        matrix_rooms:
+          type: array
+          items:
+            type: string
+        webhooks:
+          type: array
+          items:
+            type: string
+        exclude_version_regexp:
+          type: array
+          items:
+            $ref: '#/components/schemas/Exclusion'
+        exclude_prereleases:
+          type: boolean
+        exclude_updated:
+          type: boolean
+        note:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    NewProject:
+      allOf:
+        - type: object
+          required: [provider, name]
+          properties:
+            provider:
+              type: string
+            name:
+              type: string
+        - $ref: '#/components/schemas/ProjectSettings'
+    Project:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            provider:
+              type: string
+            url:
+              type: string
+              format: uri
+        - $ref: '#/components/schemas/ProjectSettings'
+    ProjectList:
+      type: object
+      required: [projects, total_pages]
+      properties:
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        total_pages:
+          type: integer
+    ProjectSearch:
+      type: object
+      required: [q, projects]
+      properties:
+        q:
+          type: string
+        provider:
+          type: string
+          default: ''
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    Exclusion:
+      type: object
+      properties:
+        value:
+          type: string
+        inverse:
+          type: boolean
+          default: false
+    Release:
+      type: object
+      properties:
+        version:
+          type: string
+        date:
+          type: string
+          format: date-time
+        cve:
+          type: array
+          items:
+            type: string
+        is_prerelease:
+          type: boolean
+        is_updated:
+          type: boolean
+        is_excluded:
+          type: boolean
+        has_note:
+          type: boolean
+    ReleaseList:
+      type: object
+      required: [releases, total_pages]
+      properties:
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Release'
+        total_pages:
+          type: integer
+    ReleaseNote:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+          description: Release note content, which may contain HTML.
+        url:
+          type: string
+          format: uri
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+    ApiError:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: string
+  responses:
+    ApiError:
+      description: >-
+        API errors use documented HTTP statuses 400, 401, 403, 404, 405, 429,
+        500, or 503. The 400 response may include error details.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+externalDocs:
+  description: NewReleases API v1 documentation
+  url: https://newreleases.io/api/v1
