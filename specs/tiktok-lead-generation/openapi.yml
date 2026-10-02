@@ -1,0 +1,389 @@
+openapi: 3.1.0
+info:
+  title: TikTok Lead Generation API
+  version: 1.3.0
+  description: Community-maintained focused definition of TikTok Business API lead retrieval. It covers Instant Form
+    discovery and fields, lead reads, and asynchronous lead exports. TikTok's public documentation and examples do not
+    define every response field, so undocumented response properties remain open.
+  contact:
+    url: https://business-api.tiktok.com/portal/
+externalDocs:
+  description: TikTok API for Business Marketing API documentation
+  url: https://business-api.tiktok.com/gateway/docs/index?doc_id=1740029171730433
+servers:
+  - url: https://business-api.tiktok.com/open_api/v1.3
+    description: TikTok Business API v1.3
+security:
+  - AccessToken: []
+tags:
+  - name: Forms
+    description: Discover lead forms and their fields.
+  - name: Leads
+    description: Read leads and create or download asynchronous lead exports.
+paths:
+  /page/get/:
+    get:
+      operationId: listLeadGenerationForms
+      summary: List lead forms
+      description: List pages for an advertiser or Business Center form library. Set business_type to LEAD_GEN to
+        return Instant Forms. Provide advertiser_id or library_id according to where the forms are stored.
+      tags:
+        - Forms
+      externalDocs:
+        url: https://business-api.tiktok.com/gateway/docs/index?doc_id=1774482920012801
+      parameters:
+        - $ref: '#/components/parameters/AdvertiserId'
+        - $ref: '#/components/parameters/LibraryId'
+        - name: page
+          in: query
+          required: false
+          description: Page number. Defaults to 1.
+          schema:
+            type: integer
+            minimum: 1
+        - name: page_size
+          in: query
+          required: false
+          description: Page size, from 1 to 100. Defaults to 10.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+        - name: page_status
+          in: query
+          required: false
+          description: Filter by page status.
+          schema:
+            type: string
+            enum:
+              - EDITED
+              - PUBLISHED
+        - name: title
+          in: query
+          required: false
+          description: Return pages whose title contains this value.
+          schema:
+            type: string
+        - name: business_type
+          in: query
+          required: false
+          description: Page type. Use LEAD_GEN for Instant Forms; this is the documented default.
+          schema:
+            type: string
+            default: LEAD_GEN
+      responses:
+        '200':
+          description: Page list returned in TikTok's standard response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageListResponse'
+        default:
+          $ref: '#/components/responses/TikTokError'
+  /page/library/get/:
+    get:
+      operationId: listLeadFormLibraries
+      summary: List accessible form libraries
+      description: List Business Center form libraries available to the authenticated developer. A library_id can be
+        used in place of advertiser_id after leads or forms have been moved to a Business Center.
+      tags:
+        - Forms
+      externalDocs:
+        url: https://business-api.tiktok.com/gateway/docs/index?doc_id=1740029171730433
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Form library list returned in TikTok's standard response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TikTokResponse'
+        default:
+          $ref: '#/components/responses/TikTokError'
+  /lead/field/get/:
+    get:
+      operationId: getLeadFormFields
+      summary: Get lead fields
+      description: Get field definitions and metadata for an Instant Form or direct message lead source. For an
+        Instant Form, provide page_id; use advertiser_id or library_id for its owning account or form library.
+      tags:
+        - Forms
+      externalDocs:
+        url: https://business-api.tiktok.com/gateway/docs/index?doc_id=1740029171730433
+      parameters:
+        - name: lead_source
+          in: query
+          required: false
+          description: Lead source. INSTANT_FORM is the default; DIRECT_MESSAGE returns fields for direct message leads.
+          schema:
+            type: string
+            enum:
+              - INSTANT_FORM
+              - DIRECT_MESSAGE
+        - $ref: '#/components/parameters/AdvertiserId'
+        - $ref: '#/components/parameters/LibraryId'
+        - name: page_id
+          in: query
+          required: false
+          description: Instant Form page ID. Not supported for DIRECT_MESSAGE.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lead field definitions returned in TikTok's standard response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TikTokResponse'
+        default:
+          $ref: '#/components/responses/TikTokError'
+  /lead/get/:
+    get:
+      operationId: getLeads
+      summary: Get leads
+      description: Retrieve Instant Form or direct message leads. Provide advertiser_id or library_id for the owning
+        account context. For INSTANT_FORM, page_id identifies the form; page_id is not supported for DIRECT_MESSAGE.
+      tags:
+        - Leads
+      externalDocs:
+        url: https://business-api.tiktok.com/gateway/docs/index?doc_id=1740029171730433
+      parameters:
+        - name: lead_source
+          in: query
+          required: false
+          description: Lead source. Supported values are INSTANT_FORM and DIRECT_MESSAGE.
+          schema:
+            type: string
+            enum:
+              - INSTANT_FORM
+              - DIRECT_MESSAGE
+        - $ref: '#/components/parameters/AdvertiserId'
+        - $ref: '#/components/parameters/LibraryId'
+        - name: page_id
+          in: query
+          required: false
+          description: Instant Form page ID. Required for INSTANT_FORM unless the API applies its default; not accepted
+            for DIRECT_MESSAGE.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lead data returned in TikTok's standard response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TikTokResponse'
+        default:
+          $ref: '#/components/responses/TikTokError'
+  /page/lead/task/:
+    post:
+      operationId: createOrCheckLeadDownloadTask
+      summary: Create or check a lead download task
+      description: Create an asynchronous export task for leads associated with an ad or Instant Form. Provide exactly
+        one of advertiser_id or library_id and, when creating a task, exactly one of ad_id or page_id. Pass task_id to
+        check an existing task; a successful task has status SUCCEED. Lead export routing may require a regional base
+        URL and x-lead-region header as described by TikTok.
+      tags:
+        - Leads
+      externalDocs:
+        url: https://www.postman.com/tiktok/tiktok-api-for-business/request/a2zx9fz/create-lead-download-task
+      parameters:
+        - name: x-lead-region
+          in: header
+          required: false
+          description: Regional lead routing header. TikTok documents eu for EEA, Switzerland, and the UK; regional
+            routing may also require changing the base URL.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadDownloadTaskRequest'
+      responses:
+        '200':
+          description: Task status and identifier returned in TikTok's standard response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadTaskResponse'
+        default:
+          $ref: '#/components/responses/TikTokError'
+  /page/lead/task/download/:
+    get:
+      operationId: downloadLeads
+      summary: Download completed lead export
+      description: Download an export after its task reports SUCCEED. TikTok returns CSV for original files up to 10 MB
+        and ZIP for larger files; error responses may be JSON.
+      tags:
+        - Leads
+      externalDocs:
+        url: https://www.postman.com/tiktok/tiktok-api-for-business/request/19o4zqy/download-leads
+      parameters:
+        - name: task_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/AdvertiserId'
+        - $ref: '#/components/parameters/LibraryId'
+        - name: x-lead-region
+          in: header
+          required: false
+          description: Regional lead routing header. TikTok documents eu for EEA, Switzerland, and the UK; regional
+            routing may also require changing the base URL.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lead export file.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+            application/zip:
+              schema:
+                type: string
+                format: binary
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        default:
+          $ref: '#/components/responses/TikTokError'
+components:
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      in: header
+      name: Access-Token
+      description: TikTok Business API access token.
+  parameters:
+    AdvertiserId:
+      name: advertiser_id
+      in: query
+      required: false
+      description: Advertiser account ID. Supply this or library_id according to where the form and leads are stored.
+      schema:
+        type: string
+    LibraryId:
+      name: library_id
+      in: query
+      required: false
+      description: Business Center form library ID. Supply this or advertiser_id according to where the form and leads
+        are stored.
+      schema:
+        type: string
+  responses:
+    TikTokError:
+      description: TikTok error or a response whose detailed schema is not defined on the linked documentation page.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TikTokResponse'
+  schemas:
+    TikTokResponse:
+      type: object
+      description: TikTok's standard response envelope. Response data fields vary by operation.
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+        request_id:
+          type: string
+        data:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    PageListResponse:
+      allOf:
+        - $ref: '#/components/schemas/TikTokResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                page_info:
+                  type: object
+                  additionalProperties: true
+                list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LeadForm'
+              additionalProperties: true
+    LeadForm:
+      type: object
+      properties:
+        page_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - EDITED
+            - PUBLISHED
+        template_name:
+          type: string
+        thumbnail:
+          type: string
+          format: uri
+        destination_urls:
+          type: array
+          items:
+            type: string
+            format: uri
+      additionalProperties: true
+    LeadDownloadTaskRequest:
+      type: object
+      description: Provide exactly one of advertiser_id or library_id. For task creation, provide exactly one of ad_id or
+        page_id. Provide task_id instead to poll an existing task.
+      properties:
+        advertiser_id:
+          type: string
+        library_id:
+          type: string
+        ad_id:
+          type: string
+        page_id:
+          type: string
+        task_id:
+          type: string
+    LeadTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/TikTokResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - CREATED
+                    - FAILED
+                    - RUNNING
+                    - SUCCEED
+                task_id:
+                  type: string
+                file_name:
+                  type: string
+                file_type:
+                  type: string
+                  enum:
+                    - csv
+                    - zip
+              additionalProperties: true
