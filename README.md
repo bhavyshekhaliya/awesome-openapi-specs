@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -95,6 +95,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
 | ManyChat | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `chat-marketing` `experimental` |
+| TimelinesAI | [Public API](https://timelines.ai/docs/openapi/public_api_spec.yaml); [Webhook API](https://timelines.ai/docs/openapi/webhook_spec.yaml); [Partner API](https://timelines.ai/docs/openapi/partner_api_spec.yaml); [Partner webhook API](https://timelines.ai/docs/openapi/partner_api_webhook_spec.yaml); [API docs](https://timelines.ai/docs/public-api-reference/overview.md) | YAML | 3.0.3 / 3.1.0 | `official` `whatsapp` `messaging` `webhooks` `partner-api` |
 | MarketGo | [API specification](https://api.marketgo.ai/api/v1/openapi.json) | JSON | 3.1.0 | `marketing-automation` |
 | Pulseem | [API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `email-marketing` `marketing-automation` |
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
