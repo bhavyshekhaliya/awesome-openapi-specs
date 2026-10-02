@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Audienceful      | [API specification](https://api.audienceful.com/v2/openapi.json)                                                  | YAML   | 3.0.3   | `official` `email-marketing`                 |
 | Mailjet          | [Email API specification](https://dev.mailjet.com/_bundle/openapi/openapi-mailjet.yaml); [Content API specification](https://dev.mailjet.com/_bundle/openapi/openapi-passport.yaml) | YAML | 3.1.0 | `official` `email-marketing` |
 | Campaign Monitor | [Community specification](specs/campaignmonitor/openapi.yml) Â· [source docs](https://www.campaignmonitor.com/api/) | YAML | 3.1.0 | `community-maintained` `email-marketing` `transactional-email` |
 | MailerSend       | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1?resolved=true)       | JSON   | 3.1.0   | `official` `transactional-email`          |
