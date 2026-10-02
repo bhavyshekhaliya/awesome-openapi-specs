@@ -1,0 +1,358 @@
+openapi: 3.1.0
+info:
+  title: BLS Public Data API
+  version: 1.0.0
+  description: >-
+    Community-maintained specification for the documented JSON time-series,
+    survey, and popular-series signatures. BLS API version 1.0 is open without
+    registration. Version 2.0 documents higher limits and additional features;
+    registration keys are described by BLS for those features. Excel output
+    signatures are outside this specification.
+  externalDocs:
+    description: BLS Public Data API signatures, version 2.0
+    url: https://www.bls.gov/developers/api_signature_v2.htm
+servers:
+  - url: https://api.bls.gov
+    description: U.S. Bureau of Labor Statistics Public Data API
+paths:
+  /publicAPI/v1/timeseries/data/{seriesId}:
+    get:
+      operationId: getV1TimeSeries
+      summary: Get a single time series
+      description: Returns up to the past three years of data for a series.
+      parameters:
+        - $ref: '#/components/parameters/seriesId'
+      responses:
+        '200':
+          description: BLS time-series response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+  /publicAPI/v1/timeseries/data/:
+    post:
+      operationId: queryV1TimeSeries
+      summary: Query one or more time series
+      description: >-
+        Accepts up to 25 series IDs. Include both startyear and endyear to
+        request a selected period of up to 10 years; without them, the API
+        returns the default recent period.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V1TimeSeriesRequest'
+      responses:
+        '200':
+          description: BLS time-series response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+  /publicAPI/v2/timeseries/data/{seriesId}:
+    get:
+      operationId: getV2TimeSeries
+      summary: Get a single time series
+      description: >-
+        Returns data for one series. Set latest to true to request only its
+        most recent data point.
+      parameters:
+        - $ref: '#/components/parameters/seriesId'
+        - $ref: '#/components/parameters/latest'
+      responses:
+        '200':
+          description: BLS time-series response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+  /publicAPI/v2/timeseries/data/:
+    post:
+      operationId: queryV2TimeSeries
+      summary: Query one or more time series
+      description: >-
+        Accepts up to 50 series IDs. Include startyear and endyear to select a
+        period of up to 20 years. BLS documents registration keys for the
+        higher limits and optional catalog, calculation, annual-average, and
+        aspect data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/V2TimeSeriesRequest'
+      responses:
+        '200':
+          description: BLS time-series response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeSeriesResponse'
+  /publicAPI/v2/timeseries/popular:
+    get:
+      operationId: listPopularSeries
+      summary: List popular time series
+      description: Returns the 25 most popular series, optionally for one survey.
+      parameters:
+        - name: survey
+          in: query
+          required: false
+          description: Survey abbreviation used to filter popular series.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: BLS popular-series response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopularSeriesResponse'
+  /publicAPI/v2/surveys:
+    get:
+      operationId: listSurveys
+      summary: List BLS surveys
+      responses:
+        '200':
+          description: BLS survey list response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResponse'
+  /publicAPI/v2/surveys/{surveyAbbreviation}:
+    get:
+      operationId: getSurvey
+      summary: Get survey details
+      parameters:
+        - name: surveyAbbreviation
+          in: path
+          required: true
+          description: BLS survey abbreviation, such as TU.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: BLS survey details response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SurveyResponse'
+components:
+  parameters:
+    seriesId:
+      name: seriesId
+      in: path
+      required: true
+      description: >-
+        BLS series identifier. IDs use uppercase letters and may contain
+        digits, underscores, hyphens, and hash characters.
+      schema:
+        type: string
+        pattern: '^[A-Z0-9_#-]+$'
+    latest:
+      name: latest
+      in: query
+      required: false
+      description: Set to true to return the most recent data point only.
+      schema:
+        type: boolean
+  schemas:
+    V1TimeSeriesRequest:
+      type: object
+      required:
+        - seriesid
+      properties:
+        seriesid:
+          type: array
+          minItems: 1
+          maxItems: 25
+          items:
+            type: string
+            pattern: '^[A-Z0-9_#-]+$'
+          description: One or more BLS series identifiers.
+        startyear:
+          $ref: '#/components/schemas/Year'
+        endyear:
+          $ref: '#/components/schemas/Year'
+      description: Supply startyear and endyear together to select a period.
+    V2TimeSeriesRequest:
+      type: object
+      required:
+        - seriesid
+      properties:
+        seriesid:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: string
+            pattern: '^[A-Z0-9_#-]+$'
+          description: One or more BLS series identifiers.
+        startyear:
+          $ref: '#/components/schemas/Year'
+        endyear:
+          $ref: '#/components/schemas/Year'
+        catalog:
+          type: boolean
+          description: Include series description information when available.
+        calculations:
+          type: boolean
+          description: Include net and percent calculations where available.
+        annualaverage:
+          type: boolean
+          description: Include annual averages where available.
+        aspects:
+          type: boolean
+          description: Include documented aspects data where available.
+        registrationkey:
+          type: string
+          description: BLS registration key for expanded access and optional data.
+      description: Supply startyear and endyear together to select a period.
+    Year:
+      type: string
+      pattern: '^\d{4}$'
+      description: Four-digit year.
+    TimeSeriesResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        responseTime:
+          type: integer
+        message:
+          type: array
+          items:
+            type: string
+        Results:
+          oneOf:
+            - $ref: '#/components/schemas/SeriesResults'
+            - type: array
+              items:
+                $ref: '#/components/schemas/SeriesResults'
+      required:
+        - status
+        - Results
+    SeriesResults:
+      type: object
+      properties:
+        series:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeriesData'
+      required:
+        - series
+    SeriesData:
+      type: object
+      properties:
+        seriesID:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataPoint'
+        catalog:
+          type: object
+          description: BLS series metadata; fields vary by series.
+          additionalProperties: true
+      required:
+        - seriesID
+        - data
+    DataPoint:
+      type: object
+      properties:
+        year:
+          type: string
+        period:
+          type: string
+        periodName:
+          type: string
+        latest:
+          type: string
+        value:
+          type: string
+        footnotes:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - $ref: '#/components/schemas/Footnote'
+        aspects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Aspect'
+    Footnote:
+      type: object
+      properties:
+        code:
+          type: string
+        text:
+          type: string
+    Aspect:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        footnotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Footnote'
+    PopularSeriesResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        responseTime:
+          type: integer
+        message:
+          type: array
+          items:
+            type: string
+        Results:
+          type: object
+          properties:
+            series:
+              type: array
+              items:
+                type: object
+                properties:
+                  seriesID:
+                    type: string
+      required:
+        - status
+        - Results
+    SurveyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        responseTime:
+          type: integer
+        message:
+          type: array
+          items:
+            type: string
+        Results:
+          type: object
+          properties:
+            survey:
+              type: array
+              items:
+                $ref: '#/components/schemas/Survey'
+      required:
+        - status
+        - Results
+    Survey:
+      type: object
+      properties:
+        survey_abbreviation:
+          type: string
+        survey_name:
+          type: string
+        allowsNetChange:
+          type: string
+        allowsPercentChange:
+          type: string
+        hasAnnualAverages:
+          type: string
