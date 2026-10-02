@@ -169,6 +169,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | MailerSend       | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1?resolved=true)       | JSON   | 3.1.0   | `official` `transactional-email`          |
 | Eventbrite       | [Community specification](specs/eventbrite/openapi.yml); [source docs](https://www.eventbrite.com/platform/new/api) | YAML | 3.1.0 | `community-maintained` `event-management` |
 | Facebook Lead Ads | [Community specification](specs/facebook-lead-ads/openapi.yml); [source docs](https://developers.facebook.com/docs/marketing-api/guides/lead-ads/) | YAML | 3.1.0 | `community-maintained` `lead-generation` `marketing` |
+| Facebook Pages | [Community specification](specs/facebook-pages/openapi.yml); [source docs](https://developers.facebook.com/docs/graph-api/reference/page/) | YAML | 3.1.0 | `community-maintained` `social-media` `publishing` |
 | ActiveCampaign | [API specification](https://dash.readme.com/api/v1/api-registry/21t7f145tmufpfc93) | JSON | 3.1.0 | `official` `marketing-automation` `email-marketing` `crm` |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                           | YAML   | 3.0.2   | `official` `email-marketing`                |

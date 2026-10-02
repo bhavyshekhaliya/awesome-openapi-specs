@@ -1,0 +1,569 @@
+openapi: 3.1.0
+info:
+  title: Facebook Pages API
+  version: '26.0'
+  description: |
+    Community-maintained OpenAPI coverage for the Meta Graph API operations
+    used by Facebook Pages automation: reading Page posts, comments,
+    recommendations, and insights, plus publishing posts, photos, and videos.
+    This is a focused subset, not a specification of the complete Graph API.
+    Availability and returned fields depend on Page access and permissions.
+  contact:
+    name: Awesome OpenAPI Specs maintainers
+    url: https://github.com/bhavyshekhaliya/awesome-openapi-specs
+servers:
+  - url: https://graph.facebook.com/v26.0
+    description: Meta Graph API v26.0, current when verified on 2026-10-02
+externalDocs:
+  description: Meta Graph API Page reference
+  url: https://developers.facebook.com/docs/graph-api/reference/page/
+security:
+  - MetaAccessToken: []
+tags:
+  - name: Pages
+  - name: Posts
+  - name: Comments
+  - name: Recommendations
+  - name: Insights
+  - name: Media
+paths:
+  /me/accounts:
+    get:
+      tags: [Pages]
+      operationId: listManagedPages
+      summary: List Pages managed by the current user
+      description: Requires a User access token authorized to list the user's managed Pages. Request only the fields needed, since Page access tokens are sensitive.
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Managed Pages and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/feed:
+    get:
+      tags: [Posts]
+      operationId: listPageFeed
+      summary: List Page timeline posts
+      description: Returns Page feed posts, including posts from visitors when accessible.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Page posts and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePostCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+    post:
+      tags: [Posts]
+      operationId: createPagePost
+      summary: Create a Page post
+      description: Publishes a post to a Page timeline. The Page token and app must have the access required to publish Page content.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreatePagePostRequest'
+      responses:
+        '200':
+          description: Created post
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedContent'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/published_posts:
+    get:
+      tags: [Posts]
+      operationId: listPublishedPagePosts
+      summary: List posts published by the Page
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Published posts and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePostCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/tagged:
+    get:
+      tags: [Posts]
+      operationId: listPageTaggedPosts
+      summary: List posts that mention or tag the Page
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Tagged posts and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagePostCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/ratings:
+    get:
+      tags: [Recommendations]
+      operationId: listPageRecommendations
+      summary: List Page recommendations
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Page recommendations and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{post_id}/comments:
+    get:
+      tags: [Comments]
+      operationId: listPostComments
+      summary: List comments on a post
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Comments and pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{post_id}/insights:
+    get:
+      tags: [Insights]
+      operationId: getPagePostInsights
+      summary: Get post insights
+      description: Returns metrics available for the selected Page post and token.
+      parameters:
+        - $ref: '#/components/parameters/PostId'
+        - name: metric
+          in: query
+          required: true
+          description: Comma-separated insight metric names to request.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Post insight metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/photos:
+    post:
+      tags: [Media]
+      operationId: createPagePhoto
+      summary: Upload a photo to a Page
+      description: Uploads a photo and publishes it to the Page. Provide either a source file or a publicly reachable image URL.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreatePagePhotoRequest'
+      responses:
+        '200':
+          description: Created photo and associated post identifiers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedContent'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/videos:
+    post:
+      tags: [Media]
+      operationId: createPageVideo
+      summary: Upload a video to a Page
+      description: Uploads and publishes a video to the Page. Provide either a source file or a video URL.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreatePageVideoRequest'
+      responses:
+        '200':
+          description: Created video
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedContent'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/picture:
+    post:
+      tags: [Media]
+      operationId: changePageProfilePicture
+      summary: Change a Page profile picture
+      description: Sets a new Page profile picture using an image URL or uploaded source file.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePageProfilePictureRequest'
+      responses:
+        '200':
+          description: Profile picture update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedContent'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+components:
+  securitySchemes:
+    MetaAccessToken:
+      type: apiKey
+      in: query
+      name: access_token
+      description: User or Page access token authorized for the requested Page or post edge.
+  parameters:
+    PageId:
+      name: page_id
+      in: path
+      required: true
+      description: Meta Page ID
+      schema:
+        type: string
+    PostId:
+      name: post_id
+      in: path
+      required: true
+      description: Page post ID
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated Graph API fields to include in each result.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Number of items requested from the connection.
+      schema:
+        type: integer
+        minimum: 1
+    After:
+      name: after
+      in: query
+      required: false
+      description: Cursor returned in the previous response's paging.cursors.after value.
+      schema:
+        type: string
+  responses:
+    GraphApiError:
+      description: Graph API error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GraphApiError'
+  schemas:
+    PageCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ManagedPage'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    ManagedPage:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        access_token:
+          type: string
+          description: Page access token; treat as a secret.
+        tasks:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    PagePostCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PagePost'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    CommentCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    RecommendationCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recommendation'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    InsightCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Insight'
+      additionalProperties: true
+    PagePost:
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+        story:
+          type: string
+        created_time:
+          type: string
+          format: date-time
+        permalink_url:
+          type: string
+          format: uri
+        full_picture:
+          type: string
+          format: uri
+        from:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        message:
+          type: string
+        created_time:
+          type: string
+          format: date-time
+        from:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+    Recommendation:
+      type: object
+      properties:
+        id:
+          type: string
+        created_time:
+          type: string
+          format: date-time
+        review_text:
+          type: string
+        rating:
+          type: integer
+        recommendation_type:
+          type: string
+      additionalProperties: true
+    Insight:
+      type: object
+      properties:
+        name:
+          type: string
+        period:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        values:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    CreatePagePostRequest:
+      type: object
+      properties:
+        message:
+          type: string
+        link:
+          type: string
+          format: uri
+        object_attachment:
+          type: string
+          description: ID of an uploaded photo or other supported attachment.
+        attached_media:
+          type: string
+          description: JSON-encoded media attachment list.
+        published:
+          type: boolean
+        scheduled_publish_time:
+          type: string
+          format: date-time
+      additionalProperties: true
+    CreatePagePhotoRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          format: binary
+        url:
+          type: string
+          format: uri
+        caption:
+          type: string
+        published:
+          type: boolean
+        scheduled_publish_time:
+          type: string
+          format: date-time
+        alt_text_custom:
+          type: string
+      additionalProperties: true
+    CreatePageVideoRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          format: binary
+        file_url:
+          type: string
+          format: uri
+        title:
+          type: string
+        description:
+          type: string
+        published:
+          type: boolean
+        scheduled_publish_time:
+          type: string
+          format: date-time
+      additionalProperties: true
+    ChangePageProfilePictureRequest:
+      type: object
+      properties:
+        source:
+          type: string
+          format: binary
+        picture:
+          type: string
+          format: uri
+      additionalProperties: true
+    CreatedContent:
+      type: object
+      properties:
+        id:
+          type: string
+        post_id:
+          type: string
+        success:
+          type: boolean
+        url:
+          type: string
+          format: uri
+      additionalProperties: true
+    Paging:
+      type: object
+      properties:
+        cursors:
+          type: object
+          properties:
+            before:
+              type: string
+            after:
+              type: string
+          additionalProperties: true
+        next:
+          type: string
+          format: uri
+        previous:
+          type: string
+          format: uri
+      additionalProperties: true
+    GraphApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            code:
+              type: integer
+            error_subcode:
+              type: integer
+            fbtrace_id:
+              type: string
+          additionalProperties: true
+      required: [error]
+      additionalProperties: true
