@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Tracknow | [API specification](https://apiv2.tracknow.io/v3/api-docs) | JSON | 3.0.1 | `official` `affiliate-marketing` `analytics` |
 | Churchpool | [API specification](https://api.swaggerhub.com/apis/Churchpool/Churchpool/1.0.0?resolved=true) | JSON | 3.0.0 | `official` `community-marketing` `events` |
 | HomeDrop | [API specification](https://api.swaggerhub.com/apis/HomeDrop/HomeDropDocs/1.0.0?resolved=true) | JSON | 3.0.3 | `official` `real-estate-marketing` |
 | WithFriends Events | [API specification](https://api.swaggerhub.com/apis/withfriends/Zapier-Withfriends/1.0.0?resolved=true) | JSON | 3.0.0 | `official` `event-marketing` |
