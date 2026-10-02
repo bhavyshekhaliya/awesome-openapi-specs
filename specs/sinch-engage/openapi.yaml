@@ -14,14 +14,14 @@ info:
     url: ./logo.png
   description: |
     # Introduction
-    The Sinch APIs provide powerful business messaging capabilities across sending, receiving, and processing SMS, MMS, and rich messaging. 
+    The Sinch APIs provide powerful business messaging capabilities across sending, receiving, and processing SMS, MMS, and rich messaging.
 
     All requests to the Sinch REST API must be authenticated, this can either be done using Basic Authentication or by signing with a HMAC signature.
 
 
 
     # Base URI
-      
+
     The API uses the following base URI
 
     For EU instance please use https://eu.app.api.sinch.com
@@ -31,30 +31,30 @@ info:
     For US instance, use https://us.app.api.sinch.com
 
     # Credentials
-      
+
     To access the API, an API key and secret are required.
-      
+
     [Sign up for a developer account here to get access](https://support.app.sinch.com/hc/en-us/categories/10516535548943-Sinch-Engage-Developer-Guides)
 
     # Features
-    ###  De-Duplication 
-    De-Duplication helps you avoid having to undertake data cleansing before commencing send outs.  
+    ###  De-Duplication
+    De-Duplication helps you avoid having to undertake data cleansing before commencing send outs.
     It automatically detects and withholds messages deemed to be duplicates through the use of a 24-hour window – if a message is sent to the same number with the same content within a 24hr period, the subsequent message(s) will be withheld and rejected. To enable this, you don't need to make any changes to your application, just an account configuration change by Sinch's support team.
 
-    ###  Social Sending 
-    Social Sending permits messages to be sent only during sociable hours - i.e. 8am to 6pm (based on your accounts local time zone - not local time). 
+    ###  Social Sending
+    Social Sending permits messages to be sent only during sociable hours - i.e. 8am to 6pm (based on your accounts local time zone - not local time).
     Messages sent outside of these hours are scheduled to be released during the next social time period. This feature helps businesses avoid send-outs during a time that would be deemed unsuitable by the customer. To enable this, you don't need to make any changes to your application, just an account configuration change by Sinch's support team.
 
     ###  Familiar Sender
-    Familiar Sender ensures all communication sent to a customer are from the same phone number. 
+    Familiar Sender ensures all communication sent to a customer are from the same phone number.
     This allows businesses to build trust and familiarity with their customers and not confuse them by changing outgoing numbers. To enable this, you don't need to make any changes to your application, just an account configuration change by Sinch's support team.
 
     ### Character Converter
-    Characters in a message may not always fall within the GSM-7 supported character set, and when this occurs all 
-    outbound messages will be encoded using UCS-2 leading to the customer being double-charged for the SMS. Character Converter 
-    can help you avoid being double-charged for your SMS by converting all characters into the GSM-7 format ensuring you always 
-    get the maximum characters into an SMS. Bear in mind, this will downgrade all your unicode characters so for instance, 
-    your emojis will be translated into a string of unknown characters (eg: �).  To enable this, you don't need to make any 
+    Characters in a message may not always fall within the GSM-7 supported character set, and when this occurs all
+    outbound messages will be encoded using UCS-2 leading to the customer being double-charged for the SMS. Character Converter
+    can help you avoid being double-charged for your SMS by converting all characters into the GSM-7 format ensuring you always
+    get the maximum characters into an SMS. Bear in mind, this will downgrade all your unicode characters so for instance,
+    your emojis will be translated into a string of unknown characters (eg: �).  To enable this, you don't need to make any
     changes to your application, just an account configuration change by Sinch's support team.
 
     # AI Integration
@@ -106,7 +106,7 @@ tags:
             "format": "SMS"
           }
         ]
-      } 
+      }
       ```
       _Note: spaces are used as indentation in the body of the above request._
   - name: HMAC Authentication
@@ -175,9 +175,9 @@ tags:
     kind: nav
     description: |
       ## Performing actions on behalf of sub-accounts
-      Using API keys at the parent account level, you can perform actions on behalf of a sub-account. 
+      Using API keys at the parent account level, you can perform actions on behalf of a sub-account.
 
-      This feature is supported by the Messages, Replies, Delivery Reports and Webhooks APIs. 
+      This feature is supported by the Messages, Replies, Delivery Reports and Webhooks APIs.
 
       To do this
         include a header key ```Account``` with the sub-account ID as the value. For example:
@@ -200,7 +200,7 @@ tags:
               "delivery_report": true
             }
           ]
-        } 
+        }
         ```
   - name: Messages
     description: |-
@@ -235,18 +235,18 @@ tags:
       Currently, Trusted Sender ID supports two types of Sender ID: Alpha Tags and Personal ("Own") Numbers. It will likely be extended to support additional number types, such as TFN and 10DLC where additional registration, (external) verification, and overall account allowlist of numbers will be required.
 
       ### Alpha Tag
-        Sending messages from your brand name is particularly ideal for SMS marketing and two-factor authentication, as it increases recognition and trust. There are, however, a few considerations to be aware of. 
-        
+        Sending messages from your brand name is particularly ideal for SMS marketing and two-factor authentication, as it increases recognition and trust. There are, however, a few considerations to be aware of.
+
         Alpha tags are made up of 3-11 letters and/or numbers. Alpha tags must be registered and approved before sending and must have clear relevancy to your business and/or use case.
-        
+
         Alpha Tags appear as the "From" number when you receive messages.
-        
-        A good alpha tag meets at least one of the following valid use cases: 
+
+        A good alpha tag meets at least one of the following valid use cases:
         * Business names
-        * Trademark names    
+        * Trademark names
         * Product or service name
         * an acronym, initialism, or contraction of your entity
-        
+
         In addition to the requirements around clearly relating to the business, we typically advise the following for alpha tags to ensure maximum compatibility with the various carriers:
         * 6-11 characters long
         * Only contains characters from the following sets:
@@ -255,18 +255,18 @@ tags:
         * 0-9
         * _ (underscore)
         * \- (hyphen)
-        
+
         Alpha Tags can currently be registered through the Source Address API for the following countries: ```AD```, ```AI```, ```AL```, ```AS```, ```AT```, ```AU```, ```AW```, ```BA```, ```BB```, ```BH```, ```BW```, ```CD```, ```CH```, ```CK```, ```CY```, ```DE```, ```DJ```, ```DK```, ```DM```, ```EE```, ```ES```, ```FI```, ```FJ```, ```FM```, ```FO```, ```FR```, ```GB```, ```GD```, ```GG```, ```GI```, ```GL```, ```GM```, ```GQ```, ```GR```, ```GY```, ```IL```, ```IM```, ```IS```, ```JE```, ```JM```, ```JP```, ```KI```, ```KY```, ```LA```, ```LI```, ```LS```, ```LT```, ```LU```, ```LV```, ```MC```, ```ME```, ```MH```, ```MO```, ```MR```, ```MS```, ```MT```, ```MV```, ```NC```, ```NF```, ```NL```, ```NO```, ```NR```, ```NU```, ```PF```, ```PM```, ```PT```, ```SB```, ```SC```, ```SE```, ```SH```, ```SL```, ```SM```, ```ST```, ```TC```, ```TD```, ```TO```, ```VC```, ```VG``` and ```WS```
-        
+
         To register an Alpha Tag as a sender ID you must:
         1. Make a request to the **Request a Sender Address** endpoint
         2. Wait for the alpha tag to be approved. The status of the alpha tag can be monitored using the **Get status of a sender address request** endpoint
-        
+
         Once the alpha tag has been approved, you can begin using it as a Sender ID for SMS messages.
 
         ### Personal Number
         A personal number, or "My Own Number", is a number that you own rather than one provided to you by Sinch. Typically, this is your personal mobile phone number. You may wish to register this number for use with our service so that you can easily send messages from a number already associated with your organisation.
-        
+
         Before you can send messages using your own number, you need to verify that you have a right to use that number. Ensuring you have a right to use a phone number is an important regulatory requirement, aiming to prevent scam, spam, and misuse of messaging services.
 
         Personal numbers can currently be registered through the Source Address API for the following countries: ```AT```, ```AU```, ```CH```, ```CY```, ```DE```, ```DK```, ```EE```, ```ES```, ```FI```, ```GB```, ```HR```, ```IE```, ```IT```, ```LT```, ```LU```, ```LV```, ```MT```, ```NL```, ```NO```, ```PT```, ```SE```, and ```SI```
@@ -280,7 +280,7 @@ tags:
         ⚠️ Own numbers need to be re-verified every 12 months. You will be notified by email that verification of your number is about to expire.
 
         ### Requesting a Source Address on behalf of a sub-account
-        By default, all requests made through the API are made on behalf of the account that the API keys used to authorize the request were made on. API keys created on a parent account can request a source address on behalf of a sub-account. To do this, include a header key ```Account``` with the sub-account ID as the value. For example: 
+        By default, all requests made through the API are made on behalf of the account that the API keys used to authorize the request were made on. API keys created on a parent account can request a source address on behalf of a sub-account. To do this, include a header key ```Account``` with the sub-account ID as the value. For example:
         ```Account: mySubAccount```
 
         **Example request with Request a Sender Address from a sub-account**
@@ -300,13 +300,13 @@ tags:
           ],
           "reason": "I confirm that my business has a valid use case",
           "label": "my number sample"
-        } 
+        }
         ```
         *Note: The use of the Account header key applies to all Source Address endpoints.*
   - name: Delivery Reports
     description: |
-      If a callback URL is specified in the submit message request, then changes to the message status, 
-      replies received in response to the message or delivery reports received for the message will be pushed via a HTTP POST request. An alternative to delivery reports via a callback URL is custom webhooks using the webhooks management API. 
+      If a callback URL is specified in the submit message request, then changes to the message status,
+      replies received in response to the message or delivery reports received for the message will be pushed via a HTTP POST request. An alternative to delivery reports via a callback URL is custom webhooks using the webhooks management API.
 
       All notifications are JSON encoded and the request expects to receive a response in the HTTP 200 range. If a valid response isn't received the request will be retried in an exponentially backing off fashion.
 
@@ -315,7 +315,7 @@ tags:
       To include billing units in your delivery receipts via Webhooks, ensure that the switch "Enable billing units in Delivery Reports and Callbacks" is enabled in the API settings of your account.
 
       For delivery reports or changes in the status of a message, the POST request to the specified URL will be as follows:
-        
+
         _Note, multiple delivery report notifications will be received for a single message._
 
       ```javascript
@@ -381,63 +381,63 @@ tags:
       * **Error Code**: A status code which provides additional information about the message status:
 
         * `101`: Message being processed by the gateway.
-        
+
         * `102`: Message is being rerouted to a different provider after failing via the first provider.
-        
+
         * `151`: Message held for screening.
-        
+
         * `200`: Message submitted to downstream provider for delivery.
-        
+
         * `210`: Message accepted by downstream provider.
-        
+
         * `211`: Message is enroute for delivery by provider.
-        
+
         * `212`: Message submitted. Delivery pending.
-        
+
         * `213`: Message scheduled for delivery by downstream provider.
-        
+
         * `220`: Message delivered.
-        
+
         * `221`: Message delivered to the handset.
-        
+
         * `320`: Message validity period has expired (prior to submission).
-        
+
         * `401`: Message validity period has expired (before delivery).
-        
+
         * `301`: Usage threshold reached. Message discarded.
-        
+
         * `302`: Destination address blocked. Message discarded.
-        
+
         * `303`: Source address blocked. Message discarded.
-        
+
         * `304`: Message dropped. Contact support.
-        
+
         * `305`: Message discarded due to duplicate detection.
-        
+
         * `402`: Message rejected by downstream provider.
-        
+
         * `403`: Message skipped by downstream provider.
-        
+
         * `410`: Invalid source address.
-        
+
         * `411`: Invalid destination address.
-        
+
         * `412`: Destination address blocked.
-        
+
         * `413`: SMS service unavailable on destination.
-        
+
         * `414`: Destination unreachable.
-        
+
         * `330`: Gateway failure.
-        
+
         * `331`: Message discarded.
-        
+
         * `332`: No available route to destination.
-        
+
         * `333`: Source address unsupported for this destination.
-        
+
         * `400`: Message failed; undeliverable.
-        
+
         * `405`: Message cancelled or deleted by provider.
   - name: Replies
     description: Endpoints for checking and confirming inbound message replies (MO) received by your account.
@@ -457,8 +457,8 @@ tags:
     description: |
       Short Trackable Links is a feature available to [Messaging API](https://support.app.sinch.com/hc/en-us/categories/10516535548943-Sinch-Engage-Developer-Guides) users whereby it automatically and seamlessly shortens any URL to just 22 characters. Every shortened URL is unique to each recipient.
 
-      The reporting API has endpoints specific to 
-      this feature, allowing users to obtain details regarding 
+      The reporting API has endpoints specific to
+      this feature, allowing users to obtain details regarding
       the number of click-throughs on each URL.
 
       To enable this feature on your account, contact your account manager or contact support on [support@app.sinch.com](mailto:support@app.sinch.com).
@@ -470,13 +470,13 @@ tags:
     description: Machine-readable request bodies for the webhook events you can subscribe to via Webhooks Management. These describe the default payload produced by the sample `template` shown on the Create webhook operation — the actual JSON structure sent to your `url` is fully controlled by the `template` you configure, so treat these as suggested defaults rather than a fixed contract.
   - name: Signature Key Management
     description: |
-      As a Sinch customer, you want to be able to ensure that webhooks are coming from Sinch and not from a 3rd party. Since 
-      these are calls to your own system, you should be provided with an extra level of security 
+      As a Sinch customer, you want to be able to ensure that webhooks are coming from Sinch and not from a 3rd party. Since
+      these are calls to your own system, you should be provided with an extra level of security
       when calling your resources.
 
-      The Sinch Signature Key API provides a number of endpoints 
-      for managing key used to sign each unique request to ensure security 
-      and the requests can't (easily) be spoofed. This is similar to using 
+      The Sinch Signature Key API provides a number of endpoints
+      for managing key used to sign each unique request to ensure security
+      and the requests can't (easily) be spoofed. This is similar to using
       HMAC in your outbound messaging (rather than HTTP Basic).
 
       The Signature Key API provides seven main endpoints:
@@ -7341,7 +7341,7 @@ paths:
         - ```destination_number``` The destination number the message should be
         delivered to. This should be specified in E.164
           international format. For information on E.164, please refer to http://en.wikipedia.org/wiki/E.164.
-          A destination number is required.  
+          A destination number is required.
         ⚠️ IMDA TLS Compliance Notice: From 1 April 2026, all requests sending messages to Singapore (+65) numbers must use TLS 1.3 or higher. Requests using an older TLS version will be rejected with HTTP 422 Unprocessable Entity.
 
         - ```format``` The format specifies which format the message will be
@@ -7357,11 +7357,11 @@ paths:
           If a source number is specified and no source number type is specified, the source number type will be
           inferred from the source number, however this may be inaccurate.
 
-        - ```source_number```[optional]  Specify a source number to be used.  Refer to the section below for more information on source numbers.  
+        - ```source_number```[optional]  Specify a source number to be used.  Refer to the section below for more information on source numbers.
         ⚠️ The number or sender ID must be registered to your account (from 1-Mar-2024).
 
           #### Source number (sender ID)
-          
+
           There are several options for the number or sender ID that will show as the source of an outbound message. Some things to note:
             - If you do not specify a source number, the message will be sent with the default number for your account.
               - The default may be a number you have purchased from us - such as a dedicated number, a 10-digit longcode or toll-free number (US/CA), or a shortcode. Log into the web portal to manage your numbers.
@@ -7370,10 +7370,10 @@ paths:
             - `Alpha tag:` In some countries (AU, GB, some others), you may be able to send using an alpha tag - text that represents your brand of business.  Before using an alpha tag, you must register it in the Numbers section of the web portal.
             - `Other numbers:` You may use numbers that you own as the source number, but you must register them in the Numbers section of the web portal to confirm you have a right to use the number.
           If you need to register a large number of source numbers/sender IDs, consider using our [Source Address API](#tag/Source-Address)
-          
+
           ⚠️ If you specify a source_number that is not registered to your account, the message may fail to send, or may be sent with an alternative number.
 
-        - ```media``` The media is used to specify a list of URLs of the media file(s) that you are trying to send. 
+        - ```media``` The media is used to specify a list of URLs of the media file(s) that you are trying to send.
         Supported file formats include png, jpeg and gif. ```format``` parameter must be set to ```MMS``` for this to
         work.
 
@@ -7389,14 +7389,14 @@ paths:
         - ```message_expiry_timestamp``` A message expiry timestamp can be
         provided to specify the latest time
           at which the message should be delivered. If the message cannot be delivered before the specified
-          message expiry timestamp elapses, the message will be discarded. Specifying a message expiry 
+          message expiry timestamp elapses, the message will be discarded. Specifying a message expiry
           timestamp is optional.
 
         - ```metadata``` Metadata can be included with the message which will
         then be included with any delivery
           reports or replies matched to the message. This can be used to create powerful two-way messaging
           applications without having to store persistent data in the application. Up to 10 key / value metadata data
-          pairs can be specified in a message. Each key can be up to 100 characters long, and each value up to 
+          pairs can be specified in a message. Each key can be up to 100 characters long, and each value up to
           256 characters long. Specifying metadata for a message is optional.
 
         The response body of a successful POST request to the messages endpoint
@@ -7408,7 +7408,7 @@ paths:
         time which will always be ```queued```. See the Delivery Reports section of this documentation for
         more information on message statuses.
 
-        *Note: when sending multiple messages in a request, all messages must be valid for the request 
+        *Note: when sending multiple messages in a request, all messages must be valid for the request
         to be successful. If any messages in the request are invalid, no messages will be sent.*
       operationId: SendMessages
       parameters: []
@@ -7958,7 +7958,7 @@ paths:
           | Sender ID       | sender_address_type | usage_type     |
           |---              |---                  |---             |
           | Alpha tag       | `ALPHANUMERIC`      | `ALPHANUMERIC` |
-          | Personal number | `INTERNATIONAL`     | `OWN_NUMBER`   | 
+          | Personal number | `INTERNATIONAL`     | `OWN_NUMBER`   |
 
         The other parameters required for your request will depend on the type of Sender ID you are registering.
 
@@ -8004,17 +8004,17 @@ paths:
           - "reason": "{\n&nbsp;&nbsp;\\"useCase\\":\\"AUSTRALIAN_GOVERNMENT_AGENCY_OR_ENTITY\\",\n&nbsp;&nbsp;\\"description\\":\\"bal bla\\",\n&nbsp;&nbsp;\\"email\\":\\"example@email.com\\",\n&nbsp;&nbsp;\\"australianGovernmentAgencyOrEntityName\\":\\"bla bla\\",\n&nbsp;&nbsp;\\"statement\\":\\"We are authorised to use the Sender ID on behalf of [full entity name of sender] with a valid use case.\\"\n}\n"
 
         ### Sender ID is a Personal Number
-        The following parameters are used when registering a personal mobile phone number as a Sender ID: 
+        The following parameters are used when registering a personal mobile phone number as a Sender ID:
 
-          - ```sender_address:``` **(Required)**. The phone number that you wish register as a personal number. This number must be in E.164. If this number is already registered to an account, you will receive a conflict error message. 
+          - ```sender_address:``` **(Required)**. The phone number that you wish register as a personal number. This number must be in E.164. If this number is already registered to an account, you will receive a conflict error message.
 
-          - ```destination_countries:``` **(Required)**. The country of the number that you wish to register, in two-character ISO 3166 format. Refer to the **Types of Sender ID** section for a list of currently supported countries. 
+          - ```destination_countries:``` **(Required)**. The country of the number that you wish to register, in two-character ISO 3166 format. Refer to the **Types of Sender ID** section for a list of currently supported countries.
 
-          - ```sender_address_type:``` **(Required)**. For personal numbers this is always INTERNATIONAL 
+          - ```sender_address_type:``` **(Required)**. For personal numbers this is always INTERNATIONAL
 
-          - ```usage_type:``` **(Required)**. For personal numbers this is always OWN_NUMBER 
+          - ```usage_type:``` **(Required)**. For personal numbers this is always OWN_NUMBER
 
-          - ```label:``` **(Optional)**. A reference name for the sender ID to allow you to easily track it. 
+          - ```label:``` **(Optional)**. A reference name for the sender ID to allow you to easily track it.
 
           - ```Reason:``` **(Required)**. A string describing why you wish to register the number as a Sender ID. Limited to 200 characters.
       operationId: requestSenderAddressUsingPOST
@@ -10275,7 +10275,7 @@ paths:
         ```
         Each delivery report will contain details about the message, including any metadata specified
         and the new status of the message (as each delivery report indicates a change in status of a
-        message) and the timestamp at which the status changed. Every delivery report will have a 
+        message) and the timestamp at which the status changed. Every delivery report will have a
         unique delivery report ID for use with the confirm delivery reports endpoint.
         *Note: The source number and destination number properties in a delivery report are the inverse of
         those specified in the message that the delivery report relates to. The source number of the
@@ -13129,13 +13129,13 @@ paths:
         - Dedicated Numbers
       summary: Create assignment
       description: |-
-        Assign the specified number to the authenticated account. 
-        Use the body of the request to specify a label or metadata 
+        Assign the specified number to the authenticated account.
+        Use the body of the request to specify a label or metadata
         for this number assignment.
 
-        If you receive a *conflict* error then the number that you have selected is unavailable for assignment. 
-        This means that the number is either already assigned to another account, 
-        or has an available_after date in the future. Should this occur, perform 
+        If you receive a *conflict* error then the number that you have selected is unavailable for assignment.
+        This means that the number is either already assigned to another account,
+        or has an available_after date in the future. Should this occur, perform
         another search and select a different number.
       operationId: CreateAssignment
       parameters:
@@ -15248,7 +15248,7 @@ paths:
 
         A webhook will be triggered when any one or more of the events occur:
 
-        + **SMS** 
+        + **SMS**
           + `RECEIVED_SMS` Receive an SMS
           + `OPT_OUT_SMS` Opt-out occurred
         + **MMS**
