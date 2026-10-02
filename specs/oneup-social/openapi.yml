@@ -1,0 +1,2248 @@
+openapi: 3.1.0
+info:
+  title: OneUp Social API
+  version: 1.0.0
+  description: Community-maintained OpenAPI definition derived from OneUp Social public API pages. The reference
+    exposes scheduling, post management, comments, inbox, connections, and analytics operations. The docs describe
+    apiKey as a query parameter, while some form examples include it among submitted fields; this definition models
+    it as query-key authentication. Response schemas are left open where the pages do not define them.
+  contact:
+    url: https://oneupapp.io
+externalDocs:
+  url: https://docs.oneupapp.io/
+servers:
+- url: https://www.oneupapp.io
+security:
+- OneUpApiKey: []
+tags:
+- name: Analytics
+- name: Posts
+- name: Comments
+- name: Connections
+- name: Inbox
+paths:
+  /api/bluesky/overview:
+    get:
+      operationId: docs_analytics_bluesky_analytics_get_api_bluesky_overview
+      summary: Bluesky Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/bluesky-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/bluesky/posts:
+    get:
+      operationId: docs_analytics_bluesky_analytics_get_api_bluesky_posts
+      summary: Bluesky Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/bluesky-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/facebook/overview:
+    get:
+      operationId: docs_analytics_facebook_analytics_get_api_facebook_overview
+      summary: Facebook Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/facebook-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: timezone
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/facebook/posts:
+    get:
+      operationId: docs_analytics_facebook_analytics_get_api_facebook_posts
+      summary: Facebook Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/facebook-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/facebook/reels:
+    get:
+      operationId: docs_analytics_facebook_analytics_get_api_facebook_reels
+      summary: Facebook Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/facebook-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/facebook/stories:
+    get:
+      operationId: docs_analytics_facebook_analytics_get_api_facebook_stories
+      summary: Facebook Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/facebook-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/facebook/demographics:
+    get:
+      operationId: docs_analytics_facebook_analytics_get_api_facebook_demographics
+      summary: Facebook Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/facebook-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/force-fetch:
+    post:
+      operationId: docs_analytics_force_refresh_analytics_post_api_force_fetch
+      summary: Force Refresh Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/force-refresh-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/gbp/overview:
+    get:
+      operationId: docs_analytics_gbp_analytics_get_api_gbp_overview
+      summary: Google Business Profile Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/gbp-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/gbp/posts:
+    get:
+      operationId: docs_analytics_gbp_analytics_get_api_gbp_posts
+      summary: Google Business Profile Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/gbp-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/gbp/reviews:
+    get:
+      operationId: docs_analytics_gbp_analytics_get_api_gbp_reviews
+      summary: Google Business Profile Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/gbp-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/instagram/overview:
+    get:
+      operationId: docs_analytics_instagram_analytics_get_api_instagram_overview
+      summary: Instagram Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/instagram-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/instagram/posts:
+    get:
+      operationId: docs_analytics_instagram_analytics_get_api_instagram_posts
+      summary: Instagram Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/instagram-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/instagram/stories:
+    get:
+      operationId: docs_analytics_instagram_analytics_get_api_instagram_stories
+      summary: Instagram Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/instagram-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/instagram/demographics:
+    get:
+      operationId: docs_analytics_instagram_analytics_get_api_instagram_demographics
+      summary: Instagram Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/instagram-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/linkedin/overview:
+    get:
+      operationId: docs_analytics_linkedin_analytics_get_api_linkedin_overview
+      summary: LinkedIn Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/linkedin-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/linkedin/posts:
+    get:
+      operationId: docs_analytics_linkedin_analytics_get_api_linkedin_posts
+      summary: LinkedIn Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/linkedin-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/meta-ads/overview:
+    get:
+      operationId: docs_analytics_meta_ads_analytics_get_api_meta_ads_overview
+      summary: Meta Ads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/meta-ads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/meta-ads/campaigns:
+    get:
+      operationId: docs_analytics_meta_ads_analytics_get_api_meta_ads_campaigns
+      summary: Meta Ads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/meta-ads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/meta-ads/ad-sets:
+    get:
+      operationId: docs_analytics_meta_ads_analytics_get_api_meta_ads_ad_sets
+      summary: Meta Ads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/meta-ads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/meta-ads/ads:
+    get:
+      operationId: docs_analytics_meta_ads_analytics_get_api_meta_ads_ads
+      summary: Meta Ads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/meta-ads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/pinterest/overview:
+    get:
+      operationId: docs_analytics_pinterest_analytics_get_api_pinterest_overview
+      summary: Pinterest Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/pinterest-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/pinterest/posts:
+    get:
+      operationId: docs_analytics_pinterest_analytics_get_api_pinterest_posts
+      summary: Pinterest Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/pinterest-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/snapchat/overview:
+    get:
+      operationId: docs_analytics_snapchat_analytics_get_api_snapchat_overview
+      summary: Snapchat Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/snapchat-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/snapchat/posts:
+    get:
+      operationId: docs_analytics_snapchat_analytics_get_api_snapchat_posts
+      summary: Snapchat Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/snapchat-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/threads/overview:
+    get:
+      operationId: docs_analytics_threads_analytics_get_api_threads_overview
+      summary: Threads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/threads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/threads/posts:
+    get:
+      operationId: docs_analytics_threads_analytics_get_api_threads_posts
+      summary: Threads Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/threads-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/tiktok/overview:
+    get:
+      operationId: docs_analytics_tiktok_analytics_get_api_tiktok_overview
+      summary: TikTok Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/tiktok-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/tiktok/posts:
+    get:
+      operationId: docs_analytics_tiktok_analytics_get_api_tiktok_posts
+      summary: TikTok Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/tiktok-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/tiktok/demographics:
+    get:
+      operationId: docs_analytics_tiktok_analytics_get_api_tiktok_demographics
+      summary: TikTok Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/tiktok-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/youtube/overview:
+    get:
+      operationId: docs_analytics_youtube_analytics_get_api_youtube_overview
+      summary: YouTube Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/youtube-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/youtube/post:
+    get:
+      operationId: docs_analytics_youtube_analytics_get_api_youtube_post
+      summary: YouTube Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/youtube-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/youtube/demographics:
+    get:
+      operationId: docs_analytics_youtube_analytics_get_api_youtube_demographics
+      summary: YouTube Analytics
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Analytics
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/analytics/youtube-analytics/
+      servers:
+      - url: https://analyze.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_network_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: preset
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/scheduleimagepost:
+    post:
+      operationId: docs_creating_posts_create_image_post_post_api_scheduleimagepost
+      summary: Create Image Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/create-image-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                social_network_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                scheduled_date_time:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                content:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                image_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                image_to_gbp_photo:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                first_comment:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                google_post_type:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                coupon_code:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                link_to_redeem_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                isDraftPost:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                requireApproval:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+              required:
+              - category_id
+              - social_network_id
+              - scheduled_date_time
+              - content
+              - image_url
+  /api/scheduletextpost:
+    post:
+      operationId: docs_creating_posts_create_text_post_post_api_scheduletextpost
+      summary: Create Text Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/create-text-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                social_network_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                scheduled_date_time:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                content:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                first_comment:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                google_post_type:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                coupon_code:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                link_to_redeem_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                isDraftPost:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                requireApproval:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+              required:
+              - category_id
+              - social_network_id
+              - scheduled_date_time
+              - content
+  /api/schedulevideopost:
+    post:
+      operationId: docs_creating_posts_create_video_post_post_api_schedulevideopost
+      summary: Create Video Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/create-video-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                category_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                social_network_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                scheduled_date_time:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                content:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                video_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                thumbnail_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                first_comment:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                google_post_type:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                cta_button_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                event_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_title:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_start_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                offer_end_date:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                coupon_code:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                link_to_redeem_url:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                isDraftPost:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                requireApproval:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+              required:
+              - category_id
+              - social_network_id
+              - scheduled_date_time
+              - content
+              - video_url
+  /api/getinstagramtrendingsound:
+    get:
+      operationId: docs_creating_posts_get_instagram_trending_sound_get_api_getinstagramtrendingsound
+      summary: Get Instagram Trending Sound
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/get-instagram-trending-sound/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+      - name: search_query
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/gettiktoktrendingsound:
+    get:
+      operationId: docs_creating_posts_get_tiktok_trending_sound_get_api_gettiktoktrendingsound
+      summary: Get TikTok Trending Sound
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/get-tiktok-trending-sound/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: country_code
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+      - name: date_range
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+      - name: genre
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/uploadmedia:
+    get:
+      operationId: docs_creating_posts_upload_media_get_api_uploadmedia
+      summary: Upload Media
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/creating-posts/upload-media/
+      servers:
+      - url: https://oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/delete-comment:
+    post:
+      operationId: docs_managing_comments_delete_comment_post_api_delete_comment
+      summary: Delete Comment
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/delete-comment/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '500':
+          description: See the linked provider reference for the documented response condition.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platform:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                post_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                comment_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - platform
+              - post_id
+              - comment_id
+              - social_account_id
+  /api/fetch-comment-replies:
+    get:
+      operationId: docs_managing_comments_fetch_comment_replies_get_api_fetch_comment_replies
+      summary: Fetch Comment Replies
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/fetch-comment-replies/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '500':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: comment_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/fetch-top-comments:
+    get:
+      operationId: docs_managing_comments_fetch_top_comments_get_api_fetch_top_comments
+      summary: Fetch Top Comments
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/fetch-top-comments/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: filter
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: next_id
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/force-refresh-comments:
+    post:
+      operationId: docs_managing_comments_force_refresh_comments_post_api_force_refresh_comments
+      summary: Force Refresh Comments
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/force-refresh-comments/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/reply-to-comment:
+    post:
+      operationId: docs_managing_comments_reply_to_comment_post_api_reply_to_comment
+      summary: Reply to Comment
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/reply-to-comment/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '500':
+          description: See the linked provider reference for the documented response condition.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platform:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                post_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                parent_comment_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                comment:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - platform
+              - post_id
+              - parent_comment_id
+              - comment
+              - social_account_id
+  /api/reply-to-post:
+    post:
+      operationId: docs_managing_comments_reply_to_post_post_api_reply_to_post
+      summary: Reply to Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Comments
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-comments/reply-to-post/
+      servers:
+      - url: https://feed.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platform:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                post_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                comment:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - platform
+              - post_id
+              - comment
+              - social_account_id
+  /api/fetchpinterestboard:
+    get:
+      operationId: docs_managing_connections_fetch_pinterest_boards_get_api_fetchpinterestboard
+      summary: Fetch Pinterest Boards
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Connections
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-connections/fetch-pinterest-boards/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: pinterest_username
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/fetchytplaylist:
+    get:
+      operationId: docs_managing_connections_fetch_youtube_playlists_get_api_fetchytplaylist
+      summary: Fetch YouTube Playlists
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Connections
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-connections/fetch-youtube-playlists/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/listcategoryaccount:
+    get:
+      operationId: docs_managing_connections_list_accounts_in_category_get_api_listcategoryaccount
+      summary: List Category Accounts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Connections
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-connections/list-accounts-in-category/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: category_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/listcategory:
+    get:
+      operationId: docs_managing_connections_list_categories_get_api_listcategory
+      summary: List Categories
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Connections
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-connections/list-categories/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/listsocialaccounts:
+    get:
+      operationId: docs_managing_connections_list_social_accounts_get_api_listsocialaccounts
+      summary: List Social Accounts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Connections
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-connections/list-social-accounts/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+  /api/whatsapp/conversations:
+    post:
+      operationId: docs_managing_inbox_create_whatsapp_conversation_post_api_whatsapp_conversations
+      summary: Create WhatsApp Conversation
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/create-whatsapp-conversation/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '500':
+          description: See the linked provider reference for the documented response condition.
+        '502':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+        '504':
+          description: See the linked provider reference for the documented response condition.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                whatsapp_contact_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                whatsapp_template_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - social_account_id
+              - whatsapp_contact_id
+              - whatsapp_template_id
+  /api/conversations/{id}/messages:
+    get:
+      operationId: docs_managing_inbox_fetch_conversation_messages_get_api_conversations_id_messages
+      summary: Fetch Conversation Messages
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/fetch-conversation-messages/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Path identifier documented by the provider.
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+    post:
+      operationId: docs_managing_inbox_send_message_post_api_conversations_id_messages
+      summary: Send Message
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/send-message/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '500':
+          description: See the linked provider reference for the documented response condition.
+        '502':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+        '504':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Path identifier documented by the provider.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - message
+  /api/conversations:
+    get:
+      operationId: docs_managing_inbox_fetch_conversations_get_api_conversations
+      summary: Fetch Conversations
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/fetch-conversations/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: platform
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: search
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: per_page
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/whatsapp/accounts:
+    get:
+      operationId: docs_managing_inbox_fetch_whatsapp_accounts_get_api_whatsapp_accounts
+      summary: Fetch WhatsApp Accounts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/fetch-whatsapp-accounts/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+  /api/whatsapp/contacts:
+    get:
+      operationId: docs_managing_inbox_fetch_whatsapp_contacts_get_api_whatsapp_contacts
+      summary: Fetch WhatsApp Contacts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/fetch-whatsapp-contacts/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/whatsapp/templates:
+    get:
+      operationId: docs_managing_inbox_fetch_whatsapp_templates_get_api_whatsapp_templates
+      summary: Fetch WhatsApp Templates
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/fetch-whatsapp-templates/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: social_account_id
+        in: query
+        required: true
+        description: Requiredness is marked in the parameter table.
+        schema:
+          type: string
+  /api/conversations/refresh:
+    post:
+      operationId: docs_managing_inbox_force_refresh_conversations_post_api_conversations_refresh
+      summary: Force Refresh Conversations
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/force-refresh-conversations/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                platform:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                limit:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - social_account_id
+  /api/conversations/load-more:
+    post:
+      operationId: docs_managing_inbox_load_more_conversations_post_api_conversations_load_more
+      summary: Load More Conversations
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/load-more-conversations/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '502':
+          description: See the linked provider reference for the documented response condition.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                social_account_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - social_account_id
+  /api/conversations/{id}/read:
+    post:
+      operationId: docs_managing_inbox_mark_conversation_read_post_api_conversations_id_read
+      summary: Mark Conversation Read
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/mark-conversation-read/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Path identifier documented by the provider.
+        schema:
+          type: string
+  /api/conversations/{id}:
+    patch:
+      operationId: docs_managing_inbox_update_conversation_status_patch_api_conversations_id
+      summary: Update Conversation Status
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Inbox
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-inbox/update-conversation-status/
+      servers:
+      - url: https://message.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+        '401':
+          description: See the linked provider reference for the documented response condition.
+        '403':
+          description: See the linked provider reference for the documented response condition.
+        '404':
+          description: See the linked provider reference for the documented response condition.
+        '422':
+          description: See the linked provider reference for the documented response condition.
+        '429':
+          description: See the linked provider reference for the documented response condition.
+        '503':
+          description: See the linked provider reference for the documented response condition.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Path identifier documented by the provider.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - status
+  /api/deletescheduledpost:
+    post:
+      operationId: docs_managing_posts_delete_scheduled_post_post_api_deletescheduledpost
+      summary: Delete Scheduled Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/delete-scheduled-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+              required:
+              - post_id
+  /api/editpost:
+    post:
+      operationId: docs_managing_posts_edit_post_post_api_editpost
+      summary: Edit Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/edit-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                title:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+                content:
+                  description: Documented request field; consult the linked provider reference for accepted values.
+              required:
+              - post_id
+              - content
+  /api/getdraftposts:
+    get:
+      operationId: docs_managing_posts_list_draft_posts_get_api_getdraftposts
+      summary: List Draft Posts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/list-draft-posts/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/getfailedposts:
+    get:
+      operationId: docs_managing_posts_list_failed_posts_get_api_getfailedposts
+      summary: List Failed Posts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/list-failed-posts/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/getpublishedposts:
+    get:
+      operationId: docs_managing_posts_list_published_posts_get_api_getpublishedposts
+      summary: List Published Posts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/list-published-posts/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/getscheduledposts:
+    get:
+      operationId: docs_managing_posts_list_scheduled_posts_get_api_getscheduledposts
+      summary: List Scheduled Posts
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/list-scheduled-posts/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: Shown in the provider request example; requiredness is not specified on this page.
+        schema:
+          type: string
+  /api/reschedulefailedpost:
+    post:
+      operationId: docs_managing_posts_reschedule_failed_post_post_api_reschedulefailedpost
+      summary: Reschedule Failed Post
+      description: Documented in the linked public API reference. The community definition records request fields
+        and response codes where the page provides them.
+      tags:
+      - Posts
+      externalDocs:
+        url: https://docs.oneupapp.io/docs/managing-posts/reschedule-failed-post/
+      servers:
+      - url: https://www.oneupapp.io
+      responses:
+        default:
+          description: The page does not define a complete response schema or a consistent success status.
+      requestBody:
+        required: true
+        description: Request fields are based on the public endpoint reference; field schemas stay conservative
+          where it omits types.
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                post_id:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+                scheduled_date_time:
+                  type: string
+                  description: Documented form field; consult the linked provider reference for accepted values.
+              required:
+              - post_id
+              - scheduled_date_time
+components:
+  securitySchemes:
+    OneUpApiKey:
+      type: apiKey
+      in: query
+      name: apiKey
