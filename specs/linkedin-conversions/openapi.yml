@@ -1,0 +1,479 @@
+openapi: 3.1.0
+info:
+  title: LinkedIn Conversions API
+  version: '202609'
+  summary: Community-maintained OpenAPI subset for LinkedIn Conversions workflows.
+  description: >-
+    Covers conversion-rule creation and lookup, campaign association, and single
+    or batch conversion-event submission. Calls require LinkedIn Marketing API
+    access and the rw_conversions and r_ads permissions. Use a Marketing API
+    version header supported by LinkedIn; 202609 is the latest published version
+    verified on 2026-10-02. This specification is a focused subset, not the full
+    LinkedIn Marketing API.
+  contact:
+    name: LinkedIn Developer Support
+    url: https://www.linkedin.com/developers/
+  externalDocs:
+    description: LinkedIn Conversions API documentation
+    url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+servers:
+  - url: https://api.linkedin.com/rest
+    description: LinkedIn Marketing REST API
+security:
+  - bearerAuth: []
+tags:
+  - name: Conversion rules
+    description: Create and find conversion rules.
+  - name: Campaign associations
+    description: Associate sponsored campaigns with conversion rules.
+  - name: Conversion events
+    description: Stream single or batched server-side conversion events.
+paths:
+  /conversions:
+    parameters:
+      - $ref: '#/components/parameters/MarketingVersion'
+      - $ref: '#/components/parameters/RestliProtocolVersion'
+    get:
+      tags: [Conversion rules]
+      operationId: findConversionRulesByAccount
+      summary: Find conversion rules for an ad account
+      description: >-
+        Returns the conversion rules associated with a sponsored account. When
+        conversionOwnershipTypes is omitted, only rules owned by that account
+        are returned.
+      externalDocs:
+        description: Find Conversion Rules by Ad Account
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Finder name for this request.
+          schema:
+            type: string
+            enum: [account]
+        - name: account
+          in: query
+          required: true
+          description: Sponsored account URN.
+          schema:
+            type: string
+            example: urn:li:sponsoredAccount:123456
+        - name: conversionOwnershipTypes
+          in: query
+          required: false
+          description: >-
+            Optional Rest.li list syntax. Set to List(OWNED,SHARED) to include
+            rules shared under the same Business Manager. Supported starting
+            with Marketing API version 202605.
+          schema:
+            type: string
+            example: List(OWNED,SHARED)
+      responses:
+        '200':
+          description: Conversion rules associated with the ad account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionRulePage'
+    post:
+      tags: [Conversion rules]
+      operationId: createConversionRule
+      summary: Create a Conversions API rule
+      description: >-
+        Creates a conversion rule configured for server-side event streaming.
+        To associate campaigns automatically, provide autoAssociationType.
+        LinkedIn documents ALL_CAMPAIGNS and OBJECTIVE_BASED; ALL_CAMPAIGNS
+        associates at most 200 campaigns.
+      externalDocs:
+        description: Create a Conversion Rule
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+      parameters:
+        - name: autoAssociationType
+          in: query
+          required: false
+          description: Automatically associate eligible campaigns with the new rule.
+          schema:
+            type: string
+            enum: [ALL_CAMPAIGNS, OBJECTIVE_BASED]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConversionRule'
+      responses:
+        '201':
+          description: Conversion rule created. The new ID is returned in the response and the x-restli-id header.
+          headers:
+            x-restli-id:
+              description: Identifier of the created conversion rule.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: ID of the created conversion rule.
+        '400':
+          description: The request failed LinkedIn's validation checks.
+  /campaignConversions/{campaignConversionKey}:
+    parameters:
+      - $ref: '#/components/parameters/MarketingVersion'
+      - $ref: '#/components/parameters/RestliProtocolVersion'
+    put:
+      tags: [Campaign associations]
+      operationId: associateCampaignWithConversionRule
+      summary: Associate a campaign with a conversion rule
+      description: >-
+        Creates an association for the campaign and conversion rule in the
+        Rest.li composite key. Encode URN characters in the key as shown in
+        LinkedIn's examples. A campaign must be associated for its conversions
+        to be eligible for attribution to that campaign.
+      externalDocs:
+        description: Associate Campaigns to Conversion Rule
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+      parameters:
+        - name: campaignConversionKey
+          in: path
+          required: true
+          description: >-
+            Rest.li composite key containing campaign and conversion URNs,
+            formatted as (campaign:{campaignUrn},conversion:{conversionUrn}).
+          schema:
+            type: string
+          example: '(campaign:urn%3Ali%3AsponsoredCampaign%3A123,conversion:urn%3Alla%3AllaPartnerConversion%3A456)'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignConversion'
+      responses:
+        '204':
+          description: Campaign association created.
+  /campaignConversions:
+    parameters:
+      - $ref: '#/components/parameters/MarketingVersion'
+      - $ref: '#/components/parameters/RestliProtocolVersion'
+    put:
+      tags: [Campaign associations]
+      operationId: batchAssociateCampaignsWithConversionRules
+      summary: Associate multiple campaigns with conversion rules
+      description: >-
+        Performs a Rest.li batch update. The ids query value uses Rest.li list
+        syntax, and the request body maps each composite key to its association.
+      externalDocs:
+        description: Batch Associate Multiple Campaigns to Conversion Rule
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+      parameters:
+        - name: ids
+          in: query
+          required: true
+          description: >-
+            Rest.li list of composite campaign and conversion keys, for example
+            List((campaign:urn%3Ali%3AsponsoredCampaign%3A123,conversion:urn%3Alla%3AllaPartnerConversion%3A456)).
+          schema:
+            type: string
+        - name: X-RestLi-Method
+          in: header
+          required: true
+          description: Rest.li method selector for this batch operation.
+          schema:
+            type: string
+            enum: [BATCH_UPDATE]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchCampaignConversions'
+      responses:
+        '200':
+          description: Per-key results and errors for the batch update.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchCampaignConversionsResult'
+  /conversionEvents:
+    parameters:
+      - $ref: '#/components/parameters/MarketingVersion'
+      - $ref: '#/components/parameters/RestliProtocolVersion'
+    post:
+      tags: [Conversion events]
+      operationId: sendConversionEvent
+      summary: Send one or more conversion events
+      description: >-
+        Sends a server-side conversion event for an existing conversion rule.
+        Send a ConversionEvent object for one event. For a batch of up to 5,000
+        events, send an elements array and set X-RestLi-Method to BATCH_CREATE.
+        Include at least one supported user identifier for matching. SHA256_EMAIL
+        values must be lowercase, whitespace-free, and SHA-256 hashed. The
+        202609 version also supports hashedFirstName and hashedLastName.
+      externalDocs:
+        description: LinkedIn Streaming Conversion Events
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api
+      parameters:
+        - name: X-RestLi-Method
+          in: header
+          required: false
+          description: Set to BATCH_CREATE when the body contains multiple events.
+          schema:
+            type: string
+            enum: [BATCH_CREATE]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/ConversionEvent'
+                - $ref: '#/components/schemas/BatchConversionEvents'
+      responses:
+        '201':
+          description: Conversion event or batch accepted.
+        '400':
+          description: The request failed LinkedIn's validation checks.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+  parameters:
+    MarketingVersion:
+      name: Linkedin-Version
+      in: header
+      required: true
+      description: >-
+        Marketing API version in YYYYMM format. LinkedIn's latest published
+        version verified on 2026-10-02 is 202609.
+      schema:
+        type: string
+        default: '202609'
+        pattern: '^\d{6}$'
+    RestliProtocolVersion:
+      name: X-Restli-Protocol-Version
+      in: header
+      required: true
+      description: LinkedIn Rest.li protocol version.
+      schema:
+        type: string
+        enum: ['2.0.0']
+        default: '2.0.0'
+  schemas:
+    CreateConversionRule:
+      type: object
+      description: A conversion rule configured for Conversions API event streaming.
+      required: [name, account, conversionMethod, type]
+      properties:
+        name:
+          type: string
+        account:
+          type: string
+          description: Sponsored account URN.
+          example: urn:li:sponsoredAccount:5123456
+        conversionMethod:
+          type: string
+          enum: [CONVERSIONS_API]
+        type:
+          type: string
+          description: Conversion action type supported for the ad account.
+          example: LEAD
+        postClickAttributionWindowSize:
+          type: integer
+          minimum: 1
+          description: Attribution window in days after an ad click.
+        viewThroughAttributionWindowSize:
+          type: integer
+          minimum: 1
+          description: Attribution window in days after an ad view.
+        attributionType:
+          type: string
+          description: Attribution model for the conversion rule.
+          example: LAST_TOUCH_BY_CAMPAIGN
+        enabled:
+          type: boolean
+          default: true
+    ConversionRule:
+      allOf:
+        - $ref: '#/components/schemas/CreateConversionRule'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+            created:
+              type: integer
+              format: int64
+              description: Creation time as Unix epoch milliseconds.
+            lastModified:
+              type: integer
+              format: int64
+              description: Last modification time as Unix epoch milliseconds.
+            ownershipType:
+              type: string
+              enum: [OWNED, SHARED]
+    ConversionRulePage:
+      type: object
+      required: [elements]
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConversionRule'
+    CampaignConversion:
+      type: object
+      required: [campaign, conversion]
+      properties:
+        campaign:
+          type: string
+          description: Sponsored campaign URN.
+          example: urn:li:sponsoredCampaign:337643194
+        conversion:
+          type: string
+          description: Conversion rule URN.
+          example: urn:lla:llaPartnerConversion:70203
+    BatchCampaignConversions:
+      type: object
+      required: [entities]
+      properties:
+        entities:
+          type: object
+          description: Association values keyed by the encoded Rest.li composite key.
+          additionalProperties:
+            $ref: '#/components/schemas/CampaignConversion'
+    BatchCampaignConversionsResult:
+      type: object
+      properties:
+        results:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              status:
+                type: integer
+        errors:
+          type: object
+          additionalProperties: true
+    ConversionEvent:
+      type: object
+      required: [conversion, conversionHappenedAt, user]
+      properties:
+        conversion:
+          type: string
+          description: Conversion rule URN in the form urn:lla:llaPartnerConversion:{id}.
+          example: urn:lla:llaPartnerConversion:123
+        conversionHappenedAt:
+          type: integer
+          format: int64
+          description: Event time as Unix epoch milliseconds.
+          example: 1590739275000
+        conversionValue:
+          $ref: '#/components/schemas/ConversionValue'
+        eventId:
+          type: string
+          description: Advertiser-generated identifier used for event deduplication.
+        user:
+          $ref: '#/components/schemas/ConversionEventUser'
+    ConversionValue:
+      type: object
+      required: [currencyCode, amount]
+      properties:
+        currencyCode:
+          type: string
+          description: ISO currency code.
+          pattern: '^[A-Z]{3}$'
+          example: USD
+        amount:
+          type: string
+          description: Conversion amount as a decimal string.
+          example: '50.0'
+    ConversionEventUser:
+      type: object
+      description: User attributes used by LinkedIn to match the conversion.
+      properties:
+        userIds:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ConversionUserId'
+        userInfo:
+          $ref: '#/components/schemas/ConversionUserInfo'
+        lead:
+          type: string
+          description: LinkedIn Lead Gen Form response URN.
+          example: urn:li:leadGenFormResponse:8f7356abcd9-8d5c-49ca-931b-513123abc9-4
+        externalIds:
+          type: array
+          maxItems: 1
+          items:
+            type: string
+          description: Advertiser-provided identifier; pair the first event with a standard identifier.
+      anyOf:
+        - required: [userIds]
+        - required: [userInfo]
+        - required: [lead]
+        - required: [externalIds]
+    ConversionUserId:
+      type: object
+      required: [idType, idValue]
+      properties:
+        idType:
+          type: string
+          enum:
+            - SHA256_EMAIL
+            - LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID
+            - ACXIOM_ID
+            - PLAINTEXT_IP_ADDRESS
+            - SHA256_IP_ADDRESS
+            - GOOGLE_AID
+        idValue:
+          type: string
+          description: Identifier value in the format required for its idType.
+    ConversionUserInfo:
+      type: object
+      description: >-
+        Additional user fields for probabilistic matching. For API version 202609,
+        provide a first-name field and a last-name field; each can be plain or
+        SHA-256 hashed.
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        hashedFirstName:
+          type: string
+          description: SHA-256 hash of a normalized first name; available from version 202609.
+        hashedLastName:
+          type: string
+          description: SHA-256 hash of a normalized last name; available from version 202609.
+        companyName:
+          type: string
+        title:
+          type: string
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 country code.
+          pattern: '^[A-Z]{2}$'
+      allOf:
+        - anyOf:
+            - required: [firstName]
+            - required: [hashedFirstName]
+        - anyOf:
+            - required: [lastName]
+            - required: [hashedLastName]
+    BatchConversionEvents:
+      type: object
+      required: [elements]
+      properties:
+        elements:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          items:
+            $ref: '#/components/schemas/ConversionEvent'
