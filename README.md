@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Dub | [API specification](https://spec.speakeasy.com/dub/dub/dub-with-code-samples) | JSON | 3.0.3 | `official` `url-shortener` `link-management` |
 | EmailOctopus | [API specification](https://emailoctopus.com/api-documentation/v2) | JSON | 3.1.0 | `official` `email-marketing` |
 | Enginemailer | [Zapier API v1 specification](https://connect.enginemailer.com/swagger/Zapierv1/swagger.json) | JSON | 3.0.1 | `official` `email-marketing` `transactional-email` |
 | Postmark | [Server API](https://postmarkapp.com/swagger/server.yml) ? [Account API](https://postmarkapp.com/swagger/account.yml) | YAML | 2.0 | `official` `transactional-email` `email-delivery` |
