@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Pulseem | [API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `email-marketing` `marketing-automation` |
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
 | BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
