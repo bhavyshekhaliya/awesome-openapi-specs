@@ -1,0 +1,263 @@
+openapi: 3.1.0
+info:
+  title: Open Exchange Rates API
+  version: 0.7.0
+  description: >-
+    Community-maintained specification for documented free-plan endpoints.
+    Time-series, conversion, and OHLC routes are excluded because the provider
+    documents them as paid-plan features.
+externalDocs:
+  description: Open Exchange Rates API reference
+  url: https://docs.openexchangerates.org/reference/api-introduction
+servers:
+  - url: https://openexchangerates.org/api
+security:
+  - appId: []
+paths:
+  /latest.json:
+    get:
+      summary: Get the latest exchange rates
+      description: >-
+        Returns the latest rates available on the App ID's plan. Changing the
+        base currency is a paid-plan feature and is omitted from this free-plan scope.
+      externalDocs:
+        description: Latest rates endpoint documentation
+        url: https://docs.openexchangerates.org/reference/latest-json
+      parameters:
+        - name: symbols
+          in: query
+          description: Comma-separated list of currency codes to return.
+          schema:
+            type: string
+        - name: prettyprint
+          in: query
+          description: Return a human-readable response; false minimizes the response.
+          schema:
+            type: boolean
+            default: false
+        - name: show_alternative
+          in: query
+          description: Include alternative, black-market, and digital currency rates.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Latest exchange rates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatesResponse'
+        '401':
+          description: Missing or invalid App ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /historical/{date}.json:
+    get:
+      summary: Get historical exchange rates
+      description: >-
+        Returns the last rates published for the requested UTC date. Changing
+        the base currency and selecting symbols are paid-plan features and are
+        omitted from this free-plan scope.
+      externalDocs:
+        description: Historical rates endpoint documentation
+        url: https://docs.openexchangerates.org/reference/historical-json
+      parameters:
+        - name: date
+          in: path
+          required: true
+          description: Requested date in YYYY-MM-DD format.
+          schema:
+            type: string
+            format: date
+        - name: show_alternative
+          in: query
+          description: Include alternative, black-market, and digital currency rates.
+          schema:
+            type: boolean
+            default: false
+        - name: prettyprint
+          in: query
+          description: Return a human-readable response; false minimizes the response.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Historical exchange rates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RatesResponse'
+        '400':
+          description: Invalid date or date without available rates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Missing or invalid App ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /currencies.json:
+    get:
+      summary: List available currencies
+      description: Returns currency codes mapped to their display names. App ID authentication is optional.
+      externalDocs:
+        description: Currencies endpoint documentation
+        url: https://docs.openexchangerates.org/reference/currencies-json
+      security: []
+      parameters:
+        - name: app_id
+          in: query
+          required: false
+          description: Optional App ID.
+          schema:
+            type: string
+        - name: prettyprint
+          in: query
+          description: Return a human-readable response.
+          schema:
+            type: boolean
+            default: false
+        - name: show_alternative
+          in: query
+          description: Include alternative currencies.
+          schema:
+            type: boolean
+            default: false
+        - name: show_inactive
+          in: query
+          description: Include historical or inactive currencies.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Currency codes mapped to their display names.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrenciesResponse'
+  /usage.json:
+    get:
+      summary: Get App ID plan and usage information
+      description: Returns plan and request usage information for the supplied App ID.
+      externalDocs:
+        description: Usage endpoint documentation
+        url: https://docs.openexchangerates.org/reference/usage-json
+      parameters:
+        - name: prettyprint
+          in: query
+          description: Set to false to minimize the response.
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '200':
+          description: App ID status, plan, and usage information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsageResponse'
+        '401':
+          description: Missing or invalid App ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    appId:
+      type: apiKey
+      in: query
+      name: app_id
+      description: Open Exchange Rates App ID.
+  schemas:
+    RatesResponse:
+      type: object
+      properties:
+        disclaimer:
+          type: string
+        license:
+          type: string
+        timestamp:
+          type: integer
+          format: int64
+          description: UNIX timestamp in UTC seconds.
+        base:
+          type: string
+          description: Three-letter code for the base currency.
+        rates:
+          type: object
+          description: Currency codes mapped to exchange rates relative to the base.
+          additionalProperties:
+            type: number
+    CurrenciesResponse:
+      type: object
+      description: Currency codes mapped to their singular, capitalized display names.
+      additionalProperties:
+        type: string
+    ErrorResponse:
+      type: object
+      description: >-
+        Common JSON error shape documented at
+        https://docs.openexchangerates.org/reference/errors.
+      properties:
+        error:
+          type: boolean
+        status:
+          type: integer
+        message:
+          type: string
+        description:
+          type: string
+    UsageResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code.
+        data:
+          type: object
+          properties:
+            app_id:
+              type: string
+            status:
+              type: string
+              enum:
+                - active
+                - access_restricted
+            plan:
+              type: object
+              properties:
+                name:
+                  type: string
+                quota:
+                  type: string
+                  description: Monthly request allowance formatted for display.
+                update_frequency:
+                  type: string
+                features:
+                  description: Supported plan features; the provider docs do not specify this property's JSON shape.
+            usage:
+              type: object
+              properties:
+                requests:
+                  type: integer
+                requests_quota:
+                  type: integer
+                  description: Unlimited plans use -1.
+                requests_remaining:
+                  type: integer
+                  description: Unlimited plans use -1.
+                days_elapsed:
+                  type: integer
+                days_remaining:
+                  type: integer
+                daily_average:
+                  type: number
