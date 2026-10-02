@@ -60,6 +60,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Billetweb | [API specification](https://www.billetweb.fr/api/openapi.json?v=942) | JSON | 3.0.0 | `event-management` |
 | Flexmail | [API specification](https://api.flexmail.eu/documentation/openapi.php) | JSON | 3.1.0 | `email-marketing` |
 | Cardly | [API specification](https://api.card.ly/openapi/en-AU/2.2.0/yaml) | YAML | 3.1.0 | `direct-mail` `marketing` |
+| Direct Mail Manager | [OpenAPI specification](specs/direct-mail-manager/openapi.json); [official API docs](https://apidocs.directmailmanager.com/) | JSON | 3.0.3 | `official` `direct-mail` `marketing` |
 | Connectif | [API specification](https://api-docs.connectif.cloud/swagger.json) | JSON | 2.0 | `marketing-automation` |
 | UpContent | [API specification](https://docs.upcontent.com/api/public.yaml) | YAML | 2.0 | `content-marketing` |
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
