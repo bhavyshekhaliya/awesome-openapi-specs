@@ -1,0 +1,3436 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Landbot Platform API",
+    "version": "1.0.0",
+    "description": "Programmatic access to your Landbot workspace. Find your agent token at https://app.landbot.io/gui/settings/account."
+  },
+  "servers": [
+    {
+      "url": "https://api.landbot.io/v1"
+    }
+  ],
+  "security": [
+    {
+      "agentToken": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Channels",
+      "description": "Read the channels in your workspace."
+    },
+    {
+      "name": "WhatsApp templates",
+      "description": "List approved WhatsApp templates and send them to customers."
+    },
+    {
+      "name": "Customers",
+      "description": "Manage customers and the messages you send them."
+    },
+    {
+      "name": "Customer fields",
+      "description": "Read and write custom fields stored on a customer."
+    },
+    {
+      "name": "Message hooks",
+      "description": "Manage webhooks that receive messages from a channel."
+    }
+  ],
+  "paths": {
+    "/channels/": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "summary": "List channels",
+        "operationId": "list-channels",
+        "x-mint": {
+          "href": "/api-reference/channels/list-channels"
+        },
+        "description": "Returns the channels in your workspace.",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "facebook",
+                "apichat",
+                "landbot",
+                "whatsapi"
+              ]
+            },
+            "description": "Filter by channel type."
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter by active status."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of channels.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelListResponse"
+                },
+                "example": {
+                  "success": true,
+                  "total": 20,
+                  "channels": [
+                    {
+                      "id": 32,
+                      "name": "Facebook Test",
+                      "type": "facebook",
+                      "active": true,
+                      "created_at": 1487261343.857799,
+                      "facebook_id": "508675412663271"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channel_id}/": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "summary": "Get channel",
+        "description": "Returns the channel data for `channel_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ChannelId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Channel data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "channel": {
+                      "$ref": "#/components/schemas/Channel"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "channel": {
+                    "id": 8,
+                    "name": "UmiChat",
+                    "type": "webchat",
+                    "active": true,
+                    "created_at": 1485789228.878516,
+                    "token": "H-8-GXQB4SYFQITIB9XZ",
+                    "image": "https://media.helloumi.com/channels/8",
+                    "background_image": null,
+                    "background_color": "#23c10c",
+                    "accent": "#e11515",
+                    "primary_text_color": "#1133dd"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have access to this channel.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "channel_id": [
+                      "You can't view this channel"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/whatsapp/templates/": {
+      "get": {
+        "tags": [
+          "WhatsApp templates"
+        ],
+        "summary": "List WhatsApp templates",
+        "operationId": "list-whatsapp-templates",
+        "x-mint": {
+          "href": "/api-reference/whatsapp-templates/list-whatsapp-templates"
+        },
+        "description": "Returns the WhatsApp templates available to send via `POST /customers/{customer_id}/send_template/`. If you have more than one channel, or migrated it, use the `channel_id` filter to avoid duplicates.",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter templates by channel."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available templates.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "templates": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WhatsappTemplate"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "templates": [
+                    {
+                      "id": 1,
+                      "params_number": 2,
+                      "text": "Hi {{1}}. Welcome to {{2}} on WhatsApp. Are you ready to begin?"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "List customers",
+        "operationId": "list-customers",
+        "x-mint": {
+          "href": "/api-reference/customers/list-customers"
+        },
+        "description": "Returns customers in your workspace. Pagination is controlled by `offset` and `limit`.",
+        "parameters": [
+          {
+            "name": "channel_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by channel."
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by assigned agent."
+          },
+          {
+            "name": "search_by",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "email",
+                "phone"
+              ],
+              "default": "name"
+            },
+            "description": "Field to search on."
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Prefix to match against `search_by`."
+          },
+          {
+            "name": "archived",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter by archive status."
+          },
+          {
+            "name": "opt_in",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter by WhatsApp opt-in status."
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "minimum": 0,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of customers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "total": {
+                      "type": "integer",
+                      "description": "Total number of matching customers, ignoring pagination."
+                    },
+                    "customers": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Customer"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "total": 2000,
+                  "customers": [
+                    {
+                      "id": 42,
+                      "name": "Ataulfo",
+                      "channel_id": 1,
+                      "avatar": "https://octodex.github.com/images/dojocat.jpg",
+                      "last_message": 1493285931.828493,
+                      "unread": false,
+                      "archived": false,
+                      "agent_id": 1,
+                      "register_date": 1491480847.264482,
+                      "custom_fields": {
+                        "email": {
+                          "value": "api@helloumi.com",
+                          "type": "string",
+                          "extra": {},
+                          "name": "email"
+                        },
+                        "payment_date": {
+                          "value": 1491480957.264482,
+                          "type": "datetime",
+                          "extra": {},
+                          "name": "payment_date"
+                        }
+                      },
+                      "meta_data": {}
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Get customer",
+        "description": "Returns customer data for `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Customer data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "customer": {
+                      "$ref": "#/components/schemas/Customer"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "customer": {
+                    "id": 42,
+                    "name": "Ataulfo",
+                    "channel_id": 1,
+                    "avatar": "https://octodex.github.com/images/dojocat.jpg",
+                    "last_message": 1493285931.828493,
+                    "unread": false,
+                    "archived": false,
+                    "agent_id": 1,
+                    "register_date": 1491480847.264482,
+                    "custom_fields": {
+                      "email": {
+                        "value": "api@helloumi.com",
+                        "type": "string",
+                        "extra": {},
+                        "name": "email"
+                      },
+                      "payment_date": {
+                        "value": 1491480957.264482,
+                        "type": "datetime",
+                        "extra": {},
+                        "name": "payment_date"
+                      }
+                    },
+                    "meta_data": {}
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have access to this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't view this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Delete customer",
+        "description": "Deletes the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Customer deleted."
+          },
+          "403": {
+            "description": "You don't have permission to delete this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't delete this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/messages/": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Get customer messages",
+        "operationId": "get-customer-messages",
+        "description": "Returns the conversation transcript for `customer_id` — every message exchanged with the customer.\n\nThe response is the **complete** transcript; there is no pagination or offset. **Messages are not returned in a guaranteed order** — sort by `message_datetime` client-side if you need them chronological.\n\nEach entry's fields depend on its `type` — e.g. `text`, `button`, `dialog`, `image`, `event`, `multi_question`, `structured_data`, … The set is open-ended, so handle unknown types gracefully.\n\n- `message_datetime` is a formatted string (`\"YYYY-MM-DD HH:MM:SS\"`), not a Unix timestamp.\n- `sender` is a display name (the customer, a bot persona, `\"Landbot\"`, or an agent) — there is no separate sender role/type field.\n- On `event` messages, `message` is a number (the `agent_id`), not a string.",
+        "x-mint": {
+          "href": "/api-reference/customers/get-customer-messages"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The customer's conversation transcript.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "messages": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/TranscriptMessage"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "messages": [
+                    {
+                      "type": "button",
+                      "message": "Book a demo",
+                      "payload": "$0",
+                      "message_datetime": "2026-06-12 11:48:07",
+                      "sender": "Visitor #1234"
+                    },
+                    {
+                      "type": "text",
+                      "message": "What's your email?",
+                      "rich_text": "What's your email?",
+                      "message_datetime": "2026-06-12 11:48:25",
+                      "sender": "Sales bot"
+                    },
+                    {
+                      "type": "dialog",
+                      "title": "Pick a plan",
+                      "buttons": [
+                        "Starter",
+                        "Pro"
+                      ],
+                      "payloads": [
+                        "$0",
+                        "$1"
+                      ],
+                      "urls": [
+                        null,
+                        null
+                      ],
+                      "attachments": null,
+                      "message": "Pick a plan\n\nStarter\nPro",
+                      "rich_text": null,
+                      "message_datetime": "2026-06-12 11:48:25",
+                      "sender": "Sales bot"
+                    },
+                    {
+                      "type": "image",
+                      "url": "https://media.giphy.com/media/abc/giphy.gif",
+                      "message": "",
+                      "message_datetime": "2026-06-12 11:48:26",
+                      "sender": "Sales bot"
+                    },
+                    {
+                      "type": "event",
+                      "action": "assign",
+                      "agent_id": 1023738,
+                      "message": 1023738,
+                      "message_datetime": "2026-06-12 11:49:07",
+                      "sender": "Landbot"
+                    },
+                    {
+                      "type": "text",
+                      "message": "Hi! How can I help?",
+                      "rich_text": null,
+                      "message_datetime": "2026-06-12 11:49:10",
+                      "sender": "Jane (agent)"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/archive/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Archive customer",
+        "description": "Archives the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to archive this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't archive this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Customer is assigned to another agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "This customer is assigned to other agent"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/unarchive/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Unarchive customer",
+        "description": "Unarchives the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to unarchive this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't unarchive this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/block/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Block customer",
+        "description": "Blocks the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to block this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't block this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/unblock/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Unblock customer",
+        "description": "Unblocks the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to unblock this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't unblock this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/assign/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Assign customer to current agent",
+        "description": "Assigns the customer with `customer_id` to the authenticated agent.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to assign this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't assign this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Customer is assigned to another agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "This customer is assigned to other agent"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/assign/{agent_id}/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Assign customer to specific agent",
+        "description": "Assigns the customer with `customer_id` to the agent with `agent_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Identifier of the agent to assign the customer to."
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to assign this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't assign this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/assign_bot/{bot_id}/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Assign customer to bot",
+        "description": "Assigns the customer with `customer_id` to the bot with `bot_id`. By default the bot starts immediately at its `start` node.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "name": "bot_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Identifier of the bot to assign the customer to."
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "launch": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "If `true`, the bot starts immediately. If `false`, the bot waits until the customer sends a message."
+                  },
+                  "node": {
+                    "type": "string",
+                    "description": "Node reference to start the bot from. Defaults to the `start` node. Right-click a node in the builder and choose **Copy reference** to obtain it."
+                  }
+                }
+              },
+              "example": {
+                "launch": false,
+                "node": "Nk879f44j"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to assign this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't assign this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/unassign/": {
+      "put": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Unassign customer",
+        "description": "Unassigns the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "description": "You don't have permission to unassign this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't unassign this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Customer is assigned to another agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "This customer is assigned to other agent"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/opt_out/": {
+      "delete": {
+        "tags": [
+          "Customers",
+          "WhatsApp templates"
+        ],
+        "summary": "Opt customer out",
+        "description": "Deletes the WhatsApp opt-ins for the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Opt-ins deleted."
+          },
+          "412": {
+            "description": "Customer has not opted in.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "The customer has not made the opt in"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/send_text/": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Send text message",
+        "operationId": "send-text",
+        "description": "Sends a text message to the customer with `customer_id`.",
+        "x-mint": {
+          "href": "/api-reference/customers/send-text",
+          "content": "<Warning>\n**WhatsApp 24-hour window.** On WhatsApp channels, free-form messages like this one are only delivered within **24 hours of the customer's last inbound message**. Outside that window the send will not reach the customer — you must use [Send WhatsApp template](/api-reference/customers/send-template) with a pre-approved template instead. The window resets every time the customer replies. Other channels (webchat, APIchat, Messenger) have no such limit.\n</Warning>"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "message"
+                ],
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "Message body."
+                  }
+                }
+              },
+              "example": {
+                "message": "Hello"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/SendForbidden"
+          },
+          "412": {
+            "$ref": "#/components/responses/SendPreconditionFailed"
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "message": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/send_image/": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Send image",
+        "operationId": "send-image",
+        "description": "Sends an image to the customer with `customer_id`.",
+        "x-mint": {
+          "content": "<Warning>\n**WhatsApp 24-hour window.** On WhatsApp channels, free-form messages like this one are only delivered within **24 hours of the customer's last inbound message**. Outside that window the send will not reach the customer — you must use [Send WhatsApp template](/api-reference/customers/send-template) with a pre-approved template instead. The window resets every time the customer replies. Other channels (webchat, APIchat, Messenger) have no such limit.\n</Warning>"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Public URL of the image to send."
+                  },
+                  "caption": {
+                    "type": "string",
+                    "description": "Optional caption attached to the image."
+                  }
+                }
+              },
+              "example": {
+                "url": "https://www.helloumi.com/wp-content/uploads/2016/05/umi_face_favicon.png",
+                "caption": "Umi"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/SendForbidden"
+          },
+          "412": {
+            "$ref": "#/components/responses/SendPreconditionFailed"
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "url": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/send_location/": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Send location",
+        "operationId": "send-location",
+        "description": "Sends a geographic location to the customer with `customer_id`.",
+        "x-mint": {
+          "content": "<Warning>\n**WhatsApp 24-hour window.** On WhatsApp channels, free-form messages like this one are only delivered within **24 hours of the customer's last inbound message**. Outside that window the send will not reach the customer — you must use [Send WhatsApp template](/api-reference/customers/send-template) with a pre-approved template instead. The window resets every time the customer replies. Other channels (webchat, APIchat, Messenger) have no such limit.\n</Warning>"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "latitude",
+                  "longitude"
+                ],
+                "properties": {
+                  "latitude": {
+                    "type": "number",
+                    "format": "double"
+                  },
+                  "longitude": {
+                    "type": "number",
+                    "format": "double"
+                  }
+                }
+              },
+              "example": {
+                "latitude": 0,
+                "longitude": 0
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/SendForbidden"
+          },
+          "412": {
+            "$ref": "#/components/responses/SendPreconditionFailed"
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "latitude": [
+                      "This field is required"
+                    ],
+                    "longitude": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/send_template/": {
+      "post": {
+        "tags": [
+          "Customers",
+          "WhatsApp templates"
+        ],
+        "summary": "Send WhatsApp template",
+        "operationId": "send-template",
+        "description": "Sends a WhatsApp template message to the customer with `customer_id`.",
+        "x-mint": {
+          "href": "/api-reference/customers/send-template",
+          "content": "<Note>\n**This is how you reach a WhatsApp customer outside the 24-hour window.** WhatsApp only permits free-form messages (`send_text`, `send_image`, `send_location`) within 24 hours of the customer's last inbound message; to re-engage after that — or to message first — you must send a pre-approved template. Templates are created and submitted for approval in Meta's WhatsApp Manager, **not** through this API, which only sends templates that are already approved. The customer must also have opted in, or the call returns `412`.\n</Note>"
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendTemplateRequest"
+              },
+              "example": {
+                "template_id": 1,
+                "template_language": "en",
+                "template_params": {
+                  "header": {
+                    "url": "https://example.com/header.jpg",
+                    "params": [
+                      "patata",
+                      "congrio"
+                    ]
+                  },
+                  "body": {
+                    "params": [
+                      "Peter",
+                      "Landbot"
+                    ]
+                  },
+                  "buttons": [
+                    null,
+                    {
+                      "params": [
+                        "img.jpg"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Success"
+          },
+          "403": {
+            "$ref": "#/components/responses/SendForbidden"
+          },
+          "412": {
+            "description": "Customer or channel is in a state that blocks delivery.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "The customer is blocked"
+                    ],
+                    "channel_id": [
+                      "The channel is not active",
+                      "The channel is disabled",
+                      "The customer has not made the opt in"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "template_id": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/customers/{customer_id}/fields/{field_name}/": {
+      "get": {
+        "tags": [
+          "Customer fields"
+        ],
+        "summary": "Get field",
+        "description": "Returns the value of `field_name` for the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "$ref": "#/components/parameters/FieldName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Field value.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "field": {
+                      "$ref": "#/components/schemas/CustomFieldValue"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "field": {
+                    "name": "phone",
+                    "type": "integer",
+                    "extra": {},
+                    "value": 630027430
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have permission to read fields from this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't get fields from this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customer fields"
+        ],
+        "summary": "Create field",
+        "description": "Creates `field_name` on the customer with `customer_id`. Field names may only contain lowercase Latin letters, numbers, and `_`.\n\n**Creates only — it never overwrites.** If the field already exists the request fails with `412` and `{\"errors\": {\"field_name\": [\"The field <name> already exists\"]}}`; use `PUT` to update an existing field. To set a field without knowing whether it exists, `POST` first and fall back to `PUT` on `412`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "$ref": "#/components/parameters/FieldName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldUpsertRequest"
+              },
+              "example": {
+                "type": "datetime",
+                "extra": {},
+                "value": 1536155712.1234
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Field created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "field": {
+                      "$ref": "#/components/schemas/CustomFieldValue"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "field": {
+                    "name": "payment_date",
+                    "type": "datetime",
+                    "extra": {},
+                    "value": 1536155712.1234
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have permission to create fields on this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't create fields from this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Field already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "field_name": [
+                      "The field :field_name already exists"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "value": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Customer fields"
+        ],
+        "summary": "Change field",
+        "description": "Updates the value of `field_name` for the customer with `customer_id`. Field names may only contain lowercase Latin letters, numbers, and `_`.\n\n**The field must already exist.** `PUT` does not create — use `POST` for that. A `PUT` against a field that was never created returns `404`, and that `404` is an HTML page rather than the usual JSON error envelope, so do not assume the response body parses as JSON.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "$ref": "#/components/parameters/FieldName"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldUpsertRequest"
+              },
+              "example": {
+                "type": "datetime",
+                "extra": {},
+                "value": 1536155712.1234
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Field updated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "field": {
+                      "$ref": "#/components/schemas/CustomFieldValue"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "field": {
+                    "name": "payment_date",
+                    "type": "datetime",
+                    "extra": {},
+                    "value": 1536155712.1234
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "You don't have permission to change fields on this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't change fields from this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "value": [
+                      "This field is required"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customer fields"
+        ],
+        "summary": "Delete field",
+        "description": "Deletes `field_name` from the customer with `customer_id`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CustomerId"
+          },
+          {
+            "$ref": "#/components/parameters/FieldName"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Field deleted."
+          },
+          "403": {
+            "description": "You don't have permission to delete fields from this customer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "customer_id": [
+                      "You can't delete fields from this customer"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channel_id}/message_hooks/": {
+      "get": {
+        "tags": [
+          "Message hooks"
+        ],
+        "summary": "List message hooks",
+        "operationId": "list-message-hooks",
+        "x-mint": {
+          "href": "/api-reference/message-hooks/list-message-hooks"
+        },
+        "description": "Lists all message hooks configured on the given channel.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ChannelId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of hooks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "hooks": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Hook"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "hooks": [
+                    {
+                      "id": 23,
+                      "url": "https://api.test.com/landbot/",
+                      "token": "1234567890qwerty",
+                      "name": "1234 Hook",
+                      "channel_id": 37,
+                      "created_at": 1606743214.897625,
+                      "updated_at": 1606743896.563929
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Message hooks"
+        ],
+        "summary": "Create message hook",
+        "operationId": "create-message-hook",
+        "x-mint": {
+          "href": "/api-reference/message-hooks/create-message-hook"
+        },
+        "description": "Registers a new message hook for the given channel. Landbot will POST messages to your `url`; if you provide a `token` it is sent as `Authorization: Token <token>` on each delivery.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ChannelId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "url"
+                ],
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Your endpoint that will receive message payloads."
+                  },
+                  "token": {
+                    "type": "string",
+                    "description": "Optional shared secret. Sent back in the `Authorization` header on each delivery."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Human-readable label for the hook."
+                  }
+                }
+              },
+              "example": {
+                "url": "https://api.test.com/landbot/",
+                "token": "1234567890qwerty",
+                "name": "1234 Hook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Hook created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "hook": {
+                      "$ref": "#/components/schemas/Hook"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "hook": {
+                    "id": 23,
+                    "url": "https://api.test.com/landbot/",
+                    "token": "1234567890qwerty",
+                    "name": "1234 Hook",
+                    "channel_id": 37,
+                    "created_at": 1606743214.897625,
+                    "updated_at": 1606743896.563929
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Request body failed validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "errors": {
+                    "url": [
+                      "This field is required",
+                      "Insert a valid URL"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/channels/{channel_id}/message_hooks/{hook_id}/": {
+      "get": {
+        "tags": [
+          "Message hooks"
+        ],
+        "summary": "Get message hook",
+        "description": "Returns a single message hook by ID.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ChannelId"
+          },
+          {
+            "$ref": "#/components/parameters/HookId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hook data.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "hook": {
+                      "$ref": "#/components/schemas/Hook"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "hook": {
+                    "id": 23,
+                    "url": "https://api.test.com/landbot/",
+                    "token": "1234567890qwerty",
+                    "name": "1234 Hook",
+                    "channel_id": 37,
+                    "created_at": 1606743214.897625,
+                    "updated_at": 1606743896.563929
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Message hooks"
+        ],
+        "summary": "Delete message hook",
+        "description": "Removes a message hook by ID.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ChannelId"
+          },
+          {
+            "$ref": "#/components/parameters/HookId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Hook deleted."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "agentToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Send the header as `Authorization: Token <agent_token>` — the value **must include the literal `Token ` prefix** (a bare token returns `401 Unauthorized`). Get your `<agent_token>` at https://app.landbot.io/gui/settings/account."
+      }
+    },
+    "parameters": {
+      "CustomerId": {
+        "name": "customer_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "Identifier of the customer."
+      },
+      "ChannelId": {
+        "name": "channel_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "Identifier of the channel."
+      },
+      "FieldName": {
+        "name": "field_name",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "description": "Name of the custom field. Only lowercase Latin letters, numbers, and `_` are allowed."
+      },
+      "HookId": {
+        "name": "hook_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer"
+        },
+        "description": "Identifier of the message hook."
+      }
+    },
+    "responses": {
+      "Success": {
+        "description": "Operation succeeded.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Success"
+            },
+            "example": {
+              "success": true
+            }
+          }
+        }
+      },
+      "SendForbidden": {
+        "description": "You cannot send messages to this customer.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "errors": {
+                "customer_id": [
+                  "You can't send message to this customer"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "SendPreconditionFailed": {
+        "description": "Customer or channel is in a state that blocks delivery.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "errors": {
+                "customer_id": [
+                  "The customer is blocked"
+                ],
+                "channel_id": [
+                  "The channel is not active",
+                  "The channel is disabled",
+                  "Temporary failure sending message to Facebook, please retry later"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Success": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "object",
+            "description": "Map of field name to a list of error messages.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Channel": {
+        "type": "object",
+        "description": "Channel record. Type-specific fields like `facebook_id` may also appear.",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "facebook",
+              "apichat",
+              "landbot",
+              "whatsapi",
+              "webchat"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "number",
+            "description": "Unix timestamp."
+          },
+          "token": {
+            "type": "string"
+          },
+          "image": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "background_image": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "background_color": {
+            "type": "string"
+          },
+          "accent": {
+            "type": "string"
+          },
+          "primary_text_color": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true
+      },
+      "ChannelListResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of matching channels, ignoring pagination."
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Channel"
+            }
+          }
+        }
+      },
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "avatar": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri"
+          },
+          "last_message": {
+            "type": "number",
+            "description": "Unix timestamp of the last message."
+          },
+          "unread": {
+            "type": "boolean"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "agent_id": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "register_date": {
+            "type": "number",
+            "description": "Unix timestamp."
+          },
+          "custom_fields": {
+            "type": "object",
+            "description": "Map of field name to value object.",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CustomFieldValue"
+            }
+          },
+          "meta_data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "CustomFieldValue": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/FieldType"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "value": {
+            "description": "Field value. Type depends on `type`.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      },
+      "FieldType": {
+        "type": "string",
+        "enum": [
+          "string",
+          "integer",
+          "float",
+          "boolean",
+          "date",
+          "datetime",
+          "object"
+        ],
+        "description": "`date` is an ISO 8601 string. `datetime` is a Unix timestamp. `object` holds arbitrary JSON — an object or an array — and round-trips as structure rather than as an escaped string; it is the type the builder canvas presents as array/list. An unrecognised type string is not rejected: the value is silently coerced and stored as `string`."
+      },
+      "FieldUpsertRequest": {
+        "type": "object",
+        "required": [
+          "type",
+          "value"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/FieldType"
+          },
+          "extra": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Optional extra metadata. Pass `{}` if not used."
+          },
+          "value": {
+            "description": "Field value. Type must match `type`.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        }
+      },
+      "WhatsappTemplate": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "params_number": {
+            "type": "integer",
+            "description": "Number of `{{n}}` placeholders the template expects."
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "Hook": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "token": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "number"
+          },
+          "updated_at": {
+            "type": "number"
+          }
+        }
+      },
+      "SendTemplateRequest": {
+        "type": "object",
+        "required": [
+          "template_id",
+          "template_language",
+          "template_params"
+        ],
+        "properties": {
+          "template_id": {
+            "type": "integer",
+            "description": "ID of the WhatsApp template to send."
+          },
+          "template_language": {
+            "type": "string",
+            "example": "en",
+            "description": "ISO language code of the template."
+          },
+          "template_params": {
+            "type": "object",
+            "description": "Values that fill the template's placeholders.",
+            "required": [
+              "body"
+            ],
+            "properties": {
+              "header": {
+                "type": "object",
+                "description": "Required only for templates with a header.",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Used when the header is of type image or document."
+                  },
+                  "params": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Used when the header is of type text."
+                  }
+                }
+              },
+              "body": {
+                "type": "object",
+                "description": "Values for the body placeholders.",
+                "properties": {
+                  "params": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "buttons": {
+                "type": "array",
+                "description": "Required only for templates with buttons. Use `null` for a quick_reply button; pass an object with `params` for a URL button.",
+                "items": {
+                  "type": [
+                    "object",
+                    "null"
+                  ],
+                  "properties": {
+                    "params": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "WebhookSender": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "description": "Who originated this message.",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "bot → bot ID (= abs(_raw.samurai)); customer → customer ID; agent → agent ID; sys → 0."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name. Anonymous Web visitors get an auto-generated `Visitor #…`; sys is `Landbot`."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "customer",
+              "bot",
+              "agent",
+              "sys"
+            ],
+            "description": "Author class. Note `_raw.author_type` uses a different vocabulary (`user` instead of `customer`) — pick one as canonical, don't mix."
+          }
+        }
+      },
+      "WebhookCustomer": {
+        "type": "object",
+        "description": "The customer this message belongs to. Custom variables (Fields/Hidden Fields) appear as ADDITIONAL top-level keys here and may be type-mangled (e.g. a list arrives as the Python-repr string \"['a','b']\"). Treat custom values as strings unless the source block guarantees otherwise.",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "agent_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Assigned human agent, or null. Reflects current state."
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "is_external": {
+            "type": "string",
+            "description": "Web only. The STRING `\"True\"`/`\"False\"`, not a boolean — compare with `=== \"True\"`."
+          },
+          "country": {
+            "type": "string",
+            "description": "Web only. Geo-inferred."
+          },
+          "webchat_type": {
+            "type": "string",
+            "description": "Web only. Widget variant, e.g. `Native`."
+          },
+          "url": {
+            "type": "string",
+            "description": "Web only. The bot URL the customer is using."
+          },
+          "phone": {
+            "type": "string",
+            "description": "WhatsApp only. Number with country code, no `+` (e.g. `34696336450`)."
+          }
+        }
+      },
+      "WebhookChannel": {
+        "type": "object",
+        "description": "The channel the customer is conversing on.",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "landbot",
+              "whatsapp",
+              "whatsappsandbox",
+              "facebook"
+            ],
+            "description": "Empirically confirmed: `landbot` (Web), `whatsapp`. (`whatsapi` from legacy docs is WRONG.) `whatsappsandbox`/`facebook` listed in legacy docs, not yet verified."
+          }
+        }
+      },
+      "WebhookRaw": {
+        "type": "object",
+        "description": "The unwrapped raw message as Landbot represents it internally — fields not surfaced in `data`.",
+        "additionalProperties": true,
+        "properties": {
+          "samurai": {
+            "type": "number",
+            "description": "Numeric author marker; sign discriminates class: bot → negative (abs = sender.id); agent → positive (= sender.id = customer.agent_id); sys → 0; customer → field absent. Can change mid-conversation on a Jump-to between bots."
+          },
+          "author_type": {
+            "type": "string",
+            "enum": [
+              "user",
+              "bot",
+              "agent",
+              "sys"
+            ],
+            "description": "Author class in the `_raw` vocabulary (`user` = customer)."
+          },
+          "author_uuid": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Stable UUID per bot/agent; null for some types (e.g. notes)."
+          },
+          "uuid": {
+            "type": "string",
+            "description": "UUID of this specific message."
+          },
+          "seq": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Per-message sequence; helps break timestamp ties within a burst."
+          },
+          "rich_text": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "read": {
+            "type": "boolean"
+          }
+        }
+      },
+      "WebhookTextMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body"
+            ],
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "The text content."
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookButtonMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "button"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "payload"
+            ],
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "Button label as displayed."
+              },
+              "payload": {
+                "type": "string",
+                "description": "Payload of the chosen button (e.g. `$0`, `option_1`)."
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookDialogMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "dialog"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "buttons",
+              "payloads"
+            ],
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "buttons": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "payloads": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Parallel-indexed with `buttons`. (`urls`/`attachments` live only on `_raw`.)"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookMediaMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image",
+              "audio",
+              "video",
+              "document"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Publicly-fetchable GCS URL. Trust this extension over `caption`."
+              },
+              "caption": {
+                "type": "string",
+                "description": "Original filename-like label."
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookLocationMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "location"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "latitude",
+              "longitude"
+            ],
+            "properties": {
+              "latitude": {
+                "type": "number"
+              },
+              "longitude": {
+                "type": "number"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookCardTemplateMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "card_template"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "buttons"
+            ],
+            "description": "WhatsApp-only; the WhatsApp equivalent of `dialog`.",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "body": {
+                "type": "string"
+              },
+              "image": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "footer": {
+                "type": "string"
+              },
+              "buttons": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "type",
+                    "label",
+                    "payload"
+                  ],
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "Observed: `POSTBACK`. (`URL`/`PHONE_NUMBER` not yet captured.)"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "payload": {
+                      "type": "string",
+                      "description": "Engine UUID `$<uuid>`. WARNING: does NOT match the customer-side `button.payload` (Landbot normalises taps to `$0`,`$1`,…). Match by position, not by this value."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookTemplateMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "template"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "template"
+            ],
+            "description": "WhatsApp-only pre-approved Meta template. On agent-sent templates `sender.id`/`sender.name` are unreliable (observed `Deleted agent`) — use `_raw.author_uuid`.",
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "Rendered text (= template.text)."
+              },
+              "template": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "language",
+                  "text",
+                  "params"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "BCP-47 (e.g. `es`, `en_US`)."
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "params": {
+                    "type": "object",
+                    "description": "Placeholder slots keyed by component (`header`/`body`/`buttons`)."
+                  }
+                }
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookIframeMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "iframe"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookRedirectMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "redirect"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookEventMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "event"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "action"
+            ],
+            "description": "System lifecycle event.",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "assign",
+                  "unassign"
+                ],
+                "description": "Observed values; enum may grow."
+              },
+              "agent_id": {
+                "type": "number"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookNoteMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "note"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "note_id"
+            ],
+            "description": "Internal agent note — NOT visible to the customer.",
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "note_id": {
+                "type": "number"
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookMultiQuestionMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "multi_question"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "body",
+              "rows"
+            ],
+            "description": "Bot-emitted form block.",
+            "properties": {
+              "body": {
+                "type": "string"
+              },
+              "rich_text": {
+                "type": "string"
+              },
+              "send_label": {
+                "type": "string"
+              },
+              "skip_label": {
+                "type": "string"
+              },
+              "has_skip_button": {
+                "type": "boolean"
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "disposition": {
+                      "type": "string"
+                    },
+                    "inputs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookStructuredDataMessage": {
+        "type": "object",
+        "required": [
+          "type",
+          "timestamp",
+          "data",
+          "sender",
+          "customer",
+          "channel"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "structured_data"
+            ]
+          },
+          "timestamp": {
+            "type": "number",
+            "description": "Unix epoch SECONDS (not ms, not ISO). Web → microsecond float; WhatsApp customer-sent → integer; WhatsApp bot/agent-sent → float. Preserved across retries."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "message",
+              "data"
+            ],
+            "description": "Customer response to a `multi_question`.",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Markdown rendering of all answers."
+              },
+              "data": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Answers keyed by input name. Values are ALWAYS strings, even for number inputs."
+              }
+            }
+          },
+          "sender": {
+            "$ref": "#/components/schemas/WebhookSender"
+          },
+          "customer": {
+            "$ref": "#/components/schemas/WebhookCustomer"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/WebhookChannel"
+          },
+          "_raw": {
+            "$ref": "#/components/schemas/WebhookRaw"
+          }
+        }
+      },
+      "WebhookMessage": {
+        "description": "A single webhook message. Discriminated on `type`.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/WebhookTextMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookButtonMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookDialogMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookMediaMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookLocationMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookCardTemplateMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookTemplateMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookIframeMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookRedirectMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookEventMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookNoteMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookMultiQuestionMessage"
+          },
+          {
+            "$ref": "#/components/schemas/WebhookStructuredDataMessage"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "text": "#/components/schemas/WebhookTextMessage",
+            "button": "#/components/schemas/WebhookButtonMessage",
+            "dialog": "#/components/schemas/WebhookDialogMessage",
+            "image": "#/components/schemas/WebhookMediaMessage",
+            "audio": "#/components/schemas/WebhookMediaMessage",
+            "video": "#/components/schemas/WebhookMediaMessage",
+            "document": "#/components/schemas/WebhookMediaMessage",
+            "location": "#/components/schemas/WebhookLocationMessage",
+            "card_template": "#/components/schemas/WebhookCardTemplateMessage",
+            "template": "#/components/schemas/WebhookTemplateMessage",
+            "iframe": "#/components/schemas/WebhookIframeMessage",
+            "redirect": "#/components/schemas/WebhookRedirectMessage",
+            "event": "#/components/schemas/WebhookEventMessage",
+            "note": "#/components/schemas/WebhookNoteMessage",
+            "multi_question": "#/components/schemas/WebhookMultiQuestionMessage",
+            "structured_data": "#/components/schemas/WebhookStructuredDataMessage"
+          }
+        }
+      },
+      "WebhookPayload": {
+        "type": "object",
+        "required": [
+          "messages"
+        ],
+        "description": "Webhook delivery body. Always exactly one entry in `messages` — Landbot never batches.",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebhookMessage"
+            }
+          }
+        }
+      },
+      "TranscriptMessage": {
+        "type": "object",
+        "description": "One message in a customer's conversation transcript. Which fields are present depends on `type`.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Message type — e.g. `text`, `button` (a customer's button reply), `dialog` (a bot prompt with buttons), `image` (media), `event` (a system signal such as agent assignment), `multi_question`, `structured_data`. The set is open-ended; handle unknown types gracefully."
+          },
+          "message": {
+            "description": "The body. A string for `text`/`button`/`dialog` (for `dialog`, the title and button labels concatenated); an empty string for `image`; a **number** (the `agent_id`) for `event`.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "rich_text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "HTML version of the body when present (`text` / `dialog`). May be null."
+          },
+          "payload": {
+            "type": "string",
+            "description": "Routing payload on a `button` reply, e.g. `\"$0\"`."
+          },
+          "title": {
+            "type": "string",
+            "description": "Prompt text on a `dialog` message."
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`dialog` button labels, parallel-indexed with `payloads`."
+          },
+          "payloads": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "`dialog` button payloads, parallel-indexed with `buttons`."
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "Per-button URL targets on a `dialog` (null where unset)."
+          },
+          "attachments": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "description": "Attachments on a `dialog` message, when present."
+          },
+          "url": {
+            "type": "string",
+            "description": "Media URL on an `image` message."
+          },
+          "action": {
+            "type": "string",
+            "description": "Event action, e.g. `\"assign\"` (on `event` messages)."
+          },
+          "agent_id": {
+            "type": "integer",
+            "description": "Agent identifier on an `event` message."
+          },
+          "message_datetime": {
+            "type": "string",
+            "description": "When the message was sent, formatted `\"YYYY-MM-DD HH:MM:SS\"` (not a Unix timestamp)."
+          },
+          "sender": {
+            "type": "string",
+            "description": "Display name of the sender — the customer's name (e.g. `\"Visitor #1234\"`), a bot persona, `\"Landbot\"` for system events, or an agent's name. There is no separate sender role/type field."
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "message": {
+      "post": {
+        "summary": "Message hook delivery",
+        "operationId": "webhook-message",
+        "description": "Landbot POSTs this payload to every registered message hook URL when a message moves through the channel (Web/WhatsApp; **APIchat customer messages do NOT fire** — see the APIchat webhook reference).\n\n**Authenticity:** if you set a `token` on the hook, it is echoed as `Authorization: Token <token>` (a static shared secret — compare the full value; there is no HMAC). `User-Agent: landbot/webhooks`.\n**Ordering:** bursts can arrive out of order (~10–50 ms); sort by `timestamp`. **Dedupe:** the `sentry-trace` header is unique per message and stable across retries.\n**Retries:** non-`2xx` is retried on linear backoff (deltas ~5/10/15/20/25 s, ≥6 attempts). Return any `2xx` (body ignored) to acknowledge.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WebhookPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Acknowledged. Return any 2xx within your timeout; the body is ignored."
+          }
+        }
+      }
+    }
+  },
+  "x-ext-urls": {}
+}

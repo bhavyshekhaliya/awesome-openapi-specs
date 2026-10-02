@@ -1,0 +1,792 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Landbot Channels",
+    "version": "1.0.0",
+    "description": "Where a bot is reached and what it looks like: the page a visitor opens, its design, its CSS and\nits images. Also the configuration you need to talk to a bot you have deployed for testing.\n\n**Four things to know before you start.**\n\n1. **A channel has two ids.** The Bots API gives you a uuid. The design operations want an\n   integer. `GET /v2/channels/` gives you both, so start there.\n2. **This API answers differently from the Bots API.** Versions are per path. A good answer is\n   `{\"success\": true, \"channel\": {...}}`, not a `data` envelope. A body it cannot read is a `422`\n   with an `errors` object, not a `400` — and a `403` on a `/v1/` path is keyed `errors` too,\n   where the `/v2/` ones use `detail`.\n3. **Every path ends in a slash.** Leave it off and you get a redirect.\n4. **A design write goes to the live channel.** Visitors see it straight away, and it is copied\n   to the test channel. Send `autosave: true` to write only the test copy.\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.landbot.io",
+      "description": "Public"
+    },
+    {
+      "url": "/api",
+      "description": "Same-origin, as consumed by the builder"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Channels",
+      "description": "The channels a brand is reached through"
+    },
+    {
+      "name": "Design",
+      "description": "What a web bot looks like"
+    },
+    {
+      "name": "Media",
+      "description": "The images a design carries"
+    },
+    {
+      "name": "Testing",
+      "description": "Holding a conversation with a bot deployed for testing"
+    }
+  ],
+  "security": [
+    {
+      "sessionCookie": []
+    },
+    {
+      "agentToken": []
+    }
+  ],
+  "paths": {
+    "/v2/channels/": {
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "summary": "List channels",
+        "operationId": "listChannels",
+        "x-implemented": true,
+        "description": "Your channels, newest first. **The only place that carries both ids**, so this is how a uuid\nfrom the Bots API becomes the integer the design operations want.\n\n`search` matches the channel's own name. A web bot's channel is named when it is created and\nthat name is not the bot's.\n",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Case-insensitive match on the channel name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of channels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v2/channels/{channel_uuid}/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ChannelUuid"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Channels"
+        ],
+        "summary": "Get a channel",
+        "operationId": "getChannel",
+        "x-implemented": true,
+        "description": "What the channel is. Nothing about how it looks — for that use\n`GET /v1/channels/{channel_id}/`, with the integer id this answer carries.\n",
+        "responses": {
+          "200": {
+            "description": "The channel",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/v1/channels/{channel_id}/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ChannelId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Get a channel's design",
+        "operationId": "getChannelDesign",
+        "x-implemented": true,
+        "description": "The whole channel: what it is, how it looks, its CSS and markup, and the address a visitor\nopens it at.\n\nTakes the integer id, which `GET /v2/channels/` carries beside the uuid.\n",
+        "responses": {
+          "200": {
+            "description": "The channel, whole",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelDesignResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Design"
+        ],
+        "summary": "Write a channel's design",
+        "operationId": "updateChannelDesign",
+        "x-implemented": true,
+        "description": "Send only the fields you are changing. Anything you leave out keeps the value it had.\nAnswers the whole channel, the same as `GET`.\n\n**`autosave` decides which copy you write.** Leave it out and you write the live channel, and\nit is copied to the test one. Send `true` and you write only the test copy; the live channel\nthen answers `merged: false`, meaning the two no longer match.\n\nNeeds the permission to create channels — not the one to edit bots.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelDesignWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The channel after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelDesignResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/ForbiddenOnV1"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unreadable"
+          }
+        }
+      }
+    },
+    "/v1/channels/images/": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Upload an image",
+        "operationId": "uploadChannelImage",
+        "x-implemented": true,
+        "description": "Stores an image and answers its address. Write that address into the design field you want\nthe picture in — `logo`, `favicon`, and so on.\n\nThe upload is not tied to a channel.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ImageUpload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The stored image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/Unreadable"
+          }
+        }
+      }
+    },
+    "/v2/channels/landbot/{channel_uuid}/test_config/": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ChannelUuid"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Testing"
+        ],
+        "summary": "Get the test channel's configuration",
+        "operationId": "getTestChannelConfig",
+        "x-implemented": true,
+        "description": "Everything you need to open a conversation with the bot as you are editing it: the tokens to\nconnect with, where the conversation is kept, and the design to draw it in.\n\nDeploy the draft first with the Bots API's `PUT /bots/{bot_id}/test`.\n\nNeeds the permission to create channels.\n",
+        "responses": {
+          "200": {
+            "description": "The configuration, flat: no envelope, no `success`. The fields are the ones the chat\nwidget reads.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid",
+        "description": "Same-origin session, used by the builder"
+      },
+      "agentToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "An agent's own token, sent as `Token <value>`."
+      }
+    },
+    "parameters": {
+      "ChannelUuid": {
+        "name": "channel_uuid",
+        "in": "path",
+        "required": true,
+        "description": "The channel, as the Bots API names it.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "ChannelId": {
+        "name": "channel_id",
+        "in": "path",
+        "required": true,
+        "description": "The channel's integer id, which `GET /v2/channels/` carries beside its uuid.",
+        "schema": {
+          "type": "integer"
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "No credentials, or credentials that name nobody.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailError"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "You are signed in and may not do this. Listing or reading a channel needs the permission to\nview channels, and reading a test configuration the one to create them. A brand that is\ndisabled or locked is refused either way.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailError"
+            }
+          }
+        }
+      },
+      "ForbiddenOnV1": {
+        "description": "You lack the permission to create channels. **The v1 paths refuse in their own shape**, keyed\n`errors`, not the `detail` the v2 ones use.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FieldErrors"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No channel of that id is yours. A channel belonging to someone else answers exactly as one\nthat does not exist.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "Unreadable": {
+        "description": "The body could not be read, keyed by the field at fault. Note the status: `422` here, where\nthe Bots API uses `400`.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FieldErrors"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Channel": {
+        "type": "object",
+        "description": "A channel as a listing reports it.",
+        "required": [
+          "id",
+          "uuid",
+          "name",
+          "type",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "What the design operations identify the channel by."
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid",
+            "description": "What the Bots API identifies the channel by."
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "description": "The kind of channel this is.",
+            "examples": [
+              "landbot"
+            ]
+          },
+          "created_at": {
+            "type": "number",
+            "description": "A unix timestamp, in seconds, with a fraction.",
+            "examples": [
+              1789572533.328991
+            ]
+          }
+        }
+      },
+      "ChannelDesign": {
+        "type": "object",
+        "description": "The whole channel. The fields listed are a web bot's; a channel of another kind carries its\nown instead. It answers more keys than are listed here.\n",
+        "additionalProperties": true,
+        "required": [
+          "id",
+          "uuid",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "merged": {
+            "type": "boolean",
+            "description": "Whether the live channel and the one a test conversation runs on hold the same thing.\n`false` after a write that asked for `autosave`.\n"
+          },
+          "token": {
+            "type": "string",
+            "description": "What a visitor's page identifies the channel by."
+          },
+          "config_url": {
+            "type": "string",
+            "description": "Where the channel's configuration is served to a visitor."
+          },
+          "design": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The colours, fonts and layout the widget is drawn with."
+          },
+          "style": {
+            "type": "string",
+            "description": "CSS, applied on top of the design."
+          },
+          "head": {
+            "type": "string",
+            "description": "Markup placed in the page's head."
+          },
+          "foot": {
+            "type": "string",
+            "description": "Markup placed at the end of the page's body."
+          },
+          "logo": {
+            "type": "string"
+          },
+          "favicon": {
+            "type": "string"
+          },
+          "brand_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Where a visitor opens the bot. Worked out for you; writing it does nothing."
+          },
+          "welcome": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "What the page shows before the conversation is opened."
+          },
+          "persistent_menu": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "conditional_proactives": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "launcher_config": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "typing_options": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hidden_fields": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "text": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "version": {
+            "type": "string",
+            "description": "Which widget the channel is drawn by.",
+            "examples": [
+              "3.0.0"
+            ]
+          }
+        }
+      },
+      "ChannelDesignWrite": {
+        "type": "object",
+        "minProperties": 1,
+        "description": "What you may write. Every field is optional; only the ones you send are written. A field not\nlisted here is ignored rather than refused.\n",
+        "properties": {
+          "autosave": {
+            "type": "boolean",
+            "description": "Write the test side alone instead of the live channel. Left out, the write lands on the\nlive channel and is copied to the test one.\n"
+          },
+          "name": {
+            "type": "string"
+          },
+          "brand_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "favicon": {
+            "type": "string"
+          },
+          "tagline": {
+            "type": "string"
+          },
+          "design": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "style": {
+            "type": "string"
+          },
+          "head": {
+            "type": "string"
+          },
+          "foot": {
+            "type": "string"
+          },
+          "text": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "welcome": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "persistent_menu": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "conditional_proactives": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "typing_options": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "hidden_fields": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "launcher_config": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "revisit": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          },
+          "revisit_off": {
+            "type": "boolean"
+          },
+          "storage_off": {
+            "type": "boolean"
+          },
+          "branding": {
+            "type": "boolean"
+          },
+          "is_legal_consent_enabled": {
+            "type": "boolean"
+          },
+          "privacy_policy_link": {
+            "type": "string"
+          },
+          "privacy_policy_link_text": {
+            "type": "string"
+          },
+          "privacy_policy_text": {
+            "type": "string"
+          },
+          "meta_title": {
+            "type": "string"
+          },
+          "meta_image": {
+            "type": "string"
+          },
+          "fb_pixel_id": {
+            "type": "string"
+          },
+          "google_analytics_id": {
+            "type": "string"
+          },
+          "widget_height": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "ImageUpload": {
+        "type": "object",
+        "required": [
+          "image"
+        ],
+        "properties": {
+          "image": {
+            "contentMediaType": "application/octet-stream"
+          },
+          "for": {
+            "type": "string",
+            "description": "Which slot the image is meant for, which decides where it is filed.",
+            "examples": [
+              "logo"
+            ]
+          }
+        }
+      },
+      "ChannelListResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "channels",
+          "last_page"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Channel"
+            }
+          },
+          "last_page": {
+            "type": "boolean",
+            "description": "Whether this page is the last one."
+          }
+        }
+      },
+      "ChannelResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "channel"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          }
+        }
+      },
+      "ChannelDesignResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "channel"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "channel": {
+            "$ref": "#/components/schemas/ChannelDesign"
+          }
+        }
+      },
+      "ImageResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "url"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string",
+            "description": "Where the image is served from.",
+            "examples": [
+              "https://storage.googleapis.com/helloumy.com/4/channels/RDDST2REIANTK7Q1QQ95ZFQSY5XGMCC2.png"
+            ]
+          }
+        }
+      },
+      "DetailError": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "FieldErrors": {
+        "type": "object",
+        "required": [
+          "errors"
+        ],
+        "properties": {
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "examples": [
+              {
+                "image": [
+                  "This field is required."
+                ]
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-ext-urls": {}
+}

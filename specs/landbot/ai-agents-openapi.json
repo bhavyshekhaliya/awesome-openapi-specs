@@ -1,0 +1,296 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Landbot AI Agents",
+    "version": "3.0.0",
+    "description": "The AI agent an `ai_agent` block runs. Make one, read it, change it, copy it.\n\n**Two addresses, and nothing below them.** The collection, and one agent by id. Anything deeper —\nan agent's threads, its REST actions — answers `404` here.\n\n**The bodies are not in this document.** `GET /ai-agents/schema` serves them. Read that before\nyou send anything: it lists more paths than you can reach from here, and only the ones below are\nyours to call.\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.landbot.io/v3",
+      "description": "Public"
+    },
+    {
+      "url": "/api/v3",
+      "description": "Same-origin, as used by the builder"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Agents",
+      "description": "The agent a block runs"
+    }
+  ],
+  "security": [
+    {
+      "sessionCookie": []
+    },
+    {
+      "bearerToken": []
+    },
+    {
+      "agentToken": []
+    }
+  ],
+  "paths": {
+    "/ai-agents": {
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Make an agent",
+        "operationId": "createAgent",
+        "x-implemented": true,
+        "description": "Creates an agent and answers it.\n\nNeeds the permission to edit bots. Counts against your brand's write limit.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateExceeded"
+          },
+          "default": {
+            "$ref": "#/components/responses/CarriedOn"
+          }
+        }
+      }
+    },
+    "/ai-agents/{agent_id}": {
+      "parameters": [
+        {
+          "name": "agent_id",
+          "in": "path",
+          "required": true,
+          "description": "The agent, as `assistantId` names it in an `ai_agent` block.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Read an agent",
+        "operationId": "getAgent",
+        "x-implemented": true,
+        "description": "Answers the agent.\n\nNeeds the permission to view bots. Does not count against your brand's write limit.\n",
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateExceeded"
+          },
+          "default": {
+            "$ref": "#/components/responses/CarriedOn"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Replace an agent",
+        "operationId": "replaceAgent",
+        "x-implemented": true,
+        "description": "Replaces the agent **whole**. Anything the body leaves out goes back to its default, so send\nthe fields you want kept.\n\nNeeds the permission to edit bots. Counts against your brand's write limit.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateExceeded"
+          },
+          "default": {
+            "$ref": "#/components/responses/CarriedOn"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "Copy an agent",
+        "operationId": "copyAgent",
+        "x-implemented": true,
+        "description": "Makes a copy of this agent and answers the copy.\n\nNeeds the permission to edit bots. Counts against your brand's write limit.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AgentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateExceeded"
+          },
+          "default": {
+            "$ref": "#/components/responses/CarriedOn"
+          }
+        }
+      }
+    },
+    "/ai-agents/schema": {
+      "get": {
+        "tags": [
+          "Agents"
+        ],
+        "summary": "The bodies the operations above take",
+        "operationId": "getAgentsSchema",
+        "x-implemented": true,
+        "description": "The OpenAPI document of the API that owns agents, as it generates it.\n\nIts paths are its own, and it lists more than you can reach from here. Read it for the shape\nof a body; read this document for what you may call.\n",
+        "responses": {
+          "200": {
+            "description": "An OpenAPI document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/RateExceeded"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid",
+        "description": "Same-origin session, used by the builder."
+      },
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "An OAuth token."
+      },
+      "agentToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Your agent token, sent as `Token <value>`. This is how the public API is reached."
+      }
+    },
+    "responses": {
+      "CarriedOn": {
+        "description": "What the API that owns agents answered: its status and its body, unchanged.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No credentials, or credentials that name nobody.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailError"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "You are signed in and may not do this. Reading needs the permission to view bots, every write\nthe one to edit them. A brand that is disabled or locked is refused either way, and an expired\none on a write.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailError"
+            }
+          }
+        }
+      },
+      "RateExceeded": {
+        "description": "Too many requests. Two limits apply: one on how fast you call, which counts every request,\nand one on how many writes your brand makes in its window. Reading can only hit the first.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailError"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "AgentPayload": {
+        "type": "object",
+        "additionalProperties": true,
+        "description": "Whatever the agents API takes. `GET /ai-agents/schema` describes it."
+      },
+      "DetailError": {
+        "type": "object",
+        "description": "A refusal. It carries a message and nothing to branch on: the status is the whole of it.\n",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "examples": [
+              "Authentication credentials were not provided."
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-ext-urls": {}
+}

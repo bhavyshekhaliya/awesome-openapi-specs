@@ -1,0 +1,3829 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "Landbot Bots API v0-alpha",
+    "version": "0.1.0-alpha",
+    "description": "Create a bot, edit its draft block by block, test it, publish it.\n\nNew here? Read **[How a bot works](https://dev.landbot.io/api-reference/bots/concepts)** first —\nthe draft, the diagram, and what an answer looks like.\n**[When a call fails](https://dev.landbot.io/api-reference/bots/errors)** has every status and\nevery rule a diagram can break.\n\nTwo operations below are described and not built yet. Each says so, and says what a request to it\nanswers today.\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.landbot.io/v0-alpha",
+      "description": "Public"
+    },
+    {
+      "url": "/api/v0-alpha",
+      "description": "Same-origin, as consumed by the builder"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Bots",
+      "description": "The bot, its settings and its lifecycle"
+    },
+    {
+      "name": "Draft",
+      "description": "The diagram being edited"
+    },
+    {
+      "name": "Blocks",
+      "description": "Block-level operations on a draft"
+    },
+    {
+      "name": "Versions",
+      "description": "Publishing and published history"
+    },
+    {
+      "name": "Catalog",
+      "description": "The blocks available to place in a diagram"
+    },
+    {
+      "name": "Connected accounts",
+      "description": "The accounts a brand connected, as a block names them"
+    }
+  ],
+  "security": [
+    {
+      "agentToken": []
+    },
+    {
+      "sessionCookie": []
+    },
+    {
+      "bearerToken": []
+    }
+  ],
+  "paths": {
+    "/bots": {
+      "get": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "List bots",
+        "operationId": "listBots",
+        "x-implemented": true,
+        "description": "A page of your bots, newest publication first. `order` also takes `-created_at` and `name`.\n\n`state=trashed` lists what is in the trash instead of what is in use.\n\nSorting by when the content last changed is not offered.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/State"
+          },
+          {
+            "name": "workspace",
+            "in": "query",
+            "description": "Workspace the bot belongs to",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Case-insensitive match on the bot name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "channel_family",
+            "in": "query",
+            "description": "The family the bot runs on. Filtering by channel type is not offered.",
+            "schema": {
+              "$ref": "#/components/schemas/ChannelFamily"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/Order"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of bots",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnreadableChannelFamily"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Create a bot",
+        "operationId": "createBot",
+        "x-implemented": true,
+        "description": "Creates the bot, its draft, its test copy and — for a `landbot` bot — a web channel.\n\nWithout `diagram` the draft holds a start point and nothing else. With one, the bot can be\ntalked to straight away; a diagram that breaks a rule is refused and nothing is created.\n\n`source` duplicates a bot. Not built yet: `501`.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created bot",
+            "headers": {
+              "Location": {
+                "description": "The created bot's URL",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "The bot given as `source` does not exist. Reached only once `source` is served; today a\n`source` is refused with `501`, so a creation never answers `404`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Nothing was created — no bot, no test copy, no channel. Every refusal carries a `code`:\nan unknown `channel_family`, a `workspace` that is not yours, a `name` over 50\ncharacters, or `diagram` and `source` together.\n\nA `diagram` that breaks the rules also lists them in `violations`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/RuleViolationErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "501": {
+            "$ref": "#/components/responses/NotServedYet"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Get a bot",
+        "operationId": "getBot",
+        "x-implemented": true,
+        "description": "Settings and lifecycle state. No diagram — read `GET /bots/{bot_id}/draft` for the one you are\nediting, or a version for a published one.\n",
+        "responses": {
+          "200": {
+            "description": "The bot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnreadableChannelFamily"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Update settings, or restore from trash",
+        "operationId": "updateBot",
+        "x-implemented": true,
+        "description": "Writes only the fields you send. An empty body answers `400`, and so does a field we do not\ndescribe.\n\n**`state: active` is how you take a bot out of the trash**, and the only value `state` accepts. Any\nother write to a trashed bot answers `404`, as if it were not there.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BotPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated bot",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BotResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/RuleViolated"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Move a bot to the trash, or delete it permanently",
+        "operationId": "deleteBot",
+        "x-implemented": true,
+        "description": "Moves the bot to the trash. It stops serving conversations and a web bot's page comes down, but\nnothing is destroyed: `PATCH` with `state: active` brings it back whole.\n\n`?permanent=true` destroys it, versions and all. Only works on a bot already in the trash, and cannot\nbe undone.\n",
+        "parameters": [
+          {
+            "name": "permanent",
+            "in": "query",
+            "description": "Delete irreversibly instead of moving to the trash",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted. No body."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "Permanent deletion was requested for a bot that is not in the trash",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/feedback": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Get the conversation-feedback configuration",
+        "operationId": "getConversationFeedback",
+        "x-implemented": true,
+        "description": "Whether the bot asks how the conversation went, and the wording it uses.\n\nA bot nobody has configured answers `enabled: false` and the wording it would use.\n",
+        "responses": {
+          "200": {
+            "description": "The feedback configuration",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackConfigResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Bots"
+        ],
+        "summary": "Set the conversation-feedback configuration",
+        "operationId": "replaceConversationFeedback",
+        "x-implemented": true,
+        "description": "Replaces the whole configuration. Only `enabled` is required, and **any wording you leave out goes\nback to the default** rather than staying as it was.\n\nThe change reaches conversations the bot is already having.\n",
+        "responses": {
+          "200": {
+            "description": "The feedback configuration after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackConfigResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedBot"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackConfig"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/draft": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "Get the draft",
+        "operationId": "getDraft",
+        "x-implemented": true,
+        "description": "The diagram you are editing, its save state, and the violations the last write recorded.\n\nThose are the last write's verdict, not a fresh one. Publishing checks again and can refuse a draft\nthis reports as clean.\n",
+        "responses": {
+          "200": {
+            "description": "The draft",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnreadableChannelFamily"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "Replace the draft diagram",
+        "operationId": "replaceDraftDiagram",
+        "x-implemented": true,
+        "description": "Replaces the whole diagram. This is the autosave path, so **nothing is rejected**: a diagram that\nbreaks rules is stored anyway and comes back with `save_state` and `violations`. You never lose work,\nand publishing is what refuses.\n\nKept as you sent it, keys and all. The one thing we add is `isTarget: true`, on any node that does\nnot already say whether a connection may end at it.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The stored draft, with the outcome of validating it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedBot"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "Apply a set of changes to the draft",
+        "operationId": "applyDraftChanges",
+        "x-implemented": true,
+        "description": "Adds, updates and deletes blocks and connections in one go. All of it applies or none of it does.\n\nUse this whenever a change spans more than one block — the single-block endpoints carry no\nconnections, so they cannot rewire.\n\n**Describe the result you want, not the steps.** Every problem in the set is collected and answered\ntogether. `removed_connections` lists the wiring that went.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DraftPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The draft after the change set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftChangedResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "The set cannot be applied and nothing was written: everything it breaks is listed in\n`violations`. A bot a previous builder built is refused here too, and carries no\n`violations`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleViolationErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "Discard the draft changes",
+        "operationId": "discardDraftChanges",
+        "x-implemented": false,
+        "description": "**Not built yet.** The path is served for other methods, so your credentials are checked and then\nthe method is refused: you get `405`.\n\nWould reset the draft to the published version, discarding unpublished work.\n",
+        "responses": {
+          "200": {
+            "description": "The draft after the reset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "405": {
+            "description": "The method is not served yet. Carries `detail`, and this is what the operation answers\ntoday.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The bot has never been published, so there is nothing to reset to",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/draft/blocks": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "post": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Add blocks to the draft",
+        "operationId": "addDraftBlocks",
+        "x-implemented": true,
+        "description": "Adds blocks, with their connections, to the diagram you already have. All of them apply or none do.\n`top` and `left` say where on the canvas each one goes.\n\nBroken rules are stored and reported, as on autosave. A few problems are refused outright instead —\n[When a call fails](https://dev.landbot.io/api-reference/bots/errors) lists which.\n\nThis only adds. To change or remove something, use `PATCH /bots/{bot_id}/draft`.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlocksAdd"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The draft after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/RuleViolated"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/draft/blocks/{block_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        },
+        {
+          "$ref": "#/components/parameters/BlockId"
+        }
+      ],
+      "patch": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Edit a block",
+        "operationId": "updateDraftBlock",
+        "x-implemented": true,
+        "description": "Changes one block. **`params` is replaced whole**, so send the ones you want kept; anything you omit\nfalls back to its default. Params we do not describe are left alone. `top` and `left` move it on the\ncanvas; omit them and it stays where it was drawn.\n\nThis endpoint carries no connections, so removing a button or an exit that a connection leaves from is\nrefused. Use `PATCH /bots/{bot_id}/draft` to do both at once.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BlockPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The draft after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "The bot or the block does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/RuleViolated"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Delete a block",
+        "operationId": "deleteDraftBlock",
+        "x-implemented": true,
+        "description": "Removes the block and every connection touching it, in either direction. They come back in\n`removed_connections`.\n\nDelete the block the bot starts from and the draft breaks `start_connection` until something fills the\nslot. That is how you replace a greeting: delete, then add.\n",
+        "responses": {
+          "200": {
+            "description": "The draft after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftChangedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "The bot or the block does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/UnsupportedBot"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/draft/revisions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "List draft revisions",
+        "operationId": "listDraftRevisions",
+        "x-implemented": false,
+        "description": "**Not built yet.** There is no such path, so you get a `404` as an HTML page, credentials or not.\n\nWould be a rolling history of draft states, to step back an edit without a full reset.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of revisions, most recent first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftRevisionListResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NoSuchPath"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/test": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "put": {
+        "tags": [
+          "Draft"
+        ],
+        "summary": "Deploy the draft for testing",
+        "operationId": "deployDraftForTesting",
+        "x-implemented": true,
+        "description": "Puts the current draft on the bot's test channel so you can talk to it. Writing the draft\ndoes not do this.\n\n**Any violation stops the deployment**, not only the ones that stop a publication.\n\nTo talk to it you need that channel's configuration, from the\n[Channels API](https://dev.landbot.io/api-reference/channels-api).\n",
+        "responses": {
+          "200": {
+            "description": "The draft is deployed and ready to be exercised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "The draft breaks business rules and was not deployed, or a previous builder built the bot\nand it was not written at all — the second carries no `violations`.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleViolationErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/versions": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "List published versions",
+        "operationId": "listVersions",
+        "x-implemented": true,
+        "description": "A page of the bot's publications, newest first: when, who, and the label if it has one. No diagrams —\nread a single version for that.\n\nA bot nobody has published answers an empty page, not a `404`.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Page"
+          },
+          {
+            "$ref": "#/components/parameters/PageSize"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A page of versions, most recent first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "Publish",
+        "operationId": "publish",
+        "x-implemented": true,
+        "description": "**Publishing is creating a version.** Sent empty, it checks the draft and puts it live. Any violation\nrefuses it.\n\nSent with `source`, it restores that version: the diagram goes back into your draft and is published\nfrom there, so the history only ever grows.\n\nAnswers the publication, not the version — no id and no `Location` header yet.\n",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VersionCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The publication that just happened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "`bot_not_found` when there is no such bot, or it is not yours — the two answer alike.\n`version_not_found` when the `source` names a version this bot never published.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The draft breaks rules, listed in `violations`. Three different codes:\n\n- `draft_has_violations` — publishing the draft. Nothing changed.\n- `restored_draft_has_violations` — restoring. **The version is already in your draft**,\n  so this one is not a no-op: fix it there and publish again.\n- `version_of_an_unsupported_builder` — the version was written by an older builder and\n  cannot be brought back. Nothing changed.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleViolationErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/versions/latest": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "Get the last published version",
+        "operationId": "getLatestVersion",
+        "x-implemented": true,
+        "description": "The bot's last publication, answered like any other version.\n\nA bot that has never published answers `404` — never the draft in its place.\n",
+        "responses": {
+          "200": {
+            "description": "The last published version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "The bot has never been published, or there is no such bot to read — it does not exist,\nor it is not the caller's. The three are answered alike, down to the `code`, so nothing\nhere says which it was. See `NotFound` for why another brand's bot answers this.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/bots/{bot_id}/versions/{version_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/BotId"
+        },
+        {
+          "name": "version_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "Get a published version",
+        "operationId": "getVersion",
+        "x-implemented": true,
+        "description": "One publication: the diagram as it went out, and a snapshot of the channel it went out on.\n\nTo bring it back, publish it — `POST /bots/{bot_id}/versions` with this version as `source`.\n",
+        "responses": {
+          "200": {
+            "description": "The version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "description": "There is nothing to read: no version of that id was published for the bot, or there is\nno such bot — it does not exist, or it is not the caller's. All of them are answered\nalike, down to the `code`, so nothing here says which it was. See `NotFound` for why\nanother brand's bot answers this.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "Label a published version",
+        "operationId": "labelVersion",
+        "x-implemented": true,
+        "description": "The label is the only thing about a version you can change. `name` is required; send `null` to take a\nlabel off. An empty string is refused.\n\nAnswers the publication without its diagram. Nothing the bot is serving changes.\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VersionPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The version after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Versions"
+        ],
+        "summary": "Delete a published version",
+        "operationId": "deleteVersion",
+        "x-implemented": true,
+        "description": "Removes the publication from the history, and with it the diagram and the channel snapshot it filed.\nCannot be undone. Does not touch what is live.\n\n**The most recent publication cannot be deleted.** Publish again and it becomes deletable.\n",
+        "responses": {
+          "204": {
+            "description": "Deleted. No body."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "The version is the bot's most recent publication, and nothing was deleted, under the code\n`version_is_the_most_recent_publication`. A version the caller cannot read answers `404`\ninstead, whichever of the two it is.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/openapi.yml": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "This document",
+        "operationId": "getContract",
+        "x-implemented": true,
+        "description": "This contract, as YAML, from the environment you are calling. Use it to check what that environment\nanswers rather than trusting a copy.\n\nNeeds the permission to view bots, like any other read here.\n",
+        "responses": {
+          "200": {
+            "description": "This document",
+            "content": {
+              "application/yaml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/blocks": {
+      "get": {
+        "tags": [
+          "Catalog"
+        ],
+        "summary": "The block catalog",
+        "operationId": "listBlocks",
+        "x-implemented": true,
+        "description": "Every block you can place in a diagram: its params and rules, outputs, defaults, the plan tier\nit needs and the channels it runs on.\n\nA block whose behaviour changes with a param is described as variants; `selector` says which\nparams pick each.\n\nThe catalogue grows a family at a time, so a diagram may hold blocks it does not cover.\n",
+        "parameters": [
+          {
+            "name": "channel_family",
+            "in": "query",
+            "description": "Restrict to blocks available on a channel family. Not served yet: it is accepted and\nignored, and the whole catalog comes back.\n",
+            "schema": {
+              "$ref": "#/components/schemas/ChannelFamily"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The catalog",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BlockCatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets": {
+      "get": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "The Google accounts connected to the brand",
+        "operationId": "listGoogleSpreadsheetsAccounts",
+        "x-implemented": true,
+        "description": "The accounts a `google_spreadsheets` block can go through, numbered the way its `auth_id`\ntakes them. Each one is a Google account somebody connected to the brand. Connecting one is\na consent a person gives at Google in the browser, and this API starts it:\n`POST /connected-accounts/google_spreadsheets/connections` answers a link a member of the\nbrand opens in the app, and `GET .../connections/{id}` says when the account is connected and\nwhich one it is. So an empty list is answered by starting a connection and handing the link\nto a person in the brand, not by anything a token does on its own.\n\nTwo kinds of account are not listed, because the builder offers them nowhere: one that was\nrevoked, and one connected with the scopes the app no longer accepts, which the app asks to be\nreconnected. Connecting the same Google account again, in the app or through a connection,\nmakes it appear here with the id it already had.\n\nWhat comes back is the id and the name. Never a token: the credential stays where it is.\n\nWhat the block names below the account — the file, the tab and its columns — is read\nthrough it by the operations below, with the same credential.\n\nNeeds the permission to view integrations, as the API the builder goes through does.\n",
+        "responses": {
+          "200": {
+            "description": "The accounts, most recently connected first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectedAccountListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets/{account_id}/spreadsheets": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "The spreadsheets an account reaches",
+        "operationId": "listSpreadsheets",
+        "x-implemented": true,
+        "description": "The files the account can reach, as Google Drive identifies them, which is what a block's\n`spreadsheet_id` takes.\n\nThe account's scope lists only the files the app created or the person picked in the\nbuilder, so a file you know of is usually missing here: one made in Drive by hand, or one the\nperson's own Drive tooling created or found. Its id — the long segment of the file's URL\nbetween `/d/` and `/edit` — is still valid for the block and for the two reads below, which\ntake any file the account can open in Drive.\n\nNeeds the permission to view integrations.\n",
+        "responses": {
+          "200": {
+            "description": "The spreadsheets",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpreadsheetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NoSuchConnectedAccount"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets/{account_id}/spreadsheets/{spreadsheet_id}/sheets": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountId"
+        },
+        {
+          "$ref": "#/components/parameters/SpreadsheetId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "The tabs of a spreadsheet",
+        "operationId": "listSheets",
+        "x-implemented": true,
+        "description": "Each tab, with its title and its own id.\n\n**`title` is what the block's `sheet_name` takes**, and the only one of the two that is\ncompiled. `id` is what the editor keeps to know which tab is selected: writing it where the\ntitle goes leaves a block that fails when the bot runs.\n\nNeeds the permission to view integrations.\n",
+        "responses": {
+          "200": {
+            "description": "The tabs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SheetListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NoSuchConnectedAccount"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets/{account_id}/spreadsheets/{spreadsheet_id}/sheets/{sheet_title}/columns": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AccountId"
+        },
+        {
+          "$ref": "#/components/parameters/SpreadsheetId"
+        },
+        {
+          "$ref": "#/components/parameters/SheetTitle"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "The columns of a tab's header row",
+        "operationId": "listSheetColumns",
+        "x-implemented": true,
+        "description": "The header row of the tab, one entry per column that has a header: its number counting from\n1, which is what `selectorValue` takes in a block's `selectors` and `reference`, and what the\nheader says. A column with an empty header is skipped, so the numbers may have gaps.\n\nNeeds the permission to view integrations.\n",
+        "responses": {
+          "200": {
+            "description": "The columns",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SheetColumnListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NoSuchConnectedAccount"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "502": {
+            "$ref": "#/components/responses/DependencyFailure"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets/connections": {
+      "post": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "Ask a person to connect a Google account",
+        "operationId": "startGoogleSpreadsheetsConnection",
+        "x-implemented": true,
+        "description": "Connecting an account is a consent Google asks a person for in the browser, and nothing a\ntoken can do on its own. This starts one: it answers a `url` that a member of the brand\nopens, signed in to the app, to see who asked and go through Google. When they finish, the\naccount is connected to the brand, and the connection below says which one it is.\n\nThe link lives fifteen minutes and is answered once. Hand it to a person in the brand who\nmay edit integrations: anyone else is refused at the page, and so is a link already\nanswered. Then poll the connection every few seconds; there is no push.\n\nTakes no body. Needs the permission to edit integrations, as connecting an account in the\napp does.\n",
+        "responses": {
+          "201": {
+            "description": "The connection, and where it is followed",
+            "headers": {
+              "Location": {
+                "description": "The connection's URL, to poll",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionStartedResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    },
+    "/connected-accounts/google_spreadsheets/connections/{connection_id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/ConnectionId"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Connected accounts"
+        ],
+        "summary": "How a connection is going",
+        "operationId": "getConnection",
+        "x-implemented": true,
+        "description": "`pending` while nobody has answered. `connected` once the person consented: `account_id` is\nthen what a `google_spreadsheets` block's `auth_id` takes, and the account is listed from\nthen on. `declined` when the person cancelled at the page or Google refused. `expired` when\nfifteen minutes passed with no answer. A connection is answered once: to try again, start\nanother.\n\nNeeds the permission to view integrations.\n",
+        "responses": {
+          "200": {
+            "description": "The connection as it stands right now",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NoSuchConnection"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid",
+        "description": "Same-origin session, used by the builder"
+      },
+      "bearerToken": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Service-to-service access"
+      },
+      "agentToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "An agent's own token, sent as `Token <value>`. This is how the public API is reached.\n"
+      }
+    },
+    "parameters": {
+      "BotId": {
+        "name": "bot_id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "BlockId": {
+        "name": "block_id",
+        "in": "path",
+        "required": true,
+        "description": "The block's id within the diagram",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "AccountId": {
+        "name": "account_id",
+        "in": "path",
+        "required": true,
+        "description": "The connected account, as `GET /connected-accounts/google_spreadsheets` numbers it and as a\nblock's `auth_id` names it.\n",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "SpreadsheetId": {
+        "name": "spreadsheet_id",
+        "in": "path",
+        "required": true,
+        "description": "The file, as Google Drive identifies it.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "SheetTitle": {
+        "name": "sheet_title",
+        "in": "path",
+        "required": true,
+        "description": "The tab's title, as `.../sheets` lists it under `title`. A title containing `/` cannot be\naddressed here.\n",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ConnectionId": {
+        "name": "connection_id",
+        "in": "path",
+        "required": true,
+        "description": "The connection, as starting one answered it.",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "State": {
+        "name": "state",
+        "in": "query",
+        "description": "Lifecycle state. Defaults to `active`, so trashed bots are not listed.",
+        "schema": {
+          "$ref": "#/components/schemas/BotState"
+        }
+      },
+      "Order": {
+        "name": "order",
+        "in": "query",
+        "description": "How the page is sorted. `-last_published_at` is the most recently published first,\n`-created_at` the most recently created first, and `name` alphabetical.\n",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "-last_published_at",
+            "-created_at",
+            "name"
+          ],
+          "default": "-last_published_at"
+        }
+      },
+      "Page": {
+        "name": "page",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "PageSize": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 20
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request could not be read: a field missing, carrying the wrong type, or one this\noperation does not write. Keyed by what is at fault, and `non_field_errors` for a problem\nthat belongs to no single field.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/FieldErrorsResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "No credentials, or credentials that name nobody: none were sent, or the token is not a valid\none. Nobody was resolved, so there is no caller to be forbidden.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "You are signed in and may not do this. Three different things answer `403`, and the body\ndoes not say which:\n\n- your role lacks the permission — reading needs the one to view bots, every write the one to\n  edit them;\n- the brand is disabled or locked, on any operation;\n- the brand's subscription has expired, on a write. Reading still works.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailErrorResponse"
+            }
+          }
+        }
+      },
+      "NoSuchPath": {
+        "description": "There is no such path. The answer is an HTML page, not JSON, and your credentials are never\nlooked at.\n",
+        "content": {
+          "text/html": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Too many requests. **Every call counts, reads included** — the limit is on how fast you call,\nnot on how much you change. It is 40 a second, counted per member rather than per account, so\ntwo people generating at once each get their own.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/DetailErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "No such bot, or not yours. The two answer identically, on every operation, whatever else may\nbe wrong with the bot.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NoSuchConnectedAccount": {
+        "description": "No such connected account, or not yours, or revoked, or one the app asks to reconnect: the\nlisting leaves those out, and a read through one answers the same way. So does an account\nwhose credential Google refuses to renew on this very read, which revokes it. All answer\nidentically, with the code `connected_account_not_found`.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "NoSuchConnection": {
+        "description": "No such connection, or not yours. Both answer identically, with the code\n`connection_not_found`. An answered or expired connection is still found: its status says so.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "RuleViolated": {
+        "description": "We understood you and refused. `violations` lists what broke, and which block, when the\nrules point at one.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RuleViolationErrorResponse"
+            }
+          }
+        }
+      },
+      "NotServedYet": {
+        "description": "We understood you and have not built this yet. Nothing changed, and there is nothing to send\ninstead — the same request will work once it is built.\n\nDuplicating a bot is the only request that answers this today.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorMessageResponse"
+            }
+          }
+        }
+      },
+      "DependencyFailure": {
+        "description": "Something we depend on failed. Nothing changed, so retrying is reasonable.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnsupportedBot": {
+        "description": "An older builder built this bot, and we write only our own. Reading it still works; writing\nit needs it migrated first.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      },
+      "UnreadableChannelFamily": {
+        "description": "The bot's channel family is missing or is one we do not recognise, so we cannot tell you\nwhere it runs. We do not guess.\n\nOn a listing this refuses the whole page, not the one bot: a page that quietly dropped it\nwould be lying about how many bots you have.\n",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "BotState": {
+        "type": "string",
+        "description": "`active` is a bot in use. `trashed` is a bot that has been deleted but is recoverable; it\ndoes not serve conversations.\n",
+        "enum": [
+          "active",
+          "trashed"
+        ]
+      },
+      "ChannelFamily": {
+        "type": "string",
+        "enum": [
+          "landbot",
+          "whatsapp",
+          "facebook",
+          "apichat"
+        ]
+      },
+      "PlanTier": {
+        "type": "string",
+        "description": "A subscription tier, ordered from lowest to highest.",
+        "enum": [
+          "sandbox",
+          "starter",
+          "professional",
+          "business"
+        ]
+      },
+      "SaveState": {
+        "type": "string",
+        "description": "The outcome of the last write to the draft. `IS_PRESAVED` is a stored diagram with no\nviolations, `HAS_ERRORS` a stored diagram that broke at least one rule, `IS_VALIDATED` a\ndraft deployed for testing and `IS_PUBLISHED` one that has been published.\n\n`HAS_ERRORS` is the one that matters: while the draft is in it, the bot cannot be published.\n",
+        "enum": [
+          "IS_PRESAVED",
+          "HAS_ERRORS",
+          "IS_VALIDATED",
+          "IS_PUBLISHED"
+        ]
+      },
+      "Timestamp": {
+        "type": "string",
+        "description": "A moment, in UTC, written as `YYYY-MM-DDTHH:MM:SS`. It carries no offset and no fraction of a\nsecond, so a client that reads it as local time is wrong by whatever its own offset is.\n",
+        "examples": [
+          "2026-09-16T09:18:19"
+        ]
+      },
+      "PageMeta": {
+        "type": "object",
+        "required": [
+          "total",
+          "page",
+          "page_size"
+        ],
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total number of items across all pages"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "page_size": {
+            "type": "integer"
+          }
+        }
+      },
+      "FeedbackConfig": {
+        "type": "object",
+        "description": "What the bot asks at the end of a conversation.\n\nA wording that is too long, empty or blank is refused rather than trimmed. An answer never\ncarries a blank one: you get the default instead.\n",
+        "required": [
+          "enabled"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "What the bot asks."
+          },
+          "positive_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          },
+          "negative_label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 20
+          },
+          "thank_you_message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256,
+            "description": "What the bot answers once the user has replied."
+          }
+        },
+        "examples": [
+          {
+            "enabled": true,
+            "message": "How did that go?",
+            "positive_label": "Great",
+            "negative_label": "Not great",
+            "thank_you_message": "Thanks!"
+          }
+        ]
+      },
+      "Bot": {
+        "type": "object",
+        "description": "A bot, as writing one and as reading one both report it. It carries everything a listing\nitem does, plus the two things only a single bot's answer knows — the channels it is reached\nthrough and whether its draft carries changes — and minus who wrote each side, which a\ncaller looking at one bot has not asked for.\n",
+        "required": [
+          "id",
+          "name",
+          "channel_family",
+          "is_active",
+          "preview_only",
+          "required_tier",
+          "builder_version",
+          "is_published",
+          "has_unpublished_changes",
+          "created_at",
+          "channels"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "channel_family": {
+            "$ref": "#/components/schemas/ChannelFamily"
+          },
+          "channels": {
+            "type": "array",
+            "description": "The channels that serve the bot. A web bot is created with one; a bot can be served by\nmore than one, and channels are managed outside this API.\n",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BotState"
+              }
+            ],
+            "description": "Whether the bot is in use or in the trash. Reported by reading a bot and by writing one\nalike: the trash is a state of the bot, so a write knows which side of it the bot it\nleft behind is on.\n"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the bot serves conversations. This is separate from `state`: a bot in the\n`active` state can still be deactivated, and a trashed bot never serves regardless of\nthis flag.\n"
+          },
+          "preview_only": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "The bot runs in preview only, because it needs a higher plan tier than the brand has, or\nbecause the brand's subscription has lapsed. Derived on the subscription side and never\nset through this API.\n"
+          },
+          "required_tier": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PlanTier"
+              }
+            ],
+            "description": "The lowest plan tier that can run this bot, worked out from the blocks in its draft.\n"
+          },
+          "builder_version": {
+            "type": "string",
+            "description": "Which builder built the bot. Only the current one can be written; every version can be\nread.\n"
+          },
+          "workspace": {
+            "type": "integer",
+            "description": "The workspace the bot belongs to. Absent when it belongs to none. Workspaces are not\nmanaged through this API and are identified by an integer, as they have no uuid.\n"
+          },
+          "is_published": {
+            "type": "boolean",
+            "description": "Whether a published version exists"
+          },
+          "has_unpublished_changes": {
+            "type": "boolean",
+            "description": "Whether the draft differs from what is published. A bot that has never been published\nalways has changes to publish.\n"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "edited_at": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              }
+            ],
+            "description": "When the content last changed. Absent on a bot that has never been written to.\n"
+          },
+          "last_published_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "BotSummary": {
+        "type": "object",
+        "description": "A bot as a listing reports it. It is read from the bot's own rows and from nothing else, so\nit carries no avatar, no channel and no conversation counters — those belong to other\ncontexts and are not served here yet.\n",
+        "required": [
+          "id",
+          "name",
+          "channel_family",
+          "state",
+          "required_tier",
+          "builder_version",
+          "is_active",
+          "preview_only",
+          "is_published",
+          "created_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "channel_family": {
+            "$ref": "#/components/schemas/ChannelFamily"
+          },
+          "state": {
+            "$ref": "#/components/schemas/BotState"
+          },
+          "required_tier": {
+            "$ref": "#/components/schemas/PlanTier"
+          },
+          "builder_version": {
+            "type": "string",
+            "description": "Which builder built the bot. Only the current one can be written; every version is\nlisted.\n"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "preview_only": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "is_published": {
+            "type": "boolean"
+          },
+          "workspace": {
+            "type": "integer"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "edited_at": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              }
+            ],
+            "description": "When the content last changed. Absent on a bot that has never been written to.\n"
+          },
+          "edited_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Author"
+              }
+            ],
+            "description": "Who last changed the content, read from the same side as `edited_at`."
+          },
+          "last_published_at": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              }
+            ],
+            "description": "When the bot was last published. Absent until it has been published, and it is what the\ndefault order sorts by.\n"
+          },
+          "published_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Author"
+              }
+            ],
+            "description": "Who published it last. Absent until the bot has been published."
+          }
+        }
+      },
+      "Author": {
+        "type": "object",
+        "description": "Someone who did something to a bot. The id is the one the rest of the product identifies a\nperson by, an integer, since people are not identified by uuid here. The name is the one\nevery other screen shows for them, and is empty for someone who never filled theirs in.\n",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "BotCreate": {
+        "type": "object",
+        "required": [
+          "name",
+          "channel_family"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "channel_family": {
+            "$ref": "#/components/schemas/ChannelFamily"
+          },
+          "workspace": {
+            "type": "integer",
+            "description": "The workspace to file the bot under. A workspace that does not exist, or belongs to\nanother brand, is rejected with `422`.\n"
+          },
+          "source": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BotSource"
+              }
+            ],
+            "description": "Duplicate an existing bot. Not served yet: on its own it is refused with `501` and\nnothing is created. Cannot be combined with `diagram`; sending both is rejected with\n`422`.\n"
+          },
+          "diagram": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Diagram"
+              }
+            ],
+            "description": "The diagram the bot is born with, stored exactly as sent.\n\nChecked before anything else: break a rule and you get `422` with nothing created.\n**This is the one place a block we do not describe is refused** rather than stored.\n\nOmit it and the bot starts with a start point and nothing else. Cannot go with `source`.\n"
+          }
+        },
+        "examples": [
+          {
+            "name": "Support bot",
+            "channel_family": "landbot"
+          }
+        ]
+      },
+      "BotSource": {
+        "type": "object",
+        "description": "The bot to duplicate. Its diagram is copied into the new bot's draft.",
+        "required": [
+          "bot"
+        ],
+        "properties": {
+          "bot": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "BotPatch": {
+        "type": "object",
+        "description": "What a write to the bot itself may carry. Every field is optional and only the ones sent are\nwritten, so a body carrying none of them is refused rather than answered as a write that\nchanged nothing. `name`, `workspace` and `is_active` are the bot's own settings; `state` is\nwhich side of the trash it is on, and `active` is its one accepted value.\n",
+        "minProperties": 1,
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 50
+          },
+          "workspace": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "The workspace to file the bot under. Send `null` to file it under none. A workspace that\ndoes not exist, or belongs to another brand, is rejected with `422`.\n"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BotState"
+              }
+            ],
+            "description": "Set to `active` to restore a bot from the trash. `trashed` is not accepted: the trash is\nentered by deleting the bot.\n"
+          }
+        }
+      },
+      "Diagram": {
+        "type": "object",
+        "description": "Your diagram, kept as you sent it: keys we do not model — notes, embedded bricks — come back\nuntouched. The one thing we add is `isTarget: true`, on any node that does\nnot already say whether a connection may end at it.\n\nWe read `nodes` and `connections` to check it. A diagram missing either is stored anyway and\nreported as breaking rules.\n",
+        "required": [
+          "nodes",
+          "connections"
+        ],
+        "properties": {
+          "nodes": {
+            "type": "object",
+            "description": "Blocks by id",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DiagramNode"
+            }
+          },
+          "connections": {
+            "type": "object",
+            "description": "Connections by id",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/Connection"
+            }
+          }
+        },
+        "additionalProperties": true,
+        "examples": [
+          {
+            "nodes": {
+              "hidden": {
+                "id": "hidden",
+                "path": "hidden",
+                "template": "hidden",
+                "params": {}
+              },
+              "welcome": {
+                "id": "welcome",
+                "path": "welcome",
+                "template": "var_text",
+                "params": {
+                  "version": 3,
+                  "text": "Hi! What is your name?",
+                  "destination": "name"
+                }
+              }
+            },
+            "connections": {
+              "hidden.success--welcome": {
+                "id": "hidden.success--welcome",
+                "type": "success",
+                "sourcePath": "hidden",
+                "targetPath": "welcome"
+              }
+            }
+          }
+        ]
+      },
+      "DiagramNode": {
+        "type": "object",
+        "description": "One block placed in the diagram, in the builder's own shape. The block is named by\n`template`, the storage name; the semantic name a definition carries is the one used to\naddress blocks in the block-level operations, and the catalog maps between them.\n",
+        "required": [
+          "id",
+          "template",
+          "params"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string",
+            "description": "Which block this is. Several blocks share a template and are told apart by their params,\nwhich is what a definition's `selector` states.\n",
+            "examples": [
+              "var_email"
+            ]
+          },
+          "path": {
+            "type": "string",
+            "description": "Where the block sits in the diagram's nesting. Equal to `id` at the top level; a block\ninside a brick is reached through the brick.\n"
+          },
+          "name": {
+            "type": "string",
+            "description": "The label the author gave this block"
+          },
+          "params": {
+            "type": "object",
+            "description": "The block's configuration, as described by its definition in the catalog. Validated\nagainst the variant selected by these same params.\n",
+            "additionalProperties": true
+          },
+          "top": {
+            "type": "integer",
+            "description": "How far down the builder's canvas the block sits"
+          },
+          "left": {
+            "type": "integer",
+            "description": "How far across the builder's canvas the block sits"
+          }
+        },
+        "additionalProperties": true
+      },
+      "Connection": {
+        "type": "object",
+        "description": "One connection, in the builder's own shape. It says which output of which block it leaves\nfrom, and which block it arrives at.\n",
+        "required": [
+          "sourcePath",
+          "targetPath",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The key this connection is stored under, repeated inside it."
+          },
+          "sourcePath": {
+            "type": "string",
+            "description": "The block the connection leaves from"
+          },
+          "targetPath": {
+            "type": "string",
+            "description": "The block the connection arrives at"
+          },
+          "type": {
+            "type": "string",
+            "description": "Which of the source block's outputs this connection leaves from, exactly as the block\ndefinition's `outputs` report it — some ids carry a `$` prefix and some do not, and the\ntwo are not interchangeable.\n",
+            "examples": [
+              "$success"
+            ]
+          }
+        },
+        "additionalProperties": true
+      },
+      "Draft": {
+        "type": "object",
+        "required": [
+          "bot_id",
+          "diagram",
+          "save_state",
+          "required_tier",
+          "violations",
+          "has_unpublished_changes",
+          "edited_at"
+        ],
+        "properties": {
+          "bot_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "diagram": {
+            "$ref": "#/components/schemas/Diagram"
+          },
+          "save_state": {
+            "$ref": "#/components/schemas/SaveState"
+          },
+          "has_unpublished_changes": {
+            "type": "boolean",
+            "description": "Whether this diagram differs from the one the channels run, so that reading the draft\nanswers both what is being edited and whether it is still to be published. Same field\nand same answer as the bot's.\n"
+          },
+          "violations": {
+            "type": "array",
+            "description": "The business rules the diagram broke on the last write. Empty on a bot that has just been\ncreated, because creating a bot does not validate.\n",
+            "items": {
+              "$ref": "#/components/schemas/RuleViolation"
+            }
+          },
+          "required_tier": {
+            "$ref": "#/components/schemas/PlanTier"
+          },
+          "edited_at": {
+            "description": "When the draft was last written. `null` on a bot whose draft has never been written,\nunder the convention above for a representation that carries a stored diagram.\n",
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "DraftWrite": {
+        "description": "Either a `diagram` to store, or a `source` to take the diagram from — one or the other, not\nboth. Only the `diagram` branch is served: a body carrying `source` answers `400`, since\n`diagram` is required.\n",
+        "oneOf": [
+          {
+            "type": "object",
+            "title": "A diagram to store",
+            "required": [
+              "diagram"
+            ],
+            "properties": {
+              "diagram": {
+                "$ref": "#/components/schemas/Diagram"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "title": "A revision to step back to",
+            "required": [
+              "source"
+            ],
+            "properties": {
+              "source": {
+                "$ref": "#/components/schemas/DraftSource"
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "DraftSource": {
+        "description": "An earlier revision of this same draft, to step back to without publishing anything.\n\nA published version is not a source here — bringing one of those back is\n`POST /bots/{bot_id}/versions`.\n",
+        "type": "object",
+        "required": [
+          "revision"
+        ],
+        "properties": {
+          "revision": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DraftPatch": {
+        "type": "object",
+        "minProperties": 1,
+        "description": "A set of changes applied together. Describe the diagram you want, not the steps: the whole\nresult is checked once, and the refusals are judged against it.\n\n**A block id may appear in only one of `add`, `update` and `delete`.** Naming the same block\nin two of them contradicts itself and answers `400`, before your draft is read.\n",
+        "properties": {
+          "blocks": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+              "add": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/BlockWrite"
+                }
+              },
+              "update": {
+                "type": "array",
+                "description": "Each entry names the block to change by `id`.",
+                "items": {
+                  "$ref": "#/components/schemas/BlockUpdate"
+                }
+              },
+              "delete": {
+                "type": "array",
+                "description": "Ids of blocks to remove. The connections touching them are removed too and reported.\n",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "connections": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+              "add": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Connection"
+                }
+              },
+              "delete": {
+                "type": "array",
+                "description": "Each entry names the block a connection leaves from and which of its outputs, so every\nstored connection matching it is removed. Naming wiring that is not there is applied\nall the same, and removes nothing.\n",
+                "items": {
+                  "$ref": "#/components/schemas/ConnectionRef"
+                }
+              }
+            }
+          }
+        },
+        "examples": [
+          {
+            "blocks": {
+              "update": [
+                {
+                  "id": "welcome",
+                  "params": {
+                    "version": 3,
+                    "text": "Hi there!",
+                    "destination": "name"
+                  }
+                }
+              ],
+              "delete": [
+                "n2"
+              ]
+            },
+            "connections": {
+              "delete": [
+                {
+                  "source_path": "welcome",
+                  "type": "$success"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "BlockUpdate": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "minProperties": 2,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Send `null` to remove the label."
+          },
+          "params": {
+            "type": "object",
+            "description": "Replaces the block's params as a whole.",
+            "additionalProperties": true
+          },
+          "top": {
+            "type": "integer",
+            "description": "How far down the builder's canvas to move the block. Omitted, it stays where it is."
+          },
+          "left": {
+            "type": "integer",
+            "description": "How far across the builder's canvas to move the block. Omitted, it stays where it is."
+          }
+        }
+      },
+      "ConnectionRef": {
+        "type": "object",
+        "description": "A connection, named by the block it leaves from and which of its outputs. In a diagram the\nsame two things are `sourcePath` and `type`.\n\nEither can come back empty: a diagram is stored as you sent it, so a connection in it may be\nmissing one.\n",
+        "required": [
+          "source_path",
+          "type"
+        ],
+        "properties": {
+          "source_path": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "BlocksAdd": {
+        "type": "object",
+        "required": [
+          "blocks"
+        ],
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/BlockWrite"
+            }
+          },
+          "connections": {
+            "type": "array",
+            "description": "Connections to add along with the blocks. They may reference blocks in this request or\nblocks already in the diagram.\n",
+            "items": {
+              "$ref": "#/components/schemas/Connection"
+            }
+          }
+        },
+        "examples": [
+          {
+            "blocks": [
+              {
+                "id": "n1",
+                "type": "send_text",
+                "params": {
+                  "messages": [
+                    {
+                      "entity": "text",
+                      "text": "Thanks!",
+                      "id": "$0"
+                    }
+                  ]
+                }
+              }
+            ],
+            "connections": [
+              {
+                "id": "welcome.$success--n1",
+                "type": "$success",
+                "sourcePath": "welcome",
+                "targetPath": "n1"
+              }
+            ]
+          }
+        ]
+      },
+      "BlockWrite": {
+        "type": "object",
+        "required": [
+          "type",
+          "params"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id to give the block. Generated when omitted. A client that sends connections in\nthe same request needs to set it.\n"
+          },
+          "type": {
+            "type": "string",
+            "examples": [
+              "send_text"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "top": {
+            "type": "integer",
+            "description": "How far down the builder's canvas to place the block. Omitted, it is placed at the origin."
+          },
+          "left": {
+            "type": "integer",
+            "description": "How far across the builder's canvas to place the block. Omitted, it is placed at the origin."
+          }
+        },
+        "examples": [
+          {
+            "id": "n1",
+            "type": "send_text",
+            "params": {
+              "messages": [
+                {
+                  "entity": "text",
+                  "text": "Thanks!",
+                  "id": "$0"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "BlockPatch": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Send `null` to remove the label."
+          },
+          "params": {
+            "type": "object",
+            "description": "Replaces the block's params as a whole.",
+            "additionalProperties": true
+          },
+          "top": {
+            "type": "integer",
+            "description": "How far down the builder's canvas to move the block. Omitted, it stays where it is."
+          },
+          "left": {
+            "type": "integer",
+            "description": "How far across the builder's canvas to move the block. Omitted, it stays where it is."
+          }
+        }
+      },
+      "RuleViolation": {
+        "type": "object",
+        "description": "One business rule broken by the diagram. The same shape is used wherever violations are\nreported: inside a draft, and in a `422` when an operation requires a valid diagram.\n",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "The rule that was broken, and the thing here safe to branch on.\n\n**[When a call fails](https://dev.landbot.io/api-reference/bots/errors)** lists every code,\nsays which are refused on the spot and which are stored with the draft, and what each one\nis about. A code you get that is not on that list came from a bot an older builder wrote.\n"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable description of what is wrong. One sentence, and it names neither what was\nsent nor what would have been accepted: `code` is what identifies the rule, `param` and\n`block_id` what it is about, and `GET /blocks` what each rule accepts.\n"
+          },
+          "block_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The block that breaks the rule, for a rule about one block. Inside a draft it comes as\n`null` when there is none; inside a `422` it is omitted instead.\n"
+          },
+          "param": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The param the rule applies to, for a rule about one param. Same as `block_id`: `null`\ninside a draft, omitted inside a `422`.\n"
+          },
+          "connections": {
+            "type": "array",
+            "description": "The connections the rule concerns, for rules about wiring — for instance\n`connection_output_removed`, where these are the connections left without an output.\nEmpty for every other rule.\n",
+            "items": {
+              "$ref": "#/components/schemas/ConnectionRef"
+            }
+          }
+        }
+      },
+      "Publication": {
+        "type": "object",
+        "description": "What a publication did. This is what publishing answers today, in place of the version\nresource described below.\n",
+        "required": [
+          "bot_id",
+          "publication_count"
+        ],
+        "properties": {
+          "bot_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "publication_count": {
+            "type": "integer",
+            "description": "How many times this bot has been published, this publication included."
+          },
+          "published_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          }
+        }
+      },
+      "Version": {
+        "type": "object",
+        "required": [
+          "version_id",
+          "bot_id",
+          "published_at"
+        ],
+        "properties": {
+          "version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bot_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "A label, absent unless someone has set one. Versions are created unnamed; naming one is a\nseparate action.\n"
+          },
+          "published_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "published_by": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Author"
+              }
+            ],
+            "description": "Who published it. Absent once that person has left the brand — there is nothing left to\nname them by.\n"
+          }
+        }
+      },
+      "VersionDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Version"
+          },
+          {
+            "type": "object",
+            "description": "A version together with what it published. It keeps its empty fields rather than omitting\nthem, for the reason the draft does: it carries a stored diagram, and dropping what has no\nvalue would drop it from inside the diagram too.\n",
+            "required": [
+              "diagram"
+            ],
+            "properties": {
+              "diagram": {
+                "$ref": "#/components/schemas/Diagram"
+              },
+              "channel_version": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": true,
+                "description": "The channel the bot was served on, as it stood when the version was published. It is\ncarried verbatim from the context that owns channels and nothing here models it: a\nversion is shown as it ran, and the diagram alone does not say what the bot looked\nlike. `null` for a bot whose family has no channel of its own.\n"
+              }
+            }
+          }
+        ]
+      },
+      "VersionCreate": {
+        "type": "object",
+        "description": "What a publication may be asked for. Sent empty, or not sent at all, it publishes the draft.\nCarrying a `source`, it restores the version named there. Nothing else is read: a field this\ndoes not declare is refused naming it, so a caller cannot send a diagram, a label or an\nauthor beside the version and have any of it published.\n",
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/VersionSource"
+          }
+        },
+        "additionalProperties": false,
+        "examples": [
+          {
+            "source": {
+              "version": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+            }
+          }
+        ]
+      },
+      "VersionSource": {
+        "type": "object",
+        "description": "The publication to bring back. Its diagram is stored in your draft and published from there,\nand the greeting a visitor is met with goes back with it.\n\n**The channel's own look does not**: design, style, logo and the rest stay as they are today.\nRestoring a flow should not undo brand changes.\n",
+        "required": [
+          "version"
+        ],
+        "properties": {
+          "version": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "VersionPatch": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 50,
+            "description": "Send `null` to remove the label."
+          }
+        }
+      },
+      "DraftRevision": {
+        "type": "object",
+        "required": [
+          "revision_id",
+          "created_at"
+        ],
+        "properties": {
+          "revision_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_at": {
+            "$ref": "#/components/schemas/Timestamp"
+          },
+          "created_by": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "save_state": {
+            "$ref": "#/components/schemas/SaveState"
+          }
+        }
+      },
+      "BlockDefinition": {
+        "type": "object",
+        "required": [
+          "name",
+          "title",
+          "can_be_welcome",
+          "variants"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The block's semantic name. It is what the block-level operations address a block by.\n\nA diagram node names the same block by its `template`, and the catalog does not publish\nthe template yet, so a client holding a diagram cannot tell from here which definition\ndescribes a node it already has.\n",
+            "examples": [
+              "ask_email"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "Display name."
+          },
+          "description": {
+            "type": "string"
+          },
+          "can_be_welcome": {
+            "type": "boolean",
+            "description": "Whether this block may take the greeting slot. **Check it here** — you cannot work it out\nfrom the block itself. Put any other block in the slot and the diagram breaks\n`welcome_block_not_allowed`.\n"
+          },
+          "variants": {
+            "type": "array",
+            "minItems": 1,
+            "description": "One entry when the block behaves the same way regardless of its params. More than one\nwhen a param changes what the block is: the `selector` says which.\n",
+            "items": {
+              "$ref": "#/components/schemas/BlockVariant"
+            }
+          }
+        }
+      },
+      "BlockVariant": {
+        "type": "object",
+        "required": [
+          "params",
+          "outputs",
+          "output_derivations",
+          "param_derivations",
+          "required_tier",
+          "interaction",
+          "channel_restriction",
+          "selector"
+        ],
+        "properties": {
+          "selector": {
+            "type": "array",
+            "description": "The conditions over a block's own params that select this variant. Empty on a\nsingle-variant block, which any params select.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamSelector"
+            }
+          },
+          "params": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParamDefinition"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "The fixed outputs a connection can leave from, as used in a connection's `type`.\n",
+            "items": {
+              "$ref": "#/components/schemas/BlockOutput"
+            }
+          },
+          "output_derivations": {
+            "type": "array",
+            "description": "Rules the caller runs over its own params to know the outputs this variant reports for\nthem, on top of the fixed `outputs` — a button block reports one output per button.\nEmpty when every output is fixed.\n",
+            "items": {
+              "$ref": "#/components/schemas/OutputDerivation"
+            }
+          },
+          "param_derivations": {
+            "type": "array",
+            "description": "Params this variant works out itself rather than the caller writing them, and the param\neach one is worked out from. What a caller sends for a derived param is replaced or kept\naccording to the derivation's `kind`. Empty when every param is the caller's. Applied\nwhen a block is added or edited, and not by `PUT /bots/{bot_id}/draft`, which stores what\nit is given.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamDerivation"
+            }
+          },
+          "required_tier": {
+            "$ref": "#/components/schemas/PlanTier"
+          },
+          "channel_restriction": {
+            "type": "array",
+            "description": "Channel families this variant is valid on. Empty means every one of them.\n",
+            "items": {
+              "$ref": "#/components/schemas/ChannelFamily"
+            }
+          },
+          "answer": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "What kind of answer the block collects, for the blocks that ask for one. Absent on a\nblock that asks for nothing.\n",
+            "enum": [
+              "email",
+              "phone",
+              "url",
+              "number",
+              "date"
+            ]
+          },
+          "interaction": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InteractionKind"
+              }
+            ],
+            "description": "Whether the block pauses the conversation waiting for the user. This is what makes a\ncycle in the diagram legitimate or not: a loop through blocks that never wait is an\nerror.\n"
+          }
+        }
+      },
+      "ParamDefinition": {
+        "type": "object",
+        "description": "A param you write. An array declares its element under `item`, an object its `fields`, and a\n`one_of` the ways it may be written under `one_of`.\n\n**`read_when` is a condition on another param.** While it does not hold, this param is\nignored: not its rules, not even being required. A block often keeps a value it no longer\nreads, and this is how you tell that apart from a value that is wrong.\n",
+        "required": [
+          "name",
+          "type",
+          "required",
+          "has_default",
+          "rules",
+          "fields",
+          "one_of",
+          "read_when"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ParamType"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "has_default": {
+            "type": "boolean",
+            "description": "Whether a value is applied when the param is absent. It answers what `default` alone\ncannot: a param whose default is `null`, `0` or an empty list is not a param without one.\n"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "default": {
+            "description": "The value used when the block is placed and the param is not given. Absent when\n`has_default` is false.\n"
+          },
+          "rules": {
+            "type": "array",
+            "description": "Constraints beyond the type. Only rules that can be stated declaratively appear here;\nrules that depend on the brand's own data, such as whether an integration credential\nbelongs to it, are enforced on write and reported as violations.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamRule"
+            }
+          },
+          "item": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ParamElement"
+              }
+            ],
+            "description": "What one element of an array param is. Present only on an array param."
+          },
+          "fields": {
+            "type": "array",
+            "description": "The params an object param is made of. Empty on a param that is not an object.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamDefinition"
+            }
+          },
+          "one_of": {
+            "type": "array",
+            "description": "The shapes this value may take, when it may take more than one — a condition that is\neither an object or a bare string, say. Each is a param in its own right.\n\nA value matching none of them is refused with `param_no_matching_shape`. Empty unless\n`type` is `one_of`.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamDefinition"
+            }
+          },
+          "read_when": {
+            "type": "array",
+            "description": "The conditions under which the param is read, written in the same vocabulary as a\nvariant's `selector` and evaluated the same way. Every one of them has to hold. Empty on\na param that is always read, which is most of them.\n",
+            "items": {
+              "$ref": "#/components/schemas/ParamSelector"
+            }
+          }
+        }
+      },
+      "ParamElement": {
+        "type": "object",
+        "description": "What one element of an array is. An element carries a type and the rules every one of them\nanswers to, and nothing else a param carries: it has no name to be addressed by, it is never\nabsent, and no default is applied to it. An element of type `one_of` declares each way it may\nbe written under `one_of`, as a param does.\n",
+        "required": [
+          "type",
+          "rules",
+          "fields",
+          "one_of"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ParamType"
+          },
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParamRule"
+            }
+          },
+          "fields": {
+            "type": "array",
+            "description": "The params an element of type object is made of.",
+            "items": {
+              "$ref": "#/components/schemas/ParamDefinition"
+            }
+          },
+          "item": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ParamElement"
+              }
+            ],
+            "description": "An element of type array declares its own element here."
+          },
+          "one_of": {
+            "type": "array",
+            "description": "The ways this element may be written. Empty unless `type` is `one_of`.",
+            "items": {
+              "$ref": "#/components/schemas/ParamDefinition"
+            }
+          }
+        }
+      },
+      "ParamType": {
+        "type": "string",
+        "description": "The kind of value a param takes. `one_of` is the one that is not a shape of its own: it says\nthe value may be written in more than one way, and the ways are under `one_of`.\n",
+        "enum": [
+          "string",
+          "integer",
+          "number",
+          "boolean",
+          "array",
+          "object",
+          "one_of"
+        ]
+      },
+      "InteractionKind": {
+        "type": "string",
+        "description": "`waits_for_input` pauses the conversation until the user answers. `runs_without_input` moves\non by itself.\n",
+        "enum": [
+          "waits_for_input",
+          "runs_without_input"
+        ]
+      },
+      "ParamSelector": {
+        "type": "object",
+        "description": "One condition to evaluate over your own params. `match` says which:\n\n- `equals` — the param carries `value`. `matches_null` says whether a null counts.\n- `has_items` — the param is a list with something in it.\n- `any_item_matches` / `every_item_matches` — read `field` inside each item of a list. An\n  empty list satisfies `every_item_matches`.\n",
+        "required": [
+          "param",
+          "match",
+          "matches_null"
+        ],
+        "properties": {
+          "param": {
+            "type": "string"
+          },
+          "match": {
+            "type": "string",
+            "enum": [
+              "equals",
+              "has_items",
+              "any_item_matches",
+              "every_item_matches"
+            ]
+          },
+          "matches_null": {
+            "type": "boolean",
+            "description": "Whether a param with no value satisfies this condition. That is how an absent param can\nstill select a variant.\n"
+          },
+          "value": {
+            "description": "The value to compare against. Absent for a condition that compares none."
+          },
+          "field": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The field read inside each item, for `any_item_matches` and `every_item_matches`. Absent\nfor the conditions that compare the param itself.\n"
+          }
+        }
+      },
+      "OutputDerivation": {
+        "type": "object",
+        "description": "Run this over your own params to know the outputs a block has: one per item of the `param`\nlist, with the id `id_prefix` + the item's `id_field`. An item whose `id_field` is empty gives\nno output. Derived outputs come before the fixed ones.\n\n**A derived id must start with `$`.** One that does not is refused with\n`param_output_id_invalid` and nothing is stored.\n",
+        "required": [
+          "param",
+          "id_field",
+          "id_prefix"
+        ],
+        "properties": {
+          "param": {
+            "type": "string",
+            "description": "The array param whose items become outputs."
+          },
+          "id_field": {
+            "type": "string",
+            "description": "The field of an item that carries the output's id. Declared under the `fields` of the\nparam's `item`, so what it carries can be read there.\n"
+          },
+          "id_prefix": {
+            "type": "string",
+            "description": "What the derived id starts with."
+          },
+          "title_field": {
+            "type": "string",
+            "description": "The field of an item that carries the output's title, when it has one."
+          }
+        }
+      },
+      "ParamDerivation": {
+        "type": "object",
+        "description": "A param we work out for you from another one. `kind` says what happens to a value you send\nfor it: `compiled_formula` replaces it with what `source` compiles to; `rendered_text` keeps\nit, and works it out from `source` only when you send none.\n\nApplied when a block is added or edited, not on a whole-diagram write. A `source` that will\nnot compile is refused with `param_formula_not_compiled`.\n",
+        "required": [
+          "kind",
+          "param",
+          "source"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Which derivation this is: `compiled_formula` compiles a formula into the tree the runtime\nreads, and `rendered_text` writes a plain text as the HTML the widget renders.\n",
+            "enum": [
+              "compiled_formula",
+              "rendered_text"
+            ]
+          },
+          "param": {
+            "type": "string",
+            "description": "The param that is derived."
+          },
+          "source": {
+            "type": "string",
+            "description": "The param it is derived from, which the caller does write."
+          }
+        }
+      },
+      "ParamRule": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Which constraint this is. A caller can enforce the same rule before writing, and gets the\nsame code back in a violation if it does not.\n",
+            "enum": [
+              "non_empty",
+              "max_length",
+              "pattern",
+              "enum",
+              "reserved",
+              "not_pattern",
+              "json",
+              "functions"
+            ]
+          },
+          "constraint": {
+            "description": "The rule's own value, where it takes one: the maximum length, the regular expression the\nvalue matches or the one it must not carry, the values allowed, the values reserved, the\nfunctions a formula may call. Absent for a rule that takes none, as `non_empty` and\n`json` do.\n",
+            "examples": [
+              "^[a-z]+$"
+            ]
+          }
+        }
+      },
+      "BlockOutput": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The value to use as a connection's `type`, verbatim, `$` prefix included where the\ndefinition carries one.\n",
+            "examples": [
+              "$success"
+            ]
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "A stable identifier for the failure, suitable for branching on. Each refusal names\nitself, and so does a failure of a service this API depends on.\n",
+            "enum": [
+              "bot_not_in_the_trash",
+              "builder_version_not_supported",
+              "channel_family_not_readable",
+              "draft_has_violations",
+              "diagram_compilation_failed",
+              "block_not_found",
+              "bot_not_found",
+              "version_not_found",
+              "workspace_not_found",
+              "diagram_beside_a_source",
+              "bot_name_not_accepted",
+              "version_is_the_most_recent_publication",
+              "restored_draft_has_violations",
+              "version_of_an_unsupported_builder",
+              "connected_account_not_found",
+              "google_spreadsheets_failed"
+            ],
+            "examples": [
+              "draft_has_violations"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "A short description of what went wrong."
+          }
+        }
+      },
+      "ErrorDetail": {
+        "type": "object",
+        "description": "One malformed input.",
+        "required": [
+          "code",
+          "name",
+          "reason"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "examples": [
+              "string_too_long"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "The field the problem is in.",
+            "examples": [
+              "name"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "examples": [
+              "name must be at most 50 characters"
+            ]
+          }
+        }
+      },
+      "BotResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Bot"
+          }
+        }
+      },
+      "FeedbackConfigResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/FeedbackConfig"
+          }
+        }
+      },
+      "BotListResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BotSummary"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        }
+      },
+      "DraftChanged": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Draft"
+          },
+          {
+            "type": "object",
+            "description": "The draft, as answered by an operation that can drop wiring the caller did not name. Only\nthose operations answer this shape; the ones that add or edit a block answer a plain\n`Draft`, having nothing to remove.\n",
+            "required": [
+              "removed_connections"
+            ],
+            "properties": {
+              "removed_connections": {
+                "type": "array",
+                "description": "The wiring that was in the draft and is no longer there. Always sent, and empty when\nnothing was removed. Reported so that no wiring disappears without the caller being\ntold. What removes it depends on the operation: `DELETE\n/bots/{bot_id}/draft/blocks/{block_id}` reports what went with the block, and `PATCH\n/bots/{bot_id}/draft` reports that and the connections the change set deleted by name,\neach one listed once.\n",
+                "items": {
+                  "$ref": "#/components/schemas/ConnectionRef"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "DraftResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Draft"
+          }
+        }
+      },
+      "DraftChangedResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DraftChanged"
+          }
+        }
+      },
+      "DraftRevisionListResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DraftRevision"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        }
+      },
+      "PublicationResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Publication"
+          }
+        }
+      },
+      "VersionResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Version"
+          }
+        }
+      },
+      "VersionDetailResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/VersionDetail"
+          }
+        }
+      },
+      "VersionListResponse": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Version"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PageMeta"
+          }
+        }
+      },
+      "BlockCatalogResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BlockDefinition"
+            }
+          }
+        }
+      },
+      "ConnectedAccount": {
+        "type": "object",
+        "description": "A Google account somebody connected to the brand, as much of it as a block needs to name it.\n",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "What a block's `auth_id` takes.",
+            "examples": [
+              7
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "The Google account's email as it read when it was connected, unless somebody renamed the\naccount in the app.\n",
+            "examples": [
+              "sheets@example.com"
+            ]
+          }
+        }
+      },
+      "ConnectedAccountListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConnectedAccount"
+            }
+          }
+        }
+      },
+      "Spreadsheet": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The file as Google Drive identifies it, which is what a block's `spreadsheet_id` takes.",
+            "examples": [
+              "1aBcD"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "examples": [
+              "Leads"
+            ]
+          }
+        }
+      },
+      "SpreadsheetListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Spreadsheet"
+            }
+          }
+        }
+      },
+      "Sheet": {
+        "type": "object",
+        "required": [
+          "id",
+          "title"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The tab's own id. Not compiled: the editor keeps it as `sheet_id` and nothing reads it\nwhen the bot runs.\n",
+            "examples": [
+              "0"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "description": "What a block's `sheet_name` takes.",
+            "examples": [
+              "Leads"
+            ]
+          }
+        }
+      },
+      "SheetListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sheet"
+            }
+          }
+        }
+      },
+      "SheetColumn": {
+        "type": "object",
+        "required": [
+          "index",
+          "header"
+        ],
+        "properties": {
+          "index": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The column's number counting from 1, which is what `selectorValue` takes.",
+            "examples": [
+              1
+            ]
+          },
+          "header": {
+            "type": "string",
+            "examples": [
+              "Email"
+            ]
+          }
+        }
+      },
+      "SheetColumnListResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SheetColumn"
+            }
+          }
+        }
+      },
+      "ConnectionStartedResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/ConnectionStarted"
+          }
+        }
+      },
+      "ConnectionStarted": {
+        "type": "object",
+        "description": "A connection just opened, and where a person goes to answer it.",
+        "required": [
+          "id",
+          "url",
+          "expires_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "examples": [
+              "2c7e9d10-3b4f-4c5a-8e6d-9f0a1b2c3d4e"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "description": "Where a member of the brand goes, in a browser signed in to the app, to connect the\naccount. Nothing a token does on its own.\n",
+            "examples": [
+              "https://app.landbot.io/integrations/google/spreadsheets/connect/2c7e9d10-3b4f-4c5a-8e6d-9f0a1b2c3d4e/"
+            ]
+          },
+          "expires_at": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Timestamp"
+              },
+              {
+                "description": "When the link stops working, fifteen minutes after it was started."
+              }
+            ]
+          }
+        }
+      },
+      "ConnectionResponse": {
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/AccountConnection"
+          }
+        }
+      },
+      "AccountConnection": {
+        "type": "object",
+        "description": "A connection as it stands when read.",
+        "required": [
+          "id",
+          "status",
+          "account_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "examples": [
+              "2c7e9d10-3b4f-4c5a-8e6d-9f0a1b2c3d4e"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "connected",
+              "declined",
+              "expired"
+            ],
+            "description": "`pending` until the person answers, then `connected` or `declined` for good; `expired`\nonce fifteen minutes pass unanswered.\n"
+          },
+          "account_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "The account the person connected, which is what a block's `auth_id` takes. `null` in\nevery status but `connected`.\n",
+            "examples": [
+              7
+            ]
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "A failure carrying a code to branch on. It is what every refusal this API names answers\nwith: a bot or a version that cannot be read, a bot or a draft that cannot be written, and a\ndepended-on service that fails.\n",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          }
+        }
+      },
+      "ErrorMessageResponse": {
+        "type": "object",
+        "description": "A failure carrying only a message, which is how a request this API does not serve yet is\nanswered. There is nothing to branch on, so the status code is the whole of the news.\n",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "examples": [
+              "Duplicating a bot is not available yet"
+            ]
+          }
+        }
+      },
+      "DetailErrorResponse": {
+        "type": "object",
+        "description": "A refusal decided before the request reaches this API: credentials, permission, the method,\nthe rate. It carries `detail` rather than `error`, and there is nothing in it to branch on —\nthe status is the whole of the news.\n",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "examples": [
+              "Authentication credentials were not provided."
+            ]
+          }
+        }
+      },
+      "FieldErrorsResponse": {
+        "type": "object",
+        "description": "A body that could not be read: a field missing, or carrying the wrong type. Each key is the\nfield at fault and its value the reasons, and the envelope carries neither `error` nor a code.\n",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "examples": [
+          {
+            "diagram": [
+              "This field is required."
+            ]
+          }
+        ]
+      },
+      "InputErrorResponse": {
+        "type": "object",
+        "description": "The house shape for malformed input, kept as the target for `400`. Not answered yet: today a\nmalformed body comes back as `FieldErrorsResponse`.\n",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Error"
+              },
+              {
+                "type": "object",
+                "required": [
+                  "errors"
+                ],
+                "properties": {
+                  "errors": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ErrorDetail"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "RuleViolationErrorResponse": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Error"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "violations": {
+                    "type": "array",
+                    "description": "The rules broken, when they can be attributed to specific blocks or params.\n",
+                    "items": {
+                      "$ref": "#/components/schemas/RuleViolation"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "x-ext-urls": {}
+}

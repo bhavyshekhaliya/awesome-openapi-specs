@@ -95,6 +95,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
 | ManyChat | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `chat-marketing` `experimental` |
+| Landbot | [Platform API](specs/landbot/platform-openapi.json); [APIchat](specs/landbot/apichat-openapi.json); [Bots API](specs/landbot/bots-openapi.json); [AI Agents API](specs/landbot/ai-agents-openapi.json); [Channels API](specs/landbot/channels-openapi.json); [official documentation](https://dev.landbot.io/guides/for-ai-agents) | JSON | 3.1.0, 3.1.1 | `official` `experimental` `chat-marketing` `lead-generation` |
 | MarketGo | [API specification](https://api.marketgo.ai/api/v1/openapi.json) | JSON | 3.1.0 | `marketing-automation` |
 | Pulseem | [API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `email-marketing` `marketing-automation` |
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
