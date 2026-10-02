@@ -1,0 +1,332 @@
+openapi: 3.2.0
+info:
+  title: Foursquare Places Search API
+  description: The Foursquare Places API provides global access to over 100 million points of interest (POI) for place search, details, autocomplete, geotagging (Place Snap), place matching, natural-language Ask search, and photos/tips.
+  version: '2025-06-17'
+  contact:
+    name: Foursquare Developer Support
+    url: https://docs.foursquare.com/
+  license:
+    name: Foursquare Developer Terms of Service
+    url: https://foursquare.com/legal/api/platformpolicy
+servers:
+- url: https://places-api.foursquare.com
+  description: Foursquare Places API (current)
+security:
+- serviceKey: []
+tags:
+- name: Search
+  description: Find and explore places
+paths:
+  /places/search:
+    get:
+      tags:
+      - Search
+      summary: Search For Places
+      description: Find places that match a query, location, category, chain, price, or radius. Returns a paged list of places ordered by the chosen sort.
+      operationId: searchPlaces
+      parameters:
+      - $ref: '#/components/parameters/ApiVersion'
+      - in: query
+        name: query
+        schema:
+          type: string
+        description: Free-text search term (e.g., "coffee").
+      - in: query
+        name: ll
+        schema:
+          type: string
+        description: Latitude,longitude pair (e.g., "40.7128,-74.0060").
+      - in: query
+        name: near
+        schema:
+          type: string
+        description: Geocodable text location (e.g., "New York, NY").
+      - in: query
+        name: radius
+        schema:
+          type: integer
+          maximum: 100000
+        description: Search radius in meters (0-100000).
+      - in: query
+        name: ne
+        schema:
+          type: string
+        description: Northeast corner of a bounding box (lat,lng).
+      - in: query
+        name: sw
+        schema:
+          type: string
+        description: Southwest corner of a bounding box (lat,lng).
+      - in: query
+        name: fsq_category_ids
+        schema:
+          type: string
+        description: Comma-separated Foursquare category ids.
+      - in: query
+        name: fsq_chain_ids
+        schema:
+          type: string
+        description: Comma-separated Foursquare chain ids to include.
+      - in: query
+        name: exclude_fsq_chain_ids
+        schema:
+          type: string
+        description: Comma-separated Foursquare chain ids to exclude.
+      - in: query
+        name: exclude_all_chains
+        schema:
+          type: boolean
+        description: Return only non-chain (independent) places.
+      - in: query
+        name: min_price
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 4
+        description: Minimum price tier (1-4).
+      - in: query
+        name: max_price
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 4
+        description: Maximum price tier (1-4).
+      - in: query
+        name: open_now
+        schema:
+          type: boolean
+        description: Restrict to places currently open.
+      - in: query
+        name: open_at
+        schema:
+          type: string
+        description: Restrict to places open at a time in DOWTHHMM format (e.g., "1T2130").
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in each result.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 50
+      - in: query
+        name: sort
+        schema:
+          type: string
+          enum:
+          - RELEVANCE
+          - RATING
+          - DISTANCE
+          - POPULARITY
+      - in: query
+        name: tel_format
+        schema:
+          type: string
+          enum:
+          - NATIONAL
+          - E164
+      responses:
+        '200':
+          description: A page of matching places.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlaceSearchResponse'
+components:
+  schemas:
+    Photo:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        prefix:
+          type: string
+        suffix:
+          type: string
+        width:
+          type: integer
+        height:
+          type: integer
+    PlaceSearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Place'
+        context:
+          type: object
+          properties:
+            geo_bounds:
+              type: object
+    Place:
+      type: object
+      properties:
+        fsq_place_id:
+          type: string
+        name:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        location:
+          type: object
+          properties:
+            address:
+              type: string
+            locality:
+              type: string
+            region:
+              type: string
+            postcode:
+              type: string
+            admin_region:
+              type: string
+            post_town:
+              type: string
+            po_box:
+              type: string
+            country:
+              type: string
+            formatted_address:
+              type: string
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              fsq_category_id:
+                type: string
+              name:
+                type: string
+              short_name:
+                type: string
+              plural_name:
+                type: string
+              icon:
+                type: object
+                properties:
+                  prefix:
+                    type: string
+                  suffix:
+                    type: string
+        chains:
+          type: array
+          items:
+            type: object
+            properties:
+              fsq_chain_id:
+                type: string
+              name:
+                type: string
+        distance:
+          type: integer
+        rating:
+          type: number
+        price:
+          type: integer
+          minimum: 1
+          maximum: 4
+        popularity:
+          type: number
+        verified:
+          type: boolean
+        date_closed:
+          type: string
+        tel:
+          type: string
+        email:
+          type: string
+        website:
+          type: string
+        social_media:
+          type: object
+          properties:
+            facebook_id:
+              type: string
+            instagram:
+              type: string
+            twitter:
+              type: string
+        hours:
+          type: object
+          properties:
+            display:
+              type: string
+            is_local_holiday:
+              type: boolean
+            open_now:
+              type: boolean
+        attributes:
+          type: object
+          properties:
+            restroom:
+              type: string
+            outdoor_seating:
+              type: string
+            atm:
+              type: string
+            parking:
+              type: object
+            wifi:
+              type: string
+            delivery:
+              type: string
+            reservations:
+              type: string
+            credit_cards:
+              type: object
+        tastes:
+          type: array
+          items:
+            type: string
+        stats:
+          type: object
+          properties:
+            total_photos:
+              type: integer
+            total_ratings:
+              type: integer
+            total_tips:
+              type: integer
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        tips:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tip'
+    Tip:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        text:
+          type: string
+  parameters:
+    ApiVersion:
+      in: header
+      name: X-Places-Api-Version
+      required: true
+      description: Dated Places API version (e.g., "2025-06-17").
+      schema:
+        type: string
+        default: '2025-06-17'
+  securitySchemes:
+    serviceKey:
+      type: http
+      scheme: bearer
+      description: 'Service Key passed as a Bearer token in the Authorization header ("Authorization: Bearer <service-key>").'
