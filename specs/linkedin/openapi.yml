@@ -1,0 +1,598 @@
+openapi: 3.1.0
+info:
+  title: LinkedIn Organic Posts API
+  version: 202609
+  summary: Publish and manage LinkedIn organic posts
+  description: >-
+    A community-maintained OpenAPI subset for LinkedIn's versioned REST Posts,
+    Images, and Organization Access Control APIs. It covers organic member and
+    organization posts, company-page selection, and image upload initialization.
+    LinkedIn Marketing APIs require a Linkedin-Version header in YYYYMM format
+    and X-Restli-Protocol-Version: 2.0.0. Version 202609 was the latest version
+    when this specification was prepared on 2026-10-02. The Zapier LinkedIn app
+    exposes Create Share Update and Create Company Update actions; media bytes
+    must be uploaded separately to the temporary uploadUrl returned by the
+    Images API. LinkedIn API access and scopes depend on the developer program
+    and the member's page roles.
+  termsOfService: https://www.linkedin.com/legal/user-agreement
+  contact:
+    name: LinkedIn Developer Support
+    url: https://developer.linkedin.com/support
+  license:
+    name: CC0-1.0
+    identifier: CC0-1.0
+  externalDocs:
+    description: LinkedIn Posts API documentation (Marketing API version 202609)
+    url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09
+servers:
+  - url: https://api.linkedin.com/rest
+    description: LinkedIn versioned REST API
+security:
+  - bearerAuth: []
+tags:
+  - name: Posts
+    description: Create, find, retrieve, update, and delete organic posts.
+  - name: Organizations
+    description: Find organization pages for which the authenticated member has a role.
+  - name: Images
+    description: Initialize image uploads used by post content.
+paths:
+  /posts:
+    post:
+      tags: [Posts]
+      operationId: createPost
+      summary: Create an organic post
+      description: >-
+        Publishes a post for a member or organization. Member posts require
+        w_member_social; organization posts require w_organization_social and
+        an eligible organization role. Image, video, and document assets must
+        be uploaded through their respective APIs before their URNs are used
+        in content. Creating article posts requires explicitly supplied article
+        fields; LinkedIn does not scrape the article URL for this API operation.
+      externalDocs:
+        description: Create organic posts
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09#create-organic-posts
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '201':
+          description: Post created. The x-restli-id header contains its URN.
+          headers:
+            x-restli-id:
+              description: URN of the created post.
+              schema:
+                type: string
+                examples:
+                  - urn:li:share:6844785523593134080
+    get:
+      tags: [Posts]
+      operationId: findPostsByAuthor
+      summary: Find posts by author
+      description: >-
+        Returns posts authored by a member or organization. Retrieving member
+        posts requires r_member_social, which is restricted to approved users;
+        organization post retrieval requires r_organization_social and an
+        eligible organization role.
+      externalDocs:
+        description: Find posts by authors
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09#find-posts-by-authors
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: X-RestLi-Method
+          in: header
+          required: true
+          description: Rest.li finder method required for this query.
+          schema:
+            type: string
+            enum: [FINDER]
+        - name: q
+          in: query
+          required: true
+          description: Select the author finder.
+          schema:
+            type: string
+            enum: [author]
+        - name: author
+          in: query
+          required: true
+          description: Member or organization URN whose posts are returned.
+          schema:
+            type: string
+          example: urn:li:organization:2414183
+        - name: viewContext
+          in: query
+          description: >-
+            READER returns the published version; AUTHOR can return the
+            author's latest version, including drafts or processing posts.
+          schema:
+            type: string
+            enum: [READER, AUTHOR]
+            default: READER
+        - name: start
+          in: query
+          description: Zero-based index of the first result.
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: count
+          in: query
+          description: Number of results per page. LinkedIn allows at most 100.
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 10
+        - name: sortBy
+          in: query
+          description: Sort results in descending order by modification or creation time.
+          schema:
+            type: string
+            enum: [LAST_MODIFIED, CREATED]
+            default: LAST_MODIFIED
+      responses:
+        '200':
+          description: Page of posts authored by the requested member or organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCollection'
+  /posts/{postId}:
+    parameters:
+      - name: postId
+        in: path
+        required: true
+        description: >-
+          Post URN (urn:li:share:{id} or urn:li:ugcPost:{id}). The URN must be
+          URL-encoded as a path segment in raw HTTP requests; generated clients
+          usually encode path parameters automatically.
+        schema:
+          type: string
+        example: urn:li:share:6844785523593134080
+    get:
+      tags: [Posts]
+      operationId: getPost
+      summary: Retrieve a post
+      description: >-
+        Retrieves one post by URN. The caller must have the appropriate read
+        permission for the post author. URNs in the URL must be URL-encoded.
+      externalDocs:
+        description: Get posts by URN
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09#get-posts-by-urn
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: viewContext
+          in: query
+          description: READER returns the published version; AUTHOR returns the author's latest version.
+          schema:
+            type: string
+            enum: [READER, AUTHOR]
+            default: READER
+      responses:
+        '200':
+          description: LinkedIn post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+    post:
+      tags: [Posts]
+      operationId: updatePost
+      summary: Partially update a post
+      description: >-
+        Updates fields supported by LinkedIn's Posts API using Rest.li
+        PARTIAL_UPDATE semantics. The API documents commentary,
+        contentCallToActionLabel, contentLandingPage, lifecycleState, and
+        sponsored-content adContext fields for updates.
+      externalDocs:
+        description: Update posts
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09#update-posts
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: X-RestLi-Method
+          in: header
+          required: true
+          description: Rest.li partial update method.
+          schema:
+            type: string
+            enum: [PARTIAL_UPDATE]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostRequest'
+      responses:
+        '204':
+          description: Post updated.
+    delete:
+      tags: [Posts]
+      operationId: deletePost
+      summary: Delete a post
+      description: Deletes a post. LinkedIn documents deletion as idempotent.
+      externalDocs:
+        description: Delete posts
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09#delete-posts
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: X-RestLi-Method
+          in: header
+          required: true
+          description: Rest.li delete method.
+          schema:
+            type: string
+            enum: [DELETE]
+      responses:
+        '204':
+          description: Post deleted, or was already deleted.
+  /organizationAcls:
+    get:
+      tags: [Organizations]
+      operationId: findManagedOrganizations
+      summary: Find organizations available to the current member
+      description: >-
+        Lists organization access-control records for the authenticated member.
+        Use role=ADMINISTRATOR and state=APPROVED to find company pages that can
+        be used for company updates. The access-control API requires the member
+        to have suitable organization access.
+      externalDocs:
+        description: Organization access control by role
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/organizations/organization-access-control-by-role?view=li-lms-2026-09
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: q
+          in: query
+          required: true
+          description: Select access-control records for the authenticated member.
+          schema:
+            type: string
+            enum: [roleAssignee]
+        - name: role
+          in: query
+          description: Filter by an organization role, such as ADMINISTRATOR.
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: Filter by the role state, such as APPROVED.
+          schema:
+            type: string
+        - name: start
+          in: query
+          description: Zero-based index of the first result.
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: count
+          in: query
+          description: Number of results per page.
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
+      responses:
+        '200':
+          description: Organization access-control records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationAclCollection'
+  /images:
+    post:
+      tags: [Images]
+      operationId: initializeImageUpload
+      summary: Initialize an image upload
+      description: >-
+        Registers an image upload and returns a temporary upload URL and image
+        URN. Upload the image bytes to that URL in a separate request, then use
+        the image URN in a post. This operation models initialization only.
+      externalDocs:
+        description: Images API upload instructions
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/images-api?view=li-lms-2026-09
+      parameters:
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/LinkedinVersion'
+        - name: action
+          in: query
+          required: true
+          description: Initialize an image upload.
+          schema:
+            type: string
+            enum: [initializeUpload]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitializeImageUploadRequest'
+      responses:
+        '200':
+          description: Temporary upload URL and image URN.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitializeImageUploadResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+      description: >-
+        LinkedIn OAuth 2.0 access token with the product permissions required
+        by each operation. For example, post creation uses w_member_social or
+        w_organization_social; reading posts uses r_member_social or
+        r_organization_social.
+  parameters:
+    RestliProtocolVersion:
+      name: X-Restli-Protocol-Version
+      in: header
+      required: true
+      description: LinkedIn Rest.li protocol version required by these endpoints.
+      schema:
+        type: string
+        enum: ['2.0.0']
+    LinkedinVersion:
+      name: Linkedin-Version
+      in: header
+      required: true
+      description: >-
+        LinkedIn Marketing API version in YYYYMM format. 202609 was the latest
+        version on 2026-10-02; check LinkedIn's versioning documentation before
+        selecting a later supported version.
+      schema:
+        type: string
+        pattern: '^\d{6}$'
+        examples: ['202609']
+  schemas:
+    CreatePostRequest:
+      type: object
+      description: LinkedIn Posts API payload for an organic post.
+      required: [author, commentary, visibility, distribution, lifecycleState]
+      properties:
+        author:
+          type: string
+          description: Member or organization URN that owns the post.
+          examples: [urn:li:organization:2414183]
+        commentary:
+          type: string
+          description: Text accompanying the post. Supports LinkedIn mention and hashtag syntax.
+        visibility:
+          type: string
+          description: Visibility of the post.
+          enum: [PUBLIC, CONNECTIONS]
+        distribution:
+          $ref: '#/components/schemas/PostDistribution'
+        lifecycleState:
+          type: string
+          description: Creation accepts PUBLISHED.
+          enum: [PUBLISHED]
+        content:
+          $ref: '#/components/schemas/PostContent'
+        isReshareDisabledByAuthor:
+          type: boolean
+        reshareContext:
+          type: object
+          description: Include parent when creating a reshare.
+          properties:
+            parent:
+              type: string
+              description: URN of the post being reshared.
+        contentCallToActionLabel:
+          type: string
+          description: Documented call-to-action label for supported post content.
+        contentLandingPage:
+          type: string
+          format: uri
+          description: Landing-page URL for supported post content.
+      additionalProperties: true
+    UpdatePostRequest:
+      type: object
+      required: [patch]
+      properties:
+        patch:
+          type: object
+          description: Rest.li partial update fields.
+          properties:
+            $set:
+              type: object
+              description: Fields to set on the post.
+              properties:
+                commentary:
+                  type: string
+                contentCallToActionLabel:
+                  type: string
+                contentLandingPage:
+                  type: string
+                  format: uri
+                lifecycleState:
+                  type: string
+              additionalProperties: true
+            adContext:
+              type: object
+              properties:
+                $set:
+                  type: object
+                  properties:
+                    dscName:
+                      type: string
+                    dscStatus:
+                      type: string
+                  additionalProperties: true
+          additionalProperties: true
+      additionalProperties: true
+    PostDistribution:
+      type: object
+      required: [feedDistribution]
+      properties:
+        feedDistribution:
+          type: string
+          enum: [MAIN_FEED, NONE]
+        targetEntities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        thirdPartyDistributionChannels:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    PostContent:
+      type: object
+      description: Supported post content, including uploaded media and article metadata.
+      properties:
+        media:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Previously uploaded image, video, or document URN.
+            title:
+              type: string
+          additionalProperties: true
+        article:
+          type: object
+          properties:
+            source:
+              type: string
+              format: uri
+            thumbnail:
+              type: string
+              description: Previously uploaded image URN.
+            title:
+              type: string
+            description:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+    Post:
+      type: object
+      properties:
+        id:
+          type: string
+        author:
+          type: string
+        commentary:
+          type: string
+        visibility:
+          type: string
+        distribution:
+          $ref: '#/components/schemas/PostDistribution'
+        content:
+          $ref: '#/components/schemas/PostContent'
+        lifecycleState:
+          type: string
+        createdAt:
+          type: integer
+          format: int64
+        lastModifiedAt:
+          type: integer
+          format: int64
+        publishedAt:
+          type: integer
+          format: int64
+        isReshareDisabledByAuthor:
+          type: boolean
+      additionalProperties: true
+    PostCollection:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    OrganizationAclCollection:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationAcl'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    OrganizationAcl:
+      type: object
+      properties:
+        role:
+          type: string
+        organization:
+          type: string
+        organizationTarget:
+          type: string
+        roleAssignee:
+          type: string
+        state:
+          type: string
+      additionalProperties: true
+    Paging:
+      type: object
+      properties:
+        start:
+          type: integer
+        count:
+          type: integer
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              rel:
+                type: string
+              href:
+                type: string
+              type:
+                type: string
+            additionalProperties: true
+      additionalProperties: true
+    InitializeImageUploadRequest:
+      type: object
+      required: [initializeUploadRequest]
+      properties:
+        initializeUploadRequest:
+          type: object
+          required: [owner]
+          properties:
+            owner:
+              type: string
+              description: Member or organization URN that owns the image.
+          additionalProperties: true
+      additionalProperties: true
+    InitializeImageUploadResponse:
+      type: object
+      required: [value]
+      properties:
+        value:
+          type: object
+          required: [uploadUrl, image]
+          properties:
+            uploadUrlExpiresAt:
+              type: integer
+              format: int64
+            uploadUrl:
+              type: string
+              format: uri
+              description: Temporary URL used for the separate binary upload request.
+            image:
+              type: string
+              description: Image URN to reference in post content after upload completes.
+          additionalProperties: true
+      additionalProperties: true
