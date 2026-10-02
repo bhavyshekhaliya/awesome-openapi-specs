@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -192,6 +192,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Moosend          | [Community specification](specs/moosend/openapi.yml); [source docs](https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54561-Introduction-to-the-Moosend-API?lang=en_US) | YAML | 3.1.0 | `community-maintained` `email-marketing` |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | OpenPageRank     | [API specification](https://openpagerank.keywordseverywhere.com/v1/openapi.json)                                    | JSON   | 3.0.3   | `official` `seo` `domain-authority` |
+| Orshot | [Official OpenAPI specification](https://orshot.com/openapi.json) · [API reference](https://orshot.com/docs/api-reference) | JSON | 3.1.0 | `official` `image-generation` `social-publishing` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | Paved | [Public API specification](https://dash.readme.com/api/v1/api-registry/1fesa4mm51vxfx) | JSON | 3.0.3 | `official` `newsletter-advertising` `publisher-marketplace` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
