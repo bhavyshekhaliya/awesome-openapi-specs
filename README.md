@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| AutoContent API | [API specification](https://api.autocontentapi.com/api-docs.json) | JSON | 3.0.0 | `content-marketing` |
 | BonusQR | [API specification](https://app.bonusqr.com/docs/api-docs.json?api-docs.json) | JSON | 3.0.0 | `loyalty` `marketing` |
 | Blastable | [API specification](https://blastable.com/swagger.json) | JSON | 3.0.0 | `email-marketing` |
 | Maildroppa | [API specification](https://api.maildroppa.com/openapi) | JSON | 3.1.0 | `email-marketing` `experimental` |
