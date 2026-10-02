@@ -1,0 +1,222 @@
+openapi: 3.1.0
+info:
+  title: REST Countries API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for five documented read
+    operations in REST Countries API v5. The provider requires a bearer API
+    key. Its free plan is for prototyping, evaluation, and non-commercial use;
+    commercial and public-sector use requires a paid plan. The provider also
+    limits caching to three days and prohibits bulk redistribution. Review the
+    [provider's terms](https://restcountries.com/legal/terms-of-service)
+    before use.
+  externalDocs:
+    description: Countries API documentation and field reference
+    url: https://restcountries.com/docs/countries
+servers:
+  - url: https://api.restcountries.com
+    description: REST Countries production API
+security:
+  - bearerAuth: []
+paths:
+  /countries/v5:
+    get:
+      operationId: listCountries
+      summary: List or search countries
+      description: >-
+        Returns a paginated country collection. Search and property filters can
+        be combined; the response can be projected or trimmed by field path.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: >-
+            Page size. Defaults to 25. The free plan supports up to 100 records
+            per page; paid plans support up to 500.
+          schema:
+            type: integer
+            default: 25
+            minimum: 1
+            maximum: 500
+        - name: offset
+          in: query
+          required: false
+          description: Number of matching records to skip; defaults to 0.
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: q
+          in: query
+          required: false
+          description: Case-insensitive substring search across searchable properties.
+          schema:
+            type: string
+        - name: region
+          in: query
+          required: false
+          description: Filter by a documented country region, such as Europe.
+          schema:
+            type: string
+        - name: memberships.eu
+          in: query
+          required: false
+          description: Documented boolean property filter; the examples use 1 for true.
+          schema:
+            type: string
+        - name: response_fields
+          in: query
+          required: false
+          description: Comma-separated dot paths to include in each country object.
+          schema:
+            type: string
+        - name: response_fields_omit
+          in: query
+          required: false
+          description: Comma-separated dot paths to omit from each country object.
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          required: false
+          description: Enable pretty-printed JSON output.
+          schema:
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Countries'
+        default:
+          $ref: '#/components/responses/APIError'
+  /countries/v5/codes.alpha_2/{code}:
+    get:
+      operationId: getCountryByAlpha2Code
+      summary: Get countries by ISO alpha-2 code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: ISO alpha-2 country code, for example CA.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Countries'
+        default:
+          $ref: '#/components/responses/APIError'
+  /countries/v5/codes.alpha_3/{code}:
+    get:
+      operationId: getCountryByAlpha3Code
+      summary: Get countries by ISO alpha-3 code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: ISO alpha-3 country code, for example CAN.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Countries'
+        default:
+          $ref: '#/components/responses/APIError'
+  /countries/v5/currencies/{currency_code}:
+    get:
+      operationId: getCountriesByCurrency
+      summary: Get countries by currency code
+      parameters:
+        - name: currency_code
+          in: path
+          required: true
+          description: Currency code, for example CAD.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Countries'
+        default:
+          $ref: '#/components/responses/APIError'
+  /countries/v5/region/{region}:
+    get:
+      operationId: getCountriesByRegion
+      summary: Get countries by region
+      parameters:
+        - name: region
+          in: path
+          required: true
+          description: Country region, for example Europe.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Countries'
+        default:
+          $ref: '#/components/responses/APIError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  responses:
+    Countries:
+      description: Countries matching the lookup or search.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CountriesResponse'
+    APIError:
+      description: >-
+        API error. Documented status codes include 400, 401, 403, 404, 410,
+        429, and 500.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    CountriesResponse:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - objects
+          properties:
+            objects:
+              type: array
+              items:
+                type: object
+                description: >-
+                  Country fields vary by record and plan. See the provider's
+                  field reference.
+                additionalProperties: true
+            meta:
+              type: object
+              properties:
+                total:
+                  type: integer
+                count:
+                  type: integer
+                limit:
+                  type: integer
+                offset:
+                  type: integer
+                more:
+                  type: boolean
+                request_id:
+                  type: string
+              additionalProperties: true
+          additionalProperties: true
+      additionalProperties: true
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              message:
+                type: string
+            additionalProperties: true
+      additionalProperties: true
