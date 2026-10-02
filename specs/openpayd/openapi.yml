@@ -1,0 +1,323 @@
+openapi: 3.1.0
+info:
+  title: OpenPayd API (focused)
+  version: '1.0'
+  description: Focused account and payout operations documented by OpenPayd.
+  externalDocs:
+    description: OpenPayd API documentation
+    url: https://apidocs.openpayd.com/
+servers:
+  - url: https://sandbox.openpayd.com/api
+    description: OpenPayd sandbox
+tags:
+  - name: Authentication
+  - name: Accounts
+  - name: Beneficiaries
+  - name: Payments
+paths:
+  /oauth/token:
+    post:
+      tags: [Authentication]
+      operationId: getAccessToken
+      summary: Get an API access token
+      description: Exchange sandbox API credentials for a bearer access token.
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [grant_type]
+              properties:
+                grant_type:
+                  type: string
+                  enum: [client_credentials]
+      responses:
+        '200':
+          description: Access token issued.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token: { type: string }
+                  token_type: { type: string }
+                  expires_in: { type: integer }
+                  scope: { type: string }
+                  accountHolderId: { type: string }
+        '400':
+          description: The credentials or token request were rejected.
+  /bank-accounts:
+    get:
+      tags: [Accounts]
+      operationId: listPaymentAccounts
+      summary: List payment accounts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: x-account-holder-id
+          in: header
+          required: true
+          schema: { type: string }
+        - name: internalAccountId
+          in: query
+          schema: { type: string }
+        - name: internalAccountIds
+          in: query
+          description: Filter by multiple internal account identifiers.
+          schema:
+            type: array
+            items: { type: string }
+        - name: currency
+          in: query
+          schema: { type: string }
+        - name: status
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Payment accounts matching the supplied filters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    currency: { type: string }
+                    status: { type: string }
+                    internalAccountId: { type: string }
+                    bankCountry: { type: string }
+                    iban: { type: string }
+                    bic: { type: string }
+                    accountNumber: { type: string }
+                    bankName: { type: string }
+                    bankAccountHolderName: { type: string }
+                    provider: { type: string }
+                    payInReference: { type: string }
+        '400':
+          description: The account query was invalid.
+  /accounts:
+    post:
+      tags: [Accounts]
+      operationId: createAccount
+      summary: Create an account
+      description: Create an account in a specified currency.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: x-account-holder-id
+          in: header
+          required: true
+          schema: { type: string }
+        - name: idempotency-key
+          in: header
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currency]
+              properties:
+                currency:
+                  type: string
+                  description: Three-letter ISO 4217 currency code.
+                friendlyName: { type: string }
+                accountId: { type: string }
+                ibanCountry: { type: string }
+                endToEndReference: { type: string }
+      responses:
+        '201':
+          description: Account created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  createdOn: { type: string, format: date-time }
+                  status: { type: string }
+                  actualBalance:
+                    type: object
+                    properties:
+                      value: { type: number }
+                      currency: { type: string }
+                  availableBalance:
+                    type: object
+                    properties:
+                      value: { type: number }
+                      currency: { type: string }
+                  accountHolderId: { type: string }
+                  internalAccountId: { type: string }
+  /beneficiaries:
+    post:
+      tags: [Beneficiaries]
+      operationId: createParentBeneficiary
+      summary: Create a beneficiary record
+      description: Create a parent beneficiary before adding bank details.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: x-account-holder-id
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName: { type: string }
+                lastName: { type: string }
+                title: { type: string }
+                beneficiaryType: { type: string }
+                friendlyName: { type: string }
+      responses:
+        default:
+          description: Parent beneficiary response; the guide does not specify an HTTP status code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  accountHolderId: { type: string }
+                  beneficiaryType: { type: string }
+                  title: { type: string }
+                  firstName: { type: string }
+                  lastName: { type: string }
+                  friendlyName: { type: string }
+                  tag:
+                    type: [string, 'null']
+  /beneficiaries/{parentBeneficiaryId}/bank-beneficiaries:
+    post:
+      tags: [Beneficiaries]
+      operationId: createBankBeneficiary
+      summary: Add bank details to a beneficiary
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: parentBeneficiaryId
+          in: path
+          required: true
+          schema: { type: string }
+        - name: x-account-holder-id
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - bankAccountCurrency
+                - paymentTypes
+                - beneficiaryType
+                - beneficiaryCountry
+                - bankAccountCountry
+                - bankAccountHolderName
+              properties:
+                bankAccountCurrency: { type: string }
+                paymentTypes:
+                  type: array
+                  items: { type: string }
+                beneficiaryType: { type: string }
+                beneficiaryCountry: { type: string }
+                bankAccountCountry: { type: string }
+                bankAccountType: { type: string }
+                bankName: { type: string }
+                bankAddress: { type: string }
+                bankAccountHolderName: { type: string }
+                accountNumber: { type: string }
+                iban: { type: string }
+                bic: { type: string }
+                beneficiaryFirstName: { type: string }
+                beneficiaryLastName: { type: string }
+                beneficiaryAddressLine: { type: string }
+                beneficiaryCity: { type: string }
+                beneficiaryPostalCode: { type: string }
+      responses:
+        '200':
+          description: Bank beneficiary created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+        '400':
+          description: The beneficiary details were invalid.
+  /transactions/bank-payouts:
+    post:
+      tags: [Payments]
+      operationId: createBankPayout
+      summary: Create a bank payout
+      description: Send funds from an account to a previously created bank beneficiary.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: x-account-holder-id
+          in: header
+          required: true
+          schema: { type: string }
+        - name: idempotency-key
+          in: header
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [accountId, beneficiaryId, amount, reference]
+              properties:
+                accountId: { type: string }
+                beneficiaryId: { type: string }
+                amount:
+                  type: object
+                  required: [currency, value]
+                  properties:
+                    currency: { type: string }
+                    value: { type: number, format: float }
+                paymentType: { type: string }
+                reference: { type: string }
+                paymentDate: { type: string, format: date }
+                reasonCode: { type: string }
+                purposeCode: { type: string }
+      responses:
+        '200':
+          description: Payout transaction created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id: { type: string }
+                  accountId: { type: string }
+                  createdDate: { type: string, format: date-time }
+                  paymentDate: { type: string, format: date-time }
+                  status: { type: string }
+                  transactionId: { type: string }
+                  amount:
+                    type: object
+                    properties:
+                      value: { type: number }
+                      currency: { type: string }
+        '400':
+          description: The payout request was invalid.
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
