@@ -70,6 +70,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
 | OpenPageRank     | [API specification](https://openpagerank.keywordseverywhere.com/v1/openapi.json)                                    | JSON   | 3.0.3   | `official` `seo` `domain-authority` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
+| Paved | [Public API specification](https://dash.readme.com/api/v1/api-registry/1fesa4mm51vxfx) | JSON | 3.0.3 | `official` `newsletter-advertising` `publisher-marketplace` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
 | PhantomBuster | [API v2 specification](https://raw.githubusercontent.com/phantombuster/public-gists/master/swagger-api-v2.json) | JSON | 3.0.0 | `official` `lead-generation` `automation` `web-scraping` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
