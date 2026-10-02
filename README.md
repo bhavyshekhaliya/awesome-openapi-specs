@@ -57,6 +57,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
 | GoTo Webinar     | [Community specification](specs/gotowebinar/openapi.yml) · [source docs](https://developer.goto.com/GoToWebinarV2) | YAML | 3.1.0 | `community-maintained` `webinars` `event-management` |
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
+| Iterable         | [API specification](https://api.iterable.com/api-docs)                                                           | JSON   | 2.0     | `official` `marketing-automation`         |
 | Kit              | [API v4 specification](https://developers.kit.com/api-reference/v4.json)                                         | JSON   | 3.0.3   | `official` `email-marketing`              |
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
