@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Postmark | [Account API](https://postmarkapp.com/swagger/account.yml); [Server API](https://postmarkapp.com/swagger/server.yml) | YAML | 2.0 | `transactional-email` |
 | SendFox | [API specification](https://sendfox.com/openapi.yaml) | YAML | 3.0.3 | `email-marketing` |
 | SendPulse | [OpenAPI specification index](https://api.sendpulse.com/.well-known/openapi/index.yaml) | YAML | 3.1.0 | `email-marketing` `marketing-automation` |
 | CleverReach | [API specification](https://rest.cleverreach.com/v3/explorer/swagger.json) | JSON | 2.0 | `email-marketing` |
