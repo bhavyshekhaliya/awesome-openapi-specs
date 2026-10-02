@@ -305,6 +305,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
+| Postproxy | [Social Media API specification](https://postproxy.dev/openapi.json) | JSON | 3.1.0 | `official` `social-media` `publishing` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
 | Zulip | [REST API specification](https://raw.githubusercontent.com/zulip/zulip/main/zerver/openapi/zulip.yaml) | YAML | 3.0.1 | `official` `community` `messaging` `open-source` |
 
