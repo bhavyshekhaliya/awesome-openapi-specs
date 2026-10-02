@@ -339,6 +339,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Media and Entertainment
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Tailor | [API specification](https://docs.tailor.video/api-reference/openapi.json) | JSON | 3.1.0 | `official` `video` `personalization` |
 | OMDb | [API specification](https://www.omdbapi.com/swagger.json) | JSON | 2.0 | `official` `movies` `media` |
 | OpenF1 | [Community specification](specs/openf1/openapi.yml) Ã‚Â· [source docs](https://openf1.org/docs/) | YAML | 3.1.0 | `community-maintained` `sports` `open-source` |
 | Live Tennis API | [API specification](https://docs.livetennisapi.com/openapi.yaml) | YAML | 3.1.0 | `official` `sports` |
