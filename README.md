@@ -276,6 +276,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## E-commerce and Retail
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Vouchery.io | [API specification](https://dash.readme.com/api/v1/api-registry/2r5moim7dh7bb2) | JSON | 3.0.0 | `official` `loyalty` `promotions` `marketing` |
 | Amazon | [Selling Partner API models](https://raw.githubusercontent.com/amzn/selling-partner-api-models/main/models/sellers-api-model/sellers.json) | JSON | 2.0 | `official` `commerce` `retail` |
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Lazada | [Community specification](specs/lazada/openapi.yml) Â· [order API docs](https://open.lazada.com/apps/doc/doc?docId=121327&nodeId=29616) | YAML | 3.0.3 | `community-maintained` `focused` `commerce` `marketplace` |
