@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -60,6 +60,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Billetweb | [API specification](https://www.billetweb.fr/api/openapi.json?v=942) | JSON | 3.0.0 | `event-management` |
 | Flexmail | [API specification](https://api.flexmail.eu/documentation/openapi.php) | JSON | 3.1.0 | `email-marketing` |
 | Cardly | [API specification](https://api.card.ly/openapi/en-AU/2.2.0/yaml) | YAML | 3.1.0 | `direct-mail` `marketing` |
+| ChartMogul | [Community OpenAPI specification](https://github.com/api-evangelist/chartmogul/blob/35598d0cdab03af59aa59e9be58db58507d9e2d4/openapi/_original/chartmogul-openapi.yml); [official API docs](https://dev.chartmogul.com/docs/introduction/) | YAML | 3.1.0 | `community-maintained` `subscription-analytics` `crm` |
 | Connectif | [API specification](https://api-docs.connectif.cloud/swagger.json) | JSON | 2.0 | `marketing-automation` |
 | UpContent | [API specification](https://docs.upcontent.com/api/public.yaml) | YAML | 2.0 | `content-marketing` |
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
