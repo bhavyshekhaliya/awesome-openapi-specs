@@ -1,0 +1,222 @@
+openapi: 3.2.1
+info:
+  title: OCR.space OCR API
+  version: 1.0.0
+  description: >-
+    Submit an image or PDF URL, a multipart file, or a Base64 image/PDF to the
+    free OCR API. A free API key is available by registration; the documented
+    free tier allows 500 requests per day per IP and 25,000 requests per month.
+  externalDocs:
+    description: OCR.space API documentation
+    url: https://ocr.space/ocrapi
+servers:
+  - url: https://api.ocr.space
+    description: Free OCR API
+paths:
+  /parse/image:
+    post:
+      operationId: parseImage
+      summary: Parse an image or PDF
+      description: >-
+        Send exactly one of `url`, `file`, or `base64Image`. The provider
+        documents API key authentication in the `apikey` header for this POST
+        endpoint. Searchable PDF creation is available with the documented
+        request options.
+      security:
+        - apiKeyHeader: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/OcrRequestFields'
+                - oneOf:
+                    - required: [url]
+                    - required: [file]
+                    - required: [base64Image]
+      responses:
+        '200':
+          description: OCR processing result. Processing errors are reported in the JSON body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcrResponse'
+  /parse/imageurl:
+    get:
+      operationId: parseImageUrl
+      summary: Parse an image or PDF from a URL
+      description: >-
+        This GET endpoint accepts a remote image or PDF URL only; it does not
+        accept file uploads or Base64 input. Its API key is sent in the query
+        string as documented by the provider.
+      security:
+        - apiKeyQuery: []
+      parameters:
+        - name: url
+          in: query
+          required: true
+          description: URL of a remote image or PDF with a suitable content type.
+          schema:
+            type: string
+            format: uri
+        - name: language
+          in: query
+          description: Three-letter OCR language code; `auto` is supported by engines 2 and 3.
+          schema:
+            type: string
+        - name: isOverlayRequired
+          in: query
+          description: Return word-level position data.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: OCR processing result. Processing errors are reported in the JSON body.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcrResponse'
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      in: header
+      name: apikey
+    apiKeyQuery:
+      type: apiKey
+      in: query
+      name: apikey
+  schemas:
+    OcrRequestFields:
+      type: object
+      description: >-
+        Send exactly one input source: `url`, `file`, or `base64Image`.
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Remote image or PDF URL.
+        file:
+          type: string
+          format: binary
+          description: Multipart image or PDF file.
+        base64Image:
+          type: string
+          description: Base64-encoded image or PDF.
+        language:
+          type: string
+          description: Three-letter OCR language code; `auto` is supported by engines 2 and 3.
+        isOverlayRequired:
+          type: boolean
+          default: false
+          description: Return word-level position data.
+        filetype:
+          type: string
+          enum: [PDF, GIF, PNG, JPG, TIF, BMP]
+          description: Override file type detection.
+        detectOrientation:
+          type: boolean
+          description: Automatically rotate the image and return its text orientation.
+        isCreateSearchablePdf:
+          type: boolean
+          default: false
+          description: Create a searchable PDF and enable overlay data.
+        isSearchablePdfHideTextLayer:
+          type: boolean
+          default: false
+          description: Hide the text layer in a generated searchable PDF.
+        scale:
+          type: boolean
+          default: false
+          description: Apply internal image upscaling.
+        isTable:
+          type: boolean
+          description: Format parsed text line by line for table-like documents.
+        OCREngine:
+          type: integer
+          enum: [1, 2, 3]
+          default: 2
+          description: OCR engine selection.
+    OcrResponse:
+      type: object
+      properties:
+        ParsedResults:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParsedResult'
+        OCRExitCode:
+          oneOf:
+            - type: integer
+            - type: string
+          description: Overall OCR status code.
+        IsErroredOnProcessing:
+          type: boolean
+        ErrorMessage:
+          type: [string, 'null']
+        ErrorDetails:
+          type: [string, 'null']
+        SearchablePDFURL:
+          type: [string, 'null']
+          format: uri
+        ProcessingTimeInMilliseconds:
+          oneOf:
+            - type: integer
+            - type: string
+    ParsedResult:
+      type: object
+      properties:
+        TextOverlay:
+          oneOf:
+            - $ref: '#/components/schemas/TextOverlay'
+            - type: 'null'
+        FileParseExitCode:
+          oneOf:
+            - type: integer
+            - type: string
+        ParsedText:
+          type: [string, 'null']
+        ErrorMessage:
+          type: [string, 'null']
+        ErrorDetails:
+          type: [string, 'null']
+        TextOrientation:
+          oneOf:
+            - type: integer
+            - type: string
+    TextOverlay:
+      type: object
+      properties:
+        Lines:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverlayLine'
+        HasOverlay:
+          type: boolean
+        Message:
+          type: [string, 'null']
+    OverlayLine:
+      type: object
+      properties:
+        Words:
+          type: array
+          items:
+            $ref: '#/components/schemas/OverlayWord'
+        MaxHeight:
+          type: number
+        MinTop:
+          type: number
+    OverlayWord:
+      type: object
+      properties:
+        WordText:
+          type: string
+        Left:
+          type: number
+        Top:
+          type: number
+        Height:
+          type: number
+        Width:
+          type: number

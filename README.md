@@ -170,6 +170,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
 | ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
+| OCR.space | [Community specification](specs/ocrspace/openapi.yml); [source docs](https://ocr.space/ocrapi) | YAML | 3.2.1 | `community-maintained` `document-processing` |
 | Open Food Facts | [API v3 specification](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/docs/api/ref/api-v3.yaml) | YAML | 3.1.0 | `official` `open-source` `food-data` `open-data` |
 | OpenAlex | [API specification](https://help.openalex.org/openapi.json) | JSON | 3.1.0 | `official` `research` `scholarly-data` `public-data` |
 | Datafast | [Community specification](specs/datafast/openapi.yml); [source docs](https://datafa.st/docs/api) | YAML | 3.2.1 | `community-maintained` `analytics` |
