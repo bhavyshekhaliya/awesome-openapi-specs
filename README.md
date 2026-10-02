@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Billetweb | [API specification](https://www.billetweb.fr/api/openapi.json?v=942) | JSON | 3.0.0 | `official` `events` `ticketing` |
 | eSputnik | [API specification](https://esputnik.com/api/es.json) | JSON | 3.0.1 | `official` `email-marketing` `marketing-automation` |
 | Reloadify | [API specification](https://app.reloadify.com/api-docs/v1/swagger.yaml) | YAML | 3.0.1 | `official` `e-commerce` `email-marketing` |
 | Blueshift | [API specification](https://dash.readme.com/api/v1/api-registry/5ps18xmu84hj4g) | JSON | 3.0.0 | `official` `marketing-automation` `customer-data-platform` |
