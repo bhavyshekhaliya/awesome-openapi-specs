@@ -1,0 +1,140 @@
+openapi: 3.2.0
+info:
+  title: CleverTap REST Campaigns API
+  description: 'CleverTap customer engagement and retention REST API.
+
+    The base URL is region-specific: replace {region} with your account''s
+
+    region code (e.g. in1, us1, eu1, sg1, sk1, mec1). All requests must
+
+    include X-CleverTap-Account-Id and X-CleverTap-Passcode headers.
+
+    Rate limits: concurrent requests capped at 15 per account; campaign
+
+    creation limited to 3 RPS.'
+  version: 1.0.0
+  contact:
+    name: CleverTap Developers
+    url: https://developer.clevertap.com/docs
+servers:
+- url: https://{region}.api.clevertap.com
+  description: CleverTap region-specific API
+  variables:
+    region:
+      default: in1
+      enum:
+      - in1
+      - us1
+      - eu1
+      - sg1
+      - sk1
+      - mec1
+      - aps3
+      description: CleverTap data-center region
+security:
+- AccountId: []
+  Passcode: []
+tags:
+- name: Campaigns
+paths:
+  /1/targets/create.json:
+    post:
+      summary: Create a campaign
+      description: 'Create a campaign across push, email, sms, webpush, whatsapp,
+
+        webhook, or notificationinbox channels.'
+      operationId: createCampaign
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - target_mode
+              - content
+              - when
+              properties:
+                name:
+                  type: string
+                target_mode:
+                  type: string
+                  enum:
+                  - push
+                  - email
+                  - sms
+                  - webpush
+                  - whatsapp
+                  - webhook
+                  - notificationinbox
+                where:
+                  type: object
+                content:
+                  type: object
+                when:
+                  type: string
+                estimate_only:
+                  type: boolean
+                draft:
+                  type: boolean
+                segment:
+                  type: string
+                labels:
+                  type: array
+                  items:
+                    type: string
+                respect_frequency_caps:
+                  type: boolean
+                send_to_all_devices:
+                  type: boolean
+      responses:
+        '200':
+          description: Campaign created or estimated
+  /1/targets/stop.json:
+    post:
+      summary: Stop a campaign
+      operationId: stopCampaign
+      tags:
+      - Campaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: Stopped
+  /1/targets/result.json:
+    get:
+      summary: Get campaign result/report
+      operationId: getCampaignResult
+      tags:
+      - Campaigns
+      parameters:
+      - in: query
+        name: req_id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Campaign result
+components:
+  securitySchemes:
+    AccountId:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Account-Id
+      description: CleverTap account identifier
+    Passcode:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Passcode
+      description: CleverTap account or user passcode

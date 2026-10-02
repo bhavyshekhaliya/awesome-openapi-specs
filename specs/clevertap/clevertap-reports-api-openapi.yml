@@ -1,0 +1,81 @@
+openapi: 3.2.0
+info:
+  title: CleverTap REST Reports API
+  description: 'CleverTap customer engagement and retention REST API.
+
+    The base URL is region-specific: replace {region} with your account''s
+
+    region code (e.g. in1, us1, eu1, sg1, sk1, mec1). All requests must
+
+    include X-CleverTap-Account-Id and X-CleverTap-Passcode headers.
+
+    Rate limits: concurrent requests capped at 15 per account; campaign
+
+    creation limited to 3 RPS.'
+  version: 1.0.0
+  contact:
+    name: CleverTap Developers
+    url: https://developer.clevertap.com/docs
+servers:
+- url: https://{region}.api.clevertap.com
+  description: CleverTap region-specific API
+  variables:
+    region:
+      default: in1
+      enum:
+      - in1
+      - us1
+      - eu1
+      - sg1
+      - sk1
+      - mec1
+      - aps3
+      description: CleverTap data-center region
+security:
+- AccountId: []
+  Passcode: []
+tags:
+- name: Reports
+paths:
+  /1/counts/event.json:
+    post:
+      summary: Get event counts
+      operationId: getEventCounts
+      tags:
+      - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Event counts
+  /1/counts/profile.json:
+    post:
+      summary: Get profile counts
+      operationId: getProfileCounts
+      tags:
+      - Reports
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Profile counts
+components:
+  securitySchemes:
+    AccountId:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Account-Id
+      description: CleverTap account identifier
+    Passcode:
+      type: apiKey
+      in: header
+      name: X-CleverTap-Passcode
+      description: CleverTap account or user passcode

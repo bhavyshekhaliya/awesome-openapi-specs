@@ -100,6 +100,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
 | BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
+| CleverTap | [Campaigns](specs/clevertap/clevertap-campaigns-api-openapi.yml); [Events](specs/clevertap/clevertap-events-api-openapi.yml); [Profiles](specs/clevertap/clevertap-profiles-api-openapi.yml); [Reports](specs/clevertap/clevertap-reports-api-openapi.yml); [official API reference](https://developer.clevertap.com/docs/api-reference) | YAML | 3.2.0 | `community-maintained` `marketing-automation` `customer-engagement` |
 | Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
 | Mailchimp Transactional | [API specification](https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json) | JSON | 3.1.0 | `transactional-email` |
