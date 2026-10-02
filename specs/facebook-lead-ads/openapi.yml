@@ -1,0 +1,470 @@
+openapi: 3.1.0
+info:
+  title: Facebook Lead Ads API
+  version: 26.0
+  description: |
+    Community-maintained OpenAPI coverage for Meta Graph API operations used to
+    discover lead forms, read submitted and test leads, and configure leadgen
+    webhook subscriptions. This is a focused subset, not a specification of the
+    complete Graph API. Lead fields depend on each form and on the requested
+    fields; unknown response properties are retained.
+  contact:
+    name: Awesome OpenAPI Specs maintainers
+    url: https://github.com/bhavyshekhaliya/awesome-openapi-specs
+servers:
+  - url: https://graph.facebook.com/v26.0
+    description: Meta Graph API v26.0, current when verified on 2026-10-02
+externalDocs:
+  description: Meta Marketing API Lead Ads guide
+  url: https://developers.facebook.com/docs/marketing-api/guides/lead-ads/
+security:
+  - MetaAccessToken: []
+tags:
+  - name: Lead Forms
+  - name: Leads
+  - name: Webhooks
+paths:
+  /{page_id}/leadgen_forms:
+    get:
+      tags: [Lead Forms]
+      operationId: listPageLeadForms
+      summary: List lead forms for a Page
+      description: Returns lead-generation forms associated with a Page. Access requires a Page token and the permissions granted for lead retrieval.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Lead forms and pagination information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadFormCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{form_id}/leads:
+    get:
+      tags: [Leads]
+      operationId: listFormLeads
+      summary: List submitted leads for a form
+      description: Returns submissions captured by a lead form. Access requires the appropriate Page access and the leads_retrieval permission. Lead field data reflects the questions configured on the form.
+      parameters:
+        - $ref: '#/components/parameters/FormId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Leads and pagination information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{lead_id}:
+    get:
+      tags: [Leads]
+      operationId: getLead
+      summary: Retrieve a lead by ID
+      description: Retrieves a lead referenced by its leadgen ID, such as the ID received in a leadgen webhook notification.
+      parameters:
+        - $ref: '#/components/parameters/LeadId'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: Lead record
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{form_id}/test_leads:
+    get:
+      tags: [Leads]
+      operationId: listFormTestLeads
+      summary: List test leads for a form
+      description: Returns test submissions associated with a lead form for integration testing.
+      parameters:
+        - $ref: '#/components/parameters/FormId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+      responses:
+        '200':
+          description: Test leads and pagination information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+    post:
+      tags: [Leads]
+      operationId: createFormTestLead
+      summary: Create a test lead
+      description: Creates a test submission for a form. The field data is optional and may be omitted when testing with the form's default fields.
+      parameters:
+        - $ref: '#/components/parameters/FormId'
+        - $ref: '#/components/parameters/Fields'
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateTestLeadRequest'
+      responses:
+        '200':
+          description: Created test lead
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Lead'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{page_id}/subscribed_apps:
+    get:
+      tags: [Webhooks]
+      operationId: listPageWebhookSubscriptions
+      summary: List apps subscribed to a Page
+      description: Lists apps subscribed to receive Page webhook events.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+      responses:
+        '200':
+          description: Subscribed apps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageSubscriptionCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+    post:
+      tags: [Webhooks]
+      operationId: subscribePageToLeadgen
+      summary: Subscribe an app to a Page's leadgen events
+      description: Subscribes the current app to leadgen changes for the Page. Configure the app's Webhooks callback separately.
+      parameters:
+        - $ref: '#/components/parameters/PageId'
+        - name: subscribed_fields
+          in: query
+          required: true
+          description: Page fields for which the app should receive notifications.
+          schema:
+            type: string
+            const: leadgen
+      responses:
+        '200':
+          description: Subscription result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+  /{app_id}/subscriptions:
+    get:
+      tags: [Webhooks]
+      operationId: listAppWebhookSubscriptions
+      summary: List webhook subscriptions for an app
+      description: Lists webhook object subscriptions configured for the Meta app.
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+      responses:
+        '200':
+          description: Webhook subscriptions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppSubscriptionCollection'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+    post:
+      tags: [Webhooks]
+      operationId: createAppWebhookSubscription
+      summary: Configure a Page leadgen webhook
+      description: Registers a callback URL for Page leadgen notifications. The endpoint must implement Meta's webhook verification handshake.
+      parameters:
+        - $ref: '#/components/parameters/AppId'
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CreateAppSubscriptionRequest'
+      responses:
+        '200':
+          description: Subscription result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        default:
+          $ref: '#/components/responses/GraphApiError'
+components:
+  securitySchemes:
+    MetaAccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque access token
+      description: User, Page, or app access token with the permissions required by the requested Graph API edge.
+  parameters:
+    PageId:
+      name: page_id
+      in: path
+      required: true
+      description: Meta Page ID
+      schema:
+        type: string
+    FormId:
+      name: form_id
+      in: path
+      required: true
+      description: Lead-generation form ID
+      schema:
+        type: string
+    LeadId:
+      name: lead_id
+      in: path
+      required: true
+      description: Leadgen ID
+      schema:
+        type: string
+    AppId:
+      name: app_id
+      in: path
+      required: true
+      description: Meta app ID
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated Graph API fields to include in each result.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Number of items requested from the connection.
+      schema:
+        type: integer
+        minimum: 1
+    After:
+      name: after
+      in: query
+      required: false
+      description: Cursor returned in the previous response's paging.cursors.after value.
+      schema:
+        type: string
+  responses:
+    GraphApiError:
+      description: Graph API error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GraphApiError'
+  schemas:
+    LeadFormCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeadForm'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    LeadCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lead'
+        paging:
+          $ref: '#/components/schemas/Paging'
+      additionalProperties: true
+    LeadForm:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        page_id:
+          type: string
+        created_time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ACTIVE, ARCHIVED, DELETED, DRAFT]
+        leads_count:
+          type: integer
+        questions:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    Lead:
+      type: object
+      properties:
+        id:
+          type: string
+        form_id:
+          type: string
+        created_time:
+          type: string
+          format: date-time
+        ad_id:
+          type: string
+        adset_id:
+          type: string
+        campaign_id:
+          type: string
+        is_organic:
+          type: boolean
+        platform:
+          type: string
+        field_data:
+          type: array
+          description: Form-specific submitted values. Names and values depend on the questions configured on the form.
+          items:
+            $ref: '#/components/schemas/LeadFieldData'
+        custom_disclaimer_responses:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    LeadFieldData:
+      type: object
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    CreateTestLeadRequest:
+      type: object
+      properties:
+        field_data:
+          type: string
+          description: JSON-encoded array of values for fields defined by the selected form.
+          example: '[{"name":"email","values":["lead@example.com"]}]'
+        custom_disclaimer_responses:
+          type: string
+          description: Optional JSON-encoded array of custom disclaimer responses.
+      additionalProperties: false
+    Paging:
+      type: object
+      properties:
+        cursors:
+          type: object
+          properties:
+            before:
+              type: string
+            after:
+              type: string
+          additionalProperties: true
+        next:
+          type: string
+          format: uri
+        previous:
+          type: string
+          format: uri
+      additionalProperties: true
+    PageSubscriptionCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/PageSubscription'
+      additionalProperties: true
+    PageSubscription:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        subscribed_fields:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    AppSubscriptionCollection:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppSubscription'
+      additionalProperties: true
+    AppSubscription:
+      type: object
+      properties:
+        object:
+          type: string
+        callback_url:
+          type: string
+          format: uri
+        fields:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    CreateAppSubscriptionRequest:
+      type: object
+      required: [object, callback_url, fields, verify_token]
+      properties:
+        object:
+          type: string
+          const: page
+        callback_url:
+          type: string
+          format: uri
+        fields:
+          type: string
+          const: leadgen
+        verify_token:
+          type: string
+          description: Caller-chosen string checked by the webhook callback during verification.
+      additionalProperties: false
+    Success:
+      type: object
+      properties:
+        success:
+          type: boolean
+      required: [success]
+      additionalProperties: true
+    GraphApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            type:
+              type: string
+            code:
+              type: integer
+            error_subcode:
+              type: integer
+            fbtrace_id:
+              type: string
+          additionalProperties: true
+      required: [error]
+      additionalProperties: true
