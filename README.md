@@ -267,6 +267,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Government and Public Data
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Open-Meteo | [Weather Forecast API specification](https://raw.githubusercontent.com/open-meteo/open-meteo/main/openapi/forecast.yml) | YAML | 3.1.0 | `official` `weather` `public-data` `open-source` |
 | openFDA | [Community specification](specs/openfda/openapi.yml) Â· [API documentation](https://open.fda.gov/apis/) | YAML | 3.1.0 | `community-maintained` `government` `healthcare` `public-data` `open-source` |
 | Open States | [API specification](https://v3.openstates.org/openapi.json) | JSON | 3.0.2 | `official` `government` `legislative-data` `open-data` `open-source` |
 | U.S. National Weather Service | [weather.gov API specification](https://api.weather.gov/openapi.json) | JSON | 3.1.2 | `official` `government` `weather` `public-data` |
