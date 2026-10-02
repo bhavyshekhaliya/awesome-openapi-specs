@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -565,6 +565,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Publora | [API specification](https://docs.publora.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `scheduling` |
 | Adhook | [API specification](https://app.adhook.io/api/openapi.json) | JSON | 3.0.1 | `social-media` `advertising` |
 | ShoutOut | [API specification](https://apidocs.shoutout.social/spec.json) | JSON | 3.0.0 | `social-media` |
+| Taggbox | [Community specification](specs/taggbox/openapi.yml) · [source docs](https://taggbox.com/support/taggbox-api-with-ai/) | YAML | 3.1.0 | `community-maintained` `social-media` `user-generated-content` |
 | sona.to | [API specification](https://developers.sona.to/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
 | WoopSocial | [API specification](https://api.woopsocial.com/v1/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
 | GaggleAMP | [API specification](https://secure6.gaggleamp.com/api/v1/swagger.json) | JSON | 2.0 | `employee-advocacy` `social-media` |

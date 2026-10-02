@@ -1,0 +1,587 @@
+openapi: 3.1.0
+info:
+  title: Taggbox Developer API v3
+  version: '3'
+  description: >-
+    Community-maintained description of the read-only Taggbox API v3 documented
+    for retrieving approved social and review posts. It covers only the posts
+    and network-reference endpoints described in the linked API documentation.
+externalDocs:
+  description: Taggbox API guide linking to the detailed v3 API description
+  url: https://taggbox.com/support/taggbox-api-with-ai/
+servers:
+  - url: https://api.taggbox.com/api
+    description: Production API
+security:
+  - bearerAuth: []
+  - accessToken: []
+tags:
+  - name: Posts
+    description: Read approved posts from Taggbox galleries.
+  - name: Reference data
+    description: Read supported social network names.
+paths:
+  /v3/posts:
+    get:
+      operationId: listPosts
+      summary: List approved posts
+      description: >-
+        Returns a page of approved posts. Supplied filters are combined. When
+        `paging.has_more` is true, send the returned `paging.next_cursor` as
+        `after` on the next request and keep the same sort.
+      tags:
+        - Posts
+      parameters:
+        - name: feed_ids
+          in: query
+          description: >-
+            Comma-separated feed IDs. Use feed IDs to filter by source network;
+            there is no network or wall ID filter.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+          example:
+            - feed_88
+            - feed_91
+        - name: media_types
+          in: query
+          description: Comma-separated media types.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - text
+                - image
+                - video
+        - name: sort
+          in: query
+          description: >-
+            Comma-separated sort fields. Prefix a field with `-` for descending
+            order. Cursors are tied to the sort that created them.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            default:
+              - -pinned
+              - -created_at
+            items:
+              type: string
+              enum:
+                - created_at
+                - -created_at
+                - modified_at
+                - -modified_at
+                - id
+                - -id
+                - pinned
+                - -pinned
+        - name: limit
+          in: query
+          description: Page size. The service may cap it to the account plan.
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: after
+          in: query
+          description: Opaque next-page cursor returned in `paging.next_cursor`.
+          required: false
+          schema:
+            type: string
+        - name: pinned_only
+          in: query
+          description: Set to 1 to return only pinned posts.
+          required: false
+          schema:
+            type: integer
+            enum:
+              - 1
+        - name: min_rating
+          in: query
+          description: Minimum rating filter for review posts.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 5
+        - name: created_after
+          in: query
+          description: Lower creation-time bound as an ISO 8601 timestamp or Unix seconds.
+          required: false
+          schema:
+            oneOf:
+              - type: string
+                format: date-time
+              - type: integer
+        - name: created_before
+          in: query
+          description: Upper creation-time bound as an ISO 8601 timestamp or Unix seconds.
+          required: false
+          schema:
+            oneOf:
+              - type: string
+                format: date-time
+              - type: integer
+        - name: expand
+          in: query
+          description: >-
+            Comma-separated optional expansions. Each expansion may add API
+            queries; both are off by default.
+          required: false
+          style: form
+          explode: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - products
+                - album
+      responses:
+        '200':
+          description: A page of posts and cursor pagination information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostListEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+  /v3/posts/{postid}:
+    get:
+      operationId: getPost
+      summary: Get a post
+      description: >-
+        Returns one post on the authenticated account. The post identifier may
+        include or omit the `post_` prefix. List filters and expansions are not
+        applied to this endpoint.
+      tags:
+        - Posts
+      parameters:
+        - name: postid
+          in: path
+          description: Post ID, with or without the `post_` prefix.
+          required: true
+          schema:
+            type: string
+            pattern: '^(post_)?[0-9]+$'
+          examples:
+            prefixed:
+              value: post_4421
+            numeric:
+              value: '4421'
+      responses:
+        '200':
+          description: The requested post.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SinglePostEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: The post is not available on the authenticated account.
+  /v3/networks:
+    get:
+      operationId: listNetworks
+      summary: List supported networks
+      description: Returns the reference vocabulary used by each post's network slug.
+      tags:
+        - Reference data
+      responses:
+        '200':
+          description: Supported social network names.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworksEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Preferred credential format. Use the Taggbox account access token or
+        gallery-scoped wall token as a bearer token.
+    accessToken:
+      type: apiKey
+      in: query
+      name: access_token
+      description: Alternative query-string credential; a bearer header is preferred.
+  responses:
+    Unauthorized:
+      description: Credentials are missing, invalid, or not permitted for API access.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    ValidationFailed:
+      description: One or more request parameters failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorEnvelope'
+  schemas:
+    PostListEnvelope:
+      type: object
+      required:
+        - status
+        - code
+        - body
+      properties:
+        status:
+          type: boolean
+          const: true
+        message:
+          type: string
+        code:
+          type: integer
+          const: 200
+        body:
+          type: object
+          required:
+            - posts
+            - paging
+          properties:
+            posts:
+              type: array
+              items:
+                $ref: '#/components/schemas/Post'
+            paging:
+              $ref: '#/components/schemas/Paging'
+    SinglePostEnvelope:
+      type: object
+      required:
+        - status
+        - code
+        - body
+      properties:
+        status:
+          type: boolean
+          const: true
+        message:
+          type: string
+        code:
+          type: integer
+          const: 200
+        body:
+          type: object
+          required:
+            - post
+          properties:
+            post:
+              $ref: '#/components/schemas/Post'
+    NetworksEnvelope:
+      type: object
+      required:
+        - status
+        - code
+        - body
+      properties:
+        status:
+          type: boolean
+          const: true
+        message:
+          type: string
+        code:
+          type: integer
+          const: 200
+        body:
+          type: object
+          required:
+            - networks
+          properties:
+            networks:
+              type: array
+              items:
+                type: string
+    Paging:
+      type: object
+      required:
+        - limit
+        - has_more
+        - next_cursor
+      properties:
+        limit:
+          type: integer
+        has_more:
+          type: boolean
+        next_cursor:
+          type:
+            - string
+            - 'null'
+    Post:
+      type: object
+      required:
+        - id
+        - object
+        - wall_id
+        - feed_id
+        - album_id
+        - network
+        - media_type
+        - pinned
+        - active
+        - created_at
+        - created_timestamp
+        - modified_at
+        - modified_timestamp
+        - content
+        - media
+        - author
+        - source
+        - counts
+        - sentiment
+        - rating
+        - products
+      properties:
+        id:
+          type: string
+          description: Prefixed post identifier.
+        object:
+          type: string
+          const: post
+        wall_id:
+          type:
+            - string
+            - 'null'
+        feed_id:
+          type:
+            - string
+            - 'null'
+        album_id:
+          type:
+            - string
+            - 'null'
+          description: Carousel group key shared by its slides.
+        network:
+          $ref: '#/components/schemas/Network'
+        media_type:
+          type: string
+          enum:
+            - text
+            - image
+            - video
+        pinned:
+          type: boolean
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        created_timestamp:
+          type: integer
+          description: Creation time as Unix seconds.
+        modified_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        modified_timestamp:
+          type:
+            - integer
+            - 'null'
+          description: Modification time as Unix seconds.
+        content:
+          type: object
+          required:
+            - title
+            - text
+          properties:
+            title:
+              type:
+                - string
+                - 'null'
+            text:
+              type: string
+              description: Plain text with tags stripped.
+        media:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaItem'
+        author:
+          $ref: '#/components/schemas/Author'
+        source:
+          $ref: '#/components/schemas/Source'
+        counts:
+          $ref: '#/components/schemas/Counts'
+        sentiment:
+          type:
+            - string
+            - 'null'
+        rating:
+          type:
+            - number
+            - 'null'
+          description: Present for review posts.
+        products:
+          type:
+            - array
+            - 'null'
+          description: >-
+            Null unless `expand=products` is requested. Product objects include
+            documented identifiers, SKU, title, URLs, price, discount, currency,
+            stock state, and position; field types are not specified in the source.
+          items:
+            type: object
+            additionalProperties: true
+    Network:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+      properties:
+        id:
+          type: string
+        slug:
+          type: string
+        name:
+          type: string
+    MediaItem:
+      type: object
+      required:
+        - type
+        - url
+        - cdn_url
+        - width
+        - height
+      properties:
+        type:
+          type: string
+          enum:
+            - image
+            - video
+        url:
+          type: string
+          format: uri
+        cdn_url:
+          type: string
+          format: uri
+        width:
+          type:
+            - number
+            - 'null'
+        height:
+          type:
+            - number
+            - 'null'
+    Author:
+      type: object
+      required:
+        - name
+        - handle
+        - avatar_url
+        - profile_url
+        - external_id
+      properties:
+        name:
+          type:
+            - string
+            - 'null'
+        handle:
+          type:
+            - string
+            - 'null'
+        avatar_url:
+          type:
+            - string
+            - 'null'
+          format: uri
+        profile_url:
+          type:
+            - string
+            - 'null'
+          format: uri
+        external_id:
+          type:
+            - string
+            - 'null'
+    Source:
+      type: object
+      required:
+        - external_post_id
+        - permalink
+      properties:
+        external_post_id:
+          type:
+            - string
+            - 'null'
+        permalink:
+          type:
+            - string
+            - 'null'
+          format: uri
+    Counts:
+      type: object
+      required:
+        - likes
+        - comments
+      properties:
+        likes:
+          type: number
+        comments:
+          type: number
+    ErrorEnvelope:
+      type: object
+      properties:
+        status:
+          type: boolean
+          const: false
+        code:
+          type: integer
+        message:
+          type: string
+        body:
+          type: object
+          additionalProperties: true
+    ValidationErrorEnvelope:
+      type: object
+      required:
+        - status
+        - code
+        - message
+        - body
+      properties:
+        status:
+          type: boolean
+          const: false
+        code:
+          type: integer
+          const: 422
+        message:
+          type: string
+          const: Validation Failed
+        body:
+          type: object
+          required:
+            - fields
+          properties:
+            fields:
+              type: array
+              items:
+                type: object
+                required:
+                  - field
+                  - code
+                  - detail
+                properties:
+                  field:
+                    type: string
+                  code:
+                    type: string
+                  detail:
+                    type: string
