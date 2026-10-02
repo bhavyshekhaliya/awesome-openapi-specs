@@ -314,6 +314,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| BulkPublish | [API specification](https://app.bulkpublish.com/openapi.json) | JSON | 3.1.0 | `social-media` `scheduling` |
 | Discourse | [API specification](https://docs.discourse.org/openapi.json) | JSON | 3.1.0 | `official` `community` `forum` `open-source` |
 | Postproxy | [Social Media API specification](https://postproxy.dev/openapi.json) | JSON | 3.1.0 | `official` `social-media` `publishing` |
 | SuperX | [Community specification](specs/superx/openapi.yml); [source docs](https://docs.superx.so/) | YAML | 3.2.1 | `community-maintained` `social-media` `analytics` |
