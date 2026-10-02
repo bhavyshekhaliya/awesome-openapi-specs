@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Flyn | [API specification](https://www.flyn.to/api/openapi.json) | JSON | 3.1.0 | `official` `link-management` `url-shortener` `analytics` |
 | ZAP POST | [API specification](https://api.zappost.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `official` `direct-mail` `marketing` |
 | MailGraf | [API specification](https://api.mailgraf.com/v1/openapi.json) | JSON | 3.1.0 | `official` `email-marketing` `campaigns` |
 | Foreplay | [Public API specification](https://docs.foreplay.co/openapi.json) | JSON | 3.1.0 | `official` `advertising-research` `creative-intelligence` |
