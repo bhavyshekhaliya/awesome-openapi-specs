@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -81,6 +81,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | U2L AI | [API specification](https://u2l.ai/developers/openapi.json) | JSON | 3.1.0 | `marketing-automation` `ai` |
 | Spotler UK | [API specification](https://communigator.github.io/API-Documentation/swagger.json) | JSON | 2.0 | `email-marketing` `marketing-automation` |
 | Gathr | [API specification](https://gathr.com/assets/downloads/gathr-openapi.yaml) | YAML | 3.0.3 | `event-management` |
+| HeyReach | [Community specification](specs/heyreach/openapi.yml); [API reference](https://documenter.getpostman.com/view/23808049/2sA2xb5F75) · [Campaign API guide](https://www.heyreach.io/blog/campaign-api) | YAML | 3.1.0 | `community-maintained` `sales-engagement` `linkedin-outreach` `beta` |
 | Topia | [API specification](https://api.topia.io/api-docs/swagger.yaml) | YAML | 3.0.0 | `event-management` `virtual-events` |
 | My Most Trusted Network | [API specification](https://api.mymosttrusted.net/docs/readme.yaml) | YAML | 3.0.0 | `lead-generation` |
 | SARE | [API specification](https://dev.sare.pl/rest-api/other/swagger.json?version=0.18.0) | JSON | 3.0.3 | `email-marketing` `marketing-automation` |
