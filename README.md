@@ -222,6 +222,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Productivity
 | Provider     | OpenAPI spec                                                                                         | Format     | Version | Tags                            |
 | ------------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------- |
+| AddCal | [API specification](https://addcal.co/docs.openapi) | JSON | 3.0.3 | `scheduling` `calendar` |
 | Asana        | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
 | Box          | [API specification](https://github.com/box/box-openapi)                                              | JSON, YAML | 3.0     | `official` `content-management` |
 | Cal.com      | [API v2 specification](https://raw.githubusercontent.com/calcom/cal.com/main/docs/api-reference/v2/openapi.json) | JSON | 3.0.0 | `official` `calendar` `scheduling` `open-source` |
