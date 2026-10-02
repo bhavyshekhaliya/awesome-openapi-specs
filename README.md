@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
 | Mailchimp Transactional | [API specification](https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json) | JSON | 3.1.0 | `transactional-email` |
 | MailerSend | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1) | JSON | 3.1.0 | `email-delivery` `transactional-email` |
