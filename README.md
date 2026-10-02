@@ -417,6 +417,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| TwitterShots | [API specification](https://twittershots.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `content-generation` |
 | Publora | [API specification](https://docs.publora.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `scheduling` |
 | Adhook | [API specification](https://app.adhook.io/api/openapi.json) | JSON | 3.0.1 | `social-media` `advertising` |
 | ShoutOut | [API specification](https://apidocs.shoutout.social/spec.json) | JSON | 3.0.0 | `social-media` |
