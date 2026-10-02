@@ -66,6 +66,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | TLY Link Shortener | [API specification](https://t.ly/static_docs/openapi.yaml) | YAML | 3.0.3 | `url-management` |
 | Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
 | Sessionboard | [API specification](https://apidocs.sessionboard.com/api-reference/openapi.yaml) | YAML | 3.1.0 | `event-management` |
+| Eventmaker | [Local specification](specs/eventmaker/openapi.yaml); [official specification](https://app.eventmaker.io/swagger/v1/swagger.yaml); [API documentation](https://developers.eventmaker.io/rest-apis/eventmaker-rest-api) | YAML | 3.0.3 | `official` `event-management` `ticketing` |
 | Kundenschreiber | [API specification](https://api.kundenschreiber.de/functions/v1/public-api/openapi.json) | JSON | 3.0.3 | `email-marketing` `email-verification` |
 | Ellipsend | [API specification](https://api.ellipsend.com/v1/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Mailrith | [API specification](https://mailrith.com/openapi.json) | JSON | 3.1.0 | `email-marketing` |
