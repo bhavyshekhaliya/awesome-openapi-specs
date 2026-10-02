@@ -1,0 +1,932 @@
+openapi: 3.1.0
+info:
+  title: RxNorm API
+  version: 3.1.355
+  description: Community-maintained definition of the documented RxNorm JSON resources. RxNav returns
+    XML when the format suffix is omitted; these paths use the documented `.json` suffix. The NLM documentation
+    describes JSON responses as objects; this definition leaves function-specific fields open. The proprietary-information
+    operation can use a UMLS UTS bearer key to include restricted source-vocabulary data; ordinary RxNorm
+    API use does not require a license.
+  externalDocs:
+    description: NLM RxNorm API documentation
+    url: https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html
+servers:
+- url: https://rxnav.nlm.nih.gov/REST
+  description: NLM RxNav REST API
+paths:
+  /allNDCstatus.json:
+    get:
+      operationId: getAllNDCsByStatus
+      summary: Get All NDCs By Status
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllNDCsByStatus.html
+      parameters:
+      - name: status
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: ALL
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /allconcepts.json:
+    get:
+      operationId: getAllConceptsByTTY
+      summary: Get All Concepts By TTY
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllConceptsByTTY.html
+      parameters:
+      - name: tty
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /allstatus.json:
+    get:
+      operationId: getAllConceptsByStatus
+      summary: Get All Concepts By Status
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllConceptsByStatus.html
+      parameters:
+      - name: status
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: ALL
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /approximateTerm.json:
+    get:
+      operationId: getApproximateMatch
+      summary: Get Approximate Match
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getApproximateMatch.html
+      parameters:
+      - name: term
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: maxEntries
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: integer
+          default: 20
+      - name: option
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /brands.json:
+    get:
+      operationId: getMultiIngredBrand
+      summary: Get Multi Ingred Brand
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getMultiIngredBrand.html
+      parameters:
+      - name: ingredientids
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /displaynames.json:
+    get:
+      operationId: getDisplayTerms
+      summary: Get Display Terms
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getDisplayTerms.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /drugs.json:
+    get:
+      operationId: getDrugs
+      summary: Get Drugs
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getDrugs.html
+      parameters:
+      - name: name
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: expand
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /idtypes.json:
+    get:
+      operationId: getIdTypes
+      summary: Get ID Types
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getIdTypes.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /ndcproperties.json:
+    get:
+      operationId: getNDCProperties
+      summary: Get NDCProperties
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getNDCProperties.html
+      parameters:
+      - name: id
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: ndcstatus
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: active
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /ndcstatus.json:
+    get:
+      operationId: getNDCStatus
+      summary: Get NDCStatus
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getNDCStatus.html
+      parameters:
+      - name: ndc
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: start
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: history
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: integer
+          default: 0
+      - name: altpkg
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /propCategories.json:
+    get:
+      operationId: getPropCategories
+      summary: Get Prop Categories
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getPropCategories.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /propnames.json:
+    get:
+      operationId: getPropNames
+      summary: Get Prop Names
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getPropNames.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /reformulationConcepts.json:
+    get:
+      operationId: getReformulationConcepts
+      summary: Get Reformulation Concepts
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getReformulationConcepts.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /relapaths.json:
+    get:
+      operationId: getRelaPaths
+      summary: Get Rela Paths
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRelaPaths.html
+      parameters:
+      - name: start
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: finish
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /relatedndc.json:
+    get:
+      operationId: findRelatedNDCs
+      summary: Find Related NDCs
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.findRelatedNDCs.html
+      parameters:
+      - name: ndc
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: relation
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: ndcstatus
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: active
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /relatypes.json:
+    get:
+      operationId: getRelaTypes
+      summary: Get Rela Types
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRelaTypes.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui.json:
+    get:
+      operationId: findRxCui
+      summary: Find concepts by identifier or name
+      description: Supply either `idtype` and `id` to use [findRxcuiById](https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.findRxcuiById.html),
+        or `name` to use [findRxcuiByString](https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.findRxcuiByString.html).
+        The documented alternatives share this resource path.
+      externalDocs:
+        description: NLM RxNorm API function index
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/RxNormAPIs.html
+      parameters:
+      - name: allsrc
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: integer
+          default: 0
+      - name: id
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: string
+      - name: idtype
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: string
+      - name: name
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: string
+      - name: search
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: string
+          default: '0'
+      - name: srclist
+        in: query
+        required: false
+        description: See the linked NLM function pages for accepted values and behavior.
+        schema:
+          type: string
+          default: ALL
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/rxcui.json:
+    get:
+      operationId: getRxNormName
+      summary: Get RxNorm Name
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRxNormName.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/active.json:
+    get:
+      operationId: findActiveProducts
+      summary: Find Active Products
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.findActiveProducts.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: results
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: all
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/allProperties.json:
+    get:
+      operationId: getAllProperties
+      summary: Get All Properties
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllProperties.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: prop
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/allhistoricalndcs.json:
+    get:
+      operationId: getAllHistoricalNDCs
+      summary: Get All Historical NDCs
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllHistoricalNDCs.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: history
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: integer
+          default: 2
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/allrelated.json:
+    get:
+      operationId: getAllRelatedInfo
+      summary: Get All Related Info
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getAllRelatedInfo.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: expand
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/filter.json:
+    get:
+      operationId: filterByProperty
+      summary: Filter By Property
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.filterByProperty.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: propName
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: propValues
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/generic.json:
+    get:
+      operationId: getGenericProduct
+      summary: Get Generic Product
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getGenericProduct.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/historystatus.json:
+    get:
+      operationId: getRxcuiHistoryStatus
+      summary: Get RxCUI History Status
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRxcuiHistoryStatus.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/ndcs.json:
+    get:
+      operationId: getNDCs
+      summary: Get NDCs
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getNDCs.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/properties.json:
+    get:
+      operationId: getRxConceptProperties
+      summary: Get Rx Concept Properties
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRxConceptProperties.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/property.json:
+    get:
+      operationId: getRxProperty
+      summary: Get Rx Property
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRxProperty.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: propName
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /rxcui/{rxcui}/proprietary.json:
+    get:
+      operationId: getProprietaryInformation
+      summary: Get Proprietary Information
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getProprietaryInformation.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: srclist
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+          default: ALL
+      - name: rxaui
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+      security:
+      - {}
+      - umlsUtsApiKey: []
+  /rxcui/{rxcui}/related.json:
+    get:
+      operationId: getRelatedByType
+      summary: Get Related By Type
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRelatedByType.html
+      parameters:
+      - name: rxcui
+        in: path
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: tty
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      - name: expand
+        in: query
+        required: false
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /sourcetypes.json:
+    get:
+      operationId: getSourceTypes
+      summary: Get Source Types
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getSourceTypes.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /spellingsuggestions.json:
+    get:
+      operationId: getSpellingSuggestions
+      summary: Get Spelling Suggestions
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getSpellingSuggestions.html
+      parameters:
+      - name: name
+        in: query
+        required: true
+        description: See the linked NLM function page for accepted values and behavior.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /termtypes.json:
+    get:
+      operationId: getTermTypes
+      summary: Get Term Types
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getTermTypes.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /version.json:
+    get:
+      operationId: getRxNormVersion
+      summary: Get RxNorm Version
+      description: Returns the JSON object documented for this RxNorm function.
+      externalDocs:
+        description: NLM function documentation
+        url: https://lhncbc.nlm.nih.gov/RxNav/APIs/api-RxNorm.getRxNormVersion.html
+      parameters: []
+      responses:
+        '200':
+          description: RxNorm JSON response object.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  securitySchemes:
+    umlsUtsApiKey:
+      type: http
+      scheme: bearer
+      description: Optional UMLS UTS API key for access to restricted source-vocabulary data on the proprietary-information
+        endpoint.
