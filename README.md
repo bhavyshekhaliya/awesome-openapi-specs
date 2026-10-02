@@ -251,6 +251,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | eBay | [Sell Fulfillment API specification](https://developer.ebay.com/api-docs/master/sell/fulfillment/openapi/3/sell_fulfillment_v1_oas3.json) | JSON | 3.0.0 | `official` `commerce` `marketplace` |
 | Lazada | [Community specification](specs/lazada/openapi.yml) · [order API docs](https://open.lazada.com/apps/doc/doc?docId=121327&nodeId=29616) | YAML | 3.0.3 | `community-maintained` `focused` `commerce` `marketplace` |
 | Medusa | [Store API OpenAPI specification](https://docs.medusajs.com/api/download/store) | YAML | 3.0.0 | `official` `commerce` `open-source` |
+| Perkstar | [Public REST API specification](https://developers.perkstar.co.uk/api/openapi.yaml) | YAML | 3.1.0 | `official` `loyalty` `rewards` |
 
 ## Customer Support and Helpdesk
 | Provider | OpenAPI spec | Format | Version | Tags |
