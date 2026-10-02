@@ -110,6 +110,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mailjet | [API specification](https://dev.mailjet.com/openapi/openapi-mailjet) | YAML | 3.1.0 | `email-marketing` `transactional-email` |
 | LeadMetrics | [API specification](https://openapi.gitbook.com/o/6jBCGy2aFiaP8ezfWrvu/spec/leadmetrics-public-api.yaml) | YAML | 3.0.3 | `lead-generation` `marketing-analytics` |
 | Bitly            | [API specification](https://dev.bitly.com/v4/v4.json) | JSON | 3.0.0 | `official` `link-management` `analytics` |
+| BL.INK | [OpenAPI specification](specs/bl-ink/openapi.json); [official API docs](https://developers.bl.ink/) | JSON | 3.0.0 | `official` `link-management` `analytics` |
 | Buttondown       | [API specification](https://raw.githubusercontent.com/buttondown/openapi/main/openapi.json) | JSON | 3.1.0 | `official` `email-marketing` `newsletter` |
 | KlickTipp        | [API specification](https://developers.klicktipp.com/_bundle/management-api.json?download=) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
 | Metricool        | [API specification](https://app.metricool.com/api/swagger.json) | JSON | 3.0.1 | `official` `social-media-management` `analytics` |
