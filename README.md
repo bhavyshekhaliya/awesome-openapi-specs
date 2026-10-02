@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -66,6 +66,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | TLY Link Shortener | [API specification](https://t.ly/static_docs/openapi.yaml) | YAML | 3.0.3 | `url-management` |
 | Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
 | Sessionboard | [API specification](https://apidocs.sessionboard.com/api-reference/openapi.yaml) | YAML | 3.1.0 | `event-management` |
+| Attendu | [Official OpenAPI specification](https://docs.attendu.com/openapi.json) · [API docs](https://docs.attendu.com) | JSON | 3.0.1 | `official` `event-management` |
 | Kundenschreiber | [API specification](https://api.kundenschreiber.de/functions/v1/public-api/openapi.json) | JSON | 3.0.3 | `email-marketing` `email-verification` |
 | Ellipsend | [API specification](https://api.ellipsend.com/v1/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Mailrith | [API specification](https://mailrith.com/openapi.json) | JSON | 3.1.0 | `email-marketing` |
