@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Buttondown       | [API specification](https://raw.githubusercontent.com/buttondown/openapi/main/openapi.json) | JSON | 3.1.0 | `official` `email-marketing` `newsletter` |
 | KlickTipp        | [API specification](https://developers.klicktipp.com/_bundle/management-api.json?download=) | JSON | 3.0.0 | `official` `email-marketing` `marketing-automation` |
 | Metricool        | [API specification](https://app.metricool.com/api/swagger.json) | JSON | 3.0.1 | `official` `social-media-management` `analytics` |
 | beehiiv          | [API specification](https://developers.beehiiv.com/_fern-files/beehiiv.docs.buildwithfern.com/0a003f55c621652234cd8ef8b2460be3ee66bd4de4c707cbfba0e59d3081a847/assets/beehiiv-API-Specification.yaml) | YAML | 3.0.1 | `official` `email-marketing` `newsletter` |
