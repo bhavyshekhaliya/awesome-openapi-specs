@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| CleverReach | [API specification](https://rest.cleverreach.com/v3/explorer/swagger.json) | JSON | 2.0 | `email-marketing` |
 | Billetweb | [API specification](https://www.billetweb.fr/api/openapi.json?v=942) | JSON | 3.0.0 | `event-management` |
 | Flexmail | [API specification](https://api.flexmail.eu/documentation/openapi.php) | JSON | 3.1.0 | `email-marketing` |
 | Cardly | [API specification](https://api.card.ly/openapi/en-AU/2.2.0/yaml) | YAML | 3.1.0 | `direct-mail` `marketing` |
