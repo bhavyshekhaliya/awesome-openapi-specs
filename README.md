@@ -148,6 +148,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Finance
 | Provider | OpenAPI spec                                                             | Format | Version | Tags                    |
 | -------- | ------------------------------------------------------------------------ | ------ | ------- | ----------------------- |
+| OKX | [Community specification](specs/okx/openapi.yml); [source docs](https://www.okx.com/docs-v5/en/) | YAML | 3.2.1 | `community-maintained` `crypto-exchange` `market-data` |
 | Alpaca   | [Trading API specification](https://docs.alpaca.markets/openapi/trading-api.json) | JSON | 3.0     | `official` `focused` `trading` `brokerage` `market-data` |
 | Modern Treasury | [OpenAPI specification](https://raw.githubusercontent.com/Modern-Treasury/modern-treasury-openapi/main/openapi/mt_openapi_spec_v1.yaml) | YAML | 3.0.1 | `official` `focused` `payments-infrastructure` `ledger` `treasury` `beta` |
 | OpenFIGI | [API specification](https://api.openfigi.com/schema) | JSON | 3.0.0 | `official` `securities` `identifier-mapping` `market-data` |
