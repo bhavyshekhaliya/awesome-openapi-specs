@@ -65,6 +65,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
 | TLY Link Shortener | [API specification](https://t.ly/static_docs/openapi.yaml) | YAML | 3.0.3 | `url-management` |
 | Emailchef | [API specification](https://emailchef.com/integration/data/openapi.yaml) | YAML | 3.0.0 | `email-marketing` |
+| Maildrip | [OpenAPI specification](specs/maildrip/openapi.json); [official API reference](https://api.maildrip.io/docs/); [published Swagger config](https://api.maildrip.io/docs/swagger-ui-init.js) | JSON | 3.0.0 | `official` `email-marketing` `email-delivery` `marketing-automation` |
 | Sessionboard | [API specification](https://apidocs.sessionboard.com/api-reference/openapi.yaml) | YAML | 3.1.0 | `event-management` |
 | Kundenschreiber | [API specification](https://api.kundenschreiber.de/functions/v1/public-api/openapi.json) | JSON | 3.0.3 | `email-marketing` `email-verification` |
 | Ellipsend | [API specification](https://api.ellipsend.com/v1/swagger.yaml) | YAML | 2.0 | `email-marketing` |
