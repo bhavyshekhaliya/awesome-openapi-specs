@@ -1,0 +1,428 @@
+openapi: 3.1.0
+info:
+  title: LinkedIn Marketing API (Zapier LinkedIn Ads subset)
+  version: '202608'
+  summary: Community-maintained OpenAPI subset for LinkedIn Ads workflows.
+  description: >-
+    Covers documented LinkedIn Ads workflows for reading Lead Gen Form responses,
+    creating matched audiences, adding or removing contacts and companies, and
+    retrieving advertising analytics. This is a focused subset of LinkedIn's
+    Marketing APIs. LinkedIn approval and the relevant Marketing API or Matched
+    Audiences permissions are required; LinkedIn's documentation remains
+    authoritative for access and behavior.
+  contact:
+    name: LinkedIn Developer Support
+    url: https://www.linkedin.com/developers/
+  externalDocs:
+    description: Official LinkedIn Marketing API documentation
+    url: https://learn.microsoft.com/en-us/linkedin/marketing/
+servers:
+  - url: https://api.linkedin.com/rest
+    description: LinkedIn Marketing REST API
+security:
+  - bearerAuth: []
+tags:
+  - name: Lead forms
+    description: Read sponsored and organic Lead Gen Form responses.
+  - name: Matched audiences
+    description: Create audiences and add or remove contacts and companies.
+  - name: Reporting
+    description: Retrieve advertising performance analytics.
+paths:
+  /leadFormResponses:
+    get:
+      tags: [Lead forms]
+      operationId: findLeadFormResponsesByOwner
+      summary: Find Lead Gen Form responses for an owner
+      description: >-
+        Returns lead responses for the specified sponsored account or organization.
+        The owner finder and a concrete lead type are required. Lead Sync API access
+        and the r_marketing_leadgen_automation permission are required.
+      externalDocs:
+        description: LinkedIn Lead Form Responses API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/lead-sync/leadsync
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - name: q
+          in: query
+          required: true
+          description: Finder name. Use owner.
+          schema:
+            type: string
+            enum: [owner]
+        - name: owner
+          in: query
+          required: true
+          description: >-
+            Rest.li encoded owner union, such as
+            (sponsoredAccount:urn:li:sponsoredAccount:123) or
+            (organization:urn:li:organization:123).
+          schema:
+            type: string
+        - name: leadType
+          in: query
+          required: true
+          description: Rest.li encoded lead type filter, such as (leadType:SPONSORED).
+          schema:
+            type: string
+            example: (leadType:SPONSORED)
+        - name: versionedLeadGenFormUrn
+          in: query
+          description: Optional form and form version filter.
+          schema:
+            type: string
+        - name: limitedToTestLeads
+          in: query
+          description: When true, returns test leads only. Defaults to false.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Lead form response page.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadFormResponsePage'
+  /leadFormResponses/{leadFormResponseId}:
+    get:
+      tags: [Lead forms]
+      operationId: getLeadFormResponse
+      summary: Get one Lead Gen Form response
+      description: Retrieves a response by its response ID.
+      externalDocs:
+        description: LinkedIn Lead Form Responses API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/lead-sync/leadsync
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - name: leadFormResponseId
+          in: path
+          required: true
+          description: Lead Form Response ID returned by LinkedIn.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lead form response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadFormResponse'
+  /dmpSegments:
+    post:
+      tags: [Matched audiences]
+      operationId: createMatchedAudience
+      summary: Create a matched audience
+      description: Creates a DMP segment for a sponsored account.
+      externalDocs:
+        description: LinkedIn DMP Segments API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/matched-audiences/create-and-manage-segments
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAudienceRequest'
+      responses:
+        '201':
+          description: Audience created. The segment ID is returned in the x-restli-id header.
+          headers:
+            x-restli-id:
+              description: ID of the created DMP segment.
+              schema:
+                type: string
+            Location:
+              description: Path of the created DMP segment.
+              schema:
+                type: string
+  /dmpSegments/{dmpSegmentId}/users:
+    post:
+      tags: [Matched audiences]
+      operationId: changeAudienceContact
+      summary: Add or remove a contact from an audience
+      description: >-
+        Adds or removes a user identifier in a DMP segment. Email identifiers must
+        be SHA-256 hashed before they are sent. Requires approved Matched Audiences
+        API access and the rw_dmp_segments permission.
+      externalDocs:
+        description: LinkedIn DMP Segment Users API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/matched-audiences/create-and-manage-segment-users
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/DmpSegmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeAudienceUserRequest'
+      responses:
+        '201':
+          description: The contact change was accepted.
+  /dmpSegments/{dmpSegmentId}/companies:
+    post:
+      tags: [Matched audiences]
+      operationId: changeAudienceCompany
+      summary: Add or remove a company from an audience
+      description: Requires approved Matched Audiences API access and rw_dmp_segments permission.
+      externalDocs:
+        description: LinkedIn DMP Segment Companies API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/matched-audiences/create-and-manage-segment-companies
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - $ref: '#/components/parameters/DmpSegmentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeAudienceCompanyRequest'
+      responses:
+        '201':
+          description: The company change was accepted.
+  /adAnalytics:
+    get:
+      tags: [Reporting]
+      operationId: getAdAnalyticsReport
+      summary: Retrieve an advertising analytics report
+      description: >-
+        Retrieves campaign, account, or creative performance analytics. The q,
+        pivot or pivots, timeGranularity, and dateRange values use LinkedIn's
+        documented finder and Rest.li query syntax. Requires r_ads_reporting.
+      externalDocs:
+        description: LinkedIn Advertising Reporting API
+        url: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/ads-reporting
+      parameters:
+        - $ref: '#/components/parameters/MarketingVersion'
+        - $ref: '#/components/parameters/RestliProtocolVersion'
+        - name: q
+          in: query
+          required: true
+          description: Analytics finder to use.
+          schema:
+            type: string
+            enum: [analytics, statistics, attributedRevenueMetrics]
+        - name: pivot
+          in: query
+          description: Single pivot for the analytics finder.
+          schema:
+            type: string
+        - name: pivots
+          in: query
+          description: Rest.li List(...) of up to three pivots for statistics finders.
+          schema:
+            type: string
+        - name: timeGranularity
+          in: query
+          description: Reporting interval.
+          schema:
+            type: string
+            enum: [ALL, DAILY, MONTHLY, YEARLY]
+        - name: dateRange
+          in: query
+          description: Rest.li encoded start and optional end date range.
+          schema:
+            type: string
+        - name: accounts
+          in: query
+          description: Rest.li List(...) of sponsored account URNs.
+          schema:
+            type: string
+        - name: campaigns
+          in: query
+          description: Rest.li List(...) of sponsored campaign URNs.
+          schema:
+            type: string
+        - name: creatives
+          in: query
+          description: Rest.li List(...) of creative URNs.
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Comma-separated metrics and dimensions to return.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Analytics report rows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsPage'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: LinkedIn OAuth 2.0 access token with the permissions required by each API.
+  parameters:
+    MarketingVersion:
+      name: Linkedin-Version
+      in: header
+      required: true
+      description: Monthly LinkedIn Marketing API version. The current documented release is 202608.
+      schema:
+        type: string
+        default: '202608'
+        example: '202608'
+    RestliProtocolVersion:
+      name: X-Restli-Protocol-Version
+      in: header
+      required: true
+      description: LinkedIn Rest.li protocol version.
+      schema:
+        type: string
+        enum: ['2.0.0']
+        default: '2.0.0'
+    DmpSegmentId:
+      name: dmpSegmentId
+      in: path
+      required: true
+      description: ID of the matched audience DMP segment.
+      schema:
+        type: string
+  schemas:
+    LeadFormResponsePage:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/LeadFormResponse'
+        paging:
+          type: object
+          properties:
+            count:
+              type: integer
+            start:
+              type: integer
+            links:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+      additionalProperties: true
+    LeadFormResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        leadType:
+          type: string
+          enum: [SPONSORED, COMPANY, EVENT, ORGANIZATION_PRODUCT]
+        owner:
+          type: object
+          additionalProperties: true
+        form:
+          type: object
+          additionalProperties: true
+        submittedAt:
+          type: integer
+          format: int64
+        formResponse:
+          type: object
+          additionalProperties: true
+        testLead:
+          type: boolean
+      additionalProperties: true
+    CreateAudienceRequest:
+      type: object
+      required: [name, sourcePlatform, account, type, destinations]
+      properties:
+        name:
+          type: string
+        sourcePlatform:
+          type: string
+          description: Source platform value assigned to the approved integration.
+        sourceSegmentId:
+          type: string
+        account:
+          type: string
+          description: Sponsored account URN, such as urn:li:sponsoredAccount:123.
+        type:
+          type: string
+          enum: [USER, COMPANY]
+        destinations:
+          type: array
+          items:
+            type: object
+            required: [destination]
+            properties:
+              destination:
+                type: string
+                enum: [LINKEDIN]
+    ChangeAudienceUserRequest:
+      type: object
+      required: [action, userIds]
+      properties:
+        action:
+          type: string
+          enum: [ADD, REMOVE]
+        userIds:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [idType, idValue]
+            properties:
+              idType:
+                type: string
+                enum: [SHA256_EMAIL]
+              idValue:
+                type: string
+                description: SHA-256 hash of the normalized email address.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        title:
+          type: string
+        company:
+          type: string
+        country:
+          type: string
+    ChangeAudienceCompanyRequest:
+      type: object
+      required: [action]
+      properties:
+        action:
+          type: string
+          enum: [ADD, REMOVE]
+        companyName:
+          type: string
+        companyWebsiteDomain:
+          type: string
+        companyPageUrl:
+          type: string
+        stockSymbol:
+          type: string
+        industries:
+          type: array
+          items:
+            type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+    AnalyticsPage:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        paging:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
