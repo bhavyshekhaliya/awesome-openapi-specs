@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Feedly | [API specification](https://dash.readme.com/api/v1/api-registry/gbzx1fmrdkepna) | JSON | 3.0.3 | `official` `content-discovery` `marketing-research` |
 | SendFox | [API specification](https://sendfox.com/openapi.yaml) | YAML | 3.0.3 | `official` `email-marketing` |
 | SendPulse | [Bulk Email](https://api.sendpulse.com/.well-known/openapi/bulk-email.yaml) ? [SMS](https://api.sendpulse.com/.well-known/openapi/sms.yaml) ? [CRM](https://api.sendpulse.com/.well-known/openapi/crm.yaml) ? [Chatbots](https://api.sendpulse.com/.well-known/openapi/chatbots.yaml) ? [all 18 APIs index](https://api.sendpulse.com/.well-known/openapi/index.yaml) | YAML | 3.1.2 (service specs); 3.1.0 (index) | `official` `email-marketing` `automation` `sms` |
 | CleverReach | [REST API specification](https://rest.cleverreach.com/v3/explorer/swagger.json) | JSON | 2.0 | `official` `email-marketing` `marketing-automation` |
