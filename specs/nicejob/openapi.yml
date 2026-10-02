@@ -1,0 +1,4462 @@
+openapi: 3.1.0
+info:
+  title: NiceJob REST API
+  version: v2 alpha
+  contact:
+    email: support@nicejob.co
+externalDocs:
+  url: https://api.nicejob.com/docs/reference/rest/index.html
+servers:
+- url: https://api.nicejob.com
+tags:
+- name: Booking
+- name: Case
+- name: Campaign
+- name: CampaignEnrollment
+- name: Company
+- name: Employee
+- name: Invoice
+- name: Payment
+- name: Person
+- name: Review
+- name: ReviewInsights
+- name: Visit
+- name: Webhook
+paths:
+  /oauth/token:
+    post:
+      operationId: post_oauth_token
+      summary: Webhook authentication
+      tags:
+      - Webhook
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/bookings:
+    get:
+      operationId: get_v2_bookings
+      summary: List Bookings
+      tags:
+      - Booking
+      security:
+      - userOAuth:
+        - bookings
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_bookings
+      summary: Create a Booking
+      tags:
+      - Booking
+      security:
+      - userOAuth:
+        - bookings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Booking'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/bookings/{id}:
+    get:
+      operationId: get_v2_bookings_id
+      summary: Get a Booking
+      tags:
+      - Booking
+      security:
+      - userOAuth:
+        - bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Booking'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_bookings_id
+      summary: Update a Booking
+      tags:
+      - Booking
+      security:
+      - userOAuth:
+        - bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Booking'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/campaign_enrollments:
+    post:
+      operationId: post_v2_campaign_enrollments
+      summary: Enroll a Person in a Campaign
+      tags:
+      - CampaignEnrollment
+      security:
+      - userOAuth:
+        - enrollments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/CampaignEnrollment'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/campaigns:
+    get:
+      operationId: get_v2_campaigns
+      summary: List Campaigns
+      tags:
+      - Campaign
+      security:
+      - userOAuth:
+        - campaigns
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Campaign'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/cases:
+    get:
+      operationId: get_v2_cases
+      summary: List Cases
+      tags:
+      - Case
+      security:
+      - userOAuth:
+        - cases
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Case'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_cases
+      summary: Create a Case
+      tags:
+      - Case
+      security:
+      - userOAuth:
+        - cases
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Case'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/cases/{id}:
+    get:
+      operationId: get_v2_cases_id
+      summary: Get a Case
+      tags:
+      - Case
+      security:
+      - userOAuth:
+        - cases
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Case'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_cases_id
+      summary: Update a Case
+      tags:
+      - Case
+      security:
+      - userOAuth:
+        - cases
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Case'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/companies:
+    post:
+      operationId: post_v2_companies
+      summary: Create a Company
+      tags:
+      - Company
+      security:
+      - userOAuth:
+        - company
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Company'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/companies/{id}/subscription:
+    post:
+      operationId: post_v2_companies_id_subscription
+      summary: Update Company Subscription
+      tags:
+      - Company
+      security:
+      - userOAuth:
+        - company
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Company'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/company:
+    get:
+      operationId: get_v2_company
+      summary: Get the Company
+      tags:
+      - Company
+      security:
+      - userOAuth:
+        - company
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Company'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/employees:
+    get:
+      operationId: get_v2_employees
+      summary: List Employees
+      tags:
+      - Employee
+      security:
+      - userOAuth:
+        - employees
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Employee'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_employees
+      summary: Create an Employee
+      tags:
+      - Employee
+      security:
+      - userOAuth:
+        - employees
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Employee'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/employees/{id}:
+    get:
+      operationId: get_v2_employees_id
+      summary: Get an Employee
+      tags:
+      - Employee
+      security:
+      - userOAuth:
+        - employees
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Employee'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_employees_id
+      summary: Update an Employee
+      tags:
+      - Employee
+      security:
+      - userOAuth:
+        - employees
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Employee'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/invoices:
+    get:
+      operationId: get_v2_invoices
+      summary: List Invoices
+      tags:
+      - Invoice
+      security:
+      - userOAuth:
+        - invoices
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Invoice'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_invoices
+      summary: Create an Invoice
+      tags:
+      - Invoice
+      security:
+      - userOAuth:
+        - invoices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Invoice'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/invoices/{id}:
+    get:
+      operationId: get_v2_invoices_id
+      summary: Get an Invoice
+      tags:
+      - Invoice
+      security:
+      - userOAuth:
+        - invoices
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Invoice'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_invoices_id
+      summary: Update an Invoice
+      tags:
+      - Invoice
+      security:
+      - userOAuth:
+        - invoices
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Invoice'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/payments:
+    get:
+      operationId: get_v2_payments
+      summary: List Payments
+      tags:
+      - Payment
+      security:
+      - userOAuth:
+        - payments
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Payment'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_payments
+      summary: Create an Payment
+      tags:
+      - Payment
+      security:
+      - userOAuth:
+        - payments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Payment'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/payments/{id}:
+    get:
+      operationId: get_v2_payments_id
+      summary: Get a Payment
+      tags:
+      - Payment
+      security:
+      - userOAuth:
+        - payments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Payment'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_payments_id
+      summary: Update an Payment
+      tags:
+      - Payment
+      security:
+      - userOAuth:
+        - payments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Payment'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/people:
+    get:
+      operationId: get_v2_people
+      summary: List People
+      tags:
+      - Person
+      security:
+      - userOAuth:
+        - people
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Person'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_people
+      summary: Create a Person
+      tags:
+      - Person
+      security:
+      - userOAuth:
+        - people
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Person'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/people/{id}:
+    get:
+      operationId: get_v2_people_id
+      summary: Get a Person
+      tags:
+      - Person
+      security:
+      - userOAuth:
+        - people
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Person'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_people_id
+      summary: Update a Person
+      tags:
+      - Person
+      security:
+      - userOAuth:
+        - people
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Person'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/review_insights:
+    get:
+      operationId: get_v2_review_insights
+      summary: Get ReviewInsights
+      tags:
+      - ReviewInsights
+      security:
+      - userOAuth:
+        - review_insights
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/ReviewInsights'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/reviews:
+    get:
+      operationId: get_v2_reviews
+      summary: List Reviews
+      tags:
+      - Review
+      security:
+      - userOAuth:
+        - reviews
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Review'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/reviews/{id}:
+    get:
+      operationId: get_v2_reviews_id
+      summary: Get a Review
+      tags:
+      - Review
+      security:
+      - userOAuth:
+        - reviews
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Review'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/rpc/test-webhook:
+    post:
+      operationId: post_v2_rpc_test_webhook
+      summary: Testing webhooks
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/visits:
+    get:
+      operationId: get_v2_visits
+      summary: List Visits
+      tags:
+      - Visit
+      security:
+      - userOAuth:
+        - bookings
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Visit'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_visits
+      summary: Create a Visit
+      tags:
+      - Visit
+      security:
+      - userOAuth:
+        - bookings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Visit'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/visits/{id}:
+    get:
+      operationId: get_v2_visits_id
+      summary: Get a Visit
+      tags:
+      - Visit
+      security:
+      - userOAuth:
+        - bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Visit'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_visits_id
+      summary: Update a Visit
+      tags:
+      - Visit
+      security:
+      - userOAuth:
+        - bookings
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    $ref: '#/components/schemas/Visit'
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/webhooks:
+    get:
+      operationId: get_v2_webhooks
+      summary: List Webhooks
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_webhooks
+      summary: Create a Webhook
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/webhooks/{id}:
+    get:
+      operationId: get_v2_webhooks_id
+      summary: Get a Webhook
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: post_v2_webhooks_id
+      summary: Update a Webhook
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    delete:
+      operationId: delete_v2_webhooks_id
+      summary: Delete a Webhook
+      tags:
+      - Webhook
+      security:
+      - webhookOAuth:
+        - webhooks
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cursor:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  data:
+                    type: object
+                    additionalProperties: true
+                  error:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                additionalProperties: true
+        '400':
+          description: Malformed request
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          description: API or server error
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  schemas:
+    Booking:
+      type: object
+      properties:
+        id:
+          type: string
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+        complete:
+          type: boolean
+        completed_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        employee_ids:
+          type: array
+          items:
+            type: string
+        external_source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        integration_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        invoice_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              amount:
+                type: object
+                additionalProperties: true
+                properties:
+                  currency_code:
+                    anyOf:
+                    - type: string
+                    - type: 'null'
+                  value:
+                    type: integer
+              catalog_product_id:
+                type: string
+              description:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_source_id:
+                type: string
+              name:
+                type: string
+              quantity:
+                type: integer
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        network:
+          type: string
+        person_ids:
+          type: array
+          items:
+            type: string
+        photo_ids:
+          type: array
+          items:
+            type: string
+        scheduled_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+        user_ids:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        default_campaign:
+          anyOf:
+          - type: string
+            enum:
+            - GET_REVIEWS
+            - RECOMMENDATIONS
+            - BOOKINGS
+            - SPLIT_TEST_RECOMMENDATIONS_MESSAGE_CADENCE
+            - SPLIT_TEST_RECOMMENDATIONS_MESSAGE_CONTENT
+            - GET_REPEAT_BUSINESS
+            - ATOM_REFERRALS
+            - REFERRALS
+            - NPS
+          - type: 'null'
+        default_hidden:
+          type: boolean
+        deferred_campaign_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+        entryRules:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              equivalency:
+                anyOf:
+                - type: integer
+                - type: 'null'
+              rules:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                  properties:
+                    equivalency:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    kind:
+                      type: string
+                    rule:
+                      anyOf:
+                      - type: object
+                        additionalProperties: true
+                        properties:
+                          aggregate_filters:
+                            type: array
+                            items:
+                              type: object
+                              additionalProperties: true
+                              properties:
+                                calc:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - SUM
+                                    - MEAN
+                                    - MEDIAN
+                                    - MODE
+                                  - type: 'null'
+                                equivalency:
+                                  anyOf:
+                                  - type: integer
+                                  - type: 'null'
+                                operator:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - GREATER_THAN_OR_EQUAL_TO
+                                    - GREATER_THAN
+                                    - EQUAL_TO
+                                    - LESS_THAN
+                                    - LESS_THAN_OR_EQUAL_TO
+                                    - NOT_EQUAL_TO
+                                    - CONTAINS
+                                    - DOES_NOT_CONTAIN
+                                    - IS_WITHIN_THE_LAST
+                                    - IS_BEYOND_THE_LAST
+                                    - IS_AFTER
+                                    - IS_BEFORE
+                                  - type: 'null'
+                                property:
+                                  type: string
+                                value:
+                                  type: string
+                          entity_filters:
+                            type: array
+                            items:
+                              type: object
+                              additionalProperties: true
+                              properties:
+                                calc:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - SUM
+                                  - type: 'null'
+                                equivalency:
+                                  anyOf:
+                                  - type: integer
+                                  - type: 'null'
+                                operator:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - GREATER_THAN_OR_EQUAL_TO
+                                    - GREATER_THAN
+                                    - EQUAL_TO
+                                    - LESS_THAN
+                                    - LESS_THAN_OR_EQUAL_TO
+                                    - NOT_EQUAL_TO
+                                    - CONTAINS
+                                    - DOES_NOT_CONTAIN
+                                    - IS_WITHIN_THE_LAST
+                                    - IS_BEYOND_THE_LAST
+                                    - IS_AFTER
+                                    - IS_BEFORE
+                                  - type: 'null'
+                                property:
+                                  type: string
+                                value:
+                                  type: string
+                          type:
+                            type: string
+                            enum:
+                            - SINGLE
+                            - AGGREGATE
+                      - type: 'null'
+                    subjectField:
+                      type: string
+        exitRules:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              equivalency:
+                anyOf:
+                - type: integer
+                - type: 'null'
+              rules:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+                  properties:
+                    equivalency:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    kind:
+                      type: string
+                    rule:
+                      anyOf:
+                      - type: object
+                        additionalProperties: true
+                        properties:
+                          aggregate_filters:
+                            type: array
+                            items:
+                              type: object
+                              additionalProperties: true
+                              properties:
+                                calc:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - SUM
+                                    - MEAN
+                                    - MEDIAN
+                                    - MODE
+                                  - type: 'null'
+                                equivalency:
+                                  anyOf:
+                                  - type: integer
+                                  - type: 'null'
+                                operator:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - GREATER_THAN_OR_EQUAL_TO
+                                    - GREATER_THAN
+                                    - EQUAL_TO
+                                    - LESS_THAN
+                                    - LESS_THAN_OR_EQUAL_TO
+                                    - NOT_EQUAL_TO
+                                    - CONTAINS
+                                    - DOES_NOT_CONTAIN
+                                    - IS_WITHIN_THE_LAST
+                                    - IS_BEYOND_THE_LAST
+                                    - IS_AFTER
+                                    - IS_BEFORE
+                                  - type: 'null'
+                                property:
+                                  type: string
+                                value:
+                                  type: string
+                          entity_filters:
+                            type: array
+                            items:
+                              type: object
+                              additionalProperties: true
+                              properties:
+                                calc:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - SUM
+                                  - type: 'null'
+                                equivalency:
+                                  anyOf:
+                                  - type: integer
+                                  - type: 'null'
+                                operator:
+                                  anyOf:
+                                  - type: string
+                                    enum:
+                                    - GREATER_THAN_OR_EQUAL_TO
+                                    - GREATER_THAN
+                                    - EQUAL_TO
+                                    - LESS_THAN
+                                    - LESS_THAN_OR_EQUAL_TO
+                                    - NOT_EQUAL_TO
+                                    - CONTAINS
+                                    - DOES_NOT_CONTAIN
+                                    - IS_WITHIN_THE_LAST
+                                    - IS_BEYOND_THE_LAST
+                                    - IS_AFTER
+                                    - IS_BEFORE
+                                  - type: 'null'
+                                property:
+                                  type: string
+                                value:
+                                  type: string
+                          type:
+                            type: string
+                            enum:
+                            - SINGLE
+                            - AGGREGATE
+                      - type: 'null'
+                    subjectField:
+                      type: string
+        hidden:
+          type: boolean
+        is_modified:
+          type: boolean
+        minimumReEnrollLatency:
+          anyOf:
+          - type: string
+          - type: 'null'
+        multipleEnrollments:
+          type: boolean
+        name:
+          type: string
+        objective:
+          anyOf:
+          - type: string
+            enum:
+            - REVIEWS
+            - RECOMMENDATIONS
+            - EMPLOYEE_REVIEWS
+            - ENGAGEMENT
+            - BOOKINGS
+            - WELCOME_NEW_CUSTOMERS
+            - REWARD_LOYAL_CUSTOMERS
+            - REPEAT_BUSINESS
+            - ATOM_REFERRALS
+            - REFERRALS
+            - NPS
+          - type: 'null'
+        paused:
+          type: boolean
+        primetimeOnly:
+          type: boolean
+        processionType:
+          type: string
+          enum:
+          - SEQUENTIAL
+          - SINGLE
+        subject_kind:
+          type: string
+          enum:
+          - Person
+          - Story
+          - Employee
+          - User
+        updated_at:
+          type: string
+          format: date-time
+      additionalProperties: true
+    CampaignEnrollment:
+      type: object
+      properties:
+        id:
+          type: string
+        campaign_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        eligible:
+          type: boolean
+        employee_ids:
+          type: array
+          items:
+            type: string
+        ended:
+          type: boolean
+        ended_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        entryEntities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              id:
+                type: string
+              kind:
+                type: string
+              namespace:
+                type: string
+        immediate_exit:
+          type: boolean
+        paused:
+          type: boolean
+        stopped:
+          type: boolean
+        stopped_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        stopped_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+        story_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        subjectId:
+          type: string
+        subjectKind:
+          type: string
+        subjectNamespace:
+          anyOf:
+          - type: string
+          - type: 'null'
+        successEntities:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              id:
+                type: string
+              kind:
+                type: string
+              namespace:
+                type: string
+        successful:
+          type: boolean
+        successful_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        usurped:
+          type: boolean
+        usurped_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        usurped_by:
+          anyOf:
+          - type: string
+          - type: 'null'
+      additionalProperties: true
+    Case:
+      type: object
+      properties:
+        id:
+          type: string
+        completed_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+        employee_ids:
+          type: array
+          items:
+            type: string
+        external_source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        integration_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        metadata:
+          anyOf:
+          - type: object
+            additionalProperties: true
+          - type: 'null'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        network:
+          type: string
+        person_id:
+          type: string
+        status:
+          anyOf:
+          - type: string
+            enum:
+            - pending
+            - open
+            - closed
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+        account_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        address:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              address:
+                anyOf:
+                - type: string
+                - type: 'null'
+              city:
+                anyOf:
+                - type: string
+                - type: 'null'
+              country:
+                anyOf:
+                - type: string
+                - type: 'null'
+              geo:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    latitude:
+                      anyOf:
+                      - type: number
+                      - type: 'null'
+                    longitude:
+                      anyOf:
+                      - type: number
+                      - type: 'null'
+                - type: 'null'
+              googlePlaceId:
+                anyOf:
+                - type: string
+                - type: 'null'
+              state:
+                anyOf:
+                - type: string
+                - type: 'null'
+              timezone:
+                anyOf:
+                - type: string
+                - type: 'null'
+              unit:
+                anyOf:
+                - type: string
+                - type: 'null'
+              zip:
+                anyOf:
+                - type: string
+                - type: 'null'
+          - type: 'null'
+        black_friday_landing_pages:
+          anyOf:
+          - type: integer
+          - type: 'null'
+        company_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+        industries:
+          type: array
+          items:
+            type: string
+        industry:
+          anyOf:
+          - type: string
+          - type: 'null'
+        insights:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              industry:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    v1:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                - type: 'null'
+          - type: 'null'
+        language_preference:
+          anyOf:
+          - type: string
+          - type: 'null'
+        legacy_company_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        logo_photo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        max_units:
+          anyOf:
+          - type: integer
+          - type: 'null'
+        migrated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        migrated_from:
+          anyOf:
+          - type: string
+            enum:
+            - paystone_hub
+          - type: 'null'
+        migration_completed:
+          type: boolean
+        migration_completed_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        owner_first_name_override:
+          anyOf:
+          - type: string
+          - type: 'null'
+        owner_last_name_override:
+          anyOf:
+          - type: string
+          - type: 'null'
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        platform:
+          anyOf:
+          - type: string
+          - type: 'null'
+        products:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              convert:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+              convert_landing_pages:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+              introductions:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+              pulse:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+              repeat_business_campaign:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+              reviews:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    active:
+                      type: boolean
+                    max_units:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    monthly_cost:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                    plan:
+                      anyOf:
+                      - type: string
+                        enum:
+                        - FREE
+                        - LITE
+                        - WIDGETS
+                        - STANDARD
+                        - PRO
+                        - PARTNER
+                      - type: 'null'
+                    plan_date:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    trial_end:
+                      anyOf:
+                      - type: string
+                        format: date-time
+                      - type: 'null'
+                - type: 'null'
+          - type: 'null'
+        recommendation_settings:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              header_text:
+                type: string
+              landing_page_url:
+                type: string
+              message_template_id:
+                type: string
+              share_link:
+                anyOf:
+                - type: string
+                - type: 'null'
+              subheader_text:
+                anyOf:
+                - type: string
+                - type: 'null'
+          - type: 'null'
+        referral_settings:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              landing_page_url:
+                anyOf:
+                - type: string
+                - type: 'null'
+          - type: 'null'
+        review_settings:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              ai_auto_reply_enabled:
+                type: boolean
+              ai_auto_reply_minimum_rating:
+                anyOf:
+                - type: number
+                - type: 'null'
+              ai_reply_length:
+                anyOf:
+                - type: string
+                - type: 'null'
+              ai_reply_tone:
+                anyOf:
+                - type: string
+                - type: 'null'
+              ai_reply_voice:
+                anyOf:
+                - type: string
+                - type: 'null'
+              auto_publish:
+                type: boolean
+              auto_publish_minimum_rating:
+                anyOf:
+                - type: number
+                - type: 'null'
+              optimize_sort_order:
+                type: boolean
+              sentiment_filter:
+                type: boolean
+              sentiment_filter_minimum_rating:
+                anyOf:
+                - type: integer
+                - type: 'null'
+          - type: 'null'
+        setup_status:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              current_page:
+                anyOf:
+                - type: string
+                - type: 'null'
+              initial_redirect:
+                anyOf:
+                - type: string
+                  enum:
+                  - review_campaign_hero_testimonial
+                  - company_setup
+                - type: 'null'
+              migrated:
+                type: boolean
+              progress:
+                anyOf:
+                - type: number
+                - type: 'null'
+          - type: 'null'
+        slug:
+          anyOf:
+          - type: string
+          - type: 'null'
+        updated_at:
+          type: string
+          format: date-time
+        users:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              role:
+                type: string
+                enum:
+                - MANAGER_PLUS_PAYMENT
+                - MANAGER
+                - TEAM_MEMBER
+              user_id:
+                type: string
+        website:
+          anyOf:
+          - type: string
+          - type: 'null'
+      additionalProperties: true
+    Employee:
+      type: object
+      properties:
+        id:
+          type: string
+        archived_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        channels:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              id:
+                type: string
+              created_at:
+                type: string
+                format: date-time
+              email:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_source_id:
+                anyOf:
+                - type: string
+                - type: 'null'
+              first_name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              last_name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              network:
+                type: string
+              phone:
+                anyOf:
+                - type: string
+                - type: 'null'
+              position:
+                anyOf:
+                - type: string
+                - type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+        created_at:
+          type: string
+          format: date-time
+        email:
+          type: string
+        first_name:
+          type: string
+        initial_source:
+          anyOf:
+          - type: string
+          - type: 'null'
+        insights:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              review_average_rating:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    v1:
+                      anyOf:
+                      - type: number
+                      - type: 'null'
+                - type: 'null'
+              review_count:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    v1:
+                      anyOf:
+                      - type: integer
+                      - type: 'null'
+                - type: 'null'
+          - type: 'null'
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        position:
+          anyOf:
+          - type: string
+          - type: 'null'
+        profile_photo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        updated_at:
+          type: string
+          format: date-time
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+      additionalProperties: true
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        balance:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+        discounts:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              amount:
+                anyOf:
+                - type: number
+                - type: 'null'
+              description:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_id:
+                anyOf:
+                - type: string
+                - type: 'null'
+              name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              percentage:
+                anyOf:
+                - type: number
+                - type: 'null'
+        employee_ids:
+          type: array
+          items:
+            type: string
+        external_source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        integration_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        line:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              amount:
+                anyOf:
+                - type: number
+                - type: 'null'
+              description:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_id:
+                anyOf:
+                - type: string
+                - type: 'null'
+        metadata:
+          anyOf:
+          - type: object
+            additionalProperties: true
+          - type: 'null'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        network:
+          type: string
+        paid:
+          type: boolean
+        paid_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        person_id:
+          type: string
+        person_ids:
+          type: array
+          items:
+            type: string
+        status:
+          anyOf:
+          - type: string
+            enum:
+            - draft
+            - open
+            - paid
+            - uncollectible
+            - void
+          - type: 'null'
+        subtotal:
+          anyOf:
+          - type: number
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        taxes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              amount:
+                anyOf:
+                - type: number
+                - type: 'null'
+              description:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_id:
+                anyOf:
+                - type: string
+                - type: 'null'
+              name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              percentage:
+                anyOf:
+                - type: number
+                - type: 'null'
+        total:
+          type: number
+        updated_at:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        amount:
+          type: number
+        amount_refunded:
+          anyOf:
+          - type: number
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        currency:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+        disputed:
+          type: boolean
+        employee_ids:
+          type: array
+          items:
+            type: string
+        external_source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        integration_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        invoice_ids:
+          type: array
+          items:
+            type: string
+        metadata:
+          anyOf:
+          - type: object
+            additionalProperties: true
+          - type: 'null'
+        network:
+          type: string
+        person_ids:
+          type: array
+          items:
+            type: string
+        refunded:
+          type: boolean
+        status:
+          anyOf:
+          - type: string
+            enum:
+            - succeeded
+            - pending
+            - failed
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Person:
+      type: object
+      properties:
+        id:
+          type: string
+        address:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              address:
+                anyOf:
+                - type: string
+                - type: 'null'
+              city:
+                anyOf:
+                - type: string
+                - type: 'null'
+              country:
+                anyOf:
+                - type: string
+                - type: 'null'
+              geo:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    latitude:
+                      anyOf:
+                      - type: number
+                      - type: 'null'
+                    longitude:
+                      anyOf:
+                      - type: number
+                      - type: 'null'
+                - type: 'null'
+              googlePlaceId:
+                anyOf:
+                - type: string
+                - type: 'null'
+              state:
+                anyOf:
+                - type: string
+                - type: 'null'
+              timezone:
+                anyOf:
+                - type: string
+                - type: 'null'
+              unit:
+                anyOf:
+                - type: string
+                - type: 'null'
+              zip:
+                anyOf:
+                - type: string
+                - type: 'null'
+          - type: 'null'
+        blocked:
+          type: boolean
+        channels:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              id:
+                type: string
+              address:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                  properties:
+                    address:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    city:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    country:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    geo:
+                      anyOf:
+                      - type: object
+                        additionalProperties: true
+                        properties:
+                          latitude:
+                            anyOf:
+                            - type: number
+                            - type: 'null'
+                          longitude:
+                            anyOf:
+                            - type: number
+                            - type: 'null'
+                      - type: 'null'
+                    googlePlaceId:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    state:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    timezone:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    unit:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                    zip:
+                      anyOf:
+                      - type: string
+                      - type: 'null'
+                - type: 'null'
+              company:
+                anyOf:
+                - type: string
+                - type: 'null'
+              created_at:
+                type: string
+                format: date-time
+              email:
+                anyOf:
+                - type: string
+                - type: 'null'
+              external_source_id:
+                anyOf:
+                - type: string
+                - type: 'null'
+              first_name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              last_name:
+                anyOf:
+                - type: string
+                - type: 'null'
+              metadata:
+                anyOf:
+                - type: object
+                  additionalProperties: true
+                - type: 'null'
+              network:
+                type: string
+              phone:
+                anyOf:
+                - type: string
+                - type: 'null'
+              position:
+                anyOf:
+                - type: string
+                - type: 'null'
+              updated_at:
+                type: string
+                format: date-time
+        company:
+          anyOf:
+          - type: string
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        initial_source:
+          anyOf:
+          - type: string
+          - type: 'null'
+        initial_source_user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        latest:
+          anyOf:
+          - type: object
+            additionalProperties: true
+            properties:
+              CallCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CallUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CampaignEnrollmentCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CampaignRequestClicked:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CampaignRequestRead:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CampaignRequestSent:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CaseCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              CaseUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ClickCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ConversationCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ConversationRated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ConversationUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              InvoiceCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              InvoicePaid:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              InvoiceUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              JobCompleted:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              JobCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              JobUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              LeadCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              LifecycleStageCustomerUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              LifecycleStageLeadUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              NpsResponseSaved:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              PaymentCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              PaymentUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              PersonBlocked:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              PersonCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              PersonUnblocked:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ProposalAccepted:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ProposalCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ProposalRejected:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ProposalUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              RecommendationCreatedRecommendee:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              RecommendationCreatedRecommender:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ReviewCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ReviewUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              SessionCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              SessionUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              UnsubscribeCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              ViewCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              VisitCompleted:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              VisitCreated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+              VisitUpdated:
+                anyOf:
+                - type: string
+                  format: date-time
+                - type: 'null'
+          - type: 'null'
+        latest_activity_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        lead:
+          type: boolean
+        legacy_contact_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        lifecycle_stage:
+          anyOf:
+          - type: string
+          - type: 'null'
+        metadata:
+          anyOf:
+          - type: object
+            additionalProperties: true
+          - type: 'null'
+        notes:
+          anyOf:
+          - type: string
+          - type: 'null'
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+        photo_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        position:
+          anyOf:
+          - type: string
+          - type: 'null'
+        search_fields:
+          type: array
+          items:
+            type: string
+        tags:
+          type: array
+          items:
+            type: string
+        unsubscribed:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+        author:
+          anyOf:
+          - type: string
+          - type: 'null'
+        author_email:
+          anyOf:
+          - type: string
+          - type: 'null'
+        content:
+          anyOf:
+          - type: string
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        microsite_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+        network:
+          anyOf:
+          - type: string
+          - type: 'null'
+        person_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        rating:
+          anyOf:
+          - type: number
+          - type: 'null'
+        source_base_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+        source_url:
+          anyOf:
+          - type: string
+          - type: 'null'
+      additionalProperties: true
+    ReviewInsights:
+      type: object
+      properties:
+        average_rating:
+          type: number
+        network_insights:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+            properties:
+              average_rating:
+                type: number
+              network:
+                type: string
+              review_count:
+                type: integer
+        review_count:
+          type: integer
+      additionalProperties: true
+    Visit:
+      type: object
+      properties:
+        id:
+          type: string
+        amount:
+          anyOf:
+          - type: number
+          - type: 'null'
+        booking_id:
+          type: string
+        complete:
+          type: boolean
+        completed_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        created_at:
+          type: string
+          format: date-time
+        employee_ids:
+          type: array
+          items:
+            type: string
+        external_source_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        integration_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        invoice_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+        network:
+          type: string
+        person_id:
+          type: string
+        photo_ids:
+          type: array
+          items:
+            type: string
+        scheduled_time:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+        tags:
+          type: array
+          items:
+            type: string
+        updated_at:
+          type: string
+          format: date-time
+        user_ids:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+  securitySchemes:
+    userOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.nicejob.com/oauth/authorize
+          tokenUrl: https://api.nicejob.com/oauth/token
+          refreshUrl: https://api.nicejob.com/oauth/token
+          scopes:
+            bookings: ''
+            campaigns: ''
+            cases: ''
+            company: ''
+            employees: ''
+            enrollments: ''
+            invoices: ''
+            payments: ''
+            people: ''
+            review_insights: ''
+            reviews: ''
+            webhooks: ''
+    webhookOAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.nicejob.com/oauth/token
+          scopes:
+            webhooks: ''
