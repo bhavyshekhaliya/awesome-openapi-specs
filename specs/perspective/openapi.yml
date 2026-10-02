@@ -1,0 +1,719 @@
+openapi: 3.1.0
+info:
+  title: Perspective External API
+  version: 1.0.0
+  description: Community-maintained specification for the Perspective External REST API.
+  contact:
+    url: https://www.perspective.co
+servers:
+  - url: https://api.perspective.co/v1
+    description: Perspective External API
+externalDocs:
+  description: Perspective External API reference
+  url: https://developers.perspective.co/api-reference/overview
+security:
+  - PerspectiveApiKey: []
+tags:
+  - name: Contacts
+    description: CRM contacts associated with funnels.
+  - name: Metrics
+    description: Funnel KPI, chart, and insight metrics.
+  - name: Workspaces
+    description: Workspaces and their campaigns (funnels).
+paths:
+  /workspaces:
+    get:
+      tags: [Workspaces]
+      summary: List workspaces
+      description: Returns workspaces and their associated campaigns for the company tied to the API key.
+      operationId: listWorkspaces
+      responses:
+        '200':
+          description: Workspaces and their campaigns.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/contacts:
+    get:
+      tags: [Contacts]
+      summary: List contacts
+      description: Returns a paginated list of CRM contacts for a funnel. Requires the crm:read permission.
+      operationId: listContacts
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: page
+          in: query
+          description: Zero-based page number.
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          description: Number of contacts per page.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: sortField
+          in: query
+          description: Field used to sort contacts.
+          required: false
+          schema:
+            type: string
+            enum: [ps_converted_at, email, firstName, lastName]
+            default: ps_converted_at
+        - name: sortOrder
+          in: query
+          description: Sort direction; -1 is descending and 1 is ascending.
+          required: false
+          schema:
+            type: integer
+            enum: [-1, 1]
+            default: -1
+      responses:
+        '200':
+          description: A page of contacts and pagination metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Contacts]
+      summary: Create a contact
+      description: Creates a CRM contact in a funnel. At least one of email or phone must be provided. Requires the crm:write permission.
+      operationId: createContact
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContactRequest'
+      responses:
+        '201':
+          description: The newly created contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/contacts/{contactId}:
+    get:
+      tags: [Contacts]
+      summary: Get a contact
+      description: Returns a single CRM contact by ID. Requires the crm:read permission.
+      operationId: getContact
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: contactId
+          in: path
+          description: ID of the contact to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The contact.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/contacts/{contactId}/values:
+    put:
+      tags: [Contacts]
+      summary: Update a contact field value
+      description: Updates one standard field or custom property value for a contact. Requires the crm:write permission.
+      operationId: updateContactValue
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: contactId
+          in: path
+          description: ID of the contact to update.
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateContactValueRequest'
+      responses:
+        '200':
+          description: The updated field value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactValueResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/metrics/kpis/{subtype}:
+    get:
+      tags: [Metrics]
+      summary: Get a KPI
+      description: Returns one KPI for a funnel and time window. Requires the metrics:read permission.
+      operationId: getKpi
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: subtype
+          in: path
+          description: KPI subtype to retrieve.
+          required: true
+          schema:
+            type: string
+            enum:
+              - kpi_conversion_rate
+              - kpi_completion_rate
+              - kpi_average_time_on_page
+              - kpi_time_to_completion
+              - kpi_new_contacts
+              - kpi_total_sessions
+              - kpi_messages_sent
+              - kpi_messages_delivery_rate
+              - kpi_messages_open_rate
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/TimezoneOffset'
+      responses:
+        '200':
+          description: The computed KPI value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KpiResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/metrics/charts/{subtype}:
+    get:
+      tags: [Metrics]
+      summary: Get chart data
+      description: Returns chart data for a funnel and time window. The abTest parameter is only valid for chart_page_to_page_conversion_rate. Requires the metrics:read permission.
+      operationId: getChart
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: subtype
+          in: path
+          description: Chart subtype to retrieve.
+          required: true
+          schema:
+            type: string
+            enum:
+              - chart_page_to_page_conversion_rate
+              - chart_activity_by_daytime
+              - chart_contacts_over_time
+              - chart_visitor_devices
+              - chart_top_utm_sources
+              - chart_time_on_page
+              - chart_button_clicks
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/TimezoneOffset'
+        - name: abTest
+          in: query
+          description: A/B test filter; supported only by chart_page_to_page_conversion_rate.
+          required: false
+          schema:
+            type: string
+            enum: [all, original, variant]
+      responses:
+        '200':
+          description: Chart data points.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /funnels/{funnelId}/metrics/insights/{insightId}:
+    get:
+      tags: [Metrics]
+      summary: Get an insight
+      description: Returns aggregated responses for a funnel question or survey element. Requires the metrics:read permission.
+      operationId: getInsight
+      parameters:
+        - $ref: '#/components/parameters/FunnelId'
+        - name: insightId
+          in: path
+          description: ID of the question or survey element.
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+        - $ref: '#/components/parameters/TimezoneOffset'
+      responses:
+        '200':
+          description: Aggregated insight data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsightResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  securitySchemes:
+    PerspectiveApiKey:
+      type: apiKey
+      in: header
+      name: x-perspective-api-key
+  parameters:
+    FunnelId:
+      name: funnelId
+      in: path
+      description: ID of the funnel.
+      required: true
+      schema:
+        type: string
+    From:
+      name: from
+      in: query
+      description: Start of the metrics period; must be before to.
+      required: true
+      schema:
+        type: string
+        format: date-time
+    To:
+      name: to
+      in: query
+      description: End of the metrics period.
+      required: true
+      schema:
+        type: string
+        format: date-time
+    TimezoneOffset:
+      name: offset
+      in: query
+      description: Timezone offset in minutes, with an optional leading plus or minus sign.
+      required: false
+      schema:
+        type: string
+        pattern: '^[+-]?\d+$'
+  responses:
+    BadRequest:
+      description: The request parameters or body are missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The API key does not have the required permission for this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      required: [error, status]
+      properties:
+        error:
+          type: string
+          description: Human-readable error description.
+        status:
+          type: integer
+    WorkspaceListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Workspace'
+    Workspace:
+      type: object
+      required: [id, name, campaigns]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        campaigns:
+          type: array
+          items:
+            $ref: '#/components/schemas/Campaign'
+    Campaign:
+      type: object
+      required: [id, name, status]
+      properties:
+        id:
+          type: string
+          description: Campaign (funnel) identifier; used as funnelId in contact and metrics endpoints.
+        name:
+          type: string
+        status:
+          type: string
+          enum: [online, offline]
+    ContactListResponse:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contact'
+        meta:
+          $ref: '#/components/schemas/Pagination'
+    ContactResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/Contact'
+    Contact:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          description: Contact lifecycle status, such as lead or converted.
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          description: Primary phone number, in E.164 format when available.
+        firstName:
+          type: string
+        lastName:
+          type: string
+        name:
+          type: string
+          description: Full display name when first and last names are not split.
+        fullAddress:
+          type: string
+          description: Single-line address as captured; preferred over structured address when present.
+        timezone:
+          type: string
+          deprecated: true
+          description: IANA timezone of the contact. Use meta.ps_timezone instead.
+        website:
+          type: string
+          format: uri
+        birthday:
+          type: string
+          description: Birthday as captured, typically an ISO date string.
+        address:
+          $ref: '#/components/schemas/Address'
+        meta:
+          $ref: '#/components/schemas/ContactMeta'
+        utmParams:
+          $ref: '#/components/schemas/UtmParams'
+        properties:
+          type: object
+          readOnly: true
+          description: Custom contact properties. Use the update-contact-value endpoint to write these values.
+          additionalProperties:
+            type: [string, boolean, number, 'null']
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactMessage'
+    Address:
+      type: object
+      description: Structured address, included when at least one component is known.
+      properties:
+        postalCode:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        street:
+          type: string
+        houseNumber:
+          type: string
+    ContactMeta:
+      type: object
+      readOnly: true
+      description: Perspective-managed metadata captured during the funnel session.
+      properties:
+        ps_timezone:
+          type: string
+        ps_converted_at:
+          type: string
+          format: date-time
+        ps_first_seen_at:
+          type: string
+          format: date-time
+        ps_last_seen_at:
+          type: string
+          format: date-time
+        ps_source:
+          type: string
+          enum: [manual, funnel, zapier, make, external-api]
+        ps_start_slug:
+          type: string
+        ps_end_slug:
+          type: string
+        ps_start_page:
+          type: string
+        ps_result_page:
+          type: string
+        ps_user_edited_at:
+          type: string
+          format: date-time
+        ps_completed_at:
+          type: string
+          format: date-time
+        ps_email_verified:
+          type: boolean
+        ps_email_verified_at:
+          type: string
+          format: date-time
+        ps_phone_verified:
+          type: boolean
+        ps_phone_verified_at:
+          type: string
+          format: date-time
+        ps_embed:
+          type: boolean
+        ps_cal_booked:
+          type: boolean
+        ps_ghl_booked:
+          type: boolean
+        ps_hubspot_booked:
+          type: boolean
+        ps_calendly_booked:
+          type: boolean
+    UtmParams:
+      type: object
+      readOnly: true
+      properties:
+        utm_source:
+          type: string
+        utm_medium:
+          type: string
+        utm_campaign:
+          type: string
+        utm_term:
+          type: string
+        utm_content:
+          type: string
+    ContactMessage:
+      type: object
+      required: [id, name, type, content]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          description: Message channel, such as email or sms.
+        content:
+          type: string
+        subject:
+          type: string
+          description: Present for email messages only.
+    Pagination:
+      type: object
+      required: [page, limit, total, hasNext]
+      properties:
+        page:
+          type: integer
+          description: Current zero-based page number.
+        limit:
+          type: integer
+        total:
+          type: integer
+          description: Total number of matching contacts across all pages.
+        hasNext:
+          type: boolean
+    CreateContactRequest:
+      type: object
+      description: At least one of email or phone is required.
+      anyOf:
+        - required: [email]
+        - required: [phone]
+      properties:
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        status:
+          type: string
+          description: Must be one of the statuses configured for the funnel.
+        website:
+          type: string
+          format: uri
+        birthday:
+          type: string
+          description: Birthday as captured, typically an ISO date string.
+        address:
+          $ref: '#/components/schemas/Address'
+        skipAutomationTrigger:
+          type: boolean
+          default: false
+          description: Set to true to bypass automation workflows triggered by initial status.
+    UpdateContactValueRequest:
+      type: object
+      required: [fieldName, value]
+      properties:
+        fieldName:
+          type: string
+          description: Standard contact field or custom property name. Standard names include firstName, lastName, email, phone, status, website, birthday, postalCode, city, state, country, street, and houseNumber; zip is a legacy alias for postalCode.
+        value:
+          type: string
+          description: New value for the field.
+        skipAutomationTrigger:
+          type: boolean
+          default: false
+          description: Set to true to bypass automation workflows triggered by the field change.
+    ContactValueResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [id, fieldName, value, updatedAt]
+          properties:
+            id:
+              type: string
+            fieldName:
+              type: string
+            value:
+              type: string
+            updatedAt:
+              type: string
+              format: date-time
+    KpiResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [type, value]
+          properties:
+            type:
+              type: string
+              description: KPI subtype name in camelCase.
+            value:
+              type: number
+              description: Percentage for rate KPIs, seconds for time KPIs, or count for count KPIs.
+            count:
+              type: number
+              description: Number of events used to compute a rate-based KPI; present only for rate KPIs.
+    ChartResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChartDataPoint'
+    ChartDataPoint:
+      type: object
+      required: [key, value]
+      properties:
+        key:
+          type: string
+          description: Identifier or label for the point, such as a time slot, device type, or page slug.
+        value:
+          type: number
+        name:
+          type: string
+          description: Human-readable display name, present only for some chart types.
+        relativeValue:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Relative value as a ratio between zero and one, present only for some chart types.
+    InsightResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: object
+          required: [title, answers]
+          properties:
+            title:
+              type: string
+              description: Question text for the insight.
+            answers:
+              type: object
+              description: Map of answer text to response count.
+              additionalProperties:
+                type: integer
+            groupedAnswers:
+              type: object
+              description: Present only for multiple-choice questions; keys are semicolon-separated answer combinations.
+              additionalProperties:
+                type: integer
