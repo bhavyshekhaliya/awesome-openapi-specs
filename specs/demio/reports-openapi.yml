@@ -1,0 +1,144 @@
+openapi: 3.2.0
+info:
+  title: Public Demio Reports API
+  version: v1
+  description: Public REST API for Demio, the webinar and virtual-event platform operated by Banzai International.
+  contact:
+    name: Demio Support
+    email: support@demio.com
+    url: https://help.demio.com/en/
+  termsOfService: https://www.demio.com/terms-and-conditions
+  x-source-format: API Blueprint 1A
+  x-source-url: https://jsapi.apiary.io/apis/publicdemioapi.apib
+  x-source-last-updated: '2022-04-19'
+  x-provenance: Derived by API Evangelist from the provider-published API Blueprint. Not an official Demio OpenAPI document.
+servers:
+- url: https://my.demio.com/api/v1
+  description: Production
+security:
+- ApiKeyHeader: []
+  ApiSecretHeader: []
+tags:
+- name: Reports
+  description: Participation and attendance reporting.
+paths:
+  /report/{date_id}/participants:
+    get:
+      tags:
+      - Reports
+      operationId: listSessionParticipants
+      summary: Event Date participants
+      description: Returns the participant list for an Event Session (Date). Use the `status` query parameter to filter results by participation status.
+      parameters:
+      - name: date_id
+        in: path
+        required: true
+        description: Event Date ID
+        schema:
+          type: integer
+      - name: status
+        in: query
+        required: false
+        description: Filter results by participation status
+        schema:
+          type: string
+          enum:
+          - attended
+          - did not attend
+          - completed
+          - left early
+          - banned
+      responses:
+        '200':
+          description: Participants for the Session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantList'
+              example:
+                participants:
+                - email: john.doe@gmail.com
+                  name: John
+                  custom_fields:
+                  - id: last_name
+                    name: Last Name
+                    value: Doe
+                  - id: website
+                    name: Website
+                    value: https://demio.com
+                  attended: true
+                  status: completed
+                - email: jane.doe@gmail.com
+                  name: Jane Doe
+                  custom_fields: []
+                  attended: false
+                  status: did not attend
+components:
+  schemas:
+    Participant:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email
+        name:
+          type: string
+          description: Name
+        custom_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantCustomField'
+        attended:
+          type: boolean
+          description: Participant attended the webinar
+        status:
+          type: string
+          description: Participation status
+          enum:
+          - completed
+          - did not attend
+          - left early
+          - banned
+    ParticipantCustomField:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Field identifier
+        name:
+          type: string
+          description: Field name
+        value:
+          type: string
+          description: Field value
+    ParticipantList:
+      type: object
+      properties:
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: Api-Key
+      description: Account API Key, from Demio Settings > API.
+    ApiSecretHeader:
+      type: apiKey
+      in: header
+      name: Api-Secret
+      description: Account API Secret, from Demio Settings > API.
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+      description: Account API Key supplied on the query string.
+    ApiSecretQuery:
+      type: apiKey
+      in: query
+      name: api_secret
+      description: Account API Secret supplied on the query string.
+externalDocs:
+  description: Public Demio API documentation (Apiary)
+  url: https://publicdemioapi.docs.apiary.io

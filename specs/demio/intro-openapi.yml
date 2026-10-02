@@ -1,0 +1,154 @@
+openapi: 3.2.0
+info:
+  title: Public Demio Intro API
+  version: v1
+  description: Public REST API for Demio, the webinar and virtual-event platform operated by Banzai International.
+  contact:
+    name: Demio Support
+    email: support@demio.com
+    url: https://help.demio.com/en/
+  termsOfService: https://www.demio.com/terms-and-conditions
+  x-source-format: API Blueprint 1A
+  x-source-url: https://jsapi.apiary.io/apis/publicdemioapi.apib
+  x-source-last-updated: '2022-04-19'
+  x-provenance: Derived by API Evangelist from the provider-published API Blueprint. Not an official Demio OpenAPI document.
+servers:
+- url: https://my.demio.com/api/v1
+  description: Production
+security:
+- ApiKeyHeader: []
+  ApiSecretHeader: []
+tags:
+- name: Intro
+  description: Authorization checks.
+paths:
+  /ping:
+    get:
+      tags:
+      - Intro
+      operationId: pingViaHeaders
+      summary: Ping via headers
+      description: Verifies authorization using the `Api-Key` and `Api-Secret` request headers. Returns whether the credentials resolve and whether they are sandbox credentials.
+      security:
+      - ApiKeyHeader: []
+        ApiSecretHeader: []
+      responses:
+        '200':
+          description: Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pong'
+              example:
+                pong: true
+                sandbox: true
+        '401':
+          description: Authorization failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingError'
+              example:
+                pong: false
+                messages:
+                - Authorization failed
+        '403':
+          description: Account is not active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingError'
+              example:
+                pong: false
+                messages:
+                - Account is not active
+  /ping/query:
+    get:
+      tags:
+      - Intro
+      operationId: pingViaQuery
+      summary: Ping via query string
+      description: Verifies authorization using the `api_key` and `api_secret` query string parameters.
+      security:
+      - ApiKeyQuery: []
+        ApiSecretQuery: []
+      parameters:
+      - name: api_key
+        in: query
+        required: true
+        description: Api Key
+        schema:
+          type: string
+      - name: api_secret
+        in: query
+        required: true
+        description: Api Secret
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pong'
+              example:
+                pong: true
+        '401':
+          description: Authorization failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingError'
+        '403':
+          description: Account is not active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingError'
+components:
+  schemas:
+    Pong:
+      type: object
+      required:
+      - pong
+      properties:
+        pong:
+          type: boolean
+          description: Pong result
+        sandbox:
+          type: boolean
+          description: True when sandbox key/secret were used
+    PingError:
+      type: object
+      properties:
+        pong:
+          type: boolean
+        messages:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    ApiKeyHeader:
+      type: apiKey
+      in: header
+      name: Api-Key
+      description: Account API Key, from Demio Settings > API.
+    ApiSecretHeader:
+      type: apiKey
+      in: header
+      name: Api-Secret
+      description: Account API Secret, from Demio Settings > API.
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: api_key
+      description: Account API Key supplied on the query string.
+    ApiSecretQuery:
+      type: apiKey
+      in: query
+      name: api_secret
+      description: Account API Secret supplied on the query string.
+externalDocs:
+  description: Public Demio API documentation (Apiary)
+  url: https://publicdemioapi.docs.apiary.io

@@ -91,6 +91,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Oracle Eloqua | [API specification](https://docs.oracle.com/en/cloud/saas/marketing/eloqua-rest-api/swagger.json) | JSON | 2.0 | `marketing-automation` `enterprise` |
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Eventleaf | [API specification](https://api.eventleaf.com/swagger/docs/v1) | JSON | 2.0 | `event-management` |
+| Demio | [Events API](specs/demio/events-openapi.yml); [Intro API](specs/demio/intro-openapi.yml); [Reports API](specs/demio/reports-openapi.yml); [official API Blueprint](https://publicdemioapi.docs.apiary.io) | YAML | 3.2.0 | `community-maintained` `webinars` `event-management` |
 | GetResponse | [API specification](https://apireference.getresponse.com/open-api.json) | JSON | 3.0.0 | `email-marketing` |
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
