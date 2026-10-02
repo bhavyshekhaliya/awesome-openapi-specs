@@ -1,0 +1,492 @@
+openapi: 3.1.0
+info:
+  title: Veshort Link API
+  version: "3"
+  description: >-
+    Community-maintained specification for the documented Veshort link-management
+    endpoints. The provider's API reference labels this API v3. This spec covers
+    link listing, lookup, creation, update, and deletion; it does not model the
+    other resource groups in the broader API reference.
+  externalDocs:
+    description: Veshort API Reference for Developers v3
+    url: https://veshort.com/developers
+servers:
+  - url: https://veshort.com/api
+    description: Veshort API
+security:
+  - BearerAuth: []
+tags:
+  - name: Links
+    description: Create and manage shortened links.
+paths:
+  /urls:
+    get:
+      tags: [Links]
+      operationId: listLinks
+      summary: List links
+      description: >-
+        Lists links and supports pagination, ordering, and search filters. When
+        `short` is supplied, the provider says other query parameters are
+        ignored and a matching single-link response may be returned.
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          description: Number of results per page.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: Requested page number.
+          schema:
+            type: integer
+        - name: order
+          in: query
+          required: false
+          description: Sort links by date or click count.
+          schema:
+            type: string
+            enum: [date, click]
+        - name: short
+          in: query
+          required: false
+          description: Search by short URL; when used, other filters are ignored.
+          schema:
+            type: string
+        - name: q
+          in: query
+          required: false
+          description: Search for links using a keyword.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Link list or a single matching link when `short` is used.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/LinkListResponse"
+                  - $ref: "#/components/schemas/SingleLinkResponse"
+        default:
+          $ref: "#/components/responses/ApiError"
+  /url/{id}:
+    get:
+      tags: [Links]
+      operationId: getLink
+      summary: Get a single link
+      description: Returns link details and click statistics for the specified link.
+      parameters:
+        - $ref: "#/components/parameters/LinkId"
+      responses:
+        "200":
+          description: Link details and statistics.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleLinkResponse"
+        default:
+          $ref: "#/components/responses/ApiError"
+  /url/add:
+    post:
+      tags: [Links]
+      operationId: createLink
+      summary: Shorten a link
+      description: Creates a shortened link with optional targeting and metadata.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLinkRequest"
+      responses:
+        "200":
+          description: Link created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateLinkResponse"
+        default:
+          $ref: "#/components/responses/ApiError"
+  /url/{id}/update:
+    put:
+      tags: [Links]
+      operationId: updateLink
+      summary: Update a link
+      description: Updates the specified link. The source marks `url` as required in the request body.
+      parameters:
+        - $ref: "#/components/parameters/LinkId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLinkRequest"
+      responses:
+        "200":
+          description: Link updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateLinkResponse"
+        default:
+          $ref: "#/components/responses/ApiError"
+  /url/{id}/delete:
+    delete:
+      tags: [Links]
+      operationId: deleteLink
+      summary: Delete a link
+      parameters:
+        - $ref: "#/components/parameters/LinkId"
+      responses:
+        "200":
+          description: Link deleted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteLinkResponse"
+        default:
+          $ref: "#/components/responses/ApiError"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Use the API key generated for the Veshort account as a bearer token.
+  parameters:
+    LinkId:
+      name: id
+      in: path
+      required: true
+      description: Link identifier.
+      schema:
+        type: integer
+  responses:
+    ApiError:
+      description: Error response. The API reference documents JSON responses with an `error` and `message` field.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ApiError"
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        error:
+          oneOf:
+            - type: integer
+            - type: string
+        message:
+          type: string
+    CreateLinkRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Long URL to shorten.
+        custom:
+          type: string
+          description: Custom alias instead of a generated alias.
+        type:
+          type: string
+          description: Redirection type; the API reference lists direct, frame, and splash.
+        password:
+          type: string
+          description: Password protection for the link.
+        domain:
+          type: string
+          description: Custom domain for the link.
+        expiry:
+          type: string
+          description: Expiration date and time; the documentation example uses YYYY-MM-DD HH:mm:ss.
+        geotarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/GeoTarget"
+        devicetarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeviceTarget"
+        languagetarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageTarget"
+        metatitle:
+          type: string
+          description: Link meta title.
+        metadescription:
+          type: string
+          description: Link meta description.
+        metaimage:
+          type: string
+          format: uri
+          description: URL of a JPG or PNG image.
+        description:
+          type: string
+          description: Note or description for the link.
+        pixels:
+          type: array
+          items:
+            type: integer
+          description: Pixel identifiers to associate with the link.
+        channel:
+          type: integer
+          description: Channel identifier.
+        campaign:
+          type: integer
+          description: Campaign identifier.
+        deeplink:
+          $ref: "#/components/schemas/DeepLink"
+        status:
+          type: string
+          enum: [public, private]
+          description: Link visibility; the documented default is private.
+        parameters:
+          type: array
+          description: The request example supplies link parameter objects.
+          items:
+            type: object
+            additionalProperties:
+              type: string
+    UpdateLinkRequest:
+      type: object
+      required: [url]
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Long URL to shorten.
+        custom:
+          type: string
+          description: Custom alias instead of a generated alias.
+        type:
+          type: string
+          description: Redirection type; the API reference lists direct, frame, and splash.
+        password:
+          type: string
+          description: Password protection for the link.
+        domain:
+          type: string
+          description: Custom domain for the link.
+        expiry:
+          type: string
+          description: Expiration date and time; the documentation example uses YYYY-MM-DD HH:mm:ss.
+        geotarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/GeoTarget"
+        devicetarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeviceTarget"
+        languagetarget:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageTarget"
+        metatitle:
+          type: string
+          description: Link meta title.
+        metadescription:
+          type: string
+          description: Link meta description.
+        metaimage:
+          type: string
+          format: uri
+          description: URL of a JPG or PNG image.
+        pixels:
+          type: array
+          items:
+            type: integer
+          description: Pixel identifiers to associate with the link.
+        channel:
+          type: integer
+          description: Channel identifier.
+        campaign:
+          type: integer
+          description: Campaign identifier.
+        deeplink:
+          $ref: "#/components/schemas/DeepLink"
+        parameters:
+          type: array
+          description: The request example supplies link parameter objects.
+          items:
+            type: object
+            additionalProperties:
+              type: string
+    GeoTarget:
+      type: object
+      required: [location, link]
+      properties:
+        location:
+          type: string
+        link:
+          type: string
+          format: uri
+    DeviceTarget:
+      type: object
+      required: [device, link]
+      properties:
+        device:
+          type: string
+        link:
+          type: string
+          format: uri
+    LanguageTarget:
+      type: object
+      required: [language, link]
+      properties:
+        language:
+          type: string
+        link:
+          type: string
+          format: uri
+    DeepLink:
+      type: object
+      properties:
+        auto:
+          type: boolean
+          description: When true, Veshort can automatically generate deep links from the provided long link.
+        apple:
+          type: string
+          format: uri
+        google:
+          type: string
+          format: uri
+    LinkListResponse:
+      type: object
+      required: [error, data]
+      properties:
+        error:
+          oneOf:
+            - type: integer
+            - type: string
+        data:
+          type: object
+          properties:
+            result:
+              type: integer
+            perpage:
+              type: integer
+            currentpage:
+              type: integer
+            nextpage:
+              type: integer
+            maxpage:
+              type: integer
+            urls:
+              type: array
+              items:
+                $ref: "#/components/schemas/LinkListItem"
+    LinkListItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        alias:
+          type: string
+        shorturl:
+          type: string
+          format: uri
+        longurl:
+          type: string
+          format: uri
+        clicks:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        date:
+          type: string
+    SingleLinkResponse:
+      type: object
+      properties:
+        error:
+          oneOf:
+            - type: integer
+            - type: string
+        id:
+          type: integer
+        details:
+          type: object
+          properties:
+            id:
+              type: integer
+            shorturl:
+              type: string
+              format: uri
+            longurl:
+              type: string
+              format: uri
+            title:
+              type: string
+            description:
+              type: string
+            location:
+              type: object
+              additionalProperties:
+                type: string
+                format: uri
+            device:
+              type: object
+              additionalProperties:
+                type: string
+                format: uri
+            expiry:
+              type: [string, "null"]
+            date:
+              type: string
+        data:
+          type: object
+          properties:
+            clicks:
+              type: integer
+            uniqueClicks:
+              type: integer
+            topCountries:
+              type: integer
+            topReferrers:
+              type: integer
+            topBrowsers:
+              type: integer
+            topOs:
+              type: integer
+            socialCount:
+              type: object
+              properties:
+                facebook:
+                  type: integer
+                twitter:
+                  type: integer
+                google:
+                  type: integer
+    CreateLinkResponse:
+      type: object
+      properties:
+        error:
+          type: integer
+        id:
+          type: integer
+        shorturl:
+          type: string
+          format: uri
+    UpdateLinkResponse:
+      type: object
+      properties:
+        error:
+          type: integer
+        id:
+          type: integer
+        short:
+          type: string
+          format: uri
+    DeleteLinkResponse:
+      type: object
+      properties:
+        error:
+          type: integer
+        message:
+          type: string
