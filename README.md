@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| ActiveCampaign | [API specification](https://dash.readme.com/api/v1/api-registry/21t7f145tmufpfc93) | JSON | 3.1.0 | `official` `marketing-automation` `email-marketing` `crm` |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                           | YAML   | 3.0.2   | `official` `email-marketing`                |
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
