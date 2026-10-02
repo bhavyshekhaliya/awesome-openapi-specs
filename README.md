@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Cardly | [API specification](https://api.card.ly/openapi/en-AU/2.2.0/yaml) | YAML | 3.1.0 | `direct-mail` `marketing` |
 | Connectif | [API specification](https://api-docs.connectif.cloud/swagger.json) | JSON | 2.0 | `marketing-automation` |
 | UpContent | [API specification](https://docs.upcontent.com/api/public.yaml) | YAML | 2.0 | `content-marketing` |
 | rasa.io | [API specification](https://api-docs.rasa.io/swagger.json) | JSON | 2.0 | `email-marketing` `newsletter` |
