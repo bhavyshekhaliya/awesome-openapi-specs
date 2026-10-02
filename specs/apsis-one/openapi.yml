@@ -1,0 +1,3811 @@
+openapi: 3.0.0
+info:
+  title: Apsis One API community specification
+  version: '2026-10-03'
+  description: Community-maintained structural representation of the public Apsis One API. Vendor-authored explanations
+    and examples are omitted; consult the official Developer Hub for guidance and current limitations.
+tags:
+- name: Definitions
+- name: Profiles
+- name: Attributes, tags and events
+- name: Consents
+- name: Profile export
+- name: Segments
+- name: Profile import
+- name: Email
+- name: SMS
+- name: Website
+- name: Marketing Automation
+- name: Forms & Pages
+- name: Folders
+security:
+- bearerToken: []
+servers:
+- url: https://api.apsis.one
+- url: https://api-apac.apsis.one
+paths:
+  /audience/keyspaces:
+    get:
+      tags:
+      - Definitions
+      operationId: getKeyspaces
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keyspaces'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/keyspaces
+  /audience/keyspaces/{keyspace_discriminator}/sections/{section_discriminator}/profiles:
+    post:
+      tags:
+      - Profiles
+      operationId: createNewProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProfileRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UniqueIdentifier'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/keyspaces/{keyspace_discriminator}/sections/{section_discriminator}/profiles
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tags:
+    patch:
+      tags:
+      - Attributes, tags and events
+      operationId: setTagsOnProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/TaggedProfile'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PATCH /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tags
+    get:
+      tags:
+      - Attributes, tags and events
+      operationId: getAllProfileTags
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaggedProfile'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tags
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes:
+    get:
+      tags:
+      - Attributes, tags and events
+      operationId: getAllProfileAttributes
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributedProfile'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes
+    patch:
+      tags:
+      - Attributes, tags and events
+      operationId: setAttributesOnProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/AttributeVersionIdsAndValues'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PATCH /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes
+  /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes:
+    patch:
+      tags:
+      - Attributes, tags and events
+      operationId: setAttributesOnProfileV2
+      parameters:
+      - $ref: '#/components/parameters/profile_key_update_method'
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/merge-patch+json:
+            schema:
+              $ref: '#/components/schemas/AttributeDiscriminatorsAndValues'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PATCH /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes
+  ? /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes/{version_id}
+  : delete:
+      tags:
+      - Attributes, tags and events
+      operationId: clearAttributeValueOnProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/version_id'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: DELETE /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes/{version_id}
+  ? /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes/{attribute_discriminator}
+  : delete:
+      tags:
+      - Attributes, tags and events
+      operationId: clearAttributeValueOnProfileV2
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/attribute_discriminator'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: DELETE /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/attributes/{attribute_discriminator}
+  /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/consents:
+    post:
+      tags:
+      - Consents
+      operationId: createConsentV2
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConsentRequest'
+      responses:
+        '201':
+          description: Response for HTTP 201.
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealmOrManageSubscriptions'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ConflictingConsentState'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/consents
+    get:
+      tags:
+      - Consents
+      operationId: getConsentsV2
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      - in: query
+        name: consent_types
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - opt-in
+            - opt-out
+            - pending-opt-in
+            - confirmed-opt-in
+      - in: query
+        name: suppression_channel_discriminator
+        schema:
+          type: string
+      - in: query
+        name: suppression_address
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetConsentsResponse'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /v2/audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/consents
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tracking-consent:
+    get:
+      tags:
+      - Consents
+      operationId: getTrackingConsent
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingConsentResponse'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tracking-consent
+    put:
+      tags:
+      - Consents
+      operationId: putTrackingConsent
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackingConsentRequest'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PUT /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/tracking-consent
+  /audience/profiles/reports/consents:
+    post:
+      tags:
+      - Profile export
+      operationId: requestProfileInSegmentByConsentExport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilesInSegmentByConsentReportRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfilesInSegmentByConsentReportResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/reports/consents
+  /audience/profiles/reports/consents/count:
+    post:
+      tags:
+      - Profile export
+      operationId: countProfilesInSegmentByConsent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilesInSegmentByConsentCountRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfilesInSegmentByConsentCountResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/reports/consents/count
+  /audience/channels:
+    get:
+      tags:
+      - Definitions
+      operationId: getChannels
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channels'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/channels
+  /audience/sections:
+    get:
+      tags:
+      - Definitions
+      operationId: getAllSectionsOnAccount
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sections'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections
+  /audience/sections/{section_discriminator}/attributes:
+    get:
+      tags:
+      - Definitions
+      operationId: getAttributes
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/include_keyspace_permissions'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Attribute'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections/{section_discriminator}/attributes
+  /v2/audience/sections/{section_discriminator}/topics:
+    get:
+      tags:
+      - Definitions
+      operationId: getTopicsV2
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topics'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /v2/audience/sections/{section_discriminator}/topics
+  /audience/sections/{section_discriminator}/tags:
+    get:
+      tags:
+      - Definitions
+      operationId: getAllTags
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/include_keyspace_permissions'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TagResponseWithKeyspacePermissions'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections/{section_discriminator}/tags
+    post:
+      tags:
+      - Definitions
+      operationId: createSingleTag
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/sections/{section_discriminator}/tags
+  /audience/sections/{section_discriminator}/tags/{tag_discriminator}:
+    get:
+      tags:
+      - Definitions
+      operationId: getSingleTag
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/tag_discriminator'
+      - $ref: '#/components/parameters/include_keyspace_permissions'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResponseWithKeyspacePermissions'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections/{section_discriminator}/tags/{tag_discriminator}
+    put:
+      tags:
+      - Definitions
+      operationId: updateSingleTag
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/tag_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagResponse'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PUT /audience/sections/{section_discriminator}/tags/{tag_discriminator}
+  /audience/sections/{section_discriminator}/events:
+    get:
+      tags:
+      - Definitions
+      operationId: getEvents
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/include_keyspace_permissions'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections/{section_discriminator}/events
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/events:
+    get:
+      tags:
+      - Attributes, tags and events
+      operationId: getProfileEvents
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      - in: query
+        name: event_version_ids
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventValues'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/events
+    post:
+      tags:
+      - Attributes, tags and events
+      operationId: addEventsToProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventValues'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}/events
+  /audience/segments:
+    get:
+      tags:
+      - Definitions
+      operationId: getSegments
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Segment'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/segments
+  /audience/segments/{segment_discriminator}:
+    get:
+      tags:
+      - Definitions
+      operationId: getSingleSegment
+      parameters:
+      - $ref: '#/components/parameters/segment_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Segment'
+          description: Response for HTTP 200.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/segments/{segment_discriminator}
+  /audience/segments/{segment_discriminator}/versions/{version_id}:
+    get:
+      tags:
+      - Definitions
+      operationId: getSegmentVersion
+      parameters:
+      - $ref: '#/components/parameters/segment_discriminator'
+      - $ref: '#/components/parameters/version_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentVersion'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/segments/{segment_discriminator}/versions/{version_id}
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/evaluations:
+    post:
+      tags:
+      - Segments
+      operationId: evaluateProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileEvaluation'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileEvaluationMatch'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/evaluations
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/locks:
+    put:
+      tags:
+      - Profiles
+      operationId: lockProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/ProfileNotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PUT /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/locks
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}:
+    put:
+      tags:
+      - Profiles
+      operationId: switchProfileUniqueIdentifier
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SwitchProfileUniqueIdentifierRequest'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ProfileKeyAlreadyUsed'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PUT /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}/sections/{section_discriminator}
+  /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}:
+    delete:
+      tags:
+      - Profiles
+      operationId: deleteProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/ProfileNotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: DELETE /audience/keyspaces/{keyspace_discriminator}/profiles/{profile_key}
+  /audience/profiles/merges:
+    put:
+      tags:
+      - Profiles
+      operationId: mergeTwoProfiles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileMerge'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: PUT /audience/profiles/merges
+  /audience/profiles/merges/keyspaces/{keyspace_discriminator}/profiles/{profile_key}:
+    delete:
+      tags:
+      - Profiles
+      operationId: unmergeProfile
+      parameters:
+      - $ref: '#/components/parameters/keyspace_discriminator'
+      - $ref: '#/components/parameters/profile_key'
+      responses:
+        '204':
+          description: Response for HTTP 204.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/KeyspaceLacksOneApiRealm'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '410':
+          $ref: '#/components/responses/ProfileLocked'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: DELETE /audience/profiles/merges/keyspaces/{keyspace_discriminator}/profiles/{profile_key}
+  /audience/sections/{section_discriminator}/imports:
+    post:
+      deprecated: true
+      tags:
+      - Profile import
+      operationId: requestProfileImport
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileImport'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileImportScheduled'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP 403.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP 429.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/sections/{section_discriminator}/imports
+  /v2/audience/sections/{section_discriminator}/imports:
+    post:
+      tags:
+      - Profile import
+      operationId: requestProfileImportV2
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileImportV2'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileImportScheduled'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP 403.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP 429.
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /v2/audience/sections/{section_discriminator}/imports
+  /audience/sections/{section_discriminator}/imports/{import_id}:
+    get:
+      tags:
+      - Profile import
+      operationId: getProfileImportStatus
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/import_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileImportStatus'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /audience/sections/{section_discriminator}/imports/{import_id}
+  /audience/profiles/exports:
+    post:
+      tags:
+      - Profile export
+      operationId: requestProfileInSegmentEventExport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDataExport'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDataExportScheduled'
+          description: Response for HTTP 201.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/exports
+  /audience/profiles/export-single/{export_key}:
+    post:
+      tags:
+      - Profile export
+      operationId: requestSingleProfileExport
+      parameters:
+      - $ref: '#/components/parameters/export_key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SingleProfileExportRequest'
+      callbacks:
+        exportComplete:
+          '{$request.body#/callback_url}':
+            post:
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                      - status
+                      - message
+                      - results
+                      properties:
+                        status:
+                          type: number
+                          format: integer
+                        message:
+                          type: string
+                        results:
+                          type: string
+                          format: uri
+              responses:
+                '200': {}
+      responses:
+        '202':
+          description: Response for HTTP 202.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '424':
+          description: Response for HTTP 424.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/export-single/{export_key}
+  /audience/profiles/reports/duplicates:
+    post:
+      tags:
+      - Profile export
+      operationId: requestDuplicateProfileInSegmentByConsentExport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDuplicatesReportRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDuplicatesReportResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/reports/duplicates
+  /audience/profiles/reports/segments:
+    post:
+      tags:
+      - Profile export
+      operationId: requestProfileInSegmentExport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilesInSegmentReportRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfilesInSegmentReportResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/reports/segments
+  /audience/profiles/reports/segments/count:
+    post:
+      tags:
+      - Profile export
+      operationId: countProfilesInSegment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfilesInSegmentCountRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfilesInSegmentCountResponse'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/profiles/reports/segments/count
+  /audience/sections/{section_discriminator}/segments/{segment_discriminator}/trend:
+    post:
+      tags:
+      - Segments
+      operationId: getSegmentTrend
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/segment_discriminator'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentTrendRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentTrendResponse'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /audience/sections/{section_discriminator}/segments/{segment_discriminator}/trend
+  /emails/sections/{section_discriminator}/activities:
+    get:
+      tags:
+      - Email
+      operationId: getAllRecentEmailActivities
+      parameters:
+      - $ref: '#/components/parameters/include_statistics'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailActivities'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: GET /emails/sections/{section_discriminator}/activities
+  /emails/sections/{section_discriminator}/activities/{activity_id}:
+    get:
+      tags:
+      - Email
+      operationId: getSpecificEmailActivity
+      parameters:
+      - $ref: '#/components/parameters/include_statistics'
+      - $ref: '#/components/parameters/activity_id'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailActivity'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /emails/sections/{section_discriminator}/activities/{activity_id}
+  /emails/sections/{section_discriminator}/activities/{transactional_activity_id}/transactions:
+    post:
+      tags:
+      - Email
+      operationId: sendTransactionalEmail
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/transactional_activity_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailTransactionRequest'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTransactionResponse'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /emails/sections/{section_discriminator}/activities/{transactional_activity_id}/transactions
+  /emails/sections/{section_discriminator}/activities/{transactional_activity_id}/transactions/{transaction_id}:
+    get:
+      tags:
+      - Email
+      operationId: getTransactionalEmailSendingStatus
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/transactional_activity_id'
+      - $ref: '#/components/parameters/transaction_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTransactionStatusResponse'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /emails/sections/{section_discriminator}/activities/{transactional_activity_id}/transactions/{transaction_id}
+  /emails/reports:
+    post:
+      tags:
+      - Email
+      operationId: requestEmailEventExport
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailReport'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailReportScheduled'
+          description: Response for HTTP 201.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: POST /emails/reports
+  /emails/reports/{report_id}:
+    get:
+      tags:
+      - Email
+      operationId: getEmailEventExportStatus
+      parameters:
+      - $ref: '#/components/parameters/report_id'
+      - $ref: '#/components/parameters/header_auth'
+      responses:
+        '200':
+          headers:
+            x-apsis-auth:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailReportStatus'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /emails/reports/{report_id}
+  /sms/sections/{section_discriminator}/activities:
+    get:
+      tags:
+      - SMS
+      operationId: getAllRecentSMSActivities
+      parameters:
+      - $ref: '#/components/parameters/include_statistics'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmsActivities'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: GET /sms/sections/{section_discriminator}/activities
+  /sms/sections/{section_discriminator}/activities/{activity_id}:
+    get:
+      tags:
+      - SMS
+      operationId: getSpecificSMSActivity
+      parameters:
+      - $ref: '#/components/parameters/activity_id'
+      - $ref: '#/components/parameters/include_statistics'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmsActivity'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /sms/sections/{section_discriminator}/activities/{activity_id}
+  /website/sections/{section_discriminator}/activities:
+    get:
+      tags:
+      - Website
+      operationId: getAllRecentWebsiteActivities
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebsiteActivities'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: GET /website/sections/{section_discriminator}/activities
+  /website/sections/{section_discriminator}/activities/{activity_id}:
+    get:
+      tags:
+      - Website
+      operationId: getSpecificWebsiteActivity
+      parameters:
+      - $ref: '#/components/parameters/activity_id'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebsiteActivity'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /website/sections/{section_discriminator}/activities/{activity_id}
+  /marketing-automation/sections/{section_discriminator}/activities:
+    get:
+      tags:
+      - Marketing Automation
+      operationId: getAllRecentMarketingAutomationActivities
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - in: query
+        name: trigger_types
+        style: form
+        explode: true
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriggerType'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingAutomationActivities'
+          description: Response for HTTP 200.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: GET /marketing-automation/sections/{section_discriminator}/activities
+  /marketing-automation/sections/{section_discriminator}/activities/{activity_id}:
+    get:
+      tags:
+      - Marketing Automation
+      operationId: getSpecificMarketingAutomationActivity
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      - $ref: '#/components/parameters/activity_id'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketingAutomationActivity'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /marketing-automation/sections/{section_discriminator}/activities/{activity_id}
+  /forms-and-pages/sections/{section_discriminator}/activities:
+    get:
+      tags:
+      - Forms & Pages
+      operationId: getAllRecentFormsAndPagesActivities
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormsAndPagesActivities'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+      summary: GET /forms-and-pages/sections/{section_discriminator}/activities
+  /forms-and-pages/sections/{section_discriminator}/activities/{activity_id}:
+    get:
+      tags:
+      - Forms & Pages
+      operationId: getSpecificFormsAndPagesActivity
+      parameters:
+      - $ref: '#/components/parameters/activity_id'
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FormsAndPagesActivity'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /forms-and-pages/sections/{section_discriminator}/activities/{activity_id}
+  /folders/topic/sections/{section_discriminator}/folders:
+    get:
+      tags:
+      - Folders
+      operationId: getAllTopicFolders
+      parameters:
+      - $ref: '#/components/parameters/section_discriminator'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TopicFoldersResponse'
+          description: Response for HTTP 200.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+          description: Response for HTTP default.
+      summary: GET /folders/topic/sections/{section_discriminator}/folders
+components:
+  securitySchemes:
+    bearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    KeyspaceLacksOneApiRealm:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    KeyspaceLacksOneApiRealmOrManageSubscriptions:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    ConflictingConsentState:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    ProfileLocked:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    Forbidden:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    NotFound:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    ProfileNotFound:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    BadRequest:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    PayloadTooLarge:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    Conflict:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    ProfileKeyAlreadyUsed:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+    TooManyRequests:
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+      description: Response schema for the documented status code.
+  parameters:
+    integration_name:
+      in: path
+      name: integration_name
+      schema:
+        type: string
+      required: true
+    version_id:
+      in: path
+      name: version_id
+      schema:
+        type: string
+      required: true
+    segment_discriminator:
+      in: path
+      name: segment_discriminator
+      schema:
+        type: string
+      required: true
+    keyspace_discriminator:
+      in: path
+      name: keyspace_discriminator
+      schema:
+        type: string
+      required: true
+    profile_key:
+      in: path
+      name: profile_key
+      schema:
+        type: string
+      required: true
+    export_key:
+      in: path
+      name: export_key
+      schema:
+        type: string
+      required: true
+    profile_key_update_method:
+      in: query
+      name: profile_key_update_method
+      schema:
+        type: string
+        enum:
+        - delete
+        - merge
+    section_discriminator:
+      in: path
+      name: section_discriminator
+      required: true
+      schema:
+        type: string
+    attribute_discriminator:
+      in: path
+      name: attribute_discriminator
+      required: true
+      schema:
+        type: string
+    tag_discriminator:
+      in: path
+      name: tag_discriminator
+      required: true
+      schema:
+        type: string
+    topic_discriminator:
+      in: path
+      name: topic_discriminator
+      required: true
+      schema:
+        type: string
+    import_id:
+      in: path
+      name: import_id
+      required: true
+      schema:
+        type: string
+    report_id:
+      in: path
+      name: report_id
+      required: true
+      schema:
+        type: string
+    header_auth:
+      in: query
+      name: header_auth
+      schema:
+        type: boolean
+    activity_id:
+      in: path
+      name: activity_id
+      schema:
+        type: string
+      required: true
+    transactional_activity_id:
+      in: path
+      name: transactional_activity_id
+      schema:
+        type: string
+      required: true
+    transaction_id:
+      in: path
+      name: transaction_id
+      schema:
+        type: string
+      required: true
+    include_statistics:
+      in: query
+      name: include_statistics
+      schema:
+        type: boolean
+    timezone:
+      in: query
+      name: timezone
+      schema:
+        type: string
+    include_keyspace_permissions:
+      in: query
+      name: include_keyspace_permissions
+      schema:
+        type: boolean
+    batch_id:
+      in: path
+      name: batch_id
+      required: true
+      schema:
+        type: string
+  schemas:
+    Problem:
+      allOf:
+      - type: object
+        required:
+        - status
+        - title
+        properties:
+          status:
+            type: integer
+            format: int32
+          title:
+            type: string
+          detail:
+            type: string
+      - $ref: '#/components/schemas/ProblemExtensions'
+    ProblemExtensions:
+      type: object
+      properties:
+        type:
+          type: string
+        timestamp:
+          $ref: '#/components/schemas/DateTime'
+        flow_id:
+          type: array
+          items:
+            type: string
+        context:
+          type: string
+        other_issues:
+          type: array
+          items:
+            type: object
+            required:
+            - title
+            properties:
+              title:
+                type: string
+              detail:
+                type: string
+              type:
+                type: string
+              context:
+                type: string
+    DateTime:
+      type: string
+      format: date-time
+    ActivityCreatedAtDateTime:
+      type: string
+      format: date-time
+    ActivitySentAtDateTime:
+      type: string
+      format: date-time
+    Keyspaces:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              discriminator:
+                type: string
+              name:
+                type: string
+              manage_subscriptions:
+                type: boolean
+    Segment:
+      type: object
+      properties:
+        discriminator:
+          type: string
+        name:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SegmentVersion'
+    SegmentVersion:
+      type: object
+      properties:
+        id:
+          type: string
+        query:
+          type: string
+    Sections:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              discriminator:
+                type: string
+              name:
+                type: string
+              id:
+                type: string
+    Attribute:
+      type: object
+      properties:
+        discriminator:
+          type: string
+        name:
+          type: string
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeVersion'
+        keyspace_permissions:
+          $ref: '#/components/schemas/KeyspacePermissions'
+    KeyspacePermissions:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          $ref: '#/components/schemas/KeyspacePermission'
+    KeyspacePermission:
+      type: string
+      enum:
+      - read
+      - write
+    AttributeVersion:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          $ref: '#/components/schemas/TypeLiteral'
+        deprecated_at:
+          $ref: '#/components/schemas/DateTime'
+          nullable: true
+        valid_from:
+          $ref: '#/components/schemas/DateTime'
+    AttributeVersionIdsAndValues:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/AttributeValue'
+    AttributeDiscriminatorsAndValues:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/AttributeValue'
+    TaggedProfile:
+      type: object
+      additionalProperties:
+        type: boolean
+    AttributedProfile:
+      type: object
+      additionalProperties:
+        $ref: '#/components/schemas/TypeLiteral'
+    TypeLiteral:
+      type: string
+      oneOf:
+      - $ref: '#/components/schemas/PrimitiveLiteral'
+    PrimitiveLiteral:
+      type: string
+      pattern: '[^\[]+(\[[^\]]*\])?'
+    AttributeValue:
+      oneOf:
+      - type: string
+        nullable: true
+        title: Text
+      - type: boolean
+        nullable: true
+        title: True/False
+      - type: string
+        nullable: true
+        title: Date
+      - type: integer
+        format: int64
+        nullable: true
+        title: Timestamp
+      - type: number
+        format: int64
+        nullable: true
+        title: Number
+      - type: number
+        format: double
+        nullable: true
+        title: Number with decimal
+      - type: object
+        nullable: true
+        title: Struct (beta)
+    TopicShared:
+      type: object
+      required:
+      - discriminator
+      - id
+      - name
+      properties:
+        discriminator:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+    Topic:
+      allOf:
+      - $ref: '#/components/schemas/TopicShared'
+      - type: object
+        required:
+        - folder_discriminator
+        properties:
+          folder_discriminator:
+            type: string
+    Topics:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Topic'
+    Channels:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              discriminator:
+                type: string
+              name:
+                type: string
+    ProfileEvaluation:
+      type: object
+      required:
+      - segments
+      - time_zone
+      properties:
+        segments:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - discriminator
+            properties:
+              discriminator:
+                type: string
+              version_id:
+                type: string
+        time_zone:
+          type: string
+    ProfileEvaluationMatch:
+      type: object
+      properties:
+        matches:
+          type: object
+          properties:
+            segments:
+              type: object
+              additionalProperties:
+                type: boolean
+    ProfileMerge:
+      type: object
+      required:
+      - profiles
+      properties:
+        profiles:
+          type: array
+          minItems: 2
+          maxItems: 2
+          items:
+            $ref: '#/components/schemas/ProfileToMerge'
+    ProfileToMerge:
+      type: object
+      required:
+      - keyspace_discriminator
+      - profile_key
+      properties:
+        keyspace_discriminator:
+          type: string
+        profile_key:
+          type: string
+    CreateProfileRequest:
+      type: object
+      required:
+      - profile_key
+      properties:
+        profile_key:
+          type: string
+    SwitchProfileUniqueIdentifierRequest:
+      type: object
+      required:
+      - from
+      - to
+      properties:
+        from:
+          $ref: '#/components/schemas/UniqueIdentifier'
+        to:
+          $ref: '#/components/schemas/UniqueIdentifier'
+    UniqueIdentifier:
+      type: object
+      required:
+      - keyspace_discriminator
+      - profile_key
+      properties:
+        keyspace_discriminator:
+          type: string
+        profile_key:
+          type: string
+    TagRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+    TagResponse:
+      type: object
+      required:
+      - name
+      - discriminator
+      - id
+      properties:
+        discriminator:
+          type: string
+        name:
+          type: string
+          minLength: 0
+          maxLength: 255
+        id:
+          type: string
+    TagResponseWithKeyspacePermissions:
+      allOf:
+      - $ref: '#/components/schemas/TagResponse'
+      - type: object
+        properties:
+          keyspace_permissions:
+            $ref: '#/components/schemas/KeyspacePermissions'
+    Event:
+      type: object
+      required:
+      - discriminator
+      - versions
+      properties:
+        discriminator:
+          type: string
+        name:
+          type: string
+        versions:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EventVersion'
+        keyspace_permissions:
+          $ref: '#/components/schemas/KeyspacePermissions'
+    EventVersion:
+      type: object
+      required:
+      - id
+      - type
+      - valid_from
+      properties:
+        id:
+          type: string
+        type:
+          $ref: '#/components/schemas/TypedData'
+        deprecated_at:
+          $ref: '#/components/schemas/DateTime'
+          nullable: true
+        valid_from:
+          $ref: '#/components/schemas/DateTime'
+    TypedData:
+      oneOf:
+      - $ref: '#/components/schemas/AtomicType'
+      - title: ArrayType
+        oneOf:
+        - type: array
+          title: BooleanArray
+          items:
+            type: boolean
+        - type: array
+          title: IntegerArray
+          items:
+            type: integer
+            format: int64
+        - type: array
+          title: StringArray
+          items:
+            type: string
+            maxLength: 1000
+        - type: array
+          title: DoubleArray
+          items:
+            type: number
+            format: double
+      - title: StructType
+        type: object
+        additionalProperties:
+          $ref: '#/components/schemas/AtomicType'
+    AtomicType:
+      oneOf:
+      - $ref: '#/components/schemas/Void'
+      - type: boolean
+      - type: integer
+        format: int64
+      - type: number
+        format: double
+      - type: string
+        maxLength: 1000
+    Void:
+      type: integer
+      nullable: true
+      minimum: 1
+    EventValues:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/EventValue'
+    EventValue:
+      type: object
+      required:
+      - event_time
+      - version_id
+      - data
+      properties:
+        event_time:
+          allOf:
+          - $ref: '#/components/schemas/DateTime'
+          - {}
+        version_id:
+          type: string
+        data:
+          $ref: '#/components/schemas/TypedData'
+        external_id:
+          type: string
+    CreateConsentRequest:
+      type: object
+      required:
+      - topic_discriminator
+      - channel_discriminator
+      - type
+      - reason
+      properties:
+        topic_discriminator:
+          type: string
+        channel_discriminator:
+          type: string
+        type:
+          type: string
+          enum:
+          - opt-in
+          - opt-out
+          - pending-opt-in
+          - confirmed-opt-in
+        reason:
+          type: string
+          minLength: 3
+          maxLength: 256
+        source:
+          type: string
+          minLength: 3
+          maxLength: 256
+    GetConsentsResponse:
+      type: object
+      required:
+      - items
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            required:
+            - topic_discriminator
+            - channel_discriminator
+            - type
+            properties:
+              topic_discriminator:
+                type: string
+              channel_discriminator:
+                type: string
+              type:
+                type: string
+                enum:
+                - opt-in
+                - opt-out
+                - pending-opt-in
+                - confirmed-opt-in
+              reason:
+                type: string
+                minLength: 3
+                maxLength: 256
+              source:
+                type: string
+                minLength: 3
+                maxLength: 256
+              modified_at:
+                $ref: '#/components/schemas/DateTime'
+        suppression:
+          type: array
+          items:
+            type: object
+            required:
+            - channel_discriminator
+            - address
+            - reason
+            - source
+            - modified_at
+            properties:
+              channel_discriminator:
+                type: string
+              address:
+                type: string
+              reason:
+                type: string
+              source:
+                type: string
+              modified_at:
+                $ref: '#/components/schemas/DateTime'
+    ProfileImport:
+      allOf:
+      - type: object
+        required:
+        - keyspace_mappings
+        properties:
+          keyspace_mappings:
+            type: array
+            minItems: 1
+            maxItems: 10
+            items:
+              type: object
+              required:
+              - keyspace_discriminator
+              - field_selector
+              properties:
+                keyspace_discriminator:
+                  type: string
+                field_selector:
+                  type: string
+                merge_profiles:
+                  type: boolean
+                  default: false
+      - $ref: '#/components/schemas/ProfileImportOptions'
+      - type: object
+        properties:
+          consent_mappings:
+            type: array
+            maxItems: 5
+            items:
+              type: object
+              required:
+              - consents
+              properties:
+                address_field_selector:
+                  deprecated: true
+                  type: string
+                consents:
+                  type: array
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    required:
+                    - resubscribe_if_opted_out
+                    - field_selector
+                    - channel_discriminator
+                    - topic_discriminator
+                    - type
+                    properties:
+                      resubscribe_if_opted_out:
+                        type: boolean
+                      field_selector:
+                        type: string
+                      channel_discriminator:
+                        type: string
+                      topic_discriminator:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                        - opt-in
+                        - opt-out
+      - $ref: '#/components/schemas/ProfileImportTagAndAttributeMapping'
+    ProfileImportV2:
+      allOf:
+      - type: object
+        required:
+        - keyspace_mapping
+        properties:
+          keyspace_mapping:
+            type: object
+            required:
+            - keyspace_discriminator
+            - field_selector
+            properties:
+              keyspace_discriminator:
+                type: string
+              field_selector:
+                type: string
+      - $ref: '#/components/schemas/ProfileImportOptions'
+      - type: object
+        properties:
+          consent_mappings:
+            type: array
+            maxItems: 5
+            items:
+              type: object
+              required:
+              - consents
+              properties:
+                consents:
+                  type: array
+                  minItems: 1
+                  maxItems: 50
+                  items:
+                    type: object
+                    required:
+                    - resubscribe_if_opted_out
+                    - field_selector
+                    - topic_discriminator
+                    - type
+                    properties:
+                      resubscribe_if_opted_out:
+                        type: boolean
+                      field_selector:
+                        type: string
+                      channel_discriminator:
+                        type: string
+                      topic_discriminator:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                        - opt-in
+                        - opt-out
+      - type: object
+        properties:
+          tracking_consent_mapping:
+            type: object
+            additionalProperties: false
+            required:
+            - type
+            properties:
+              type:
+                type: string
+                enum:
+                - opt-in
+                - opt-out
+              field_selector:
+                type: string
+              opt_out_when_empty:
+                type: boolean
+      - $ref: '#/components/schemas/ProfileImportTagAndAttributeMapping'
+    ProfileImportOptions:
+      type: object
+      properties:
+        options:
+          type: object
+          properties:
+            update_existing_profiles:
+              type: boolean
+            clear_existing_attributes:
+              type: boolean
+    ProfileImportTagAndAttributeMapping:
+      type: object
+      required:
+      - attribute_mappings
+      properties:
+        tag_mappings:
+          type: array
+          maxItems: 100
+          items:
+            type: object
+            required:
+            - tag_discriminator
+            properties:
+              tag_discriminator:
+                type: string
+        attribute_mappings:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            required:
+            - field_selector
+            - attribute_version_id
+            properties:
+              field_selector:
+                type: string
+              attribute_version_id:
+                type: string
+    ProfileImportStatus:
+      type: object
+      required:
+      - import_id
+      - result
+      properties:
+        import_id:
+          type: string
+        result:
+          type: object
+          required:
+          - status
+          properties:
+            status:
+              type: string
+              enum:
+              - waiting_for_file
+              - queued
+              - in_progress
+              - completed
+              - error
+              - upload_link_expired
+            profiles_found:
+              type: integer
+            profiles_processed:
+              type: integer
+            profiles_failed:
+              type: integer
+    ProfileImportScheduled:
+      type: object
+      properties:
+        import_id:
+          type: string
+        file_upload_url:
+          type: string
+        file_upload_body:
+          type: object
+          properties:
+            key:
+              type: string
+            success_action_status:
+              type: string
+            policy:
+              type: string
+            content-type:
+              type: string
+            x-amz-meta-id:
+              type: string
+            x-amz-algorithm:
+              type: string
+            x-amz-credential:
+              type: string
+            x-amz-date:
+              type: string
+            x-amz-signature:
+              type: string
+        file_upload_url_expires_at:
+          allOf:
+          - $ref: '#/components/schemas/DateTime'
+          - {}
+    EmailReport:
+      type: object
+      required:
+      - start_at
+      properties:
+        start_at:
+          allOf:
+          - $ref: '#/components/schemas/DateTime'
+          - {}
+        end_at:
+          allOf:
+          - $ref: '#/components/schemas/DateTime'
+          - {}
+        segment_filter:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/AQLReference'
+        additional_attribute_mappings:
+          type: array
+          maxItems: 75
+          items:
+            type: object
+            required:
+            - field_name
+            - attribute_version_id
+            - section_discriminator
+            properties:
+              field_name:
+                type: string
+              section_discriminator:
+                type: string
+              attribute_version_id:
+                type: string
+        additional_tag_mappings:
+          type: array
+          maxItems: 25
+          items:
+            type: object
+            required:
+            - field_name
+            - section_discriminator
+            - tag_discriminator
+            properties:
+              field_name:
+                type: string
+              section_discriminator:
+                type: string
+              tag_discriminator:
+                type: string
+    AQLReference:
+      type: object
+      required:
+      - discriminator
+      - timezone
+      properties:
+        timezone:
+          type: string
+        discriminator:
+          type: string
+        version_id:
+          type: string
+    EmailReportScheduled:
+      type: object
+      properties:
+        report_id:
+          type: string
+    EmailReportStatus:
+      type: object
+      required:
+      - report_id
+      - result
+      properties:
+        report_id:
+          type: string
+        result:
+          type: object
+          required:
+          - status
+          properties:
+            status:
+              type: string
+              enum:
+              - queued
+              - in_progress
+              - completed
+              - error
+            message:
+              type: string
+            file_download_url:
+              type: string
+            file_expires_at:
+              allOf:
+              - $ref: '#/components/schemas/DateTime'
+              - {}
+            file_download_url_expires_at:
+              allOf:
+              - $ref: '#/components/schemas/DateTime'
+              - {}
+    ProfileDuplicatesReportRequest:
+      type: object
+      required:
+      - section_discriminator
+      - find_duplicates_by_attribute_version_id
+      properties:
+        section_discriminator:
+          type: string
+        topic_discriminators:
+          type: array
+          maxItems: 100
+          items:
+            type: string
+        channel_discriminator:
+          type: string
+        tracking_consent:
+          type: string
+          enum:
+          - opt-in
+          - opt-out
+        include_tracking_consent:
+          type: boolean
+        segments:
+          type: object
+          required:
+          - timezone
+          - filter
+          properties:
+            timezone:
+              type: string
+            segment_discriminators:
+              type: object
+              additionalProperties:
+                type: string
+                minItems: 1
+                maxItems: 20
+            segment_definitions:
+              type: object
+              additionalProperties:
+                type: string
+                minItems: 1
+                maxItems: 20
+            filter:
+              type: string
+        find_duplicates_by_attribute_version_id:
+          type: string
+        attributes:
+          type: array
+          maxItems: 75
+          items:
+            type: object
+            required:
+            - field_name
+            - attribute_version_id
+            properties:
+              field_name:
+                type: string
+              attribute_version_id:
+                type: string
+        tags:
+          type: array
+          maxItems: 25
+          items:
+            type: object
+            required:
+            - field_name
+            - tag_discriminator
+            properties:
+              field_name:
+                type: string
+              tag_discriminator:
+                type: string
+        limit:
+          type: integer
+    ProfilesInSegmentByConsentReportRequest:
+      allOf:
+      - $ref: '#/components/schemas/ProfilesInSegmentByConsentRequestShared'
+      - type: object
+        properties:
+          duplicate_address_filter:
+            type: string
+          attributes:
+            type: array
+            maxItems: 75
+            items:
+              type: object
+              required:
+              - field_name
+              - attribute_version_id
+              properties:
+                field_name:
+                  type: string
+                attribute_version_id:
+                  type: string
+          tags:
+            type: array
+            maxItems: 25
+            items:
+              type: object
+              required:
+              - field_name
+              - tag_discriminator
+              properties:
+                field_name:
+                  type: string
+                tag_discriminator:
+                  type: string
+          limit:
+            type: integer
+          exclude_unsubscribed_profiles:
+            type: boolean
+          include_tracking_consent:
+            type: boolean
+    ProfilesInSegmentByConsentCountRequest:
+      allOf:
+      - $ref: '#/components/schemas/ProfilesInSegmentByConsentRequestShared'
+      - type: object
+        properties:
+          duplicate_address_filter:
+            type: string
+    ProfilesInSegmentByConsentRequestShared:
+      type: object
+      required:
+      - section_discriminator
+      properties:
+        section_discriminator:
+          type: string
+        topic_discriminators:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: string
+        tracking_consent:
+          type: string
+          enum:
+          - opt-in
+          - opt-out
+        channel_discriminator:
+          type: string
+        channels:
+          type: array
+          minItems: 1
+          maxItems: 2
+          items:
+            type: object
+            required:
+            - field_name
+            - channel_discriminator
+            properties:
+              field_name:
+                type: string
+              channel_discriminator:
+                type: string
+        segments:
+          type: object
+          required:
+          - timezone
+          - filter
+          properties:
+            timezone:
+              type: string
+            segment_discriminators:
+              type: object
+              minProperties: 1
+              maxProperties: 20
+              additionalProperties:
+                type: string
+            filter:
+              type: string
+    ProfilesInSegmentByConsentReportResponse:
+      type: object
+      properties:
+        file_download_url:
+          type: string
+    ProfilesInSegmentByConsentCountResponse:
+      type: object
+      properties:
+        result_poll_url:
+          type: string
+    ProfileDuplicatesReportResponse:
+      type: object
+      properties:
+        file_download_url:
+          type: string
+    ProfilesInSegmentReportRequest:
+      allOf:
+      - $ref: '#/components/schemas/ProfilesInSegmentRequestShared'
+      - type: object
+        properties:
+          attributes:
+            type: array
+            maxItems: 75
+            items:
+              type: object
+              required:
+              - field_name
+              - attribute_version_id
+              properties:
+                field_name:
+                  type: string
+                attribute_version_id:
+                  type: string
+          tags:
+            type: array
+            maxItems: 25
+            items:
+              type: object
+              required:
+              - field_name
+              - tag_discriminator
+              properties:
+                field_name:
+                  type: string
+                tag_discriminator:
+                  type: string
+          limit:
+            type: integer
+    ProfilesInSegmentCountRequest:
+      allOf:
+      - $ref: '#/components/schemas/ProfilesInSegmentRequestShared'
+    ProfilesInSegmentRequestShared:
+      type: object
+      required:
+      - section_discriminator
+      - segment
+      properties:
+        section_discriminator:
+          type: string
+        segment:
+          type: object
+          required:
+          - timezone
+          properties:
+            timezone:
+              type: string
+            segment_discriminator:
+              type: string
+            segment_definition:
+              type: string
+        known_profiles:
+          type: boolean
+    ProfilesInSegmentReportResponse:
+      type: object
+      properties:
+        file_download_url:
+          deprecated: true
+          type: string
+        file_download_url_v2:
+          type: string
+    ProfilesInSegmentCountResponse:
+      type: object
+      properties:
+        profile_count:
+          type: integer
+    SegmentTrendRequest:
+      type: object
+      required:
+      - sampling_points
+      - timezone
+      properties:
+        sampling_points:
+          type: array
+          minItems: 1
+          maxItems: 25
+          items:
+            $ref: '#/components/schemas/DateTime'
+        timezone:
+          type: string
+    SegmentTrendResponse:
+      type: object
+      required:
+      - matching_profile_count
+      properties:
+        matching_profile_count:
+          type: object
+          additionalProperties:
+            type: object
+            required:
+            - known
+            - unknown
+            properties:
+              known:
+                type: number
+              unknown:
+                type: number
+    SingleProfileExportRequest:
+      type: object
+      required:
+      - callback_url
+      properties:
+        callback_url:
+          type: string
+          format: uri
+        include_merged_profiles:
+          type: boolean
+        include_attribute_history:
+          type: boolean
+        include_type_definitions:
+          type: boolean
+    ProfileDataExport:
+      type: object
+      properties:
+        segment_filter:
+          type: object
+          allOf:
+          - $ref: '#/components/schemas/AQLReference'
+        attributes:
+          type: array
+          maxItems: 75
+          items:
+            type: object
+            required:
+            - attribute_version_id
+            - section_discriminator
+            properties:
+              section_discriminator:
+                type: string
+              attribute_version_id:
+                type: string
+        tags:
+          type: array
+          maxItems: 25
+          items:
+            type: object
+            required:
+            - section_discriminator
+            - tag_discriminator
+            properties:
+              section_discriminator:
+                type: string
+              tag_discriminator:
+                type: string
+        events:
+          type: object
+          required:
+          - start_at
+          - types
+          properties:
+            start_at:
+              allOf:
+              - $ref: '#/components/schemas/DateTime'
+              - {}
+            end_at:
+              nullable: true
+              allOf:
+              - $ref: '#/components/schemas/DateTime'
+              - {}
+            types:
+              type: array
+              minItems: 1
+              maxItems: 100
+              items:
+                type: object
+                required:
+                - section_discriminator
+                - event_version_id
+                properties:
+                  section_discriminator:
+                    type: string
+                  event_version_id:
+                    type: string
+    ProfileDataExportScheduled:
+      type: object
+      properties:
+        file_download_url:
+          type: string
+    EmailActivities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailActivityForList'
+    EmailActivity:
+      allOf:
+      - $ref: '#/components/schemas/EmailActivityForList'
+      - type: object
+        properties:
+          aql_queries:
+            type: object
+            required:
+            - sent
+            - delivered
+            - opens
+            - clicks
+            - bounces
+            - spam_complaints
+            - unsubscribes
+            properties:
+              sent:
+                type: string
+              delivered:
+                type: string
+              opens:
+                type: string
+              clicks:
+                type: string
+              bounces:
+                type: string
+              spam_complaints:
+                type: string
+              unsubscribes:
+                type: string
+    EmailActivityForList:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      - created_at
+      - email_subject
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - scheduled
+          - queued
+          - processing
+          - sent
+          - failed
+          - paused
+          - empty_export
+          - active
+          - exporting
+        created_at:
+          $ref: '#/components/schemas/ActivityCreatedAtDateTime'
+        sent_at:
+          $ref: '#/components/schemas/ActivitySentAtDateTime'
+        email_subject:
+          type: string
+        statistics:
+          type: object
+          required:
+          - sent
+          - delivered
+          - delivery_rate
+          - opens
+          - unique_opens
+          - open_rate
+          - clicks
+          - unique_clicks
+          - click_rate
+          - click_to_open_rate
+          - bounces
+          - bounce_rate
+          - unsubscribes
+          - unsubscribe_rate
+          - spam_complaints
+          - spam_complaint_rate
+          properties:
+            sent:
+              type: integer
+              format: int64
+            delivered:
+              type: integer
+              format: int64
+            delivery_rate:
+              type: number
+              format: float
+            opens:
+              type: integer
+              format: int64
+            unique_opens:
+              type: integer
+              format: int64
+            open_rate:
+              type: number
+              format: float
+            clicks:
+              type: integer
+              format: int64
+            unique_clicks:
+              type: integer
+              format: int64
+            click_rate:
+              type: number
+              format: float
+            click_to_open_rate:
+              type: number
+              format: float
+            bounces:
+              type: integer
+              format: int64
+            bounce_rate:
+              type: integer
+              format: int64
+            unsubscribes:
+              type: integer
+              format: int64
+            unsubscribe_rate:
+              type: number
+              format: float
+            spam_complaints:
+              type: integer
+              format: int64
+            spam_complaint_rate:
+              type: number
+              format: float
+    EmailTransactionRequest:
+      type: object
+      required:
+      - keyspace_discriminator
+      - profile_key
+      - to_email_address
+      - to_name
+      properties:
+        keyspace_discriminator:
+          type: string
+        profile_key:
+          type: string
+        to_name:
+          type: string
+        to_email_address:
+          type: string
+          format: email
+        from_name:
+          type: string
+        from_email_address:
+          type: string
+          format: email
+        reply_email_address:
+          type: string
+          format: email
+        subject_line:
+          type: string
+        pre_header:
+          type: string
+        variables:
+          type: object
+          additionalProperties:
+            type: object
+        attachments:
+          type: array
+          maxItems: 5
+          items:
+            type: object
+            required:
+            - name
+            - content_type
+            - content
+            properties:
+              name:
+                type: string
+              content_type:
+                type: string
+              content:
+                type: string
+    EmailTransactionResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+    EmailTransactionStatusResponse:
+      type: object
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+          - queued
+          - in_progress
+          - sent
+          - failed
+          - delivered
+          - bounced
+    SmsActivities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SmsActivityForList'
+    SmsActivity:
+      allOf:
+      - $ref: '#/components/schemas/SmsActivityForList'
+      - type: object
+        properties:
+          aql_queries:
+            type: object
+            required:
+            - sent
+            - delivered
+            - clicks
+            - bounces
+            - unsubscribes
+            properties:
+              sent:
+                type: string
+              delivered:
+                type: string
+              clicks:
+                type: string
+              bounces:
+                type: string
+              unsubscribes:
+                type: string
+    SmsActivityForList:
+      type: object
+      required:
+      - id
+      - name
+      - status
+      - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - draft
+          - scheduled
+          - quota_exceeded
+          - ready
+          - queued
+          - in_progress
+          - sent
+          - failed
+          - paused
+          - wait_for_export
+          - not_sent
+          - delivered
+        created_at:
+          $ref: '#/components/schemas/ActivityCreatedAtDateTime'
+        statistics:
+          type: object
+          required:
+          - sent
+          - delivered
+          - delivery_rate
+          - clicks
+          - click_rate
+          - bounces
+          - bounce_rate
+          - unsubscribes
+          - unsubscribe_rate
+          properties:
+            sent:
+              type: integer
+              format: int64
+            delivered:
+              type: integer
+              format: int64
+            delivery_rate:
+              type: number
+              format: float
+            clicks:
+              type: integer
+              format: int64
+            click_rate:
+              type: number
+              format: float
+            bounces:
+              type: integer
+              format: int64
+            bounce_rate:
+              type: integer
+              format: int64
+            unsubscribes:
+              type: integer
+              format: int64
+            unsubscribe_rate:
+              type: number
+              format: float
+    WebsiteActivities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebsiteActivity'
+    WebsiteActivity:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          $ref: '#/components/schemas/ActivityCreatedAtDateTime'
+        status:
+          type: string
+          enum:
+          - active
+          - draft
+          - paused
+          - deleted
+          - broken
+    MarketingAutomationActivities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/MarketingAutomationActivity'
+    MarketingAutomationActivity:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          $ref: '#/components/schemas/ActivityCreatedAtDateTime'
+        status:
+          type: string
+          enum:
+          - activating
+          - active
+          - cancelled
+          - cloning
+          - draft
+          - failed
+          - finished
+          - paused
+          - pausing
+          - published
+          - trash
+          - stopped
+          - stopping
+    TriggerType:
+      type: string
+      enum:
+      - api
+    FormsAndPagesActivities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/FormsAndPagesActivityForList'
+    FormsAndPagesActivityForList:
+      type: object
+      required:
+      - id
+      - name
+      - created_at
+      - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          $ref: '#/components/schemas/ActivityCreatedAtDateTime'
+        status:
+          type: string
+          enum:
+          - active
+          - draft
+          - paused
+          - deleted
+          - broken
+    FormsAndPagesActivity:
+      allOf:
+      - $ref: '#/components/schemas/FormsAndPagesActivityForList'
+      - type: object
+        properties:
+          elements:
+            type: array
+            items:
+              anyOf:
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementInputField'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementCheckbox'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementRadio'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementDropdown'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementConsent'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementTermsAndConditions'
+              - $ref: '#/components/schemas/FormsAndPagesActivityElementSubmitButton'
+          aql_queries:
+            type: object
+            required:
+            - viewed
+            - started
+            - rejected
+            - submitted
+            properties:
+              viewed:
+                type: string
+                nullable: true
+              started:
+                type: string
+                nullable: true
+              rejected:
+                type: string
+                nullable: true
+              submitted:
+                type: string
+                nullable: true
+    FormsAndPagesActivityElementInputField:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - placeholder
+      properties:
+        type:
+          type: string
+          enum:
+          - input_field
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        placeholder:
+          type: string
+        confirm_placeholder:
+          type: string
+        confirm:
+          type: boolean
+    FormsAndPagesActivityElementCheckbox:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - options
+      properties:
+        type:
+          type: string
+          enum:
+          - checkbox
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+    FormsAndPagesActivityElementRadio:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - options
+      properties:
+        type:
+          type: string
+          enum:
+          - radio
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        options:
+          type: array
+          items:
+            type: string
+        other_option:
+          type: boolean
+    FormsAndPagesActivityElementDropdown:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - options
+      properties:
+        type:
+          type: string
+          enum:
+          - dropdown
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        headline:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        multi_select:
+          type: boolean
+    FormsAndPagesActivityElementConsent:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - consents
+      properties:
+        type:
+          type: string
+          enum:
+          - consent
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        consents:
+          type: array
+          items:
+            type: string
+    FormsAndPagesActivityElementTermsAndConditions:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - terms_and_conditions
+      properties:
+        type:
+          type: string
+          enum:
+          - terms_and_conditions
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        terms_and_conditions:
+          type: string
+    FormsAndPagesActivityElementSubmitButton:
+      type: object
+      required:
+      - id
+      - name
+      - required
+      - type
+      - submit
+      properties:
+        type:
+          type: string
+          enum:
+          - submit_button
+        id:
+          type: string
+        name:
+          type: string
+        required:
+          type: boolean
+        submit:
+          type: string
+    TopicFoldersResponse:
+      type: object
+      required:
+      - discriminator
+      - subfolders
+      properties:
+        discriminator:
+          type: string
+        subfolders:
+          type: array
+          items:
+            type: object
+            required:
+            - discriminator
+            - name
+            properties:
+              discriminator:
+                type: string
+              name:
+                type: string
+    TrackingConsentResponse:
+      type: object
+      required:
+      - type
+      - source
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - opt-in
+          - opt-out
+        reason:
+          type: string
+        source:
+          type: string
+        modified_at:
+          type: string
+          format: date-time
+    TrackingConsentRequest:
+      type: object
+      required:
+      - type
+      - reason
+      properties:
+        type:
+          type: string
+          enum:
+          - opt-in
+          - opt-out
+        reason:
+          type: string
+          maxLength: 256
+        source:
+          type: string
+          maxLength: 256
+externalDocs:
+  description: Official API reference and guides
+  url: https://developer.apsis.com/
