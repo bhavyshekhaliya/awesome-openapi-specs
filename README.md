@@ -414,6 +414,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Adhook | [API specification](https://app.adhook.io/api/openapi.json) | JSON | 3.0.1 | `social-media` `advertising` |
 | ShoutOut | [API specification](https://apidocs.shoutout.social/spec.json) | JSON | 3.0.0 | `social-media` |
 | sona.to | [API specification](https://developers.sona.to/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
 | WoopSocial | [API specification](https://api.woopsocial.com/v1/openapi.yaml) | YAML | 3.1.0 | `social-media` `scheduling` |
