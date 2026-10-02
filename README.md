@@ -90,6 +90,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Adrapid | [API specification](https://api.adrapid.com/spec/v1/client-api.yaml) | YAML | 3.0.0 | `advertising` `creative-automation` |
 | Oracle Eloqua | [API specification](https://docs.oracle.com/en/cloud/saas/marketing/eloqua-rest-api/swagger.json) | JSON | 2.0 | `marketing-automation` `enterprise` |
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
+| Crescendo Lab | [MAAC Go API specification](https://sms.cresclab.com/openapi.yaml); [Zapier integration](https://zapier.com/apps/cresendo-lab/integrations) | YAML | 3.0.3 | `official` `sms` `marketing-automation` |
 | Eventleaf | [API specification](https://api.eventleaf.com/swagger/docs/v1) | JSON | 2.0 | `event-management` |
 | GetResponse | [API specification](https://apireference.getresponse.com/open-api.json) | JSON | 3.0.0 | `email-marketing` |
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
