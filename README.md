@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Stage Captions | [API specification](https://api.stagecaptions.io/api-reference/specs/zapier.yaml) | YAML | 3.0.3 | `official` `event-marketing` |
 | Funnelr | [API specification](https://zapier.gappstack.com/api/swagger/v1/swagger.json) | JSON | 3.0.4 | `official` `sales-funnel` `marketing-automation` |
 | ManyReach | [API specification](https://app.manyreach.com/swagger/docs/V2) | JSON | 2.0 | `official` `sales-engagement` `outreach` |
 | Tracknow | [API specification](https://apiv2.tracknow.io/v3/api-docs) | JSON | 3.0.1 | `official` `affiliate-marketing` `analytics` |
