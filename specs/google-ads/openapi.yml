@@ -1,0 +1,480 @@
+openapi: 3.1.0
+info:
+  title: Google Ads API
+  version: '25'
+  summary: Community-maintained OpenAPI subset for common Google Ads automation workflows.
+  description: >-
+    This specification models a focused subset of the Google Ads REST API v25,
+    including account discovery, GAQL reporting and lookup, campaign mutations,
+    and offline click conversion uploads. Google publishes a Discovery document
+    for its API rather than an OpenAPI document. This community specification
+    is derived from Google's public REST and method reference documentation.
+    It does not cover the separate Data Manager API used by Zapier's customer
+    list actions, nor the full Google Ads API surface. Verified on 2026-10-02.
+  contact:
+    name: Google Ads API Support
+    url: https://developers.google.com/google-ads/api/support
+  externalDocs:
+    description: Google Ads REST interface documentation
+    url: https://developers.google.com/google-ads/api/rest/design/overview
+servers:
+  - url: https://googleads.googleapis.com/v25
+    description: Google Ads API v25
+security:
+  - googleAdsOAuth: []
+tags:
+  - name: Accounts
+    description: Discover Google Ads customer accounts available to the caller.
+  - name: Reporting
+    description: Query Google Ads resources and performance data using GAQL.
+  - name: Campaigns
+    description: Read campaigns and change campaign state.
+  - name: Offline conversions
+    description: Upload click conversions from external systems.
+paths:
+  /customers:listAccessibleCustomers:
+    get:
+      tags: [Accounts]
+      operationId: listAccessibleCustomers
+      summary: List directly accessible customer accounts
+      description: Returns customer resource names directly accessible by the authenticated user.
+      externalDocs:
+        description: ListAccessibleCustomers method reference
+        url: https://developers.google.com/google-ads/api/reference/rpc/v25/CustomerService/ListAccessibleCustomers?transport=rest
+      responses:
+        '200':
+          description: Customer resource names accessible to the caller.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessibleCustomersResponse'
+        default:
+          $ref: '#/components/responses/GoogleAdsError'
+  /customers/{customerId}/googleAds:search:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+      - $ref: '#/components/parameters/LoginCustomerId'
+      - $ref: '#/components/parameters/DeveloperToken'
+    post:
+      tags: [Reporting, Campaigns]
+      operationId: searchGoogleAds
+      summary: Search account resources with GAQL
+      description: >-
+        Executes a Google Ads Query Language query. Results are returned in
+        pages of up to 10,000 rows; pass the returned nextPageToken as pageToken
+        to retrieve another page. Campaign lookup, reports, and polling for new
+        campaigns can be expressed with GAQL queries.
+      externalDocs:
+        description: Search and SearchStream REST documentation
+        url: https://developers.google.com/google-ads/api/rest/common/search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+      responses:
+        '200':
+          description: A page of query results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        default:
+          $ref: '#/components/responses/GoogleAdsError'
+  /customers/{customerId}/googleAds:searchStream:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+      - $ref: '#/components/parameters/LoginCustomerId'
+      - $ref: '#/components/parameters/DeveloperToken'
+    post:
+      tags: [Reporting, Campaigns]
+      operationId: searchGoogleAdsStream
+      summary: Stream all matching account resources with GAQL
+      description: >-
+        Executes a Google Ads Query Language query and returns the result
+        chunks in one streamed response encoded as a JSON array. This method
+        does not use pageToken.
+      externalDocs:
+        description: Search and SearchStream REST documentation
+        url: https://developers.google.com/google-ads/api/rest/common/search
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchStreamRequest'
+      responses:
+        '200':
+          description: Streamed query result chunks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SearchStreamBatch'
+        default:
+          $ref: '#/components/responses/GoogleAdsError'
+  /customers/{customerId}/campaigns:mutate:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+      - $ref: '#/components/parameters/LoginCustomerId'
+      - $ref: '#/components/parameters/DeveloperToken'
+    post:
+      tags: [Campaigns]
+      operationId: mutateCampaigns
+      summary: Create, update, or remove campaigns
+      description: >-
+        Applies one or more campaign operations. Update operations use
+        updateMask to identify changed fields. Setting a campaign's status to
+        ENABLED or PAUSED supports the Zapier Set Campaign Status action. Google
+        Ads applies operations atomically unless a supported partial-failure
+        option is enabled.
+      externalDocs:
+        description: Google Ads mutate documentation
+        url: https://developers.google.com/google-ads/api/rest/common/mutate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignMutateRequest'
+      responses:
+        '200':
+          description: Results for the submitted campaign operations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignMutateResponse'
+        default:
+          $ref: '#/components/responses/GoogleAdsError'
+  /customers/{customerId}:uploadClickConversions:
+    parameters:
+      - $ref: '#/components/parameters/CustomerId'
+      - $ref: '#/components/parameters/LoginCustomerId'
+      - $ref: '#/components/parameters/DeveloperToken'
+    post:
+      tags: [Offline conversions]
+      operationId: uploadClickConversions
+      summary: Upload offline click conversions
+      description: >-
+        Processes click conversion events attributed to Google Ads. Supply the
+        conversion action, event time, and an eligible click or user identifier.
+        Google recommends partialFailure for batches so valid conversions can
+        be processed when other items fail.
+      externalDocs:
+        description: UploadClickConversions method reference
+        url: https://developers.google.com/google-ads/api/reference/rpc/v25/ConversionUploadService/UploadClickConversions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadClickConversionsRequest'
+      responses:
+        '200':
+          description: Upload results and any per-conversion partial failure details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadClickConversionsResponse'
+        default:
+          $ref: '#/components/responses/GoogleAdsError'
+components:
+  securitySchemes:
+    googleAdsOAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+      description: >-
+        Use an OAuth 2.0 access token with the
+        https://www.googleapis.com/auth/adwords scope. API access level is
+        associated with the Google Cloud project that owns the OAuth credentials.
+  parameters:
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      description: Google Ads customer ID without hyphens.
+      schema:
+        type: string
+        pattern: '^[0-9]+$'
+        example: '1234567890'
+    LoginCustomerId:
+      name: login-customer-id
+      in: header
+      required: false
+      description: >-
+        Manager account ID without hyphens. Include this when accessing a client
+        account through a Google Ads manager account.
+      schema:
+        type: string
+        pattern: '^[0-9]+$'
+        example: '9876543210'
+    DeveloperToken:
+      name: developer-token
+      in: header
+      required: false
+      deprecated: true
+      description: >-
+        Legacy header retained for compatibility. Google states developer tokens
+        became optional and ignored by API servers on 2026-09-09; access levels
+        are now associated with the Google Cloud project used for OAuth.
+      schema:
+        type: string
+  responses:
+    GoogleAdsError:
+      description: Google Ads API error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GoogleAdsError'
+  schemas:
+    AccessibleCustomersResponse:
+      type: object
+      properties:
+        resourceNames:
+          type: array
+          description: Resource names of customers directly accessible by the caller.
+          items:
+            type: string
+            example: customers/1234567890
+      required: [resourceNames]
+      additionalProperties: true
+    SearchRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Google Ads Query Language statement.
+          example: SELECT campaign.id, campaign.name, campaign.status FROM campaign ORDER BY campaign.id
+        pageToken:
+          type: string
+          description: Token returned by a previous Search response. Omit for SearchStream.
+        searchSettings:
+          $ref: '#/components/schemas/SearchSettings'
+        validateOnly:
+          type: boolean
+          description: Validate the query request without executing it.
+      required: [query]
+      additionalProperties: false
+    SearchStreamRequest:
+      type: object
+      properties:
+        query:
+          type: string
+          description: Google Ads Query Language statement.
+          example: SELECT campaign.id, campaign.name, campaign.status FROM campaign ORDER BY campaign.id
+        summaryRowSetting:
+          type: string
+          description: Whether to include a summary row after the streamed results.
+      required: [query]
+      additionalProperties: false
+    SearchSettings:
+      type: object
+      description: Optional settings for result counts and summary rows.
+      properties:
+        omitResults:
+          type: boolean
+          description: Exclude result rows from the response.
+        returnSummaryRow:
+          type: boolean
+          description: Include a summary row after the query results.
+        returnTotalResultsCount:
+          type: boolean
+          description: Include the total number of matching rows, ignoring the GAQL LIMIT clause.
+      additionalProperties: false
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleAdsRow'
+        nextPageToken:
+          type: string
+        fieldMask:
+          type: string
+        summaryRow:
+          $ref: '#/components/schemas/GoogleAdsRow'
+        totalResultsCount:
+          type: string
+      additionalProperties: true
+    SearchStreamBatch:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GoogleAdsRow'
+        fieldMask:
+          type: string
+        summaryRow:
+          $ref: '#/components/schemas/GoogleAdsRow'
+      additionalProperties: true
+    GoogleAdsRow:
+      type: object
+      description: >-
+        A GAQL row. Its resource-specific fields depend on the FROM resource and
+        SELECT fields in the submitted query and are intentionally left open.
+      additionalProperties: true
+    CampaignMutateRequest:
+      type: object
+      properties:
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CampaignOperation'
+        partialFailure:
+          type: boolean
+          description: When supported, process valid operations and report invalid ones separately.
+        validateOnly:
+          type: boolean
+          description: Validate the request without applying the changes.
+      required: [operations]
+      additionalProperties: false
+    CampaignOperation:
+      oneOf:
+        - type: object
+          properties:
+            create:
+              $ref: '#/components/schemas/Campaign'
+          required: [create]
+          additionalProperties: false
+        - type: object
+          properties:
+            update:
+              $ref: '#/components/schemas/Campaign'
+            updateMask:
+              type: string
+              description: Comma-separated list of fields to update.
+          required: [update, updateMask]
+          additionalProperties: false
+        - type: object
+          properties:
+            remove:
+              type: string
+              description: Campaign resource name to mark as removed.
+          required: [remove]
+          additionalProperties: false
+    Campaign:
+      type: object
+      properties:
+        resourceName:
+          type: string
+          example: customers/1234567890/campaigns/123
+        name:
+          type: string
+        status:
+          type: string
+          enum: [UNSPECIFIED, UNKNOWN, ENABLED, PAUSED, REMOVED]
+      description: >-
+        Campaign resource fields used by this focused schema. Google Ads v25
+        supports additional campaign fields not expanded here.
+      additionalProperties: true
+    CampaignMutateResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              resourceName:
+                type: string
+            additionalProperties: true
+        partialFailureError:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    UploadClickConversionsRequest:
+      type: object
+      properties:
+        conversions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClickConversion'
+        partialFailure:
+          type: boolean
+          description: Allows valid conversions to be processed when other conversions fail.
+        validateOnly:
+          type: boolean
+          description: Validate the upload without importing conversions.
+        jobId:
+          type: integer
+          format: int32
+          minimum: 0
+      required: [conversions, partialFailure]
+      additionalProperties: false
+    ClickConversion:
+      type: object
+      properties:
+        conversionAction:
+          type: string
+          description: Conversion action resource name.
+          example: customers/1234567890/conversionActions/456
+        conversionDateTime:
+          type: string
+          description: Conversion time with timezone offset.
+          example: '2026-09-30 12:34:56-07:00'
+        conversionValue:
+          type: number
+        currencyCode:
+          type: string
+          example: USD
+        gclid:
+          type: string
+        gbraid:
+          type: string
+        wbraid:
+          type: string
+        orderId:
+          type: string
+        userIdentifiers:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        consent:
+          type: object
+          properties:
+            adUserData:
+              type: string
+            adPersonalization:
+              type: string
+          additionalProperties: true
+      required: [conversionAction, conversionDateTime]
+      description: Click conversion information. At least one supported click or user identifier is also required by Google Ads.
+      additionalProperties: true
+    UploadClickConversionsResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        partialFailureError:
+          type: object
+          additionalProperties: true
+        jobId:
+          type: integer
+          format: int64
+      additionalProperties: true
+    GoogleAdsError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+            status:
+              type: string
+            details:
+              type: array
+              items: {}
+          additionalProperties: true
+      additionalProperties: true

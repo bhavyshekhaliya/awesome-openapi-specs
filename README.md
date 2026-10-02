@@ -92,6 +92,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
 | Eventleaf | [API specification](https://api.eventleaf.com/swagger/docs/v1) | JSON | 2.0 | `event-management` |
 | GetResponse | [API specification](https://apireference.getresponse.com/open-api.json) | JSON | 3.0.0 | `email-marketing` |
+| Google Ads | [Community specification](specs/google-ads/openapi.yml); [source docs](https://developers.google.com/google-ads/api/rest/design/overview) | YAML | 3.1.0 | `community-maintained` `advertising` `campaign-management` |
 | Limpi | [API specification](https://limpiaudit.com/api/v1/openapi.json) | JSON | 3.1.0 | `seo` `website-audit` |
 | Mailtrap | [API specification](https://github.com/mailtrap/mailtrap-openapi) | YAML | 3.1.0 | `email-marketing` `email-delivery` |
 | ManyChat | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `chat-marketing` `experimental` |
