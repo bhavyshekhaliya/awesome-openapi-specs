@@ -64,6 +64,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
 | Livestorm        | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml)                                            | YAML   | 3.0.3   | `official` `webinars`                     |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
+| Luma             | [API specification](https://public-api.luma.com/openapi.json) | JSON | 3.1.0 | `official` `event-marketing` |
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | MailerLite       | [Community specification](specs/mailerlite/openapi.yml); [source docs](https://developers.mailerlite.com/api/subscribers) | YAML | 3.1.0 | `community-maintained` `email-marketing` |
 | Mixpanel          | [14 API specifications](https://docs.mixpanel.com/llms.txt)                                               | JSON, YAML | 3.0.2, 3.0.3, 3.1.0 | `official` `analytics` `product-analytics` |
