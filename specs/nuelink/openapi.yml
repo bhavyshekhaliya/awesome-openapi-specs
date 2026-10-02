@@ -1,0 +1,679 @@
+openapi: 3.1.0
+info:
+  title: Nuelink Public API
+  version: 1.0-alpha
+  description: >-
+    Community-maintained specification for the documented Nuelink Public REST
+    API. The provider marks this API as an early alpha, so endpoints and
+    response shapes may change.
+  externalDocs:
+    description: Nuelink developer documentation
+    url: https://docs.nuelink.com/
+servers:
+  - url: https://nuelink.com/api/public/v1
+    description: Nuelink Public API
+security:
+  - bearerAuth: []
+tags:
+  - name: Account
+    description: Authenticated account information.
+  - name: Brands
+    description: Brand workspaces and their collections and channels.
+  - name: Media
+    description: Upload media for social posts.
+  - name: Posts
+    description: Create social posts.
+paths:
+  /me:
+    get:
+      tags: [Account]
+      summary: Get the authenticated user profile
+      operationId: getUserProfile
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/
+      responses:
+        '200':
+          description: Authenticated user profile.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /brands:
+    get:
+      tags: [Brands]
+      summary: List brands
+      description: Returns brands the authenticated user can access.
+      operationId: listBrands
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/get-brands/
+      parameters:
+        - name: page
+          in: query
+          description: Page number.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of brands per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Paginated brands.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BrandListResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /brands/{brandId}/collections:
+    get:
+      tags: [Brands]
+      summary: List collections in a brand
+      description: Includes the channels attached to each collection.
+      operationId: listBrandCollections
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/get-collections/
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          description: Identifier of a brand returned by GET /brands.
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          description: Page number.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of collections per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Paginated collections.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionListResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Brand not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /brands/{brandId}/channels:
+    get:
+      tags: [Brands]
+      summary: List channels in a brand
+      description: Returns active and inactive channels connected to the brand.
+      operationId: listBrandChannels
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/get-channels/
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          description: Identifier of a brand returned by GET /brands.
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          description: Page number.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          description: Number of channels per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Paginated social channels.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelListResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /brands/{brandId}/media:
+    post:
+      tags: [Media]
+      summary: Upload post media
+      description: >-
+        Upload one image, video, or PDF file for a brand. The returned media
+        identifier can be supplied to POST a post.
+      operationId: uploadBrandMedia
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/post-media/
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          description: Identifier of a brand returned by GET /brands.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [media]
+              properties:
+                media:
+                  type: string
+                  format: binary
+                  description: >-
+                    A PNG, JPG/JPEG, MP4, MOV, or PDF file. The documented
+                    maximum upload size is 100 MB.
+      responses:
+        '201':
+          description: Media uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaUploadResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /brands/{brandId}/collections/{collectionId}/posts:
+    post:
+      tags: [Posts]
+      summary: Create a post
+      description: >-
+        Creates a post in a collection and applies it to that collection's
+        channels. QUEUE uses the brand queue, SCHEDULE uses scheduledAt,
+        IMMEDIATE publishes now, and DRAFT saves without publishing.
+      operationId: createPost
+      externalDocs:
+        description: Endpoint documentation
+        url: https://docs.nuelink.com/guides/endpoints/post-posts/
+      parameters:
+        - name: brandId
+          in: path
+          required: true
+          description: Identifier of a brand returned by GET /brands.
+          schema:
+            type: integer
+            format: int64
+        - name: collectionId
+          in: path
+          required: true
+          description: Identifier of a collection returned by GET /brands/{brandId}/collections.
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '201':
+          description: Post created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePostResponse'
+        '401':
+          description: Missing or invalid bearer token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Collection or referenced channel not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Request validation failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Create an API key in Nuelink Settings and send it as a bearer token.
+  schemas:
+    UserProfileResponse:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          $ref: '#/components/schemas/UserProfile'
+    UserProfile:
+      type: object
+      required: [id, name, joinedAt, timezone]
+      properties:
+        id:
+          type: string
+          description: Opaque user identifier.
+        name:
+          type: string
+          description: Display name on the account.
+        joinedAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp.
+        timezone:
+          type: string
+          description: IANA timezone name.
+    BrandListResponse:
+      type: object
+      required: [status, data, pagination]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Brand:
+      type: object
+      required: [id, title, timezone, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: [string, 'null']
+        timezone:
+          type: string
+          description: IANA timezone used by the brand.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CollectionListResponse:
+      type: object
+      required: [status, data, pagination]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Collection'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Collection:
+      type: object
+      required: [id, title, status, createdAt, updatedAt, channels]
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: [string, 'null']
+        status:
+          type: string
+          description: Collection state, such as ACTIVE.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+    ChannelListResponse:
+      type: object
+      required: [status, data, pagination]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+    Channel:
+      type: object
+      required: [id, name, status, type, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE]
+        type:
+          type: string
+          enum:
+            - Facebook
+            - Instagram
+            - Threads
+            - LinkedIn
+            - Google Business
+            - YouTube
+            - TikTok
+            - Pinterest
+            - X/Twitter
+            - Mastodon
+            - Bluesky
+            - Telegram
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Pagination:
+      type: object
+      required: [currentPage, perPage, total, lastPage, nextPageUrl, prevPageUrl]
+      properties:
+        currentPage:
+          type: integer
+        perPage:
+          type: integer
+        total:
+          type: integer
+        lastPage:
+          type: integer
+        nextPageUrl:
+          type: [string, 'null']
+          format: uri
+        prevPageUrl:
+          type: [string, 'null']
+          format: uri
+    MediaUploadResponse:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          required: [id, type, size]
+          properties:
+            id:
+              type: string
+              description: Opaque media identifier for use in a post.
+            type:
+              type: string
+              description: MIME type detected by the server.
+            size:
+              type: integer
+              format: int64
+              description: Uploaded file size in bytes.
+    CreatePostResponse:
+      type: object
+      required: [status, data]
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          required: [id, message]
+          properties:
+            id:
+              type: integer
+              format: int64
+            message:
+              type: string
+              description: Creation result message.
+    CreatePostRequest:
+      type: object
+      required: [publishMode]
+      anyOf:
+        - required: [caption]
+        - required: [poll]
+      allOf:
+        - if:
+            properties:
+              publishMode:
+                const: SCHEDULE
+          then:
+            required: [scheduledAt]
+      properties:
+        publishMode:
+          type: string
+          enum: [QUEUE, SCHEDULE, IMMEDIATE, DRAFT]
+        caption:
+          type: string
+          minLength: 1
+          maxLength: 3000
+          description: Main post text; required unless a poll is supplied.
+        poll:
+          $ref: '#/components/schemas/Poll'
+        title:
+          type: string
+          maxLength: 255
+        alt:
+          type: string
+          maxLength: 255
+          description: Accessibility text for the post.
+        link:
+          type: string
+          format: uri
+          maxLength: 1000
+        scheduledAt:
+          type: string
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+          description: >-
+            Required for SCHEDULE. Format is Y-m-d H:i:s and the time is
+            interpreted in the brand's timezone.
+        postAsStory:
+          type: boolean
+          description: Publish as a Story on channels that support Stories.
+        comment:
+          $ref: '#/components/schemas/Comment'
+        media:
+          type: array
+          description: Each item uses either a media ID or a direct public URL.
+          items:
+            $ref: '#/components/schemas/MediaAttachment'
+        platforms:
+          $ref: '#/components/schemas/PlatformOptions'
+    Poll:
+      type: object
+      required: [question, options, period]
+      properties:
+        question:
+          type: string
+          maxLength: 280
+        options:
+          type: array
+          minItems: 2
+          maxItems: 4
+          items:
+            type: string
+            maxLength: 30
+        period:
+          type: string
+          enum: [1d, 3d, 7d]
+        correctOptionIndex:
+          type: integer
+          minimum: 0
+          description: Zero-based index of the correct answer for quiz mode.
+        explanation:
+          type: string
+          maxLength: 512
+    Comment:
+      type: object
+      required: [comment, delay]
+      properties:
+        comment:
+          type: string
+          maxLength: 1000
+        delay:
+          type: integer
+          description: Seconds to wait after publishing before adding the comment.
+    MediaAttachment:
+      oneOf:
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              description: Identifier returned by the media upload endpoint.
+          not:
+            required: [url]
+        - type: object
+          required: [url]
+          properties:
+            url:
+              type: string
+              format: uri
+              description: Direct public URL to the media.
+          not:
+            required: [id]
+    PlatformOptions:
+      type: object
+      description: >-
+        Documented per-platform overrides. Other platforms use provider
+        defaults unless separately documented.
+      properties:
+        instagram:
+          type: object
+          properties:
+            collab:
+              type: string
+              maxLength: 1000
+              description: Username of the partner account to invite as a co-author.
+            location:
+              $ref: '#/components/schemas/Location'
+            trialReel:
+              type: string
+              enum: [MANUAL, SS_PERFORMANCE]
+              description: Trial Reel behavior after its 72-hour period.
+            shareToFeed:
+              type: boolean
+        facebook:
+          type: object
+          properties:
+            location:
+              $ref: '#/components/schemas/Location'
+        tiktok:
+          type: object
+          properties:
+            sendToInbox:
+              type: boolean
+              description: Deliver the scheduled video to the TikTok app inbox.
+        youtube:
+          type: object
+          properties:
+            tags:
+              type: array
+              items:
+                type: string
+                maxLength: 255
+            playlists:
+              type: array
+              items:
+                $ref: '#/components/schemas/YouTubePlaylist'
+    Location:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          description: Platform location identifier.
+        name:
+          type: string
+          description: Location display name.
+    YouTubePlaylist:
+      type: object
+      required: [channelId, playlistIds]
+      properties:
+        channelId:
+          type: integer
+          format: int64
+        playlistIds:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          enum: [error]
+        message:
+          type: string
+        errors:
+          type: object
+          description: Field-level validation details when provided.
+          additionalProperties:
+            oneOf:
+              - type: string
+              - type: array
+                items:
+                  type: string
