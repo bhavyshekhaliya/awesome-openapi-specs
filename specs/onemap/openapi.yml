@@ -1,0 +1,254 @@
+openapi: 3.2.1
+info:
+  title: OneMap API
+  version: "1.0.0"
+  description: |
+    A focused community specification for OneMap authentication, address search,
+    reverse geocoding, and route planning. OneMap requires free account
+    registration. These documented API operations require the access token
+    returned by the authentication endpoint; tokens are valid for three days.
+  contact:
+    name: Singapore Land Authority - OneMap
+    url: https://www.onemap.gov.sg/
+servers:
+  - url: https://www.onemap.gov.sg
+externalDocs:
+  description: OneMap API documentation
+  url: https://www.onemap.gov.sg/apidocs/
+tags:
+  - name: Authentication
+  - name: Search
+  - name: Geocoding
+  - name: Routing
+security:
+  - accessToken: []
+paths:
+  /api/auth/post/getToken:
+    post:
+      tags: [Authentication]
+      summary: Create an access token
+      description: Exchanges registered OneMap account credentials for an access token valid for three days.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Access token and expiry timestamp
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+  /api/common/elastic/search:
+    get:
+      tags: [Search]
+      summary: Search Singapore addresses and places
+      parameters:
+        - name: searchVal
+          in: query
+          required: true
+          description: Keywords used to filter the results.
+          schema:
+            type: string
+        - name: returnGeom
+          in: query
+          required: true
+          description: Whether to return geometry.
+          schema:
+            type: string
+            enum: [Y, N]
+        - name: getAddrDetails
+          in: query
+          required: true
+          description: Whether to return address details.
+          schema:
+            type: string
+            enum: [Y, N]
+        - name: pageNum
+          in: query
+          description: Page of results to retrieve.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Address search results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+  /api/public/revgeocode:
+    get:
+      tags: [Geocoding]
+      summary: Reverse geocode WGS84 coordinates
+      parameters:
+        - name: location
+          in: query
+          required: true
+          description: Latitude and longitude separated by a comma.
+          schema:
+            type: string
+        - name: buffer
+          in: query
+          description: Search radius in meters, from 0 to 500.
+          schema:
+            type: string
+        - name: addressType
+          in: query
+          description: Property types to include in the search radius.
+          schema:
+            type: string
+            enum: [HDB, All]
+      responses:
+        "200":
+          description: Nearby address information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReverseGeocodeResponse"
+  /api/public/routingsvc/route:
+    get:
+      tags: [Routing]
+      summary: Find a route between two points
+      parameters:
+        - name: start
+          in: query
+          required: true
+          description: Starting point in WGS84 latitude,longitude format.
+          schema:
+            type: string
+        - name: end
+          in: query
+          required: true
+          description: Destination in WGS84 latitude,longitude format.
+          schema:
+            type: string
+        - name: routeType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [drive, pt, walk, cycle]
+      responses:
+        "200":
+          description: Route geometry, instructions, and summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteResponse"
+components:
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Registered user's OneMap access token, sent as the Authorization header value.
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expiry_timestamp:
+          type: string
+    SearchResponse:
+      type: object
+      properties:
+        found:
+          type: integer
+        totalNumPages:
+          type: integer
+        pageNum:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              SEARCHVAL:
+                type: string
+              BLK_NO:
+                type: string
+              ROAD_NAME:
+                type: string
+              BUILDING:
+                type: string
+              ADDRESS:
+                type: string
+              POSTAL:
+                type: string
+              X:
+                type: string
+              Y:
+                type: string
+              LATITUDE:
+                type: string
+              LONGITUDE:
+                type: string
+              LONGTITUDE:
+                type: string
+    ReverseGeocodeResponse:
+      type: object
+      properties:
+        GeocodeInfo:
+          type: array
+          items:
+            type: object
+            properties:
+              BUILDINGNAME:
+                type: string
+              BLOCK:
+                type: string
+              ROAD:
+                type: string
+              POSTALCODE:
+                type: string
+              XCOORD:
+                type: string
+              YCOORD:
+                type: string
+              LATITUDE:
+                type: string
+              LONGITUDE:
+                type: string
+    RouteResponse:
+      type: object
+      properties:
+        status_message:
+          type: string
+        route_geometry:
+          type: string
+        status:
+          type: integer
+        route_instructions:
+          type: array
+          items:
+            type: array
+            items:
+              oneOf:
+                - type: string
+                - type: integer
+        route_name:
+          type: array
+          items:
+            type: string
+        route_summary:
+          type: object
+          properties:
+            start_point:
+              type: string
+            end_point:
+              type: string
+            total_time:
+              type: number
+            total_distance:
+              type: number

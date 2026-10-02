@@ -1,0 +1,129 @@
+openapi: 3.1.0
+info:
+  title: Overpass API
+  version: 1.0.0
+  description: >-
+    Community-maintained description of the main public Overpass instance. This
+    specification covers the interpreter endpoint when a query requests JSON
+    output with the `[out:json]` directive. Query results vary with the query
+    and its output modifiers; follow the shared instance's fair-use policy.
+externalDocs:
+  description: Overpass API HTTP request documentation
+  url: https://dev.overpass-api.de/command_line.html
+servers:
+  - url: https://overpass-api.de/api
+    description: >-
+      Main public instance operated by FOSSGIS. Check its current usage policy
+      at https://wiki.openstreetmap.org/wiki/Overpass_API#Public_Overpass_API_instances.
+paths:
+  /interpreter:
+    get:
+      operationId: runQueryGet
+      summary: Run an Overpass query with GET
+      description: >-
+        Supply the Overpass QL program in `data`. Include `[out:json]` in the
+        program for the JSON response documented here.
+      parameters:
+        - name: data
+          in: query
+          required: true
+          description: Overpass QL program; request JSON output with `[out:json]`.
+          schema:
+            type: string
+          example: '[out:json];node(50.746,7.152,50.747,7.153);out;'
+      responses:
+        '200':
+          description: Query result in Overpass JSON format.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [version, generator, osm3s, elements]
+                properties:
+                  version:
+                    type: number
+                  generator:
+                    type: string
+                  osm3s:
+                    type: object
+                    required: [timestamp_osm_base, copyright]
+                    properties:
+                      timestamp_osm_base:
+                        type: string
+                      copyright:
+                        type: string
+                  elements:
+                    type: array
+                    description: Element fields vary by query and output modifiers.
+                    items:
+                      type: object
+                      additionalProperties: true
+        '302':
+          description: Redirect used by the permanent ID feature.
+        '400':
+          description: Invalid query; the response body is an HTML error document.
+          content:
+            text/html:
+              schema:
+                type: string
+        '429':
+          description: Request rejected by the fair-use policy.
+        '504':
+          description: Query timed out or the server is too busy to complete it.
+    post:
+      operationId: runQueryPost
+      summary: Run an Overpass query with POST
+      description: >-
+        Submit the Overpass QL program as the `data` form field. Include
+        `[out:json]` in the program for the JSON response documented here.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [data]
+              properties:
+                data:
+                  type: string
+                  description: Overpass QL program; request JSON output with `[out:json]`.
+                  example: '[out:json];node(50.746,7.152,50.747,7.153);out;'
+      responses:
+        '200':
+          description: Query result in Overpass JSON format.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [version, generator, osm3s, elements]
+                properties:
+                  version:
+                    type: number
+                  generator:
+                    type: string
+                  osm3s:
+                    type: object
+                    required: [timestamp_osm_base, copyright]
+                    properties:
+                      timestamp_osm_base:
+                        type: string
+                      copyright:
+                        type: string
+                  elements:
+                    type: array
+                    description: Element fields vary by query and output modifiers.
+                    items:
+                      type: object
+                      additionalProperties: true
+        '302':
+          description: Redirect used by the permanent ID feature.
+        '400':
+          description: Invalid query; the response body is an HTML error document.
+          content:
+            text/html:
+              schema:
+                type: string
+        '429':
+          description: Request rejected by the fair-use policy.
+        '504':
+          description: Query timed out or the server is too busy to complete it.
