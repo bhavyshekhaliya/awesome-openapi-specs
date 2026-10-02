@@ -91,6 +91,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Keap      | [OpenAPI specification](https://crm.infusionsoft.com/app/v3/api-docs/V2)                              | JSON   | 3.1.0   | `official` `crm` `marketing-automation`                    |
 | NationBuilder | [V2 API specification](https://nationbuilder.com/api/v2/docs/v2/released.yaml)                       | YAML   | 3.1.2   | `official` `crm-adjacent` `community`                      |
 | Pipedrive | [OpenAPI specifications](https://developers.pipedrive.com/docs/api/v1)                                | YAML   | 3.0.1   | `official` `crm` `sales`                                   |
+| Usertour | [API v2 specification](https://docs.usertour.io/api-reference-v2/openapi.json) | JSON | 3.0.0 | `official` `user-onboarding` `product-adoption` |
 | Zendesk   | [Support API specification](https://developer.zendesk.com/zendesk/oas.yaml)                           | YAML   | 3.0.3   | `official` `crm-adjacent` `customer-support`               |
 | Zoho CRM  | [OpenAPI specifications](https://github.com/zoho/crm-oas)                                             | JSON   | 3.1.0   | `official` `crm`                                           |
 
