@@ -204,6 +204,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | SendGrid         | [46 API specifications](https://github.com/twilio/sendgrid-oai/tree/main/spec)                                     | JSON, YAML | 3.1.0 | `official` `transactional-email` `email-marketing` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
 | WebinarGeek      | [Community specification](specs/webinargeek/openapi.yml); [source docs](https://static.webinargeek.com/api-documentation.html) | YAML | 3.1.0 | `community-maintained` `webinars` |
+| WebinarJam / EverWebinar | [Community specification](specs/webinarjam/openapi.yml); [source docs](https://support.webinarjam.com/en/articles/15370142-use-webinarjam-and-everwebinar-apis) | YAML | 3.1.0 | `community-maintained` `webinars` `event-management` |
 | Wiza             | [API specification](https://wiza.co/api/api-docs/v1/openapi.yaml)                                               | YAML   | 3.0.1   | `official` `lead-generation` `enrichment` |
 | Zoho Campaigns   | [Community specification](specs/zoho-campaigns/openapi.yml); [source docs](https://www.zoho.com/campaigns/help/developers/) | YAML | 3.1.0 | `community-maintained` `email-marketing` |
 
