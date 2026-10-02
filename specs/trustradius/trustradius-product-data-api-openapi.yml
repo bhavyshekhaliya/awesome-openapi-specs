@@ -1,0 +1,148 @@
+openapi: 3.2.0
+info:
+  version: '1.1'
+  title: TrustRadius Product Data API
+  description: TrustRadius API
+servers:
+- url: https://api.trustradius.com/v1
+tags:
+- name: Product Data
+paths:
+  /product-ids:
+    get:
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    vendor:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        name:
+                          type: string
+                    slug:
+                      type: string
+                    isVisitorInsightsEnabled:
+                      type: string
+      description: Pass in a product's slug (the unique string identifier based on the name, often found in www.trustradius.com URLs) to get a product ID for use in other API calls. If you are a vendor, calling the API without any parameters will give you all published products listed under your vendor profile.
+      summary: Gets products ids for use in other APIs
+      security:
+      - x-api-key: []
+      parameters:
+      - $ref: '#/components/parameters/format'
+      - in: query
+        name: products
+        description: Comma-separated
+        schema:
+          type: string
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/product-ids
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      operationId: product_ids_get
+      tags:
+      - Product Data
+  /product-scores:
+    get:
+      operationId: product_scores
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        trScore:
+                          type: object
+                          properties:
+                            score:
+                              type: number
+                            max:
+                              type: integer
+                        starScore:
+                          type: object
+                          properties:
+                            score:
+                              type: number
+                            max:
+                              type: integer
+                        reviewCount:
+                          type: integer
+                        ratingCount:
+                          type: integer
+                        ratingsAndReviewsTotalCount:
+                          type: integer
+                        url:
+                          type: string
+      summary: Gets product information such as TrustRadius (TR) Score, Star Score, Review…
+      parameters:
+      - in: query
+        name: products
+        description: Id of the product or products to get traffic data for in a comma-separated format (e.g., "products=id1,id2").
+        schema:
+          type: string
+      description: 'Gets product information such as TrustRadius (TR) Score, Star Score, review counts, and relevant product details such as product name, ID, and url.
+
+
+        Can be used by either:
+
+        1. Adding a list of comma separated product IDs in the `products` parameter
+
+        2. Having no `products` parameter, which will return all of your company’s products that are licensed for this API'
+      security:
+      - x-api-key: []
+      x-amazon-apigateway-integration:
+        uri: https://${stageVariables.host}/public_api/product-scores
+        responses:
+          default:
+            statusCode: '200'
+        requestParameters:
+          integration.request.header.x-tr-gateway-secret: stageVariables.api_gateway_secret
+        passthroughBehavior: when_no_match
+        httpMethod: GET
+        type: http_proxy
+      tags:
+      - Product Data
+components:
+  parameters:
+    format:
+      name: format
+      in: query
+      description: Specifies the format of the results. Can be either "csv" or "json" (the default).
+      schema:
+        type: string
+        enum:
+        - csv
+        - json
+        default: json
+  securitySchemes:
+    x-api-key:
+      name: x-api-key
+      type: apiKey
+      in: header
+      description: All API calls must send an API key in the "x-api-key" HTTP header. TrustRadius clients can get their key from their Client Success Manager.
