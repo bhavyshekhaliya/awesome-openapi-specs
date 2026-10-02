@@ -425,6 +425,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Zernio | [API specification](https://docs.zernio.com/api/openapi) | JSON | 3.1.0 | `social-media` `scheduling` |
 | Agorapulse | [API specification](https://api.beta.agorapulse.com/docs/open-api.yml) | YAML | 3.1.0 | `social-media` `experimental` |
 | TwitterShots | [API specification](https://twittershots.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `content-generation` |
 | Publora | [API specification](https://docs.publora.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `scheduling` |
