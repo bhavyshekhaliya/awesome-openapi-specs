@@ -1,0 +1,360 @@
+openapi: 3.1.0
+info:
+  title: OpenF1 API
+  version: 1.0.0
+  description: >-
+    Community-maintained coverage of the documented OpenF1 v1 endpoints.
+    The provider makes historical data from 2023 onward available without
+    authentication; real-time access requires a paid subscription. Response
+    record fields vary by endpoint and are left open. The API can filter by
+    scalar record attributes, but this specification lists common selectors
+    and documented examples rather than every endpoint-specific filter.
+servers:
+  - url: https://api.openf1.org/v1
+externalDocs:
+  description: OpenF1 API documentation
+  url: https://openf1.org/docs/
+tags:
+  - name: Formula 1 data
+paths:
+  /car_data:
+    get:
+      operationId: listCarData
+      summary: Retrieve car telemetry
+      description: Returns telemetry samples for cars in a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /championship_drivers:
+    get:
+      operationId: listDriverChampionshipStandings
+      summary: Retrieve driver championship standings
+      description: Returns driver championship standings for a race session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumbers'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /championship_teams:
+    get:
+      operationId: listTeamChampionshipStandings
+      summary: Retrieve team championship standings
+      description: Returns team championship standings for a race session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/TeamName'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /drivers:
+    get:
+      operationId: listDrivers
+      summary: Retrieve driver information
+      description: Returns information about drivers participating in a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /intervals:
+    get:
+      operationId: listIntervals
+      summary: Retrieve driver interval data
+      description: Returns time gaps between drivers and the race leader during a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /laps:
+    get:
+      operationId: listLaps
+      summary: Retrieve lap data
+      description: Returns lap timing and sector data for a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/LapNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /location:
+    get:
+      operationId: listLocations
+      summary: Retrieve car location samples
+      description: Returns approximate car coordinates recorded during a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /meetings:
+    get:
+      operationId: listMeetings
+      summary: Retrieve meeting and event information
+      description: Returns Formula 1 meeting details and schedule information.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/Year'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /overtakes:
+    get:
+      operationId: listOvertakes
+      summary: Retrieve overtake records
+      description: >-
+        Returns position exchanges recorded during races. The provider notes
+        that this data may be incomplete.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/OvertakingDriverNumber'
+        - $ref: '#/components/parameters/OvertakenDriverNumber'
+        - $ref: '#/components/parameters/Position'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /pit:
+    get:
+      operationId: listPitStops
+      summary: Retrieve pit stop data
+      description: Returns records of cars going through the pit lane.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /position:
+    get:
+      operationId: listPositions
+      summary: Retrieve driver position data
+      description: Returns recorded driver positions during a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /race_control:
+    get:
+      operationId: listRaceControlMessages
+      summary: Retrieve race control messages
+      description: Returns messages and flag information issued by race control.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /sessions:
+    get:
+      operationId: listSessions
+      summary: Retrieve session and schedule information
+      description: Returns Formula 1 session details, including scheduled sessions.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/SessionName'
+        - $ref: '#/components/parameters/SessionType'
+        - $ref: '#/components/parameters/Year'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /session_result:
+    get:
+      operationId: listSessionResults
+      summary: Retrieve session standings
+      description: Returns driver standings after results are published.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /starting_grid:
+    get:
+      operationId: listStartingGrid
+      summary: Retrieve starting grid positions
+      description: Returns starting grid information for a race.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /stints:
+    get:
+      operationId: listStints
+      summary: Retrieve tyre stint data
+      description: Returns tyre stint information for drivers in a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /team_radio:
+    get:
+      operationId: listTeamRadio
+      summary: Retrieve team radio records
+      description: Returns team radio records associated with a session and driver.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+  /weather:
+    get:
+      operationId: listWeather
+      summary: Retrieve session weather data
+      description: Returns weather observations recorded during a session.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
+components:
+  parameters:
+    SessionKey:
+      name: session_key
+      in: query
+      description: Session identifier; the value latest selects the latest/current session.
+      schema:
+        type: string
+    MeetingKey:
+      name: meeting_key
+      in: query
+      description: Meeting identifier; the value latest selects the latest/current meeting.
+      schema:
+        type: string
+    DriverNumber:
+      name: driver_number
+      in: query
+      schema:
+        type: integer
+    DriverNumbers:
+      name: driver_number
+      in: query
+      description: One or more driver numbers; repeat this parameter to select multiple drivers.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+    TeamName:
+      name: team_name
+      in: query
+      schema:
+        type: string
+    LapNumber:
+      name: lap_number
+      in: query
+      schema:
+        type: integer
+    OvertakingDriverNumber:
+      name: overtaking_driver_number
+      in: query
+      schema:
+        type: integer
+    OvertakenDriverNumber:
+      name: overtaken_driver_number
+      in: query
+      schema:
+        type: integer
+    Position:
+      name: position
+      in: query
+      schema:
+        type: integer
+    SessionName:
+      name: session_name
+      in: query
+      schema:
+        type: string
+    SessionType:
+      name: session_type
+      in: query
+      schema:
+        type: string
+    Year:
+      name: year
+      in: query
+      schema:
+        type: integer
+    Csv:
+      name: csv
+      in: query
+      description: Set to true to return CSV instead of JSON.
+      schema:
+        type: boolean
+  responses:
+    Records:
+      description: A list of records; result fields depend on the selected endpoint.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+        text/csv:
+          schema:
+            type: string

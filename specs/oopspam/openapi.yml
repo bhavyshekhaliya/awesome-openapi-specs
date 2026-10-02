@@ -1,0 +1,259 @@
+openapi: 3.1.0
+info:
+  title: OOPSpam API
+  version: 1.0.0
+  description: >-
+    Community-maintained description of OOPSpam's direct API. This document
+    does not describe the separate RapidAPI base URL and authentication header.
+externalDocs:
+  description: OOPSpam API documentation
+  url: https://www.oopspam.com/docs/
+servers:
+  - url: https://api.oopspam.com/v1
+    description: OOPSpam direct API
+tags:
+  - name: Spam detection
+  - name: Domain reputation
+paths:
+  /spamdetection:
+    post:
+      operationId: checkForSpam
+      tags: [Spam detection]
+      summary: Analyze a submission for spam
+      description: >-
+        Some fields in `Details` may be omitted when an analysis returns early.
+      security:
+        - OOPSpamApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpamDetectionRequest'
+      responses:
+        '200':
+          description: Spam score and available analysis details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpamDetectionResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /spamdetection/report:
+    post:
+      operationId: reportSpamDetectionResult
+      tags: [Spam detection]
+      summary: Report a false positive or false negative
+      security:
+        - OOPSpamApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpamDetectionReportRequest'
+      responses:
+        '200':
+          description: Report accepted.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [message]
+                properties:
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /reputation/domain:
+    post:
+      operationId: checkDomainReputation
+      tags: [Domain reputation]
+      summary: Check a domain against reputation sources
+      security:
+        - OOPSpamApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainReputationRequest'
+      responses:
+        '200':
+          description: Domain reputation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DomainReputationResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '406':
+          $ref: '#/components/responses/NotAcceptable'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  securitySchemes:
+    OOPSpamApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+  schemas:
+    SpamDetectionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Message or content to analyze.
+        context:
+          type: string
+          description: >-
+            Describe the site's purpose and what submissions count as spam or
+            legitimate. When a non-empty value is supplied, contextual
+            detection is used instead of standard spam detection.
+        senderIP:
+          type: string
+          description: Original submitter's IP address; required for country filters.
+        email:
+          type: string
+          description: Original submitter's email address.
+        blockTempEmail:
+          type: boolean
+          default: false
+          description: Block temporary or disposable email addresses.
+        blockVPN:
+          type: boolean
+          default: false
+          description: Block VPN, proxy, and Tor IP addresses.
+        blockDC:
+          type: boolean
+          default: false
+          description: Block IP addresses from data centers.
+        checkForLength:
+          type: boolean
+          default: true
+          description: Treat content shorter than 20 characters as spam.
+        logIt:
+          type: boolean
+          default: false
+          description: Enable dashboard logging; requires `source`.
+        source:
+          type: string
+          description: Unique site or application identifier used for dashboard logging.
+        urlFriendly:
+          type: boolean
+          default: false
+          description: Beta option to reduce the impact of links in `content` on its spam score.
+        allowedLanguages:
+          type: array
+          description: Expected ISO 639-1 language codes.
+          items:
+            type: string
+        allowedCountries:
+          type: array
+          description: Allowed ISO 3166-1 alpha-2 country codes; requires `senderIP`.
+          items:
+            type: string
+        blockedCountries:
+          type: array
+          description: Blocked ISO 3166-1 alpha-2 country codes; requires `senderIP`.
+          items:
+            type: string
+    SpamDetectionReportRequest:
+      allOf:
+        - $ref: '#/components/schemas/SpamDetectionRequest'
+        - type: object
+          required: [shouldBeSpam]
+          properties:
+            shouldBeSpam:
+              type: boolean
+              description: Whether the reported content should be classified as spam.
+    SpamDetectionResult:
+      type: object
+      required: [Score, Details]
+      properties:
+        Score:
+          type: number
+          minimum: 0
+          maximum: 6
+          description: Overall spam score; higher values indicate a greater likelihood of spam.
+        Details:
+          $ref: '#/components/schemas/SpamDetectionDetails'
+    SpamDetectionDetails:
+      type: object
+      description: Available analyses; fields may be omitted when an analysis returns early.
+      additionalProperties: true
+      properties:
+        isIPBlocked:
+          type: boolean
+        isEmailBlocked:
+          type: boolean
+        langMatch:
+          type: boolean
+        isContentSpam:
+          type: string
+        numberOfSpamWords:
+          type: number
+        spamWords:
+          type: array
+          items:
+            type: string
+        isContentTooShort:
+          type: boolean
+        countryMatch:
+          type: boolean
+    DomainReputationRequest:
+      type: object
+      required: [domain]
+      properties:
+        domain:
+          type: string
+          description: Fully qualified domain name without a scheme or `www` prefix.
+    DomainReputationResult:
+      type: object
+      required: [Blocked, Blocker]
+      properties:
+        Blocked:
+          type: boolean
+        Blocker:
+          type: array
+          items:
+            type: string
+  responses:
+    BadRequest:
+      description: The request is invalid.
+    Unauthorized:
+      description: The API key is invalid.
+    NotFound:
+      description: The requested resource was not found.
+    NotAcceptable:
+      description: The requested response format is not JSON.
+    RateLimited:
+      description: The API key exceeded its request limit.
+    ServerError:
+      description: An internal server error occurred.
