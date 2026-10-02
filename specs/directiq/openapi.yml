@@ -1,0 +1,932 @@
+openapi: 3.0.1
+info:
+  title: DirectIQ API
+  version: v1-current
+  description: Community-maintained aggregation of the 15 endpoint-level OpenAPI definitions
+    currently published in DirectIQ API Reference pages.
+externalDocs:
+  description: DirectIQ API Reference
+  url: https://directiq.readme.io/reference/introduction
+servers:
+- url: https://rest.directiq.com
+  description: DirectIQ REST API
+security:
+- basicAuth: []
+tags:
+- name: Contact
+- name: ExtraData
+- name: ContactList
+- name: Flow
+- name: Lists
+- name: ClientFrom
+- name: Email
+- name: Survey
+- name: Template
+paths:
+  /contacts/contact/deletebyemail:
+    delete:
+      tags:
+      - Contact
+      summary: Delete a contact
+      parameters:
+      - name: email
+        in: query
+        schema:
+          type: string
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactDeleteByEmailResponse'
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/delete_contact-deletebyemail
+  /contacts/contact/disable:
+    put:
+      tags:
+      - Contact
+      summary: Disable a contact
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ContactDisableByEmailRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactDisableByEmailRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ContactDisableByEmailRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ContactDisableByEmailRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactDisableByEmailResponse'
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/put_contact-disable
+  /contacts/contact/reactivationrequest/{id}:
+    get:
+      tags:
+      - Contact
+      summary: Get active reactivation request
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactReactivationResponseDto'
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_contact-reactivationrequest-id
+  /contacts/contact/reactivationrequest:
+    post:
+      tags:
+      - Contact
+      summary: Create a reactivation request
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/ContactReactivationRequestDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactReactivationRequestDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/ContactReactivationRequestDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/ContactReactivationRequestDto'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactReactivationResponseDto'
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/post_contact-reactivationrequest
+  /contacts/extradata/deletebyname:
+    delete:
+      tags:
+      - ExtraData
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/delete_extradata-deletebyname
+  /contacts/contactlist/getcontactlist:
+    get:
+      tags:
+      - ContactList
+      parameters:
+      - name: listId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - name: pageNumber
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          format: int32
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactResponseModelPaginatedList'
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_contactlist-getcontactlist
+  /contacts/flow/getdaterecipients:
+    get:
+      tags:
+      - Flow
+      parameters:
+      - name: clientKeyId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - name: dateCheck
+        in: query
+        schema:
+          type: string
+      - name: nextContactId
+        in: query
+        schema:
+          type: integer
+          format: int64
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_flow-getdaterecipients
+  /contacts/lists/addcontact/{id}:
+    post:
+      tags:
+      - Lists
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/AddContactRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddContactRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AddContactRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AddContactRequest'
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/post_lists-addcontact-id
+  /contacts/lists/removecontactbyemail/{id}:
+    delete:
+      tags:
+      - Lists
+      summary: Remove a contact by email from a list
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/RemoveFromListRequest'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveFromListRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/RemoveFromListRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/RemoveFromListRequest'
+      responses:
+        '200':
+          description: Successful response.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/delete_lists-removecontactbyemail-id
+  /core/clientfrom/confirmed:
+    get:
+      tags:
+      - ClientFrom
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_clientfrom-confirmed
+  /core/email/send:
+    post:
+      tags:
+      - Email
+      summary: Sends a transactional email.
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequestDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequestDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/EmailSendRequestDto'
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/post_email-send
+  /core/email/{id}:
+    get:
+      tags:
+      - Email
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_email-id
+  /core/survey/answer:
+    post:
+      tags:
+      - Survey
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SurveyAnswerRequestDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SurveyAnswerRequestDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SurveyAnswerRequestDto'
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/post_survey-answer
+  /core/survey/submit:
+    post:
+      tags:
+      - Survey
+      parameters:
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SurveySubmitRequestDto'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SurveySubmitRequestDto'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SurveySubmitRequestDto'
+      responses:
+        '200':
+          description: Successful response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/post_survey-submit
+  /core/template/getbody/{id}:
+    get:
+      tags:
+      - Template
+      summary: Get template body
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: api-version
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TemplateBodyResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateBodyResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TemplateBodyResponse'
+          description: Successful response.
+        '400':
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetails'
+          description: Error response.
+      externalDocs:
+        description: DirectIQ endpoint reference
+        url: https://directiq.readme.io/reference/get_template-getbody-id
+components:
+  schemas:
+    ContactDeleteByEmailResponse:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+      additionalProperties: false
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: {}
+    ContactDisableByEmailRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+      additionalProperties: false
+    ContactDisableByEmailResponse:
+      type: object
+      properties:
+        contactId:
+          type: integer
+          format: int64
+      additionalProperties: false
+    ContactReactivationModel:
+      type: object
+      properties:
+        hashId:
+          type: string
+          nullable: true
+        language:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ContactReactivationResponseDto:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        reactivationRequest:
+          $ref: '#/components/schemas/ContactReactivationModel'
+      additionalProperties: false
+    ContactReactivationRequestDto:
+      required:
+      - contactId
+      - language
+      type: object
+      properties:
+        contactId:
+          minimum: 1
+          type: integer
+          format: int64
+        language:
+          maxLength: 2
+          minLength: 1
+          type: string
+          format: string
+      additionalProperties: false
+    ContactReactivationRequestModel:
+      type: object
+      properties:
+        hashId:
+          type: string
+          nullable: true
+        language:
+          type: string
+          nullable: true
+        createdDate:
+          type: string
+          format: date-time
+        completedDate:
+          type: string
+          format: date-time
+          nullable: true
+        s3Key:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+      additionalProperties: false
+    ContactResponseKeyModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+        value:
+          type: string
+          nullable: true
+        shortCode:
+          type: string
+          nullable: true
+        numberValue:
+          type: number
+          format: double
+          nullable: true
+        dateValue:
+          type: string
+          format: date-time
+          nullable: true
+        dateFormat:
+          type: string
+          nullable: true
+        keyType:
+          $ref: '#/components/schemas/DataValueType'
+      additionalProperties: false
+    ContactResponseListModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ContactResponseModel:
+      type: object
+      properties:
+        clientId:
+          type: integer
+          format: int64
+        id:
+          type: integer
+          format: int64
+        email:
+          type: string
+          nullable: true
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        status:
+          type: string
+          nullable: true
+        quality:
+          type: integer
+          format: int32
+        statusDate:
+          type: string
+          format: date-time
+        createdDate:
+          type: string
+          format: date-time
+        updatedDate:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponseTagModel'
+          nullable: true
+        lists:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponseListModel'
+          nullable: true
+        notes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponseNoteModel'
+          nullable: true
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponseKeyModel'
+          nullable: true
+        reactivationRequests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactReactivationRequestModel'
+          nullable: true
+      additionalProperties: false
+    ContactResponseModelPaginatedList:
+      type: object
+      properties:
+        pageNumber:
+          type: integer
+          format: int32
+        totalCount:
+          type: integer
+          format: int32
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContactResponseModel'
+          nullable: true
+          readOnly: true
+        hasPreviousPage:
+          type: boolean
+          readOnly: true
+        hasNextPage:
+          type: boolean
+          readOnly: true
+      additionalProperties: false
+    ContactResponseNoteModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        note:
+          type: string
+          nullable: true
+        createdDate:
+          type: string
+          format: date-time
+      additionalProperties: false
+    ContactResponseTagModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          nullable: true
+      additionalProperties: false
+    DataValueType:
+      enum:
+      - 1
+      - 2
+      - 3
+      type: integer
+      format: int32
+    AddContactRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          nullable: true
+        customFields:
+          type: object
+          additionalProperties:
+            type: string
+            nullable: true
+          nullable: true
+      additionalProperties: false
+    RemoveFromListRequest:
+      required:
+      - email
+      type: object
+      properties:
+        email:
+          minLength: 1
+          type: string
+          format: email
+      additionalProperties: false
+    EmailAttachmentDto:
+      required:
+      - base64Content
+      - contentType
+      - fileName
+      type: object
+      properties:
+        fileName:
+          minLength: 1
+          type: string
+        contentType:
+          minLength: 1
+          type: string
+        base64Content:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    EmailSendRequestDto:
+      required:
+      - content
+      - from
+      - subject
+      - to
+      type: object
+      properties:
+        from:
+          maxLength: 320
+          minLength: 1
+          type: string
+          format: email
+        fromName:
+          type: string
+          nullable: true
+        to:
+          maxLength: 320
+          minLength: 1
+          type: string
+          format: email
+        cc:
+          type: array
+          items:
+            type: string
+          nullable: true
+        bcc:
+          type: array
+          items:
+            type: string
+          nullable: true
+        subject:
+          minLength: 2
+          type: string
+        content:
+          minLength: 2
+          type: string
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAttachmentDto'
+          nullable: true
+      additionalProperties: false
+    SurveyAnswerRequestDto:
+      type: object
+      properties:
+        questionId:
+          $ref: '#/components/schemas/Ulid'
+        questionIndex:
+          type: integer
+          format: int32
+        questionLabel:
+          type: string
+          nullable: true
+        optionId:
+          $ref: '#/components/schemas/Ulid'
+        responseId:
+          type: integer
+          format: int64
+        answerText:
+          type: string
+          nullable: true
+        answerNumber:
+          type: number
+          format: double
+          nullable: true
+        optionLabel:
+          type: string
+          nullable: true
+      additionalProperties: false
+    Ulid:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          readOnly: true
+        random:
+          type: string
+          format: byte
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+    SurveySubmitRequestDto:
+      type: object
+      properties:
+        responseId:
+          type: integer
+          format: int64
+      additionalProperties: false
+    TemplateBodyResponse:
+      type: object
+      properties:
+        body:
+          type: string
+          nullable: true
+        contentType:
+          type: string
+          nullable: true
+      additionalProperties: false
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -176,6 +176,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | ClickFunnels     | [V2 API specification](https://accounts.myclickfunnels.com/openapi.json)                                          | JSON   | 3.1.0   | `official` `marketing-automation`         |
 | Customer.io      | [Journeys App API specification](https://docs.customer.io/files/journeys-app.json)                               | JSON   | 3.1.0   | `official` `lifecycle-marketing`          |
 | DataForSEO       | [API specification](https://raw.githubusercontent.com/dataforseo/OpenApiDocumentation/master/openapi_specification.yaml) | YAML | 3.0.1 | `official` `seo` `serp` |
+| DirectIQ | [Community specification](specs/directiq/openapi.yml) · [source docs](https://directiq.readme.io/reference/introduction) | YAML | 3.0.1 | `community-maintained` `email-marketing` |
 | GoTo Webinar     | [Community specification](specs/gotowebinar/openapi.yml) Â· [source docs](https://developer.goto.com/GoToWebinarV2) | YAML | 3.1.0 | `community-maintained` `webinars` `event-management` |
 | Intercom         | [REST API specifications](https://github.com/intercom/Intercom-OpenAPI)                                           | YAML   | 3.0     | `official` `customer-messaging`           |
 | Iterable         | [API specification](https://api.iterable.com/api-docs)                                                           | JSON   | 2.0     | `official` `marketing-automation`         |
