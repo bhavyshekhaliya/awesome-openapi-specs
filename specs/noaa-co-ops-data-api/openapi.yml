@@ -1,0 +1,167 @@
+openapi: 3.1.0
+info:
+  title: NOAA CO-OPS Data Retrieval API
+  version: 1.0.0
+  description: >-
+    Community-maintained specification for the documented CO-OPS Data API.
+    Available products, valid parameter combinations, result fields, and
+    retrieval limits depend on the selected product and station.
+  externalDocs:
+    description: Official NOAA CO-OPS Data Retrieval API documentation
+    url: https://api.tidesandcurrents.noaa.gov/api/dev
+servers:
+  - url: https://api.tidesandcurrents.noaa.gov/api/prod
+    description: NOAA CO-OPS production API
+paths:
+  /datagetter:
+    get:
+      operationId: getCoopsData
+      summary: Retrieve observations or predictions for a station
+      description: >-
+        Supply a station and product. Use begin_date with end_date, begin_date
+        with range, end_date with range, date, or range as supported by the
+        selected product. Product and interval determine data-length limits.
+      parameters:
+        - name: station
+          in: query
+          required: true
+          description: Seven-character station ID or a current-meter station ID.
+          schema:
+            type: string
+        - name: product
+          in: query
+          required: true
+          description: Data product; availability and compatible parameters vary by station.
+          schema:
+            type: string
+            enum:
+              - water_level
+              - hourly_height
+              - high_low
+              - daily_mean
+              - daily_max_min
+              - monthly_mean
+              - one_minute_water_level
+              - predictions
+              - air_gap
+              - air_temperature
+              - water_temperature
+              - wind
+              - air_pressure
+              - conductivity
+              - visibility
+              - humidity
+              - salinity
+              - currents
+              - currents_predictions
+              - currents_header
+              - ofs_water_level
+        - name: begin_date
+          in: query
+          description: Start of a requested range. Accepted forms are yyyyMMdd, yyyyMMdd HH:mm, MM/dd/yyyy, or MM/dd/yyyy HH:mm.
+          schema:
+            type: string
+        - name: end_date
+          in: query
+          description: End of a requested range. Accepted forms are yyyyMMdd, yyyyMMdd HH:mm, MM/dd/yyyy, or MM/dd/yyyy HH:mm.
+          schema:
+            type: string
+        - name: date
+          in: query
+          description: For supported preliminary data, meteorological products, and predictions, request today, latest, or recent data.
+          schema:
+            type: string
+            enum: [today, latest, recent]
+        - name: range
+          in: query
+          description: >-
+            Number of hours to retrieve. With historical begin_date or end_date,
+            daily maximum/minimum products interpret the range in years.
+          schema:
+            type: integer
+        - name: datum
+          in: query
+          description: >-
+            Reference datum. Required for water-level products except air_gap;
+            availability depends on station. Subordinate tide predictions use
+            MLLW.
+          schema:
+            type: string
+            enum: [CRD, IGLD, LWD, MHHW, MHW, MTL, MSL, MLW, MLLW, NAVD, STND]
+        - name: units
+          in: query
+          description: Units used for supported measurements.
+          schema:
+            type: string
+            enum: [metric, english]
+        - name: time_zone
+          in: query
+          description: Time zone for returned date/time values; not applicable to monthly_mean.
+          schema:
+            type: string
+            enum: [gmt, lst, lst_ldt]
+        - name: interval
+          in: query
+          description: >-
+            Product-specific interval. Supported values vary across tide
+            predictions, current predictions, and meteorological data.
+          schema:
+            type: string
+            enum: [h, '1', '5', '6', '10', '15', '30', '60', hilo, max_slack]
+        - name: bin
+          in: query
+          description: Current-meter depth bin; required for many current products. Zero requests all bins where supported.
+          schema:
+            type: integer
+        - name: vel_type
+          in: query
+          description: Current-prediction velocity representation for supported harmonic stations.
+          schema:
+            type: string
+            enum: [speed_dir, default]
+        - name: expand
+          in: query
+          description: Set to detailed on the currents product to include echo intensity and correlation magnitude.
+          schema:
+            type: string
+            enum: [detailed]
+        - name: format
+          in: query
+          description: Response format.
+          schema:
+            type: string
+            enum: [xml, json, csv]
+        - name: application
+          in: query
+          description: Optional caller identifier used in service activity and error logs.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Data returned in the requested format; JSON fields vary by product.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonResponse'
+            text/xml:
+              schema:
+                type: string
+            text/comma-separated-values:
+              schema:
+                type: string
+        default:
+          description: Error response; NOAA documents that the response uses the requested format.
+          content:
+            application/json:
+              schema: {}
+            text/xml:
+              schema:
+                type: string
+            text/comma-separated-values:
+              schema:
+                type: string
+components:
+  schemas:
+    JsonResponse:
+      type: object
+      additionalProperties: true
