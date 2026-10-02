@@ -1,0 +1,102 @@
+openapi: 3.1.0
+info:
+  title: ONYPHE Search API
+  version: 1.0.0
+  description: >-
+    Community-maintained description of ONYPHE Search API v2. Free View includes
+    API access for standard filters and categories; additional access depends on
+    the account's view. This document covers Search only, not other API families.
+externalDocs:
+  description: ONYPHE Search API documentation
+  url: https://search.onyphe.io/docs/general-apis/search
+servers:
+  - url: https://www.onyphe.io/api/v2
+    description: ONYPHE API v2
+tags:
+  - name: Search
+    description: Search ONYPHE data with the ONYPHE Query Language.
+paths:
+  /search/:
+    get:
+      operationId: searchOnyphe
+      tags: [Search]
+      summary: Search ONYPHE data
+      description: >-
+        Searches the datascan category by default. Queries without a historical
+        time filter search the last 30 days. The Search API returns at most
+        10,000 results; larger exports require a higher-tier Export API.
+      security:
+        - OnypheBearerToken: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: ONYPHE Query Language expression.
+          schema:
+            type: string
+          example: domain:example.com protocol:ssh
+        - name: page
+          in: query
+          description: Page number to retrieve.
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+        - name: size
+          in: query
+          description: Maximum number of results for a page; account limits may be lower.
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 10000
+        - name: trackquery
+          in: query
+          description: Include the OQL query that matched each result.
+          schema:
+            type: boolean
+            default: false
+        - name: calculated
+          in: query
+          description: Include calculated fields such as defanged and undefanged URLs.
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Search results. Result fields vary by category and query.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  error:
+                    type: integer
+                  max_page:
+                    type: integer
+                  myip:
+                    type: string
+                  page:
+                    type: integer
+                  page_size:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  status:
+                    type: string
+                  text:
+                    type: string
+                  took:
+                    type: number
+                  total:
+                    type: integer
+components:
+  securitySchemes:
+    OnypheBearerToken:
+      type: http
+      scheme: bearer
