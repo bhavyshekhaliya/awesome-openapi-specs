@@ -1,0 +1,238 @@
+openapi: 3.1.0
+info:
+  title: Hacker News API
+  version: 1.0.0
+  description: >-
+    Focused community specification for the public Hacker News v0 HTTP API.
+    This document covers the official read endpoints for item and user data,
+    story ID lists, the latest item ID, and recent updates. The provider may
+    add fields; clients should tolerate unknown response fields.
+  externalDocs:
+    description: Official Hacker News API documentation
+    url: https://github.com/HackerNews/API
+servers:
+  - url: https://hacker-news.firebaseio.com/v0
+    description: Hacker News Firebase API
+tags:
+  - name: Stories
+  - name: Items
+  - name: Users
+  - name: Updates
+paths:
+  /maxitem.json:
+    get:
+      tags: [Stories]
+      operationId: getMaxItemId
+      summary: Get the current largest item ID
+      description: The largest item ID can be used to walk backward through items.
+      responses:
+        '200':
+          description: Largest item ID
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+  /topstories.json:
+    get:
+      tags: [Stories]
+      operationId: listTopStoryIds
+      summary: List top story IDs
+      description: Returns up to 500 top story IDs; the list may include jobs.
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /newstories.json:
+    get:
+      tags: [Stories]
+      operationId: listNewStoryIds
+      summary: List new story IDs
+      description: Returns up to 500 new story IDs.
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /beststories.json:
+    get:
+      tags: [Stories]
+      operationId: listBestStoryIds
+      summary: List best story IDs
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /askstories.json:
+    get:
+      tags: [Stories]
+      operationId: listAskStoryIds
+      summary: List Ask HN story IDs
+      description: Returns up to 200 recent Ask HN story IDs.
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /showstories.json:
+    get:
+      tags: [Stories]
+      operationId: listShowStoryIds
+      summary: List Show HN story IDs
+      description: Returns up to 200 recent Show HN story IDs.
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /jobstories.json:
+    get:
+      tags: [Stories]
+      operationId: listJobStoryIds
+      summary: List job story IDs
+      description: Returns up to 200 recent job story IDs.
+      responses:
+        '200':
+          $ref: '#/components/responses/ItemIds'
+  /item/{id}.json:
+    get:
+      tags: [Items]
+      operationId: getItemById
+      summary: Get an item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Unique integer item ID.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+  /user/{id}.json:
+    get:
+      tags: [Users]
+      operationId: getUserById
+      summary: Get a public user profile
+      description: User IDs are case-sensitive; only users with public activity are available.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Case-sensitive Hacker News username.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /updates.json:
+    get:
+      tags: [Updates]
+      operationId: getUpdates
+      summary: Get recently changed items and profiles
+      responses:
+        '200':
+          description: IDs of changed items and usernames of changed profiles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Updates'
+components:
+  responses:
+    ItemIds:
+      description: List of Hacker News item IDs
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        type:
+          type: string
+          enum: [job, story, comment, poll, pollopt]
+        by:
+          type: string
+        time:
+          type: integer
+          format: int64
+          description: Creation time in Unix seconds.
+        text:
+          type: string
+          description: Comment, story, or poll text; may contain HTML.
+        dead:
+          type: boolean
+        parent:
+          type: integer
+          format: int64
+        poll:
+          type: integer
+          format: int64
+        kids:
+          type: array
+          items:
+            type: integer
+            format: int64
+        url:
+          type: string
+        score:
+          type: integer
+          format: int64
+        title:
+          type: string
+          description: Story, poll, or job title; may contain HTML.
+        parts:
+          type: array
+          items:
+            type: integer
+            format: int64
+        descendants:
+          type: integer
+          format: int64
+      required: [id]
+      additionalProperties: true
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: integer
+          format: int64
+          description: Account creation time in Unix seconds.
+        karma:
+          type: integer
+          format: int64
+        about:
+          type: string
+          description: Optional self-description; may contain HTML.
+        submitted:
+          type: array
+          items:
+            type: integer
+            format: int64
+      required: [id]
+      additionalProperties: true
+    Updates:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: integer
+            format: int64
+        profiles:
+          type: array
+          items:
+            type: string
+      additionalProperties: true

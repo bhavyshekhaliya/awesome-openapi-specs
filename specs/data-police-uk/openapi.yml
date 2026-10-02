@@ -1,0 +1,568 @@
+openapi: 3.1.0
+info:
+  title: data.police.uk Police API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained coverage of the crime, force, neighbourhood,
+    and stop-and-search operations represented by the Jentic source. The public
+    API requires no authentication. Crime locations are anonymised estimates.
+externalDocs:
+  description: Official Police API documentation
+  url: https://data.police.uk/docs/
+servers:
+  - url: https://data.police.uk/api
+tags:
+  - name: Crime
+  - name: Forces
+  - name: Neighbourhoods
+  - name: Stop and search
+paths:
+  /crimes-street/{crime_category}:
+    get:
+      tags: [Crime]
+      summary: Get street-level crimes
+      description: >-
+        Searches within one mile of a point or inside a custom polygon. Use
+        either lat and lng together or poly. A custom area with more than
+        10,000 crimes can return 503. A GET URL over 4,094 characters returns
+        400; the provider suggests POST for complex polygons, but this focused
+        specification does not define a POST body.
+      operationId: getStreetCrimes
+      externalDocs:
+        url: https://data.police.uk/docs/method/crime-street/
+      parameters:
+        - $ref: '#/components/parameters/CrimeCategory'
+        - $ref: '#/components/parameters/Month'
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/Polygon'
+      responses:
+        '200':
+          description: Crime records for the requested area.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrimeList'
+        '400':
+          description: The GET request URL exceeds 4,094 characters.
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          description: A custom area contains more than 10,000 crimes.
+  /crimes-at-location:
+    get:
+      tags: [Crime]
+      summary: Get crimes at a location
+      description: Supply location_id or both lat and lng.
+      operationId: getCrimesAtLocation
+      externalDocs:
+        url: https://data.police.uk/docs/method/crimes-at-location/
+      parameters:
+        - $ref: '#/components/parameters/Month'
+        - $ref: '#/components/parameters/LocationId'
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+      responses:
+        '200':
+          description: Crime records mapped to the requested location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrimeList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /outcomes-for-crime/{crime_id}:
+    get:
+      tags: [Crime]
+      summary: Get outcomes for a crime
+      operationId: getOutcomesForCrime
+      externalDocs:
+        url: https://data.police.uk/docs/method/outcomes-for-crime/
+      parameters:
+        - $ref: '#/components/parameters/CrimeId'
+      responses:
+        '200':
+          description: Crime details and its recorded outcomes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrimeOutcomes'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /crime-categories:
+    get:
+      tags: [Crime]
+      summary: List crime categories
+      operationId: listCrimeCategories
+      externalDocs:
+        url: https://data.police.uk/docs/method/crime-categories/
+      parameters:
+        - $ref: '#/components/parameters/Month'
+      responses:
+        '200':
+          description: Valid crime categories for the requested data set date.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CrimeCategoryList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /crime-last-updated:
+    get:
+      tags: [Crime]
+      summary: Get the latest crime data date
+      operationId: getCrimeLastUpdated
+      externalDocs:
+        url: https://data.police.uk/docs/method/crime-last-updated/
+      responses:
+        '200':
+          description: Latest month represented in the crime data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    format: date
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /forces:
+    get:
+      tags: [Forces]
+      summary: List police forces
+      operationId: listForces
+      externalDocs:
+        url: https://data.police.uk/docs/method/forces/
+      responses:
+        '200':
+          description: Police forces available through the API.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForceList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /forces/{force_id}:
+    get:
+      tags: [Forces]
+      summary: Get a police force
+      operationId: getForce
+      externalDocs:
+        url: https://data.police.uk/docs/method/force/
+      parameters:
+        - $ref: '#/components/parameters/ForceId'
+      responses:
+        '200':
+          description: Police force information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Force'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /forces/{force_id}/people:
+    get:
+      tags: [Forces]
+      summary: List senior officers for a force
+      description: The provider documentation uses the path suffix people.
+      operationId: listSeniorOfficers
+      externalDocs:
+        url: https://data.police.uk/docs/method/senior-officers/
+      parameters:
+        - $ref: '#/components/parameters/ForceId'
+      responses:
+        '200':
+          description: Senior officers and available contact details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeniorOfficerList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /{force_id}/neighbourhoods:
+    get:
+      tags: [Neighbourhoods]
+      summary: List neighbourhoods for a force
+      operationId: listNeighbourhoods
+      externalDocs:
+        url: https://data.police.uk/docs/method/neighbourhoods/
+      parameters:
+        - $ref: '#/components/parameters/ForceId'
+      responses:
+        '200':
+          description: Neighbourhoods for the requested police force.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NeighbourhoodList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /{force_id}/{neighbourhood_id}:
+    get:
+      tags: [Neighbourhoods]
+      summary: Get a neighbourhood
+      operationId: getNeighbourhood
+      externalDocs:
+        url: https://data.police.uk/docs/method/neighbourhood/
+      parameters:
+        - $ref: '#/components/parameters/ForceId'
+        - $ref: '#/components/parameters/NeighbourhoodId'
+      responses:
+        '200':
+          description: Neighbourhood information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Neighbourhood'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /stops-street:
+    get:
+      tags: [Stop and search]
+      summary: Get stop and searches by area
+      description: Supply either lat and lng together or a custom poly value.
+      operationId: getStreetStops
+      externalDocs:
+        url: https://data.police.uk/docs/method/stops-street/
+      parameters:
+        - $ref: '#/components/parameters/Month'
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/Polygon'
+      responses:
+        '200':
+          description: Stop-and-search records for the requested area.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopSearchList'
+        '400':
+          description: The GET request URL exceeds 4,094 characters.
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /stops-force:
+    get:
+      tags: [Stop and search]
+      summary: Get stop and searches reported by a force
+      operationId: getForceStops
+      externalDocs:
+        url: https://data.police.uk/docs/method/stops-force/
+      parameters:
+        - $ref: '#/components/parameters/ForceQuery'
+        - $ref: '#/components/parameters/Month'
+      responses:
+        '200':
+          description: Stop-and-search records reported by the force.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StopSearchList'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+components:
+  parameters:
+    CrimeCategory:
+      name: crime_category
+      in: path
+      required: true
+      description: Category identifier returned by the crime-categories method.
+      schema:
+        type: string
+    CrimeId:
+      name: crime_id
+      in: path
+      required: true
+      description: 64-character crime identifier returned by another API method.
+      schema:
+        type: string
+        minLength: 64
+        maxLength: 64
+    ForceId:
+      name: force_id
+      in: path
+      required: true
+      description: Force identifier returned by the forces method.
+      schema:
+        type: string
+    NeighbourhoodId:
+      name: neighbourhood_id
+      in: path
+      required: true
+      description: Force-specific neighbourhood identifier.
+      schema:
+        type: string
+    ForceQuery:
+      name: force
+      in: query
+      required: true
+      description: Force identifier returned by the forces method.
+      schema:
+        type: string
+    LocationId:
+      name: location_id
+      in: query
+      required: false
+      description: Location identifier returned by another API method.
+      schema:
+        type: integer
+    Month:
+      name: date
+      in: query
+      required: false
+      description: Data month in YYYY-MM format. If omitted, the latest month is used where documented.
+      schema:
+        type: string
+        pattern: '^\d{4}-\d{2}$'
+    Latitude:
+      name: lat
+      in: query
+      required: false
+      description: Latitude of the requested area or location.
+      schema:
+        type: number
+        format: double
+    Longitude:
+      name: lng
+      in: query
+      required: false
+      description: Longitude of the requested area or location.
+      schema:
+        type: number
+        format: double
+    Polygon:
+      name: poly
+      in: query
+      required: false
+      description: Polygon as colon-separated latitude,longitude pairs.
+      schema:
+        type: string
+  responses:
+    RateLimited:
+      description: The API rate limit was exceeded.
+  schemas:
+    CrimeCategory:
+      type: object
+      properties:
+        url:
+          type: string
+        name:
+          type: string
+    CrimeCategoryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CrimeCategory'
+    CrimeLocation:
+      type: object
+      properties:
+        latitude:
+          type: string
+        longitude:
+          type: string
+        street:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+    OutcomeStatus:
+      type: [object, 'null']
+      properties:
+        category:
+          type: string
+        date:
+          type: string
+    CrimeRecord:
+      type: object
+      properties:
+        category:
+          type: string
+        persistent_id:
+          type: string
+        location_subtype:
+          type: string
+        id:
+          type: integer
+        location:
+          $ref: '#/components/schemas/CrimeLocation'
+        context:
+          type: string
+        month:
+          type: string
+        location_type:
+          type: string
+        outcome_status:
+          $ref: '#/components/schemas/OutcomeStatus'
+    CrimeList:
+      type: array
+      items:
+        $ref: '#/components/schemas/CrimeRecord'
+    CrimeOutcome:
+      type: object
+      properties:
+        category:
+          type: object
+          properties:
+            code:
+              type: string
+            name:
+              type: string
+        date:
+          type: string
+        person_id:
+          type: [string, 'null']
+    CrimeOutcomes:
+      type: object
+      properties:
+        crime:
+          $ref: '#/components/schemas/CrimeRecord'
+        outcomes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CrimeOutcome'
+    Force:
+      type: object
+      properties:
+        description:
+          type: string
+        url:
+          type: string
+          format: uri
+        engagement_methods:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              type:
+                type: string
+              description:
+                type: [string, 'null']
+              title:
+                type: string
+        telephone:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+    ForceList:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+    SeniorOfficerList:
+      type: array
+      items:
+        type: object
+        properties:
+          bio:
+            type: string
+          contact_details:
+            type: object
+            additionalProperties: true
+          name:
+            type: string
+          rank:
+            type: string
+    NeighbourhoodList:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          name:
+            type: string
+    Neighbourhood:
+      type: object
+      properties:
+        contact_details:
+          type: object
+          additionalProperties: true
+        name:
+          type: string
+        links:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+              description:
+                type: [string, 'null']
+              title:
+                type: string
+        centre:
+          type: object
+          properties:
+            latitude:
+              type: string
+            longitude:
+              type: string
+        locations:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        url_force:
+          type: string
+        population:
+          type: string
+        id:
+          type: string
+        description:
+          type: string
+        welcome_message:
+          type: string
+    StopSearchRecord:
+      type: object
+      properties:
+        age_range:
+          type: [string, 'null']
+        officer_defined_ethnicity:
+          type: [string, 'null']
+        involved_person:
+          type: boolean
+        self_defined_ethnicity:
+          type: [string, 'null']
+        gender:
+          type: [string, 'null']
+        legislation:
+          type: [string, 'null']
+        outcome_linked_to_object_of_search:
+          type: [boolean, 'null']
+        datetime:
+          type: string
+          format: date-time
+        outcome_object:
+          type: [object, 'null']
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        location:
+          $ref: '#/components/schemas/CrimeLocation'
+        object_of_search:
+          type: string
+        operation:
+          type: [boolean, 'null']
+        outcome:
+          type: [string, boolean, 'null']
+        type:
+          type: string
+        operation_name:
+          type: [string, 'null']
+        removal_of_more_than_outer_clothing:
+          type: [boolean, 'null']
+    StopSearchList:
+      type: array
+      items:
+        $ref: '#/components/schemas/StopSearchRecord'
