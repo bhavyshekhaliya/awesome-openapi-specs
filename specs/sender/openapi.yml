@@ -1,0 +1,1689 @@
+openapi: 3.1.0
+info:
+  title: Sender API
+  version: v2
+  description: Community OpenAPI definition assembled from Sender public REST reference
+    pages. Request fields are typed where the docs provide a parameter table; response
+    models remain unspecified where the reference does not define them.
+externalDocs:
+  url: https://api.sender.net/
+servers:
+- url: https://api.sender.net/v2
+security:
+- bearerAuth: []
+tags:
+- name: Account
+- name: Campaigns
+- name: Events
+- name: Fields
+- name: Groups
+- name: Message
+- name: Segments
+- name: Subscribers
+- name: Transactional
+- name: Workflows
+paths:
+  /subscribers/groups/{groupId}:
+    post:
+      operationId: post_subscribers_groups_groupId
+      summary: Add subscriber to a group
+      tags:
+      - Subscribers
+      parameters:
+      - name: groupId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscribers:
+                  type: array
+                  items: {}
+                conditions:
+                  type: string
+                trigger_automation:
+                  type: boolean
+              required:
+              - subscribers
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/add-group/
+    delete:
+      operationId: delete_subscribers_groups_groupId
+      summary: Remove subscriber from a group
+      tags:
+      - Subscribers
+      parameters:
+      - name: groupId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscribers:
+                  type: array
+                  items: {}
+                conditions:
+                  type: string
+                trigger_automation:
+                  type: boolean
+              required:
+              - subscribers
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/remove-group/
+  /subscribers:
+    post:
+      operationId: post_subscribers
+      summary: Create new subscriber
+      tags:
+      - Subscribers
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                groups:
+                  type: array
+                  items: {}
+                fields:
+                  type: array
+                  items: {}
+                phone:
+                  type: string
+                trigger_automation:
+                  type: boolean
+              required:
+              - email
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/add-subscriber/
+    delete:
+      operationId: delete_subscribers
+      summary: Delete subscriber
+      tags:
+      - Subscribers
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscribers:
+                  type: array
+                  items: {}
+                conditions:
+                  type: string
+              required:
+              - subscribers
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/delete-subscriber/
+    get:
+      operationId: get_subscribers
+      summary: List all subscribers
+      tags:
+      - Subscribers
+      parameters: []
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/list-all/
+  /subscribers/{identifier}/events:
+    get:
+      operationId: get_subscribers_identifier_events
+      summary: Get subscriber's events
+      tags:
+      - Subscribers
+      parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: actions
+        in: query
+        required: true
+        schema:
+          type: array
+          items: {}
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/events/
+  /subscribers/{identifier}:
+    get:
+      operationId: get_subscribers_identifier
+      summary: Get subscriber's data
+      tags:
+      - Subscribers
+      parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/get-one/
+    patch:
+      operationId: patch_subscribers_identifier
+      summary: Update subscriber
+      tags:
+      - Subscribers
+      parameters:
+      - name: identifier
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                groups:
+                  type: array
+                  items: {}
+                fields:
+                  type: array
+                  items: {}
+                subscriber_status:
+                  type: string
+                phone:
+                  type: string
+                trigger_automation:
+                  type: boolean
+                sms_status:
+                  type: string
+                transactional_email_status:
+                  type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/update-subscriber/
+  /subscribers/{id}/remove_phone:
+    delete:
+      operationId: delete_subscribers_id_remove_phone
+      summary: Remove phone from subscriber
+      tags:
+      - Subscribers
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/subscribers/remove-phone/
+  /groups:
+    get:
+      operationId: get_groups
+      summary: List all groups
+      tags:
+      - Groups
+      parameters: []
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/list-all/
+    post:
+      operationId: post_groups
+      summary: Create a group
+      tags:
+      - Groups
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+              required:
+              - title
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/create-group/
+  /groups/{id}:
+    get:
+      operationId: get_groups_id
+      summary: Get group details
+      tags:
+      - Groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/get-group/
+    delete:
+      operationId: delete_groups_id
+      summary: Delete a group
+      tags:
+      - Groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: delete_subscribers
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/delete/
+    patch:
+      operationId: patch_groups_id
+      summary: Rename group
+      tags:
+      - Groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/update-group/
+  /groups/{id}/subscribers:
+    get:
+      operationId: get_groups_id_subscribers
+      summary: List subscribers in a group
+      tags:
+      - Groups
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/groups/subscribers/
+  /segments/{id}:
+    delete:
+      operationId: delete_segments_id
+      summary: Delete a segment
+      tags:
+      - Segments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/segments/delete-segment/
+    get:
+      operationId: get_segments_id
+      summary: Get segment details
+      tags:
+      - Segments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/segments/get-segment/
+  /fields/{id}:
+    delete:
+      operationId: delete_fields_id
+      summary: Delete a field
+      tags:
+      - Fields
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/fields/delete-one/
+    patch:
+      operationId: patch_fields_id
+      summary: Rename a field
+      tags:
+      - Fields
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                show:
+                  type: boolean
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/fields/edit-one/
+  /segments/:
+    get:
+      operationId: get_segments
+      summary: List all segments
+      tags:
+      - Segments
+      parameters: []
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/segments/list-segments/
+  /fields:
+    post:
+      operationId: post_fields
+      summary: Create new field
+      tags:
+      - Fields
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                type:
+                  type: string
+              required:
+              - title
+              - type
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/fields/add-one/
+    get:
+      operationId: get_fields
+      summary: Get all fields
+      tags:
+      - Fields
+      parameters: []
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/fields/get-all/
+  /segments/{id}/subscribers:
+    get:
+      operationId: get_segments_id_subscribers
+      summary: List subscribers in a segment
+      tags:
+      - Segments
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/segments/subscribers/
+  /campaigns/{id}/complaints:
+    get:
+      operationId: get_campaigns_id_complaints
+      summary: Get spam reports of a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/complaints/
+  /campaigns/{id}/clicks:
+    get:
+      operationId: get_campaigns_id_clicks
+      summary: List campaign clicks
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/clicks/
+  /campaigns/{id}/hard_bounces:
+    get:
+      operationId: get_campaigns_id_hard_bounces
+      summary: Get hard bounces of a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/hard-bounces/
+  /campaigns/{id}/soft_bounces:
+    get:
+      operationId: get_campaigns_id_soft_bounces
+      summary: Get soft bounces of a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/soft-bounces/
+  /campaigns/{id}/groups:
+    get:
+      operationId: get_campaigns_id_groups
+      summary: Get performance by group of a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/group-percentages/
+  /campaigns/{id}/opens:
+    get:
+      operationId: get_campaigns_id_opens
+      summary: List campaign opens
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/opens/
+  /campaigns/{id}/unsubscribes:
+    get:
+      operationId: get_campaigns_id_unsubscribes
+      summary: Get unsubscribes of a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/unsubscribes/
+  /campaigns/{id}/emails-sent:
+    get:
+      operationId: get_campaigns_id_emails_sent
+      summary: Get sent emails
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/statistics/sents/
+  /campaigns/{id}/cancel_followup:
+    post:
+      operationId: post_campaigns_id_cancel_followup
+      summary: Cancel a follow-up campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/cancel-followup/
+  /campaigns/{id}/schedule:
+    delete:
+      operationId: delete_campaigns_id_schedule
+      summary: Cancel scheduled campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/cancel-schedule/
+    post:
+      operationId: post_campaigns_id_schedule
+      summary: Schedule send
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schedule_time:
+                  type: string
+              required:
+              - schedule_time
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/schedule-send/
+  /campaigns/{id}/errors:
+    get:
+      operationId: get_campaigns_id_errors
+      summary: Get campaign errors
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/errors/
+  /campaigns:
+    delete:
+      operationId: delete_campaigns
+      summary: Delete campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: ids
+        in: query
+        required: true
+        schema:
+          type: array
+          items: {}
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                title:
+                  type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/delete/
+    get:
+      operationId: get_campaigns
+      summary: Get all campaigns
+      tags:
+      - Campaigns
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: array
+          items: {}
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/get-all/
+    post:
+      operationId: post_campaigns
+      summary: Create a campaign
+      tags:
+      - Campaigns
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                subject:
+                  type: string
+                from:
+                  type: string
+                preheader:
+                  type: string
+                reply_to:
+                  type: string
+                content_type:
+                  type: string
+                google_analytics:
+                  type: number
+                auto_followup_subject:
+                  type: string
+                auto_followup_delay:
+                  type: number
+                auto_followup_active:
+                  type: boolean
+                groups:
+                  type: array
+                  items: {}
+                segments:
+                  type: array
+                  items: {}
+                content:
+                  type: string
+              required:
+              - subject
+              - from
+              - reply_to
+              - content_type
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/create-campaign/
+  /campaigns/{id}/copy:
+    post:
+      operationId: post_campaigns_id_copy
+      summary: Creates a copy of this campaign.
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/copy/
+  /campaigns/{id}/send:
+    post:
+      operationId: post_campaigns_id_send
+      summary: Send a campaign
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/send/
+  /campaigns/{id}:
+    get:
+      operationId: get_campaigns_id
+      summary: Get campaign details
+      tags:
+      - Campaigns
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/campaigns/get-one/
+  /transactional:
+    post:
+      operationId: post_transactional
+      summary: Create transactional campaign
+      tags:
+      - Transactional
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                subject:
+                  type: string
+                from:
+                  type: string
+                reply_to:
+                  type: string
+                editor:
+                  type: string
+                preheader:
+                  type: string
+                content:
+                  type: string
+              required:
+              - subject
+              - from
+              - reply_to
+              - editor
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/create/
+    get:
+      operationId: get_transactional
+      summary: Get all transactional campaigns
+      tags:
+      - Transactional
+      parameters:
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/get-all/
+    delete:
+      operationId: delete_transactional
+      summary: Delete transactional campaigns
+      tags:
+      - Transactional
+      parameters:
+      - name: ids
+        in: query
+        required: true
+        schema:
+          type: array
+          items: {}
+      - name: all
+        in: query
+        required: false
+        schema:
+          type: boolean
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/delete-campaign/
+  /transactional/{id}:
+    get:
+      operationId: get_transactional_id
+      summary: Get a transactional campaign
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/get-one/
+    patch:
+      operationId: patch_transactional_id
+      summary: Update transactional campaign
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                subject:
+                  type: string
+                from:
+                  type: string
+                reply_to:
+                  type: string
+                editor:
+                  type: string
+                last_action:
+                  type: string
+                preheader:
+                  type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/update-campaign/
+  /message/send:
+    post:
+      operationId: post_message_send
+      summary: Send transactional email (without template)
+      tags:
+      - Message
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: object
+                  additionalProperties: true
+                to:
+                  type: object
+                  additionalProperties: true
+                recipient_email:
+                  type: string
+                subject:
+                  type: string
+                text:
+                  type: string
+                html:
+                  type: string
+                headers:
+                  type: object
+                  additionalProperties: true
+                variables:
+                  type: object
+                  additionalProperties: true
+                attachments:
+                  type: object
+                  additionalProperties: true
+              required:
+              - from
+              - to
+              - subject
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/send-transactional/
+  /message/{id}/send:
+    post:
+      operationId: post_message_id_send
+      summary: Send transactional campaign (with template)
+      tags:
+      - Message
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to:
+                  type: object
+                  additionalProperties: true
+                variables:
+                  type: object
+                  additionalProperties: true
+                attachments:
+                  type: object
+                  additionalProperties: true
+                text:
+                  type: string
+                html:
+                  type: string
+                headers:
+                  type: object
+                  additionalProperties: true
+              required:
+              - to
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/send-campaign/
+  /transactional/{id}/sent:
+    get:
+      operationId: get_transactional_id_sent
+      summary: List sent transactional emails
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/sent/
+  /transactional/{id}/opens:
+    get:
+      operationId: get_transactional_id_opens
+      summary: List transactional opens
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/opens/
+  /transactional/{id}/report:
+    get:
+      operationId: get_transactional_id_report
+      summary: Get transactional campaign report
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: period
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/report/
+  /transactional/{id}/clicks:
+    get:
+      operationId: get_transactional_id_clicks
+      summary: List transactional clicks
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/clicks/
+  /workflows/{id}:
+    get:
+      operationId: get_workflows_id
+      summary: Get workflow details
+      tags:
+      - Workflows
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/details/
+  /transactional/{id}/complaints:
+    get:
+      operationId: get_transactional_id_complaints
+      summary: List transactional spam complaints
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/complaints/
+  /transactional/{id}/bounces:
+    get:
+      operationId: get_transactional_id_bounces
+      summary: List transactional bounces
+      tags:
+      - Transactional
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: email_address
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: direction
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/transactional-campaigns/bounces/
+  /workflows:
+    get:
+      operationId: get_workflows
+      summary: List workflows
+      tags:
+      - Workflows
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/list/
+  /workflows/{id}/ecommerce-report:
+    get:
+      operationId: get_workflows_id_ecommerce_report
+      summary: Get automation performance
+      tags:
+      - Workflows
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/performance/
+  /workflows/{id}/average_report:
+    get:
+      operationId: get_workflows_id_average_report
+      summary: Get workflow statistics
+      tags:
+      - Workflows
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/statistics/
+  /workflows/{id}/start:
+    post:
+      operationId: post_workflows_id_start
+      summary: Start workflow
+      tags:
+      - Workflows
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+              - email
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/start/
+  /workflows/{id}/steps:
+    get:
+      operationId: get_workflows_id_steps
+      summary: Get workflow steps
+      tags:
+      - Workflows
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: batch_no
+        in: query
+        required: false
+        schema:
+          type: integer
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/workflows/steps/
+  /account/webhooks:
+    post:
+      operationId: post_account_webhooks
+      summary: Create webhook
+      tags:
+      - Account
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                topic:
+                  type: string
+                relation_id:
+                  type: string
+              required:
+              - url
+              - topic
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/account-webhooks/create-webhook/
+    get:
+      operationId: get_account_webhooks
+      summary: List all webhooks
+      tags:
+      - Account
+      parameters: []
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/account-webhooks/list-all/
+  /events:
+    post:
+      operationId: post_events
+      summary: Create custom event
+      tags:
+      - Events
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subscriber:
+                  type: object
+                  additionalProperties: true
+                subscriber.id:
+                  type: string
+                subscriber.email:
+                  type: string
+                subscriber.phone:
+                  type: string
+                type:
+                  type: string
+                value:
+                  type: number
+                value_currency:
+                  type: string
+                properties:
+                  type: object
+                  additionalProperties: true
+              required:
+              - subscriber
+              - type
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/custom-events/create-event/
+  /account/webhooks/{id}:
+    delete:
+      operationId: delete_account_webhooks_id
+      summary: Delete webhook
+      tags:
+      - Account
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/account-webhooks/delete-webhook/
+    get:
+      operationId: get_account_webhooks_id
+      summary: Get a webhook
+      tags:
+      - Account
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/account-webhooks/get-one/
+    post:
+      operationId: post_account_webhooks_id
+      summary: Update webhook
+      tags:
+      - Account
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  type: string
+                relation_id:
+                  type: string
+                url:
+                  type: string
+                status:
+                  type: string
+      responses:
+        default:
+          description: The public reference does not define a complete response model
+            or status-code set.
+      externalDocs:
+        url: https://api.sender.net/account-webhooks/update-webhook/
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
