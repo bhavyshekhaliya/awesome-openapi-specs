@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Temso AI | [API specification](https://api.temso.ai/v1/openapi.json) | JSON | 3.1.1 | `official` `marketing-analytics` `ai-search` |
 | TicketSource | [API specification](https://raw.githubusercontent.com/ticketsource/openapi-spec/main/reference/TicketSource-API.json) | JSON | 3.1.0 | `official` `event-marketing` `ticketing` |
 | Flodesk | [API specification](https://developers.flodesk.com/) | JSON | 3.0.3 | `official` `email-marketing` `marketing-automation` |
 | Typefully | [API specification](https://typefully.com/docs/api) | JSON | 3.1.0 | `official` `social-media-management` `social-publishing` |
