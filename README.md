@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Endless Fairs | [API specification](https://app.endlessfairs.com/docs.openapi) | JSON | 3.0.3 | `event-management` `virtual-events` |
 | Super Send | [API specification](https://docs.supersend.io/openapi.yaml) | YAML | 3.0.3 | `sales-engagement` `email-marketing` |
 | Mailsoftly | [API specification](https://app.mailsoftly.com/developers/openapi.json) | JSON | 3.0.3 | `email-marketing` |
 | Adrapid | [API specification](https://api.adrapid.com/spec/v1/client-api.yaml) | YAML | 3.0.0 | `advertising` `creative-automation` |
