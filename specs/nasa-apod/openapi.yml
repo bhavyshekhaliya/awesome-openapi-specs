@@ -1,0 +1,108 @@
+openapi: 3.1.0
+info:
+  title: NASA Astronomy Picture of the Day API
+  version: 1.0.0
+  description: >-
+    Community-maintained specification for NASA's public APOD WordPress
+    endpoint. It returns APOD entries as a JSON array. This describes the
+    current endpoint at science.nasa.gov; the legacy api.nasa.gov wrapper is
+    scheduled for retirement on December 1, 2026.
+  externalDocs:
+    description: Official NASA APOD API documentation
+    url: https://api.nasa.gov/#apod
+servers:
+  - url: https://science.nasa.gov/wp-json/wp/v2
+    description: NASA Science WordPress REST API
+paths:
+  /apod-basic:
+    get:
+      operationId: listApodEntries
+      summary: List Astronomy Picture of the Day entries
+      description: >-
+        Returns a JSON array of APOD entries. The endpoint advertises
+        page, per_page, date_from, and date_to in its OPTIONS metadata.
+        NASA's public catalog documents different date/count filters for
+        this URL; those filters are not included because direct requests
+        did not demonstrate that behavior.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: Result page; defaults to 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          required: false
+          description: Number of entries per page; defaults to 25.
+          schema:
+            type: integer
+            minimum: 1
+            default: 25
+        - name: date_from
+          in: query
+          required: false
+          description: >-
+            Declared by the endpoint's OPTIONS metadata. NASA's public
+            documentation does not specify its accepted format or behavior.
+          schema:
+            type: string
+        - name: date_to
+          in: query
+          required: false
+          description: >-
+            Declared by the endpoint's OPTIONS metadata. NASA's public
+            documentation does not specify its accepted format or behavior.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: APOD entries, returned as an array.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApodEntry'
+components:
+  schemas:
+    ApodEntry:
+      type: object
+      description: APOD entry fields documented by NASA; optional values may vary by entry.
+      properties:
+        date:
+          type: string
+          format: date
+        post_id:
+          type: integer
+          description: WordPress post identifier.
+        title:
+          type: string
+        permalink:
+          type: string
+          format: uri
+        media_type:
+          type: string
+          description: Normalized APOD media type, such as image, video, or iframe.
+        explanation:
+          type: string
+        credit:
+          type: string
+        copyright:
+          type: string
+        alt:
+          type: string
+        url:
+          type: string
+          format: uri
+        hdurl:
+          type: string
+          format: uri
+        basic_html:
+          type: string
+          description: APOD Basic HTML document as a JSON string.
+        basic_html_url:
+          type: string
+          format: uri
