@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Twilio Segment  | [Official OpenAPI spec snapshot](specs/twilio-segment/openapi.json); [source docs](https://docs.segmentapis.com/) | JSON   | 73.5.0   | `official` `marketing-automation` `customer-data-platform` |
 | Mailtrap         | [API specifications](https://github.com/mailtrap/mailtrap-openapi/tree/main/specs)                                  | YAML   | 3.1.0   | `official` `email-marketing` `transactional-email` |
 | Constant Contact | [V3 API specification](https://api.cc.email/v3/swagger.yaml)                                                       | YAML   | 2.0     | `official` `email-marketing`              |
 | Manychat         | [Page API](https://api.manychat.com/swagger/compileJson?type=Page_API); [Profile API](https://api.manychat.com/swagger/compileJson?type=Profile_API) | JSON | 3.0.0 | `official` `chat-marketing` `marketing-automation` |
