@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -116,6 +116,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | beehiiv          | [API specification](https://developers.beehiiv.com/_fern-files/beehiiv.docs.buildwithfern.com/0a003f55c621652234cd8ef8b2460be3ee66bd4de4c707cbfba0e59d3081a847/assets/beehiiv-API-Specification.yaml) | YAML | 3.0.1 | `official` `email-marketing` `newsletter` |
 | Mailmojo | [API specification](https://api.mailmojo.no) | JSON | 2.0 | `official` `email-marketing` |
 | Stage Captions | [API specification](https://api.stagecaptions.io/api-reference/specs/zapier.yaml) | YAML | 3.0.3 | `official` `event-marketing` |
+| Trackdesk | [Official OpenAPI specification](https://developers.trackdesk.com/api.instance.json) · [Developer portal](https://developers.trackdesk.com/) | JSON | 3.1.0 | `official` `affiliate-marketing` `conversion-tracking` |
 | Funnelr | [API specification](https://zapier.gappstack.com/api/swagger/v1/swagger.json) | JSON | 3.0.4 | `official` `sales-funnel` `marketing-automation` |
 | ManyReach | [API specification](https://app.manyreach.com/swagger/docs/V2) | JSON | 2.0 | `official` `sales-engagement` `outreach` |
 | Tracknow | [API specification](https://apiv2.tracknow.io/v3/api-docs) | JSON | 3.0.1 | `official` `affiliate-marketing` `analytics` |
