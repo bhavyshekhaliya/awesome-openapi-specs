@@ -1,0 +1,133 @@
+openapi: 3.1.0
+info:
+  title: Kartra Inbound API - Lead Creation
+  version: 1.0.0
+  description: >-
+    Focused, community-maintained description of Kartra's documented inbound
+    API request for creating a lead, with an optional tag-assignment action.
+    Kartra uses a single form-encoded command endpoint; this specification
+    covers only the create_lead and assign_tag actions shown in the source.
+externalDocs:
+  description: Official Kartra PHP sample for creating a lead
+  url: https://support.kartra.com/en/articles/15369048-php-sample-creating-a-lead
+servers:
+  - url: https://app.kartra.com
+    description: Kartra API
+tags:
+  - name: Leads
+    description: Create and tag leads.
+paths:
+  /api:
+    post:
+      operationId: createLead
+      tags: [Leads]
+      summary: Create a lead and optionally assign a tag
+      description: >-
+        Submit the app and user credentials, lead fields, and an ordered list
+        of actions. The documented sequence creates the lead first and may
+        follow with assign_tag.
+      externalDocs:
+        description: Kartra request example and response handling
+        url: https://support.kartra.com/en/articles/15369048-php-sample-creating-a-lead
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [app_id, api_key, api_password, lead, actions]
+              properties:
+                app_id:
+                  type: string
+                  description: App ID issued for the integration.
+                api_key:
+                  type: string
+                  description: API key for the Kartra account being accessed.
+                api_password:
+                  type: string
+                  description: API password for the Kartra account being accessed.
+                lead:
+                  $ref: '#/components/schemas/LeadInput'
+                actions:
+                  type: object
+                  required: ['0']
+                  description: >-
+                    Numeric-keyed actions as shown by Kartra's PHP form example.
+                    Index 0 creates the lead; later indexes may assign tags.
+                  properties:
+                    '0':
+                      $ref: '#/components/schemas/CreateLeadAction'
+                  patternProperties:
+                    '^[1-9][0-9]*$':
+                      $ref: '#/components/schemas/AssignTagAction'
+                  additionalProperties: false
+            encoding:
+              lead:
+                style: deepObject
+                explode: true
+              actions:
+                style: deepObject
+                explode: true
+      responses:
+        default:
+          description: >-
+            JSON result with a status of Success or Error. Successful examples
+            may include lead details; the response fields vary by action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+components:
+  schemas:
+    LeadInput:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        custom_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomFieldValue'
+    CustomFieldValue:
+      type: object
+      properties:
+        field_identifier:
+          type: string
+          description: Identifier of a custom field already defined in the account.
+        field_value:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+    CreateLeadAction:
+      type: object
+      required: [cmd]
+      additionalProperties: false
+      properties:
+        cmd:
+          type: string
+          const: create_lead
+    AssignTagAction:
+      type: object
+      required: [cmd, tag_name]
+      additionalProperties: false
+      properties:
+        cmd:
+          type: string
+          const: assign_tag
+        tag_name:
+          type: string
+    ActionResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [Success, Error]
+      additionalProperties: true
