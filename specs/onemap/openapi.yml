@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: OneMap Search and Reverse Geocoding API
+  version: '1.0.0'
+  description: >-
+    Focused community-maintained specification for OneMap account token
+    generation, Singapore address search, and WGS84 reverse geocoding. These
+    selected data endpoints require an access token. Register with OneMap to
+    obtain an account; tokens expire after three days. OneMap's API terms
+    allow commercial and non-commercial use, while datasets are governed by
+    the Singapore Open Data Licence and any endpoint-specific terms. This
+    specification does not cover routing, coordinate conversion, themes,
+    map tiles, or other OneMap APIs.
+  externalDocs:
+    description: OneMap API documentation
+    url: https://www.onemap.gov.sg/apidocs/
+servers:
+  - url: https://www.onemap.gov.sg
+    description: OneMap production server
+tags:
+  - name: Authentication
+    description: Generate an access token for OneMap API requests.
+  - name: Geocoding
+    description: Search Singapore addresses and reverse geocode WGS84 coordinates.
+paths:
+  /api/auth/post/getToken:
+    post:
+      tags: [Authentication]
+      operationId: getAccessToken
+      summary: Generate an access token
+      description: The returned token is valid for three days and is not renewed automatically.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email registered with OneMap.
+                password:
+                  type: string
+                  format: password
+                  description: Password for the registered OneMap account.
+      responses:
+        '200':
+          description: Access token generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          description: Authentication failed.
+        '404':
+          description: Account is not registered or the email address is invalid.
+  /api/common/elastic/search:
+    get:
+      tags: [Geocoding]
+      operationId: searchAddresses
+      summary: Search Singapore addresses
+      description: Search by building, road, bus stop number, or postal code. A valid OneMap access token is required.
+      security:
+        - accessToken: []
+      parameters:
+        - name: searchVal
+          in: query
+          required: true
+          description: Search keyword, such as a building name, road name, bus stop number, or postal code.
+          schema:
+            type: string
+        - name: returnGeom
+          in: query
+          required: true
+          description: Whether to return geometry coordinates.
+          schema:
+            type: string
+            enum: [Y, N]
+        - name: getAddrDetails
+          in: query
+          required: true
+          description: Whether to return detailed address information.
+          schema:
+            type: string
+            enum: [Y, N]
+        - name: pageNum
+          in: query
+          description: Page number to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Search result page. The API may return an error field in the JSON body for a missing or expired token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Invalid search parameters.
+        '403':
+          description: Access to this service is forbidden for the account role.
+        '429':
+          description: API usage limit exceeded.
+  /api/public/revgeocode:
+    get:
+      tags: [Geocoding]
+      operationId: reverseGeocodeWgs84
+      summary: Reverse geocode WGS84 coordinates
+      description: Returns nearby Singapore addresses within the requested buffer. A valid OneMap access token is required.
+      security:
+        - accessToken: []
+      parameters:
+        - name: location
+          in: query
+          required: true
+          description: Latitude and longitude in WGS84, separated by a comma.
+          schema:
+            type: string
+          example: 1.3254295,103.9005321
+        - name: buffer
+          in: query
+          description: Search radius in metres; documented range is 0 to 500 metres.
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 500
+        - name: addressType
+          in: query
+          description: Restrict returned address types.
+          schema:
+            type: string
+            enum: [All, HDB]
+      responses:
+        '200':
+          description: Nearby geocoded addresses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReverseGeocodeResponse'
+        '400':
+          description: Missing or invalid location, buffer, or access token.
+        '401':
+          description: Access token is invalid or expired.
+        '403':
+          description: Access to this service is forbidden for the account role.
+        '429':
+          description: API usage limit exceeded.
+components:
+  securitySchemes:
+    accessToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: OneMap access token. Send the token value as shown in the provider's examples.
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        expiry_timestamp:
+          type: string
+          description: Token expiration time as a Unix timestamp.
+      additionalProperties: true
+    SearchResponse:
+      type: object
+      properties:
+        found:
+          type: integer
+        totalNumPages:
+          type: integer
+        pageNum:
+          type: integer
+        error:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+      additionalProperties: true
+    SearchResult:
+      type: object
+      properties:
+        SEARCHVAL:
+          type: string
+        BLK_NO:
+          type: string
+        ROAD_NAME:
+          type: string
+        BUILDING:
+          type: string
+        ADDRESS:
+          type: string
+        POSTAL:
+          type: string
+        X:
+          type: string
+        Y:
+          type: string
+        LATITUDE:
+          type: string
+        LONGITUDE:
+          type: string
+      additionalProperties: true
+    ReverseGeocodeResponse:
+      type: object
+      properties:
+        GeocodeInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/GeocodeResult'
+      additionalProperties: true
+    GeocodeResult:
+      type: object
+      properties:
+        BUILDINGNAME:
+          type: string
+          nullable: true
+        BLOCK:
+          type: string
+        ROAD:
+          type: string
+        POSTALCODE:
+          type: string
+        XCOORD:
+          type: string
+        YCOORD:
+          type: string
+        LATITUDE:
+          type: string
+        LONGITUDE:
+          type: string
+      additionalProperties: true
