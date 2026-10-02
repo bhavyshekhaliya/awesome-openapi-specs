@@ -1,0 +1,468 @@
+openapi: 3.1.0
+info:
+  title: OpenWeather One Call API 4.0
+  description: Community-maintained specification for the six documented One Call API 4.0 endpoints.
+  version: 1.0.0
+externalDocs:
+  description: OpenWeather One Call API 4.0 documentation
+  url: https://openweathermap.org/api/one-call-4
+servers:
+  - url: https://api.openweathermap.org/data/4.0/onecall
+    description: OpenWeather One Call API 4.0
+security:
+  - appid: []
+tags:
+  - name: One Call API 4.0
+    description: Current conditions, weather timelines, and detailed weather alerts.
+paths:
+  /current:
+    get:
+      operationId: getCurrentWeather
+      summary: Get current weather
+      tags: [One Call API 4.0]
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/Units'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Current weather data for the requested coordinates.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentWeatherResponse'
+  /timeline/1min:
+    get:
+      operationId: getMinuteTimeline
+      summary: Get the one-minute weather timeline
+      tags: [One Call API 4.0]
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/TimelineStart'
+        - $ref: '#/components/parameters/Units'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Up to 60 one-minute precipitation records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MinuteTimelineResponse'
+  /timeline/15min:
+    get:
+      operationId: getQuarterHourlyTimeline
+      summary: Get the 15-minute weather timeline
+      tags: [One Call API 4.0]
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/TimelineStart'
+        - $ref: '#/components/parameters/Units'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: 15-minute weather records with pagination links when more data is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuarterHourlyTimelineResponse'
+  /timeline/1h:
+    get:
+      operationId: getHourlyTimeline
+      summary: Get the hourly weather timeline
+      tags: [One Call API 4.0]
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/TimelineStart'
+        - $ref: '#/components/parameters/Units'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Up to 20 hourly weather records per response, with pagination links when more data is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HourlyTimelineResponse'
+  /timeline/1day:
+    get:
+      operationId: getDailyTimeline
+      summary: Get the daily weather timeline
+      tags: [One Call API 4.0]
+      parameters:
+        - $ref: '#/components/parameters/Latitude'
+        - $ref: '#/components/parameters/Longitude'
+        - $ref: '#/components/parameters/TimelineStart'
+        - $ref: '#/components/parameters/Units'
+        - $ref: '#/components/parameters/Language'
+      responses:
+        '200':
+          description: Up to 10 daily weather records per response, with pagination links when more data is available.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyTimelineResponse'
+  /alert/{alert_id}:
+    get:
+      operationId: getWeatherAlert
+      summary: Get detailed weather alert information
+      tags: [One Call API 4.0]
+      parameters:
+        - name: alert_id
+          in: path
+          required: true
+          description: Alert ID returned by a weather timeline.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detailed information for the requested weather alert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeatherAlert'
+components:
+  securitySchemes:
+    appid:
+      type: apiKey
+      in: query
+      name: appid
+      description: Obtain an API key through an OpenWeather account.
+  parameters:
+    Latitude:
+      name: lat
+      in: query
+      required: true
+      description: Latitude in decimal degrees, from -90 to 90.
+      schema:
+        type: number
+        minimum: -90
+        maximum: 90
+    Longitude:
+      name: lon
+      in: query
+      required: true
+      description: Longitude in decimal degrees, from -180 to 180.
+      schema:
+        type: number
+        minimum: -180
+        maximum: 180
+    TimelineStart:
+      name: start
+      in: query
+      required: false
+      description: UTC Unix timestamp used as the starting point for timeline data; defaults to the current UTC time.
+      schema:
+        type: integer
+        format: int64
+    Units:
+      name: units
+      in: query
+      required: false
+      description: Units for temperature and wind speed. Defaults to standard units.
+      schema:
+        type: string
+        enum: [standard, metric, imperial]
+    Language:
+      name: lang
+      in: query
+      required: false
+      description: Language used for weather descriptions.
+      schema:
+        type: string
+  schemas:
+    WeatherEnvelope:
+      type: object
+      properties:
+        lat:
+          type: number
+        lon:
+          type: number
+        timezone:
+          type: string
+        timezone_offset:
+          type: integer
+          description: Offset from UTC in seconds.
+    TimelineEnvelope:
+      allOf:
+        - $ref: '#/components/schemas/WeatherEnvelope'
+        - type: object
+          properties:
+            prev:
+              type: string
+              format: uri
+              description: API-generated URL for the previous portion of the timeline, when available.
+            next:
+              type: string
+              format: uri
+              description: API-generated URL for the next portion of the timeline, when available.
+    WeatherCondition:
+      type: object
+      properties:
+        id:
+          type: integer
+        main:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+    PrecipitationAmount:
+      type: object
+      properties:
+        1h:
+          type: number
+          description: Precipitation in millimeters per hour.
+    CurrentObservation:
+      type: object
+      properties:
+        dt:
+          type: integer
+          format: int64
+        sunrise:
+          type: integer
+          format: int64
+        sunset:
+          type: integer
+          format: int64
+        temp:
+          type: number
+        feels_like:
+          type: number
+        pressure:
+          type: integer
+        humidity:
+          type: integer
+        dew_point:
+          type: number
+        uvi:
+          type: number
+        clouds:
+          type: integer
+        visibility:
+          type: integer
+        wind_speed:
+          type: number
+        wind_deg:
+          type: integer
+        wind_gust:
+          type: number
+        rain:
+          $ref: '#/components/schemas/PrecipitationAmount'
+        snow:
+          $ref: '#/components/schemas/PrecipitationAmount'
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+        alerts:
+          type: array
+          items:
+            type: string
+    MinuteRecord:
+      type: object
+      properties:
+        dt:
+          type: integer
+          format: int64
+        precipitation:
+          type: number
+          description: Precipitation in millimeters per hour.
+        alerts:
+          type: array
+          items:
+            type: string
+    QuarterHourlyRecord:
+      type: object
+      properties:
+        dt:
+          type: integer
+          format: int64
+        temp:
+          type: number
+        feels_like:
+          type: number
+        pressure:
+          type: integer
+        humidity:
+          type: integer
+        dew_point:
+          type: number
+        uvi:
+          type: number
+        clouds:
+          type: integer
+        visibility:
+          type: integer
+        wind_speed:
+          type: number
+        wind_deg:
+          type: integer
+        wind_gust:
+          type: number
+        pop:
+          type: number
+          minimum: 0
+          maximum: 1
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+        alerts:
+          type: array
+          items:
+            type: string
+    HourlyRecord:
+      allOf:
+        - $ref: '#/components/schemas/QuarterHourlyRecord'
+        - type: object
+          properties:
+            rain:
+              $ref: '#/components/schemas/PrecipitationAmount'
+            snow:
+              $ref: '#/components/schemas/PrecipitationAmount'
+    DailyRecord:
+      type: object
+      properties:
+        dt:
+          type: integer
+          format: int64
+        sunrise:
+          type: integer
+          format: int64
+        sunset:
+          type: integer
+          format: int64
+        moonrise:
+          type: integer
+          format: int64
+        moonset:
+          type: integer
+          format: int64
+        moon_phase:
+          type: number
+        temp:
+          type: object
+          properties:
+            day: {type: number}
+            min: {type: number}
+            max: {type: number}
+            night: {type: number}
+            eve: {type: number}
+            morn: {type: number}
+        feels_like:
+          type: object
+          properties:
+            day: {type: number}
+            night: {type: number}
+            eve: {type: number}
+            morn: {type: number}
+        pressure:
+          type: integer
+        humidity:
+          type: integer
+        dew_point:
+          type: number
+        uvi:
+          type: number
+        clouds:
+          type: integer
+        visibility:
+          type: integer
+        wind_speed:
+          type: number
+        wind_deg:
+          type: integer
+        wind_gust:
+          type: number
+        pop:
+          type: number
+          minimum: 0
+          maximum: 1
+        rain:
+          type: number
+        snow:
+          type: number
+        weather:
+          type: array
+          items:
+            $ref: '#/components/schemas/WeatherCondition'
+        alerts:
+          type: array
+          items:
+            type: string
+    CurrentWeatherResponse:
+      allOf:
+        - $ref: '#/components/schemas/WeatherEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/CurrentObservation'
+    MinuteTimelineResponse:
+      allOf:
+        - $ref: '#/components/schemas/TimelineEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/MinuteRecord'
+    QuarterHourlyTimelineResponse:
+      allOf:
+        - $ref: '#/components/schemas/TimelineEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/QuarterHourlyRecord'
+    HourlyTimelineResponse:
+      allOf:
+        - $ref: '#/components/schemas/TimelineEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/HourlyRecord'
+    DailyTimelineResponse:
+      allOf:
+        - $ref: '#/components/schemas/TimelineEnvelope'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/DailyRecord'
+    WeatherAlert:
+      type: object
+      properties:
+        id:
+          type: string
+        sender_name:
+          type: string
+        event:
+          type: string
+        start:
+          type: integer
+          format: int64
+        end:
+          type: integer
+          format: int64
+        description:
+          type: array
+          items:
+            type: object
+            properties:
+              language:
+                type: string
+              description:
+                type: string
+        tags:
+          type: array
+          items:
+            type: string

@@ -1,0 +1,418 @@
+openapi: 3.1.0
+info:
+  title: OpenStreetMap Editing API
+  version: '0.6'
+  description: >-
+    Community-maintained subset of the OpenStreetMap Editing API. The API is
+    intended for editing map data, not for read-only projects or bulk data
+    access; follow the OpenStreetMap API Usage Policy. The source wiki itself
+    notes that it is not official documentation and that behavior may change.
+servers:
+  - url: https://api.openstreetmap.org/api/0.6
+    description: OpenStreetMap API v0.6
+security:
+  - osmOAuth:
+      - write_api
+externalDocs:
+  description: OpenStreetMap API v0.6 documentation
+  url: https://wiki.openstreetmap.org/wiki/API_v0.6
+tags:
+  - name: Capabilities
+  - name: Map data
+  - name: Changesets
+  - name: Elements
+paths:
+  /capabilities:
+    get:
+      tags: [Capabilities]
+      summary: Get API capabilities and limits
+      operationId: getCapabilities
+      security: []
+      responses:
+        '200':
+          description: API capabilities document.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OsmXml'
+  /map:
+    get:
+      tags: [Map data]
+      summary: Retrieve map data in a bounding box
+      description: Intended for editing clients. This endpoint is not for general read-only data access.
+      operationId: getMapData
+      security: []
+      parameters:
+        - name: bbox
+          in: query
+          required: true
+          description: Bounding box as west,south,east,north longitude and latitude values.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Map elements in the requested bounding box.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OsmXml'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsmJson'
+  /node/{id}.json:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    get:
+      tags: [Elements]
+      summary: Read a node
+      operationId: getNode
+      security: []
+      responses:
+        '200':
+          description: Node data in the OSM API JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsmJson'
+        '404':
+          description: No element with that ID exists.
+        '410':
+          description: The element has been deleted.
+  /way/{id}.json:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    get:
+      tags: [Elements]
+      summary: Read a way
+      operationId: getWay
+      security: []
+      responses:
+        '200':
+          description: Way data in the OSM API JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsmJson'
+        '404':
+          description: No element with that ID exists.
+        '410':
+          description: The element has been deleted.
+  /relation/{id}.json:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    get:
+      tags: [Elements]
+      summary: Read a relation
+      operationId: getRelation
+      security: []
+      responses:
+        '200':
+          description: Relation data in the OSM API JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsmJson'
+        '404':
+          description: No element with that ID exists.
+        '410':
+          description: The element has been deleted.
+  /changeset/create:
+    put:
+      tags: [Changesets]
+      summary: Open a changeset
+      description: The XML document contains one or more changeset elements and their tags.
+      operationId: createChangeset
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: ID of the newly opened changeset as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /changeset/{id}/close:
+    parameters:
+      - $ref: '#/components/parameters/changesetId'
+    put:
+      tags: [Changesets]
+      summary: Close a changeset
+      operationId: closeChangeset
+      responses:
+        '200':
+          description: Changeset closed successfully; no response body.
+  /changeset/{id}/upload:
+    parameters:
+      - $ref: '#/components/parameters/changesetId'
+    post:
+      tags: [Changesets]
+      summary: Upload an atomic changeset diff
+      description: >-
+        Accepts an OsmChange XML document. Each element must reference this
+        changeset and include a version unless the element is being created.
+      operationId: uploadChangesetDiff
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmChangeXml'
+      responses:
+        '200':
+          description: Diff result document for the uploaded elements.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OsmXml'
+  /nodes:
+    post:
+      tags: [Elements]
+      summary: Create a node
+      description: Provide one new node wrapped in an OSM XML document.
+      operationId: createNode
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: ID of the newly created node as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /ways:
+    post:
+      tags: [Elements]
+      summary: Create a way
+      description: Provide one new way wrapped in an OSM XML document.
+      operationId: createWay
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: ID of the newly created way as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /relations:
+    post:
+      tags: [Elements]
+      summary: Create a relation
+      description: Provide one new relation wrapped in an OSM XML document.
+      operationId: createRelation
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: ID of the newly created relation as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /node/{id}:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    put:
+      tags: [Elements]
+      summary: Update a node
+      description: >-
+        Provide the full node representation, including the matching current
+        version and an open changeset owned by the authenticated user.
+      operationId: updateNode
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      tags: [Elements]
+      summary: Delete a node
+      description: Provide the node ID, current version, and an open changeset in the XML body.
+      operationId: deleteNode
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /way/{id}:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    put:
+      tags: [Elements]
+      summary: Update a way
+      description: >-
+        Provide the full way representation, including the matching current
+        version and an open changeset owned by the authenticated user.
+      operationId: updateWay
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      tags: [Elements]
+      summary: Delete a way
+      description: Provide the way ID, current version, and an open changeset in the XML body.
+      operationId: deleteWay
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /relation/{id}:
+    parameters:
+      - $ref: '#/components/parameters/elementId'
+    put:
+      tags: [Elements]
+      summary: Update a relation
+      description: >-
+        Provide the full relation representation, including the matching current
+        version and an open changeset owned by the authenticated user.
+      operationId: updateRelation
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+    delete:
+      tags: [Elements]
+      summary: Delete a relation
+      description: Provide the relation ID, current version, and an open changeset in the XML body.
+      operationId: deleteRelation
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OsmXml'
+      responses:
+        '200':
+          description: New element version number as plain text.
+          content:
+            text/plain:
+              schema:
+                type: string
+components:
+  securitySchemes:
+    osmOAuth:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://www.openstreetmap.org/oauth2/authorize
+          tokenUrl: https://www.openstreetmap.org/oauth2/token
+          scopes:
+            write_api: Modify OpenStreetMap map data.
+  parameters:
+    elementId:
+      name: id
+      in: path
+      required: true
+      description: Numeric OpenStreetMap element ID.
+      schema:
+        type: integer
+        format: int64
+    changesetId:
+      name: id
+      in: path
+      required: true
+      description: Numeric OpenStreetMap changeset ID.
+      schema:
+        type: integer
+        format: int64
+  schemas:
+    OsmXml:
+      type: string
+      format: xml
+      description: UTF-8 OpenStreetMap XML document.
+    OsmChangeXml:
+      type: string
+      format: xml
+      description: UTF-8 OsmChange XML document.
+    OsmJson:
+      type: object
+      properties:
+        version:
+          type: string
+          const: '0.6'
+        generator:
+          type: string
+        elements:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [node, way, relation]
+              id:
+                type: integer
+                format: int64
+              version:
+                type: integer
+              changeset:
+                type: integer
+              timestamp:
+                type: string
+                format: date-time
+              lat:
+                type: number
+              lon:
+                type: number
+            additionalProperties: true
+      additionalProperties: true
