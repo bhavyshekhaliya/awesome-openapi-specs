@@ -1,0 +1,403 @@
+openapi: 3.1.0
+info:
+  title: Neocities Developer API
+  version: '2026-10-01'
+  description: Manage files and retrieve site information on Neocities.
+  externalDocs:
+    description: Neocities API documentation
+    url: https://neocities.org/api
+servers:
+  - url: https://neocities.org
+    description: Neocities API
+tags:
+  - name: Sites
+    description: Manage a Neocities site and its files.
+paths:
+  /api/upload:
+    post:
+      tags: [Sites]
+      operationId: uploadFiles
+      summary: Upload files
+      description: Each multipart field name is the destination path on the site. Each file and the combined request are limited to 100 MB and must fit the site's remaining storage.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+                format: binary
+            description: One or more parts whose field names are destination paths.
+      responses:
+        '200':
+          description: Files uploaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/create_directory:
+    post:
+      tags: [Sites]
+      operationId: createDirectory
+      summary: Create a directory
+      description: Missing parent directories are created automatically. The request fails if a file or directory already exists at the destination.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [path]
+              properties:
+                path:
+                  type: string
+                  description: Site-relative directory path.
+                  example: images/cats
+      responses:
+        '200':
+          description: Directory created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/rename:
+    post:
+      tags: [Sites]
+      operationId: renamePath
+      summary: Rename or move a file or directory
+      description: The destination parent directory must already exist, and an existing destination cannot be overwritten.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [path, new_path]
+              properties:
+                path:
+                  type: string
+                  description: Current site-relative path.
+                new_path:
+                  type: string
+                  description: New site-relative path.
+      responses:
+        '200':
+          description: Path renamed or moved.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/delete:
+    post:
+      tags: [Sites]
+      operationId: deletePaths
+      summary: Delete files or directories
+      description: Deleting a directory also removes its contents. Deletion cannot be undone. The root directory and root index.html are protected.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: ['filenames[]']
+              properties:
+                'filenames[]':
+                  type: array
+                  minItems: 1
+                  items:
+                    type: string
+                  description: Repeat this field for each site-relative path to delete.
+            encoding:
+              'filenames[]':
+                style: form
+                explode: true
+      responses:
+        '200':
+          description: Paths deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/list:
+    get:
+      tags: [Sites]
+      operationId: listFiles
+      summary: List files and directories
+      description: Without path, lists the entire site recursively. With path, lists that directory's immediate children.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: path
+          in: query
+          required: false
+          description: Directory to list. Omit, leave blank, or use / to list the entire site.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Site entries.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [result, files]
+                properties:
+                  result:
+                    const: success
+                  files:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/DirectoryEntry'
+                        - $ref: '#/components/schemas/FileEntry'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /api/download:
+    get:
+      tags: [Sites]
+      operationId: downloadFile
+      summary: Download a file
+      description: Returns the raw file body, not JSON. Directories cannot be downloaded.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: path
+          in: query
+          required: true
+          description: Site-relative file path.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Raw file content. Content type is inferred from the filename.
+          headers:
+            Content-Length:
+              schema:
+                type: integer
+              description: Download size in bytes.
+            Last-Modified:
+              schema:
+                type: string
+            ETag:
+              schema:
+                type: string
+              description: SHA-1 hash of the file.
+            Cache-Control:
+              schema:
+                type: string
+              example: private, no-store
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/info:
+    get:
+      tags: [Sites]
+      operationId: getSiteInfo
+      summary: Get site information
+      description: Supplying sitename returns public information without authentication. Omit sitename to retrieve information about the authenticated site.
+      security:
+        - bearerAuth: []
+        - {}
+      parameters:
+        - name: sitename
+          in: query
+          required: false
+          description: Public site name. Without this parameter, bearer credentials identify the site.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Site information.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [result, info]
+                properties:
+                  result:
+                    const: success
+                  info:
+                    $ref: '#/components/schemas/SiteInfo'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/upload_hash:
+    post:
+      tags: [Sites]
+      operationId: checkFileHashes
+      summary: Check remote file hashes
+      description: Each form field name is a site-relative path and its value is the local file's SHA-1 hash.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+                description: SHA-1 hash for the file path named by this form field.
+      responses:
+        '200':
+          description: Hash comparison by path; true means the remote file has the same hash.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [result, files]
+                properties:
+                  result:
+                    const: success
+                  files:
+                    type: object
+                    additionalProperties:
+                      type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key from the site's settings.
+  schemas:
+    ApiError:
+      type: object
+      required: [result, error_type, message]
+      properties:
+        result:
+          const: error
+        error_type:
+          type: string
+        message:
+          type: string
+    MessageResponse:
+      type: object
+      required: [result, message]
+      properties:
+        result:
+          const: success
+        message:
+          type: string
+    DirectoryEntry:
+      type: object
+      required: [path, is_directory, created_at, updated_at]
+      properties:
+        path:
+          type: string
+        is_directory:
+          const: true
+        created_at:
+          type: string
+          description: Creation date in RFC 2822 format.
+        updated_at:
+          type: string
+          description: Modification date in RFC 2822 format.
+    FileEntry:
+      type: object
+      required: [path, is_directory, created_at, updated_at, size, sha1_hash]
+      properties:
+        path:
+          type: string
+        is_directory:
+          const: false
+        created_at:
+          type: string
+          description: Creation date in RFC 2822 format.
+        updated_at:
+          type: string
+          description: Modification date in RFC 2822 format.
+        size:
+          type: integer
+          minimum: 0
+          description: File size in bytes.
+        sha1_hash:
+          type: string
+          description: SHA-1 hash of the file.
+    SiteInfo:
+      type: object
+      required: [sitename, views, hits, created_at, last_updated, domain, supporter, tags]
+      properties:
+        sitename:
+          type: string
+        views:
+          type: integer
+        hits:
+          type: integer
+        created_at:
+          type: string
+          description: Creation date in RFC 2822 format.
+        last_updated:
+          type: [string, 'null']
+          description: Last update date in RFC 2822 format.
+        domain:
+          type: [string, 'null']
+        supporter:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+  responses:
+    BadRequest:
+      description: Invalid request.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Forbidden:
+      description: Invalid credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    NotFound:
+      description: Unknown endpoint or site resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+externalDocs:
+  description: Neocities Developer API documentation
+  url: https://neocities.org/api

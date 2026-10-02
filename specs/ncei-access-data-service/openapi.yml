@@ -1,0 +1,183 @@
+openapi: 3.1.0
+info:
+  title: NCEI Access Data Service API
+  version: '1'
+  description: >-
+    Community-maintained specification for the documented NCEI Access Data
+    Service. Available datasets and some accepted parameters vary by dataset;
+    response records therefore allow dataset-specific fields.
+  externalDocs:
+    description: Official NCEI Access Data Service API documentation
+    url: https://www.ncei.noaa.gov/support/access-data-service-api-user-documentation
+servers:
+  - url: https://www.ncei.noaa.gov/access/services/data
+    description: NCEI Access Data Service
+paths:
+  /v1:
+    get:
+      operationId: getDatasetData
+      summary: Retrieve data from a dataset
+      description: >-
+        Some request parameters and output fields vary by dataset. Supported
+        output formats are CSV, SSV, JSON, PDF, and NetCDF.
+      parameters:
+        - name: dataset
+          in: query
+          required: true
+          description: Selects the dataset to query. Not all NCEI datasets are available through this service.
+          schema:
+            type: string
+        - name: stations
+          in: query
+          description: Comma-separated station identifiers used to subset results.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: startDate
+          in: query
+          description: >-
+            Optional ISO 8601 date or date-time lower bound. Must precede
+            endDate when both are supplied. Encode a plus sign in a time-zone
+            offset as %2B.
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: >-
+            Optional ISO 8601 date or date-time upper bound. Encode a plus sign
+            in a time-zone offset as %2B.
+          schema:
+            type: string
+        - name: dataTypes
+          in: query
+          description: Comma-separated, case-sensitive data type names; available names depend on the dataset.
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: false
+        - name: bbox
+          in: query
+          description: >-
+            Geographic bounds in north,west,south,east order. Latitude values
+            range from -90 to 90 and longitude values from -180 to 180.
+          schema:
+            type: array
+            minItems: 4
+            maxItems: 4
+            items:
+              type: number
+          style: form
+          explode: false
+        - name: format
+          in: query
+          description: Requested response format. Some formats may ignore selected data types.
+          schema:
+            type: string
+            enum: [csv, ssv, json, pdf, netcdf]
+            default: csv
+        - name: options
+          in: query
+          description: Comma-separated option:value pairs; the documented station and attribute options can also be sent as individual parameters.
+          schema:
+            type: string
+        - name: includeAttributes
+          in: query
+          description: Include data type attributes when available; defaults to false or 0.
+          schema:
+            oneOf:
+              - type: boolean
+              - type: integer
+                enum: [0, 1]
+            default: false
+        - name: includeStationName
+          in: query
+          description: Include station names when available; defaults to false or 0.
+          schema:
+            oneOf:
+              - type: boolean
+              - type: integer
+                enum: [0, 1]
+            default: false
+        - name: includeStationLocation
+          in: query
+          description: Include station locations when available; defaults to false or 0.
+          schema:
+            oneOf:
+              - type: boolean
+              - type: integer
+                enum: [0, 1]
+            default: false
+        - name: units
+          in: query
+          description: Convert supported values to metric or standard units.
+          schema:
+            type: string
+            enum: [metric, standard]
+      responses:
+        '200':
+          description: >-
+            Dataset data. The format and record fields depend on the selected
+            dataset and format parameter.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataRecord'
+            '*/*':
+              schema: {}
+        '400':
+          description: Malformed request; the response includes a JSON error and may include field-level details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+        '500':
+          description: Internal service error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DataRecord:
+      type: object
+      description: >-
+        Fields vary by dataset. DATE and STATION appear in the provider's JSON
+        example; selected data types and optional attributes add dataset-specific
+        fields.
+      properties:
+        DATE:
+          type: string
+        STATION:
+          type: string
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        errorMessage:
+          type: string
+        errorCode:
+          type: integer
+      additionalProperties: true
+    BadRequest:
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+                  value: {}
+                additionalProperties: true
