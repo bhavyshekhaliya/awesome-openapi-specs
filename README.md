@@ -172,6 +172,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | GraphJSON   | [API specification](https://www.graphjson.com/graphjson-openapi.json)                 | JSON   | 3.1.0   | `official` `analytics` `product-analytics` |
 | InfluxDB    | [API specification](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | YAML | 3.0     | `official` `open-source` `time-series` `observability` |
 | Meilisearch | [Specification repository](https://github.com/meilisearch/specifications)              | YAML       | 3.0     | `official` `open-source` `search`          |
+| Open Brewery DB | [API specification](https://api.openbrewerydb.org/docs/openapi.yaml) | YAML | 3.1.0 | `official` `public-data` `open-source` `business-directory` |
 | OpenSearch  | [API specification repository](https://github.com/opensearch-project/opensearch-api-specification) | YAML | 3.1 | `official` `platform` `open-source` `search` `analytics` |
 | OpenWeather | [Community specification](specs/openweather/openapi.yml); [source docs](https://openweathermap.org/api/one-call-4) | YAML | 3.1.0 | `community-maintained` `weather` `forecast` |
 | Pinecone    | [Specification repository](https://github.com/pinecone-io/pinecone-api)                | YAML       | 3.0     | `official` `vector-database`               |
