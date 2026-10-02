@@ -183,6 +183,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Klaviyo          | [API specification](https://github.com/klaviyo/openapi)                                                         | JSON   | 3.0     | `official` `marketing`                    |
 | LeadConnector    | [API specifications](https://github.com/GoHighLevel/highlevel-api-docs/tree/main/apps) | JSON | 3.0.0 | `official` `crm` `marketing-automation` |
 | LeadMagic        | [API specification](https://leadmagic.io/docs/api-reference/openapi.yml)                                        | YAML   | 3.1.0   | `official` `lead-generation` `enrichment` |
+| LinkedIn | [Community specification](specs/linkedin/openapi.yml) · [source docs](https://learn.microsoft.com/en-us/linkedin/marketing/community-management/shares/posts-api?view=li-lms-2026-09) | YAML | 3.1.0 | `community-maintained` `social-media` `social-publishing` |
 | Livestorm        | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml)                                            | YAML   | 3.0.3   | `official` `webinars`                     |
 | Loops            | [API specification](https://app.loops.so/openapi.json)                                                          | JSON   | 3.1.0   | `official` `email-marketing`              |
 | Luma             | [API specification](https://public-api.luma.com/openapi.json) | JSON | 3.1.0 | `official` `event-marketing` |
