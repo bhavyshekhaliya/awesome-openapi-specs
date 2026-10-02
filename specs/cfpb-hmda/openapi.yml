@@ -1,0 +1,346 @@
+openapi: 3.1.0
+info:
+  title: CFPB HMDA Data Browser API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for the documented HMDA Data
+    Browser endpoints. Requests use public HMDA data; query requirements and
+    available values are described in the provider documentation.
+  externalDocs:
+    description: CFPB HMDA Data Browser API documentation
+    url: https://ffiec.cfpb.gov/documentation/api/data-browser/
+servers:
+  - url: https://ffiec.cfpb.gov/v2/data-browser-api
+    description: CFPB HMDA Data Browser API
+paths:
+  /view/nationwide/aggregations:
+    get:
+      operationId: getNationwideAggregations
+      summary: Get nationwide HMDA aggregations
+      description: >-
+        Returns a JSON aggregation report for nationwide HMDA data. Include
+        `years` and at least one documented HMDA data filter.
+      parameters:
+        - $ref: '#/components/parameters/years'
+        - $ref: '#/components/parameters/construction_methods'
+        - $ref: '#/components/parameters/dwelling_categories'
+        - $ref: '#/components/parameters/ethnicities'
+        - $ref: '#/components/parameters/lien_statuses'
+        - $ref: '#/components/parameters/loan_products'
+        - $ref: '#/components/parameters/loan_purposes'
+        - $ref: '#/components/parameters/loan_types'
+        - $ref: '#/components/parameters/races'
+        - $ref: '#/components/parameters/sexes'
+        - $ref: '#/components/parameters/total_units'
+        - $ref: '#/components/parameters/actions_taken'
+      responses:
+        '200':
+          description: Aggregated HMDA results in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregationResponse'
+  /view/aggregations:
+    get:
+      operationId: getFilteredAggregations
+      summary: Get HMDA aggregations for a geography or institution
+      description: >-
+        Returns a JSON aggregation report for a geographic or LEI subset.
+        Include `years`, at least one HMDA data filter, and either a geographic
+        filter or `leis`; both may be supplied.
+      parameters:
+        - $ref: '#/components/parameters/years'
+        - $ref: '#/components/parameters/leis'
+        - $ref: '#/components/parameters/msamds'
+        - $ref: '#/components/parameters/states'
+        - $ref: '#/components/parameters/counties'
+        - $ref: '#/components/parameters/construction_methods'
+        - $ref: '#/components/parameters/dwelling_categories'
+        - $ref: '#/components/parameters/ethnicities'
+        - $ref: '#/components/parameters/lien_statuses'
+        - $ref: '#/components/parameters/loan_products'
+        - $ref: '#/components/parameters/loan_purposes'
+        - $ref: '#/components/parameters/loan_types'
+        - $ref: '#/components/parameters/races'
+        - $ref: '#/components/parameters/sexes'
+        - $ref: '#/components/parameters/total_units'
+        - $ref: '#/components/parameters/actions_taken'
+      responses:
+        '200':
+          description: Aggregated HMDA results in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregationResponse'
+  /view/nationwide/csv:
+    get:
+      operationId: downloadNationwideCsv
+      summary: Download a nationwide HMDA data subset as CSV
+      description: >-
+        Streams nationwide HMDA records as CSV. Include `years` and at least
+        one documented HMDA data filter.
+      parameters:
+        - $ref: '#/components/parameters/years'
+        - $ref: '#/components/parameters/construction_methods'
+        - $ref: '#/components/parameters/dwelling_categories'
+        - $ref: '#/components/parameters/ethnicities'
+        - $ref: '#/components/parameters/lien_statuses'
+        - $ref: '#/components/parameters/loan_products'
+        - $ref: '#/components/parameters/loan_purposes'
+        - $ref: '#/components/parameters/loan_types'
+        - $ref: '#/components/parameters/races'
+        - $ref: '#/components/parameters/sexes'
+        - $ref: '#/components/parameters/total_units'
+        - $ref: '#/components/parameters/actions_taken'
+      responses:
+        '200':
+          description: Streamed comma-separated HMDA records.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /view/csv:
+    get:
+      operationId: downloadFilteredCsv
+      summary: Download a filtered HMDA data subset as CSV
+      description: >-
+        Streams filtered HMDA records as CSV. Include `years`, at least one
+        documented HMDA data filter, and either a geographic filter or `leis`;
+        both may be supplied.
+      parameters:
+        - $ref: '#/components/parameters/years'
+        - $ref: '#/components/parameters/leis'
+        - $ref: '#/components/parameters/msamds'
+        - $ref: '#/components/parameters/states'
+        - $ref: '#/components/parameters/counties'
+        - $ref: '#/components/parameters/construction_methods'
+        - $ref: '#/components/parameters/dwelling_categories'
+        - $ref: '#/components/parameters/ethnicities'
+        - $ref: '#/components/parameters/lien_statuses'
+        - $ref: '#/components/parameters/loan_products'
+        - $ref: '#/components/parameters/loan_purposes'
+        - $ref: '#/components/parameters/loan_types'
+        - $ref: '#/components/parameters/races'
+        - $ref: '#/components/parameters/sexes'
+        - $ref: '#/components/parameters/total_units'
+        - $ref: '#/components/parameters/actions_taken'
+      responses:
+        '200':
+          description: Streamed comma-separated HMDA records.
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+  /view/filers:
+    get:
+      operationId: listHmdaFilers
+      summary: List HMDA filers
+      description: >-
+        Returns financial institutions present in HMDA data. Include `years`;
+        state, MSA/MD, and county filters are documented as optional.
+      parameters:
+        - $ref: '#/components/parameters/years'
+        - $ref: '#/components/parameters/states'
+        - $ref: '#/components/parameters/msamds'
+        - $ref: '#/components/parameters/counties'
+      responses:
+        '200':
+          description: Financial institutions in the selected HMDA data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilerResponse'
+components:
+  parameters:
+    years:
+      name: years
+      in: query
+      required: true
+      description: Filing year or comma-separated filing years.
+      schema:
+        type: string
+        example: 2018,2019
+    leis:
+      name: leis
+      in: query
+      required: false
+      description: List of Legal Entity Identifiers used to filter institutions.
+      schema:
+        type: string
+    msamds:
+      name: msamds
+      in: query
+      required: false
+      description: Five-digit MSA/MD code; multiple codes can be comma-separated.
+      schema:
+        type: string
+    states:
+      name: states
+      in: query
+      required: false
+      description: Two-letter state abbreviation; multiple codes can be comma-separated.
+      schema:
+        type: string
+        example: CA,MD,DC
+    counties:
+      name: counties
+      in: query
+      required: false
+      description: Five-digit county FIPS code.
+      schema:
+        type: string
+    construction_methods:
+      name: construction_methods
+      in: query
+      required: false
+      description: Documented construction method codes, such as `1,2`.
+      schema:
+        type: string
+    dwelling_categories:
+      name: dwelling_categories
+      in: query
+      required: false
+      description: Documented dwelling categories.
+      schema:
+        type: string
+        enum:
+          - Single Family (1-4 Units):Site-Built
+          - Multifamily:Site-Built
+          - Single Family (1-4 Units):Manufactured
+          - Multifamily:Manufactured
+    ethnicities:
+      name: ethnicities
+      in: query
+      required: false
+      description: Documented ethnicity categories.
+      schema:
+        type: string
+        enum:
+          - Hispanic or Latino
+          - Not Hispanic or Latino
+          - Joint
+          - Ethnicity Not Available
+          - Free Form Text Only
+    lien_statuses:
+      name: lien_statuses
+      in: query
+      required: false
+      description: Documented lien status codes.
+      schema:
+        type: string
+        enum: ['1', '2']
+    loan_products:
+      name: loan_products
+      in: query
+      required: false
+      description: Documented loan product categories.
+      schema:
+        type: string
+        enum:
+          - Conventional:First Lien
+          - FHA:First Lien
+          - VA:First Lien
+          - FSA/RHS:First Lien
+          - Conventional:Subordinate Lien
+          - FHA:Subordinate Lien
+          - VA:Subordinate Lien
+          - FSA/RHS:Subordinate Lien
+    loan_purposes:
+      name: loan_purposes
+      in: query
+      required: false
+      description: Documented loan purpose codes.
+      schema:
+        type: string
+        enum: ['1', '2', '31', '32', '4', '5']
+    loan_types:
+      name: loan_types
+      in: query
+      required: false
+      description: Documented loan type codes.
+      schema:
+        type: string
+        enum: ['1', '2', '3', '4']
+    races:
+      name: races
+      in: query
+      required: false
+      description: Documented race categories.
+      schema:
+        type: string
+        enum:
+          - Asian
+          - Native Hawaiian or Other Pacific Islander
+          - Free Form Text Only
+          - Race Not Available
+          - American Indian or Alaska Native
+          - Black or African American
+          - 2 or more minority races
+          - White
+          - Joint
+    sexes:
+      name: sexes
+      in: query
+      required: false
+      description: Documented sex categories.
+      schema:
+        type: string
+        enum:
+          - Male
+          - Female
+          - Joint
+          - Sex Not Available
+    total_units:
+      name: total_units
+      in: query
+      required: false
+      description: Documented total unit counts or ranges.
+      schema:
+        type: string
+        enum: ['1', '2', '3', '4', '5-24', '25-49', '50-99', '100-149', '>149']
+    actions_taken:
+      name: actions_taken
+      in: query
+      required: false
+      description: Action-taken filter shown in the provider's request examples.
+      schema:
+        type: string
+        example: 5,6
+  schemas:
+    AggregationResponse:
+      type: object
+      properties:
+        parameters:
+          type: object
+          additionalProperties: true
+        aggregations:
+          type: array
+          items:
+            type: object
+            properties:
+              count:
+                type: integer
+              sum:
+                type: number
+            additionalProperties: true
+        servedFrom:
+          type: string
+      additionalProperties: true
+    FilerResponse:
+      type: object
+      properties:
+        institutions:
+          type: array
+          items:
+            type: object
+            properties:
+              lei:
+                type: string
+              name:
+                type: string
+              period:
+                type: integer
+            additionalProperties: true
+      additionalProperties: true

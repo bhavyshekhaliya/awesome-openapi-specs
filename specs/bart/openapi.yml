@@ -1,0 +1,159 @@
+openapi: 3.1.0
+info:
+  title: BART Legacy Real-Time API
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for BART's documented JSON mode
+    of the legacy real-time departure estimates endpoint. BART recommends its
+    GTFS and GTFS-Realtime feeds for more up-to-date, supported standards.
+  externalDocs:
+    description: BART real-time estimates API documentation
+    url: https://api.bart.gov/docs/etd/etd.aspx
+servers:
+  - url: https://api.bart.gov/api
+    description: BART API
+paths:
+  /etd.aspx:
+    get:
+      operationId: getDepartureEstimates
+      summary: Get real-time train departures
+      description: >-
+        Returns estimated departures for a station. `orig` may be a station
+        abbreviation or `ALL`. When `orig` is `ALL`, `plat` and `dir` cannot be
+        used. If both `plat` and `dir` are supplied, BART ignores `dir`.
+      security:
+        - BARTApiKey: []
+      parameters:
+        - name: cmd
+          in: query
+          required: true
+          description: Selects the real-time estimates command.
+          schema:
+            type: string
+            enum: [etd]
+        - name: orig
+          in: query
+          required: true
+          description: Station abbreviation, or `ALL` for all current estimates.
+          schema:
+            type: string
+        - name: plat
+          in: query
+          required: false
+          description: Limit results to a platform available at the selected station.
+          schema:
+            type: string
+        - name: dir
+          in: query
+          required: false
+          description: Limit results to a travel direction.
+          schema:
+            type: string
+            enum: [n, s]
+        - name: gbColor
+          in: query
+          required: false
+          description: Set to `1` to sort by line color; `0` uses the default destination sort.
+          schema:
+            type: string
+            enum: ['0', '1']
+        - name: json
+          in: query
+          required: true
+          description: Request JSON output; this focused specification covers JSON mode.
+          schema:
+            type: string
+            enum: [y]
+      responses:
+        '200':
+          description: Departure estimates for the requested station or stations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DepartureEstimatesResponse'
+components:
+  securitySchemes:
+    BARTApiKey:
+      type: apiKey
+      in: query
+      name: key
+      description: >-
+        BART requires an API key and publishes a public key that does not require
+        registration on its developer API page.
+  schemas:
+    DepartureEstimatesResponse:
+      type: object
+      properties:
+        '?xml':
+          type: object
+          properties:
+            '@version':
+              type: string
+            '@encoding':
+              type: string
+        root:
+          type: object
+          properties:
+            '@id':
+              type: string
+            uri:
+              type: object
+              properties:
+                '#cdata-section':
+                  type: string
+            date:
+              type: string
+            time:
+              type: string
+            station:
+              type: array
+              items:
+                $ref: '#/components/schemas/StationEstimates'
+            message:
+              type: string
+    StationEstimates:
+      type: object
+      properties:
+        name:
+          type: string
+        abbr:
+          type: string
+        etd:
+          type: array
+          items:
+            type: object
+            properties:
+              destination:
+                type: string
+              abbreviation:
+                type: string
+              limited:
+                type: string
+              estimate:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    minutes:
+                      type: string
+                    platform:
+                      type: string
+                    direction:
+                      type: string
+                    length:
+                      type: string
+                    color:
+                      type: string
+                    hexcolor:
+                      type: string
+                    bikeflag:
+                      type: string
+                    delay:
+                      type: string
+                      description: Seconds from the original scheduled departure time.
+                    cancelflag:
+                      type: string
+                      description: Whether the scheduled departure was cancelled.
+                    dynamicflag:
+                      type: string
+                      description: Whether the departure was added to service.
