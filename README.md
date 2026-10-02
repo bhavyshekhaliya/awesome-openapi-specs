@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| SendGrid         | [Mail API specification](https://github.com/twilio/sendgrid-oai/blob/main/spec/json/tsg_mail_v3.json)              | JSON   | 3.1.0   | `official` `focused` `transactional-email` `open-source` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                         | YAML   | 3.0.2   | `official` `email-marketing`              |
 | Postmark | [Account API](https://postmarkapp.com/swagger/account.yml); [Server API](https://postmarkapp.com/swagger/server.yml) | YAML | 2.0 | `transactional-email` |
 | SendFox | [API specification](https://sendfox.com/openapi.yaml) | YAML | 3.0.3 | `email-marketing` |
@@ -233,6 +234,9 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Productivity
 | Provider     | OpenAPI spec                                                                                         | Format     | Version | Tags                            |
 | ------------ | ---------------------------------------------------------------------------------------------------- | ---------- | ------- | ------------------------------- |
+| Canva        | [Connect API specification](https://www.canva.dev/sources/connect/api/latest/api.yml) | YAML | 3.0.0 | `official` `focused` `design` `collaboration` |
+| Jira Cloud   | [REST API specification](https://developer.atlassian.com/cloud/jira/platform/swagger-v3.v3.json) | JSON | 3.0.1 | `official` `focused` `issue-tracking` `project-management` |
+| Notion       | [API specification](https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/scripts/notion-openapi.json) | JSON | 3.1.0 | `official` `focused` `docs` `collaboration` `open-source` `archived` |
 | AddCal | [API specification](https://addcal.co/docs.openapi) | JSON | 3.0.3 | `scheduling` `calendar` |
 | Asana        | [API specification](https://github.com/Asana/openapi)                                                | JSON, YAML | 3.0     | `official` `project-management` |
 | Box          | [API specification](https://github.com/box/box-openapi)                                              | JSON, YAML | 3.0     | `official` `content-management` |
@@ -250,6 +254,8 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## AI
 | Provider     | OpenAPI spec                                                                  | Format     | Version | Tags                          |
 | ------------ | ----------------------------------------------------------------------------- | ---------- | ------- | ----------------------------- |
+| Hugging Face | [Hub API specification](https://huggingface.co/.well-known/openapi.json)      | JSON       | 3.1.0   | `official` `ai` `model-hub`   |
+| Mistral AI   | [API specification](https://raw.githubusercontent.com/mistralai/platform-docs-public/main/openapi.yaml) | YAML | 3.1.0 | `official` `ai` `inference` |
 | AI Connector | [Client Mode API specification](https://dash.readme.com/api/v1/api-registry/s2c2jd0mtmywx7k) | JSON | 3.1.0 | `official` `marketing-automation` `automation` |
 | AssemblyAI   | [API specification](https://www.assemblyai.com/docs/openapi.json)             | JSON       | 3.1     | `official` `speech-ai`        |
 | Browserbase  | [API specification](https://docs.browserbase.com/reference/api/openapi.v1.yaml) | YAML     | 3.0.0   | `official` `ai` `browser-automation` `web-research` |
@@ -298,6 +304,8 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Communication
 | Provider | OpenAPI spec                                                          | Format     | Version | Tags                                     |
 | -------- | --------------------------------------------------------------------- | ---------- | ------- | ---------------------------------------- |
+| Zoom     | [Meetings API specification](https://developers.zoom.us/api-hub/meetings/methods/endpoints.json) | JSON | 3.0.0 | `official` `focused` `video-conferencing` `meetings` |
+| Zoom Video SDK | [API specification](https://developers.zoom.us/api-hub/video-sdk/methods/endpoints.json) | JSON | 3.0.0 | `official` `focused` `video-conferencing` `video-sdk` |
 | Discord  | [API specification](https://github.com/discord/discord-api-spec)      | JSON       | 3.1     | `official` `platform` `messaging` `community` `public-preview` |
 | Knock    | [API specification](https://api.knock.app/v1/openapi)                | JSON       | 3.0.0   | `official` `notifications` `messaging` |
 | MailChannels | [Email API specification](https://docs.mailchannels.com/email-api/api-reference/openapi.yaml) | YAML | 3.0.0 | `official` `email-delivery` `transactional-email` |
@@ -311,6 +319,9 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Data
 | Provider    | OpenAPI spec                                                                           | Format | Version | Tags                                       |
 | ----------- | -------------------------------------------------------------------------------------- | ------ | ------- | ------------------------------------------ |
+| Airtable | [Community specification](specs/airtable/openapi.yml); [list records](https://airtable.com/developers/web/api/list-records) Â· [create records](https://airtable.com/developers/web/api/create-records) | YAML | 3.1.0 | `community-maintained` `focused` `database` |
+| Algolia     | [API specifications](https://github.com/algolia/api-clients-automation/tree/main/specs) | YAML | 3.0.2 | `official` `search` `discovery` `open-source` |
+| PostHog     | [API specification](https://us.posthog.com/api/schema/?format=json)                    | JSON       | 3.1.0   | `official` `analytics` `product-analytics` |
 | Octopus Energy | [REST API specification](https://api.octopus.energy/v1/schema/?namespaces=default) | YAML | 3.0.3 | `official` `energy` `utilities` |
 | OCR.space | [Community specification](specs/ocrspace/openapi.yml); [source docs](https://ocr.space/ocrapi) | YAML | 3.2.1 | `community-maintained` `document-processing` |
 | Open Food Facts | [API v3 specification](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/docs/api/ref/api-v3.yaml) | YAML | 3.1.0 | `official` `open-source` `food-data` `open-data` |
@@ -333,6 +344,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Identity
 | Provider | OpenAPI spec                                                                         | Format     | Version | Tags                                |
 | -------- | ------------------------------------------------------------------------------------ | ---------- | ------- | ----------------------------------- |
+| Auth0    | [Management API specification](https://auth0.com/docs/oas/management/v2/management-api-oas.json) | JSON | 3.1.0 | `official` `identity` `beta` |
 | Clerk    | [API specifications](https://github.com/clerk/openapi-specs)                         | JSON       | 3.0     | `official` `authentication`         |
 | FusionAuth | [API specification](https://raw.githubusercontent.com/FusionAuth/fusionauth-openapi/develop/openapi.yaml) | YAML | 3.0.3 | `official` `platform` `identity` `authentication` `user-management` |
 | Okta     | [Management API specification](https://github.com/okta/okta-management-openapi-spec) | JSON, YAML | 3.0     | `official` `identity`               |
@@ -343,6 +355,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Developer Tools
 | Provider      | OpenAPI spec                                                                                  | Format | Version | Tags                                     |
 | ------------- | --------------------------------------------------------------------------------------------- | ------ | ------- | ---------------------------------------- |
+| Elastic (Kibana) | [Kibana API specification](https://raw.githubusercontent.com/elastic/kibana/main/oas_docs/output/kibana.yaml) | YAML | 3.0.3 | `official` `observability` `analytics` `work-in-progress` |
 | CircleCI      | [API specification](https://circleci.com/api/v2/openapi.json)                                  | JSON   | 3.0.3   | `official` `focused` `ci-cd` `automation` `pipelines` |
 | Convex        | [Management API specification](https://api.convex.dev/v1/openapi.json)                         | JSON   | 3.1.0   | `official` `backend` `developer-platform` `beta` |
 | Docker Engine | [API specification](https://github.com/moby/moby/tree/master/docs/api)                        | YAML   | 2.0     | `official` `containers` `open-source`    |
@@ -356,6 +369,10 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Cloud and Infrastructure
 | Provider     | OpenAPI spec                                                                                           | Format | Version  | Tags                                          |
 | ------------ | ------------------------------------------------------------------------------------------------------ | ------ | -------- | --------------------------------------------- |
+| GitLab       | [REST API specification](https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi_v3.yaml) | YAML | 3.0.0 | `official` `developer-platform` `git` `ci-cd` |
+| Microsoft Graph | [v1.0 OpenAPI specification](https://github.com/microsoftgraph/msgraph-metadata/blob/master/openapi/v1.0/openapi.yaml) | YAML | 3.0.4 | `official` `cloud` `identity` `productivity` `open-source` |
+| Snowflake    | [REST API specifications](https://github.com/snowflakedb/snowflake-rest-api-specs/tree/main/specifications) | YAML | 3.0.0 | `official` `database` `data-warehouse` |
+| Supabase     | [Management API specification](https://api.supabase.com/api/v1-json)                                  | JSON   | 3.0.0    | `official` `database` `platform` |
 | OpenWISP     | [API specification](https://demo.openwisp.io/api/v1/docs.json)                                           | JSON   | 2.0      | `official` `network-management` `open-source`  |
 | Cloudflare   | [API schemas](https://github.com/cloudflare/api-schemas)                                               | YAML   | 3.0      | `official` `cloud` `open-source`              |
 | DigitalOcean | [Public API specification](https://github.com/digitalocean/openapi)                                    | YAML   | 3.0      | `official` `cloud` `open-source`              |
@@ -433,6 +450,8 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Pinterest | [REST API specifications](https://github.com/pinterest/api-description/tree/main/v5) | JSON, YAML | 3.0.3 | `official` `social-media` `marketing` `open-source` |
+| TikTok Display API | [Community specification](specs/tiktok-display/openapi.yml) Â· [source docs](https://developers.tiktok.com/docs/en/display-api-overview) | YAML | 3.1.0 | `community-maintained` `focused` `social-media` `video` |
 | Hootsuite | [API specification](https://platform.hootsuite.com/docs/api/swagger.yaml) | YAML | 2.0 | `social-media` |
 | Zernio | [API specification](https://docs.zernio.com/api/openapi) | JSON | 3.1.0 | `social-media` `scheduling` |
 | Agorapulse | [API specification](https://api.beta.agorapulse.com/docs/open-api.yml) | YAML | 3.1.0 | `social-media` `experimental` |
@@ -469,6 +488,9 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Content Management and CMS
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Cloudinary | [API specification](https://github.com/cloudinary/api-schemas/tree/main/api) | YAML | 3.1.0 | `official` `digital-assets` `media` `open-source` |
+| Dropbox | [Community specification](specs/dropbox/openapi.yml); [source docs](https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder) | YAML | 3.1.0 | `community-maintained` `focused` `cloud-storage` `file-management` |
+| Ghost | [Community specification](specs/ghost/openapi.yml) Â· [source docs](https://ghost.org/docs/content-api/) | YAML | 3.1.0 | `community-maintained` `focused` `cms` `publishing` `open-source` |
 | ApostropheCMS | [Core REST API specification](https://raw.githubusercontent.com/apostrophecms/apostrophecms-openapi/main/apostrophecms-openapi.yaml) | YAML | 3.1.0 | `official` `cms` `open-source` `archived` |
 
 ## Maps, Geolocation and Local Services

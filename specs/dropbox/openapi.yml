@@ -1,0 +1,160 @@
+openapi: 3.1.0
+info:
+  title: Dropbox Files API (focused)
+  version: 1.0.0
+  description: >-
+    Community-maintained definition for listing folders, continuing folder
+    listings, and retrieving file or folder metadata. Other Files API operations
+    are intentionally outside this focused specification.
+  externalDocs:
+    description: Dropbox HTTP API documentation
+    url: https://www.dropbox.com/developers/documentation/http/documentation
+servers:
+  - url: https://api.dropboxapi.com
+security:
+  - DropboxToken: []
+paths:
+  /2/files/list_folder:
+    post:
+      operationId: listFolder
+      summary: List a folder
+      description: >-
+        Returns the files and direct subfolders in a folder. An empty path lists
+        the root. When has_more is true, pass the returned cursor to
+        list_folder/continue.
+      externalDocs:
+        url: https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path
+              properties:
+                path:
+                  type: string
+                  description: Dropbox path, file ID, or empty string for the root folder.
+                recursive:
+                  type: boolean
+                  default: false
+                include_deleted:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Folder entries and a cursor for retrieving additional entries.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFolderResult'
+  /2/files/list_folder/continue:
+    post:
+      operationId: continueListFolder
+      summary: Continue a folder listing
+      description: Returns the next page of entries for a previously returned cursor.
+      externalDocs:
+        url: https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-continue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - cursor
+              properties:
+                cursor:
+                  type: string
+      responses:
+        '200':
+          description: Folder entries and an updated cursor.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListFolderResult'
+  /2/files/get_metadata:
+    post:
+      operationId: getMetadata
+      summary: Get file or folder metadata
+      description: The root folder is not supported by this operation.
+      externalDocs:
+        url: https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path
+              properties:
+                path:
+                  type: string
+                  description: Dropbox path, file ID, or revision.
+      responses:
+        '200':
+          description: Metadata for a file, folder, or deleted entry.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metadata'
+components:
+  securitySchemes:
+    DropboxToken:
+      type: http
+      scheme: bearer
+      description: Dropbox OAuth 2.0 access token.
+  schemas:
+    ListFolderResult:
+      type: object
+      required:
+        - entries
+        - cursor
+        - has_more
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/Metadata'
+        cursor:
+          type: string
+        has_more:
+          type: boolean
+    Metadata:
+      type: object
+      required:
+        - .tag
+        - name
+      properties:
+        .tag:
+          type: string
+          enum:
+            - file
+            - folder
+            - deleted
+        name:
+          type: string
+        path_lower:
+          type:
+            - string
+            - 'null'
+        path_display:
+          type:
+            - string
+            - 'null'
+        id:
+          type: string
+        client_modified:
+          type: string
+          format: date-time
+        server_modified:
+          type: string
+          format: date-time
+        rev:
+          type: string
+        size:
+          type: integer
+          minimum: 0
+      additionalProperties: true

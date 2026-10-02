@@ -1,0 +1,261 @@
+openapi: 3.1.0
+info:
+  title: TikTok Display API (focused)
+  version: 2.0.0
+  description: >-
+    Community-maintained definition for the three documented Display API v2
+    operations. Access requires an approved TikTok developer app and user
+    authorization for the requested scopes.
+  externalDocs:
+    description: TikTok Display API overview
+    url: https://developers.tiktok.com/docs/en/display-api-overview
+servers:
+  - url: https://open.tiktokapis.com/v2
+security:
+  - AccessToken: []
+paths:
+  /user/info/:
+    get:
+      operationId: getUserInfo
+      summary: Get user info
+      description: >-
+        Requires user.info.basic. Requested profile and statistics fields can
+        require user.info.profile or user.info.stats.
+      externalDocs:
+        url: https://developers.tiktok.com/docs/en/tiktok-api-v2-get-user-info
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: User information and the API error object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                    additionalProperties: true
+                  error:
+                    $ref: '#/components/schemas/Error'
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/Error'
+  /video/list/:
+    post:
+      operationId: listVideos
+      summary: List a user's videos
+      description: Requires the video.list scope.
+      externalDocs:
+        url: https://developers.tiktok.com/docs/en/tiktok-api-v2-video-list
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cursor:
+                  type: integer
+                  format: int64
+                  description: Pagination cursor in UTC Unix milliseconds.
+                max_count:
+                  type: integer
+                  format: int32
+                  maximum: 20
+                  default: 10
+                  description: Maximum number of videos returned in a page.
+      responses:
+        '200':
+          description: Videos and pagination metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Video'
+                      cursor:
+                        type: integer
+                        format: int64
+                      has_more:
+                        type: boolean
+                    additionalProperties: true
+                  error:
+                    $ref: '#/components/schemas/Error'
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/Error'
+  /video/query/:
+    post:
+      operationId: queryVideos
+      summary: Query a user's videos by ID
+      description: Requires the video.list scope. Up to 20 video IDs can be queried per request.
+      externalDocs:
+        url: https://developers.tiktok.com/docs/en/tiktok-api-v2-video-query
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - filters
+              properties:
+                filters:
+                  type: object
+                  required:
+                    - video_ids
+                  properties:
+                    video_ids:
+                      type: array
+                      maxItems: 20
+                      items:
+                        type: string
+                  additionalProperties: true
+              additionalProperties: true
+      responses:
+        '200':
+          description: Matching videos and the API error object.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      videos:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Video'
+                    additionalProperties: true
+                  error:
+                    $ref: '#/components/schemas/Error'
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/Error'
+components:
+  securitySchemes:
+    AccessToken:
+      type: http
+      scheme: bearer
+      bearerFormat: access_token
+      description: TikTok OAuth access token with the scopes required by the operation.
+  parameters:
+    Fields:
+      name: fields
+      in: query
+      required: true
+      description: Comma-separated fields to return for the user or video objects.
+      schema:
+        type: string
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        log_id:
+          type: string
+      additionalProperties: true
+    User:
+      type: object
+      properties:
+        open_id:
+          type: string
+        union_id:
+          type: string
+        avatar_url:
+          type: string
+        avatar_url_100:
+          type: string
+        avatar_large_url:
+          type: string
+        display_name:
+          type: string
+        bio_description:
+          type: string
+        profile_deep_link:
+          type: string
+        is_verified:
+          type: boolean
+        username:
+          type: string
+        follower_count:
+          type: integer
+          format: int64
+        following_count:
+          type: integer
+          format: int64
+        likes_count:
+          type: integer
+          format: int64
+        video_count:
+          type: integer
+          format: int64
+      additionalProperties: true
+    Video:
+      type: object
+      properties:
+        id:
+          type: string
+        create_time:
+          type: integer
+          format: int64
+        cover_image_url:
+          type: string
+        share_url:
+          type: string
+        video_description:
+          type: string
+        duration:
+          type: integer
+          format: int32
+        height:
+          type: integer
+          format: int32
+        width:
+          type: integer
+          format: int32
+        title:
+          type: string
+        embed_html:
+          type: string
+        embed_link:
+          type: string
+        like_count:
+          type: integer
+          format: int32
+        comment_count:
+          type: integer
+          format: int32
+        share_count:
+          type: integer
+          format: int32
+        view_count:
+          type: integer
+          format: int64
+        is_aigc:
+          type: boolean
+      additionalProperties: true
+  responses:
+    Error:
+      description: Error response returned with a 4xx or 5xx HTTP status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
