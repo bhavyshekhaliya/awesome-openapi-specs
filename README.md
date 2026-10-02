@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -170,6 +170,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Eventbrite       | [Community specification](specs/eventbrite/openapi.yml); [source docs](https://www.eventbrite.com/platform/new/api) | YAML | 3.1.0 | `community-maintained` `event-management` |
 | Facebook Lead Ads | [Community specification](specs/facebook-lead-ads/openapi.yml); [source docs](https://developers.facebook.com/docs/marketing-api/guides/lead-ads/) | YAML | 3.1.0 | `community-maintained` `lead-generation` `marketing` |
 | ActiveCampaign | [API specification](https://dash.readme.com/api/v1/api-registry/21t7f145tmufpfc93) | JSON | 3.1.0 | `official` `marketing-automation` `email-marketing` `crm` |
+| APSIS One | [Community specification](specs/apsis-one/openapi.yml) · [source docs](https://developer.apsis.com/) | YAML | 3.0.0 | `community-maintained` `marketing-automation` `email-marketing` |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                           | YAML   | 3.0.2   | `official` `email-marketing`                |
 | Brevo            | [API specification](https://api.brevo.com/v3/swagger_definition_v3.yml)                                          | YAML   | 3.0.1   | `official` `marketing-automation`         |
