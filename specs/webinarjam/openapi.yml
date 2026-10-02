@@ -1,0 +1,633 @@
+openapi: 3.1.0
+info:
+  title: WebinarJam and EverWebinar API
+  version: "1.0.0"
+  description: >-
+    Community-maintained OpenAPI specification for the documented WebinarJam
+    and EverWebinar account APIs. Both products use account-wide API keys sent
+    as form fields. API access requires an approved key and a paid subscription.
+    The API is limited to 20 calls per second per user. Custom registration
+    fields are submitted using their configured field labels.
+  contact:
+    url: https://support.webinarjam.com/en/
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+  externalDocs:
+    description: WebinarJam and EverWebinar API documentation index
+    url: https://support.webinarjam.com/en/articles/15370142-use-webinarjam-and-everwebinar-apis
+servers:
+  - url: https://api.webinarjam.com
+    description: WebinarJam and EverWebinar API
+tags:
+  - name: WebinarJam
+  - name: EverWebinar
+  - name: Registration
+  - name: Attendees
+paths:
+  /webinarjam/webinars:
+    post:
+      tags: [WebinarJam]
+      operationId: listWebinarJamWebinars
+      summary: List WebinarJam webinars
+      description: Returns webinars published in the account.
+      externalDocs:
+        description: WebinarJam list webinars
+        url: https://support.webinarjam.com/en/articles/15370149-retrieve-a-full-list-of-all-webinars-published-in-your-account-webinarjam-api
+      requestBody:
+        $ref: '#/components/requestBodies/ApiKeyForm'
+      responses:
+        '200':
+          description: Webinar list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebinarJamListResponse'
+  /webinarjam/webinar:
+    post:
+      tags: [WebinarJam]
+      operationId: getWebinarJamWebinar
+      summary: Get WebinarJam webinar details
+      description: Returns webinar settings, schedules, presenters, and registration URLs.
+      externalDocs:
+        description: WebinarJam webinar details
+        url: https://support.webinarjam.com/en/articles/15370150-get-details-about-one-particular-webinar-from-your-account-webinarjam-api
+      requestBody:
+        $ref: '#/components/requestBodies/WebinarForm'
+      responses:
+        '200':
+          description: Webinar details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebinarJamDetailResponse'
+  /webinarjam/register:
+    post:
+      tags: [Registration, WebinarJam]
+      operationId: registerWebinarJamAttendee
+      summary: Register a person for a WebinarJam webinar
+      description: >-
+        Registers a person for a live webinar. For a webinar series, one
+        registration through the first schedule registers the person for all
+        following schedules. Use the schedule ID returned by the webinar
+        details endpoint. Supply a valid session date when selecting one
+        session from a series.
+      externalDocs:
+        description: WebinarJam registration
+        url: https://support.webinarjam.com/en/articles/15370151-register-a-user-to-a-webinar-webinarjam-api
+      requestBody:
+        $ref: '#/components/requestBodies/RegistrationForm'
+      responses:
+        '200':
+          description: Registration result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationResponse'
+  /webinarjam/registrants:
+    post:
+      tags: [Attendees, WebinarJam]
+      operationId: listWebinarJamRegistrants
+      summary: List WebinarJam registrants and attendees
+      description: >-
+        Returns registrants and their live and replay attendance details.
+        Use webinar and schedule IDs returned by the webinar details endpoint.
+      externalDocs:
+        description: WebinarJam registrants and attendees
+        url: https://support.webinarjam.com/en/articles/15370152-get-a-list-of-registrants-and-attendees-webinarjam-api
+      requestBody:
+        $ref: '#/components/requestBodies/RegistrantSearchForm'
+      responses:
+        '200':
+          description: Registrant and attendee data. The public article documents the record fields but not the response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UndocumentedEnvelope'
+  /webinarjam/unsubscribe:
+    post:
+      tags: [Attendees, WebinarJam]
+      operationId: unsubscribeWebinarJamLead
+      summary: Unsubscribe a lead from WebinarJam notifications
+      description: The lead ID must first be obtained from the registrants endpoint.
+      externalDocs:
+        description: WebinarJam unsubscribe lead
+        url: https://support.webinarjam.com/en/articles/15370153-unsubscribe-leads-from-a-webinar-webinarjam-api
+      requestBody:
+        $ref: '#/components/requestBodies/UnsubscribeForm'
+      responses:
+        '200':
+          description: API call response. The public article does not define a response schema.
+  /everwebinar/webinars:
+    post:
+      tags: [EverWebinar]
+      operationId: listEverWebinarWebinars
+      summary: List EverWebinar webinars
+      description: Returns webinars published in the account.
+      externalDocs:
+        description: EverWebinar list webinars
+        url: https://support.webinarjam.com/en/articles/15370154-retrieve-a-full-list-of-all-webinars-published-in-your-account-everwebinar-api
+      requestBody:
+        $ref: '#/components/requestBodies/ApiKeyForm'
+      responses:
+        '200':
+          description: Webinar list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EverWebinarListResponse'
+  /everwebinar/webinar:
+    post:
+      tags: [EverWebinar]
+      operationId: getEverWebinarWebinar
+      summary: Get EverWebinar webinar details
+      description: Returns webinar schedules, presenters, and registration URLs.
+      externalDocs:
+        description: EverWebinar webinar details
+        url: https://support.webinarjam.com/en/articles/15370155-get-details-about-one-particular-webinar-from-your-account-everwebinar-api
+      requestBody:
+        $ref: '#/components/requestBodies/WebinarForm'
+      responses:
+        '200':
+          description: Webinar details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EverWebinarDetailResponse'
+  /everwebinar/register:
+    post:
+      tags: [Registration, EverWebinar]
+      operationId: registerEverWebinarAttendee
+      summary: Register a person for an EverWebinar webinar
+      description: >-
+        Registers a person for an automated webinar. Use the schedule ID
+        returned by the webinar details endpoint. Pass a session date when
+        needed to select a particular session in a series.
+      externalDocs:
+        description: EverWebinar registration
+        url: https://support.webinarjam.com/en/articles/15370156-register-a-user-to-a-webinar-everwebinar-api
+      requestBody:
+        $ref: '#/components/requestBodies/RegistrationForm'
+      responses:
+        '200':
+          description: Registration result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationResponse'
+  /everwebinar/registrants:
+    post:
+      tags: [Attendees, EverWebinar]
+      operationId: listEverWebinarRegistrants
+      summary: List EverWebinar registrants and attendees
+      description: >-
+        Returns registrants and their live and replay attendance details.
+        Use webinar and schedule IDs returned by the webinar details endpoint.
+      externalDocs:
+        description: EverWebinar registrants and attendees
+        url: https://support.webinarjam.com/en/articles/15370157-get-a-list-of-registrants-and-attendees-everwebinar-api
+      requestBody:
+        $ref: '#/components/requestBodies/RegistrantSearchForm'
+      responses:
+        '200':
+          description: Registrant and attendee data. The public article documents the record fields but not the response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UndocumentedEnvelope'
+  /everwebinar/unsubscribe:
+    post:
+      tags: [Attendees, EverWebinar]
+      operationId: unsubscribeEverWebinarLead
+      summary: Unsubscribe a lead from EverWebinar notifications
+      description: The lead ID must first be obtained from the registrants endpoint.
+      externalDocs:
+        description: EverWebinar unsubscribe lead
+        url: https://support.webinarjam.com/en/articles/15370160-unsubscribe-leads-from-a-webinar-everwebinar-api
+      requestBody:
+        $ref: '#/components/requestBodies/UnsubscribeForm'
+      responses:
+        '200':
+          description: API call response. The public article does not define a response schema.
+  /api/webinarjam/countries:
+    post:
+      tags: [Registration]
+      operationId: listCountriesAndStates
+      summary: List countries and states or provinces
+      description: Returns country and state or province reference data used during webinar registration.
+      externalDocs:
+        description: Countries and states or provinces endpoint
+        url: https://support.webinarjam.com/en/articles/15370147-get-a-list-of-countries-and-states-provinces
+      requestBody:
+        $ref: '#/components/requestBodies/ApiKeyForm'
+      responses:
+        '200':
+          description: Country, state, and state ID data. The public article does not define the response envelope.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UndocumentedEnvelope'
+components:
+  requestBodies:
+    ApiKeyForm:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/ApiKeyRequest'
+    WebinarForm:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/WebinarRequest'
+    RegistrationForm:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/RegistrationRequest'
+    RegistrantSearchForm:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/RegistrantSearchRequest'
+    UnsubscribeForm:
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/UnsubscribeRequest'
+  schemas:
+    ApiKeyRequest:
+      type: object
+      required: [api_key]
+      properties:
+        api_key:
+          $ref: '#/components/schemas/ApiKey'
+    WebinarRequest:
+      type: object
+      required: [api_key, webinar_id]
+      properties:
+        api_key:
+          $ref: '#/components/schemas/ApiKey'
+        webinar_id:
+          type: integer
+          description: Webinar ID returned by the webinars endpoint.
+        timezone:
+          type: string
+          description: >-
+            Required by EverWebinar when the webinar is configured to
+            automatically use the attendee's time zone.
+    RegistrationRequest:
+      type: object
+      required: [api_key, webinar_id, first_name, email, schedule]
+      description: >-
+        Registration fields are form values. Optional custom registration
+        fields must use the labels configured for the webinar; dropdown fields
+        accept the option IDs returned by webinar details.
+      properties:
+        api_key:
+          $ref: '#/components/schemas/ApiKey'
+        webinar_id:
+          type: integer
+          description: Webinar ID returned by the webinars endpoint.
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+          format: email
+        country:
+          type: string
+        state:
+          type: string
+        schedule:
+          type: integer
+          description: Schedule ID returned by the webinar details endpoint.
+        timezone_id:
+          type: integer
+          description: Required for registrants from Texas, USA.
+          enum: [2, 3]
+        ip_address:
+          type: string
+        phone_country_code:
+          type: string
+          description: Include the leading plus sign.
+        phone:
+          type: string
+          description: Digits only.
+        twilio_consent:
+          type: integer
+          enum: [0, 1]
+          description: Required when the webinar requires consent for phone registration.
+        timezone:
+          type: string
+          description: Webinar time zone, for example GMT-5 or GMT+2.
+        date:
+          type: string
+          description: >-
+            Optional session date for series or time-zone-specific registration.
+            Use a date returned by the webinar details endpoint.
+      additionalProperties: true
+    RegistrantSearchRequest:
+      type: object
+      required: [api_key, webinar_id]
+      properties:
+        api_key:
+          $ref: '#/components/schemas/ApiKey'
+        webinar_id:
+          type: integer
+        schedule_id:
+          type: integer
+        attended_live:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+        attended_replay:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+        purchased:
+          type: integer
+          enum: [0, 1, 2]
+        page:
+          type: integer
+          minimum: 1
+        attended_live_timestamp:
+          type: integer
+          minimum: 0
+          description: Seconds into the live session.
+        attended_replay_timestamp:
+          type: integer
+          minimum: 0
+          description: Seconds into the replay.
+        date_range:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        search:
+          type: string
+    UnsubscribeRequest:
+      type: object
+      required: [api_key, webinar_id, lead_id]
+      properties:
+        api_key:
+          $ref: '#/components/schemas/ApiKey'
+        webinar_id:
+          type: integer
+        lead_id:
+          type: integer
+          description: Lead ID returned by the registrants endpoint.
+    ApiKey:
+      type: string
+      minLength: 64
+      maxLength: 64
+      description: Account-wide API key. API access must be approved by WebinarJam.
+    WebinarJamListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        webinars:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebinarJamSummary'
+    WebinarJamSummary:
+      type: object
+      properties:
+        webinar_id:
+          type: integer
+        webinar_hash:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          description: Webinar format, such as series, single presentation, always on, or right now.
+        schedules:
+          type: array
+          items:
+            type: string
+        timezone:
+          type: string
+    EverWebinarListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        webinars:
+          type: array
+          items:
+            $ref: '#/components/schemas/EverWebinarSummary'
+    EverWebinarSummary:
+      type: object
+      properties:
+        webinar_id:
+          type: integer
+        webinar_hash:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        schedules:
+          type: array
+          items:
+            type: string
+        timezone:
+          type: string
+    WebinarJamDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        webinar:
+          $ref: '#/components/schemas/WebinarJamDetails'
+    WebinarJamDetails:
+      type: object
+      properties:
+        webinar_id:
+          type: integer
+        webinar_hash:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebinarSchedule'
+        timezone:
+          type: string
+        presenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Presenter'
+        registration_url:
+          type: string
+          format: uri
+        registration_type:
+          type: string
+          enum: [paid, free]
+        registration_fee:
+          type: integer
+        registration_currency:
+          type: string
+        registration_checkout_url:
+          type: string
+          format: uri
+        registration_post_payment_url:
+          type: string
+          format: uri
+        direct_live_room_url:
+          type: string
+          format: uri
+        direct_replay_room_url:
+          type: string
+          format: uri
+    EverWebinarDetailResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        webinar:
+          $ref: '#/components/schemas/EverWebinarDetails'
+    EverWebinarDetails:
+      type: object
+      properties:
+        webinar_id:
+          type: integer
+        webinar_hash:
+          type: string
+        name:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        schedules:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebinarSchedule'
+        timezone:
+          type: string
+        presenters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Presenter'
+        registration_url:
+          type: string
+          format: uri
+        registration_type:
+          type: string
+          enum: [paid, free]
+        registration_fee:
+          type: integer
+        registration_currency:
+          type: string
+        registration_checkout_url:
+          type: string
+          format: uri
+        registration_post_payment_url:
+          type: string
+          format: uri
+        direct_live_room_url:
+          type: string
+          format: uri
+        direct_replay_room_url:
+          type: string
+          format: uri
+    WebinarSchedule:
+      type: object
+      properties:
+        date:
+          type: string
+          description: Date and time of the webinar session.
+        schedule:
+          type: integer
+          description: API schedule ID used in registration and attendee requests.
+        comment:
+          type: string
+          description: Schedule description.
+    Presenter:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        picture:
+          type: string
+          format: uri
+    RegistrationResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        user:
+          $ref: '#/components/schemas/RegisteredAttendee'
+    RegisteredAttendee:
+      type: object
+      properties:
+        webinar_id:
+          type: integer
+        webinar_hash:
+          type: string
+        user_id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone_country_code:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: [string, 'null']
+        schedule:
+          oneOf:
+            - type: integer
+            - type: string
+        date:
+          type: string
+        timezone:
+          type: string
+        country_id:
+          type: integer
+        country_name:
+          type: string
+        state_id:
+          type: integer
+        state_name:
+          type: string
+        live_room_url:
+          type: string
+          format: uri
+        replay_room_url:
+          type: string
+          format: uri
+        thank_you_url:
+          type: string
+          format: uri
+    UndocumentedEnvelope:
+      type: object
+      description: >-
+        The provider documentation lists response record fields but does not
+        define the exact JSON response envelope for this operation.
+      additionalProperties: true
