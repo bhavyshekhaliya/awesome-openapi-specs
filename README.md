@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Cinari | [API specification](https://app.cinari.ai/docs/openapi.json) | JSON | 3.0.3 | `marketing-automation` |
 | GoodAPI | [API specification](https://app.thegoodapi.com/openapi.json) | JSON | 3.1.0 | `sustainability` |
 | AgendaForge | [API specification](https://agendaforge.app/openapi.json) | JSON | 3.1.0 | `event-management` |
 | GenPage | [API specification](https://backend.genpage.ai/docs/openapi.yaml) | YAML | 3.0.3 | `content-marketing` `ai` |
