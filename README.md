@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Reteno | [API specification](https://dash.readme.com/api/v1/api-registry/ab41kzmump656n) | JSON | 3.0.1 | `official` `customer-engagement` `marketing-automation` |
 | Yespo | [API specification](https://dash.readme.com/api/v1/api-registry/ab41n1mump656s) | JSON | 3.0.1 | `official` `email-marketing` `marketing-automation` |
 | Meser 10 | [JSON API specification](https://www.meser10.co.il/api-docs/meser10-json-api.json) | JSON | 3.1.0 | `official` `email-marketing` `sms` |
 | Collectform | [Zapier API specification](https://collectform.com/zapier-openapi.yaml) | YAML | 3.1.0 | `official` `lead-forms` `lead-generation` |
