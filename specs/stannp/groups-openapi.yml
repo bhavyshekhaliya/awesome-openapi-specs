@@ -1,0 +1,315 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Groups API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Groups
+  description: Manage recipient groups
+paths:
+  /groups/list:
+    get:
+      operationId: listGroups
+      summary: List groups
+      description: Retrieve a paginated list of recipient groups.
+      tags:
+      - Groups
+      parameters:
+      - name: offset
+        in: query
+        schema:
+          type: integer
+        description: Pagination offset
+      - name: limit
+        in: query
+        schema:
+          type: integer
+        description: Number of results to return
+      responses:
+        '200':
+          description: Groups retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Group'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/new:
+    post:
+      operationId: createGroup
+      summary: Create a group
+      description: Create a new recipient group.
+      tags:
+      - Groups
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                  description: Group name
+      responses:
+        '200':
+          description: Group created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: integer
+                    description: New group ID
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/add/{group_id}:
+    post:
+      operationId: addRecipientsToGroup
+      summary: Add recipients to group
+      description: Add one or more existing recipients to a group.
+      tags:
+      - Groups
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Group ID
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: string
+                  description: Comma-separated recipient IDs
+      responses:
+        '200':
+          description: Recipients added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: integer
+                    description: Number of recipients added
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/remove/{group_id}:
+    post:
+      operationId: removeRecipientsFromGroup
+      summary: Remove recipients from group
+      description: Remove one or more recipients from a group.
+      tags:
+      - Groups
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Group ID
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - recipients
+              properties:
+                recipients:
+                  type: string
+                  description: Comma-separated recipient IDs
+      responses:
+        '200':
+          description: Recipients removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: integer
+                    description: Number of recipients removed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/purge:
+    post:
+      operationId: purgeGroup
+      summary: Purge a group
+      description: Remove all recipients from a group, optionally deleting recipient records.
+      tags:
+      - Groups
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Group ID
+                delete_recipients:
+                  type: boolean
+                  description: If true, delete all recipient records in the group
+      responses:
+        '200':
+          description: Group purged successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/calculate/{group_id}:
+    post:
+      operationId: recalculateGroup
+      summary: Recalculate group
+      description: Trigger a recalculation of group recipient counts and validity.
+      tags:
+      - Groups
+      parameters:
+      - name: group_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Group ID
+      responses:
+        '200':
+          description: Recalculation triggered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /groups/delete:
+    post:
+      operationId: deleteGroup
+      summary: Delete a group
+      description: Delete a recipient group, optionally deleting associated recipient records.
+      tags:
+      - Groups
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Group ID
+                delete_recipients:
+                  type: boolean
+                  description: If true, also delete all recipients in the group
+      responses:
+        '200':
+          description: Group deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    Group:
+      type: object
+      properties:
+        id:
+          type: integer
+        account_id:
+          type: integer
+        name:
+          type: string
+        created:
+          type: string
+          format: date-time
+        recipients:
+          type: integer
+          description: Total recipient count
+        valid:
+          type: integer
+          description: Count of valid addresses
+        international:
+          type: integer
+          description: Count of international addresses
+        skipped:
+          type: integer
+        status:
+          type: string
+        import_progress:
+          type: integer
+          description: Import progress percentage
+        is_seeds:
+          type: boolean
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Result value (boolean, integer, or string depending on operation)
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.

@@ -1,0 +1,307 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Letters API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Letters
+  description: Create, post, retrieve, and cancel letter mailpieces
+paths:
+  /letters/create:
+    post:
+      operationId: createLetter
+      summary: Create a letter (template/HTML)
+      description: Create and dispatch a single letter using a template or HTML content. Use test=true to generate a preview PDF without charges.
+      tags:
+      - Letters
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                test:
+                  type: boolean
+                  description: Produce sample PDF without dispatch or charges
+                idempotency_key:
+                  type: string
+                  description: Key for safe request retries
+                template:
+                  type: integer
+                  description: Template ID for mail merge
+                background:
+                  type: string
+                  format: uri
+                  description: URL to background image or PDF
+                pages:
+                  type: string
+                  description: HTML content for letter pages
+                recipient:
+                  description: Existing recipient ID or new recipient object
+                  oneOf:
+                  - type: integer
+                    description: Existing recipient ID
+                  - $ref: '#/components/schemas/RecipientInput'
+                size:
+                  type: string
+                  enum:
+                  - US-LETTER
+                  - US-LETTER-XL-WINDOW
+                  description: Letter size
+                duplex:
+                  type: boolean
+                  description: Enable front/back printing
+                addons:
+                  type: string
+                  description: Upgrade codes (e.g. FIRST_CLASS, CONFIDENTIAL)
+                tags:
+                  type: string
+                  description: Comma-separated searchable tags
+      responses:
+        '200':
+          description: Letter created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailpieceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /letters/post:
+    post:
+      operationId: postLetter
+      summary: Post a pre-merged letter (PDF)
+      description: Dispatch a letter using a pre-merged PDF file.
+      tags:
+      - Letters
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - country
+              properties:
+                country:
+                  type: string
+                  description: ISO alpha-2 country code (US, CA, GB, etc.)
+                  example: US
+                pdf:
+                  type: string
+                  format: uri
+                  description: URL or binary PDF file (max 25 pages)
+                test:
+                  type: boolean
+                  description: Sample mode - no dispatch or charges
+                addons:
+                  type: string
+                  description: Upgrade codes (e.g. FIRST_CLASS, CONFIDENTIAL)
+                transactional:
+                  type: boolean
+                  description: Mark as transactional for sensitive data handling
+      responses:
+        '200':
+          description: Letter posted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailpieceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /letters/get/{id}:
+    get:
+      operationId: getLetter
+      summary: Get a letter
+      description: Retrieve details of a single letter mailpiece.
+      tags:
+      - Letters
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Mailpiece ID
+      responses:
+        '200':
+          description: Letter details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailpieceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /letters/cancel:
+    post:
+      operationId: cancelLetter
+      summary: Cancel a letter
+      description: Cancel a letter that has not yet been dispatched.
+      tags:
+      - Letters
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Mailpiece ID to cancel
+      responses:
+        '200':
+          description: Letter cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    MailpieceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Mailpiece ID
+            pdf:
+              type: string
+              format: uri
+              description: URL to the proof PDF
+            created:
+              type: string
+              format: date-time
+            format:
+              type: string
+              description: Mail piece format/size
+            cost:
+              type: string
+              description: Cost of the mailpiece
+            status:
+              type: string
+              description: Current status
+            tracking_reference:
+              type: string
+              description: Carrier tracking reference
+            dispatched:
+              type: string
+              format: date-time
+              description: Dispatch timestamp
+    RecipientInput:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: Group to add the recipient to
+        title:
+          type: string
+          description: Title (Mr, Mrs, Dr, etc.)
+        firstname:
+          type: string
+        lastname:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        address1:
+          type: string
+          description: First line of address
+        address2:
+          type: string
+        address3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+          description: State or county
+        postcode:
+          type: string
+          description: Postcode or ZIP code
+        zipcode:
+          type: string
+          description: ZIP code (US alternative to postcode)
+        country:
+          type: string
+          description: ISO 3166-1 Alpha-2 country code
+          example: US
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        ref_id:
+          type: string
+          description: Custom external reference ID
+        on_duplicate:
+          type: string
+          enum:
+          - update
+          - ignore
+          - duplicate
+          description: Behaviour when duplicate is found
+        test_level:
+          type: string
+          enum:
+          - email
+          - fullname
+          - initial
+          - ref_id
+          description: Field(s) used to detect duplicates
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Result value (boolean, integer, or string depending on operation)
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.

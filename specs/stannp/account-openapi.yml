@@ -1,0 +1,134 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Account API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Account
+  description: Account balance and user information
+paths:
+  /accounts/balance:
+    get:
+      operationId: getAccountBalance
+      summary: Get account balance
+      description: Retrieve the current account balance.
+      tags:
+      - Account
+      responses:
+        '200':
+          description: Account balance retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BalanceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /accounts/topup:
+    post:
+      operationId: topUpBalance
+      summary: Top up account balance
+      description: Add funds to the account balance.
+      tags:
+      - Account
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - net
+              properties:
+                net:
+                  type: string
+                  description: The amount to top up (e.g. "10.00"). Tax may be added after.
+                  example: '10.00'
+      responses:
+        '200':
+          description: Balance topped up successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      receipt_pdf:
+                        type: string
+                        format: uri
+                        description: URL to the receipt PDF
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/me:
+    get:
+      operationId: getCurrentUser
+      summary: Get current user
+      description: Retrieve information about the currently authenticated user.
+      tags:
+      - Account
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          description: Current user account details
+    BalanceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            balance:
+              type: string
+              description: Current account balance as a decimal string
+              example: '150.00'
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.

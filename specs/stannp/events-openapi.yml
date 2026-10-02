@@ -1,0 +1,95 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Events API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Events
+  description: Record recipient engagement and conversion events
+paths:
+  /recipientEvents/create:
+    post:
+      operationId: createRecipientEvent
+      summary: Create a recipient event
+      description: Record an engagement or conversion event for a recipient (e.g. PURCHASE, SIGNUP, PAGE_VIEW). Can be used to trigger automation and dynamic templating.
+      tags:
+      - Events
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - recipient_id
+              - name
+              properties:
+                recipient_id:
+                  type: string
+                  description: Recipient ID or alternative reference ID
+                name:
+                  type: string
+                  description: Event name (e.g. PURCHASE, SIGNUP, PAGE_VIEW, PRODUCT_VIEW, PRODUCT_TO_BASKET)
+                  example: PURCHASE
+                value:
+                  type: string
+                  description: Value information (e.g. purchase amount or product name)
+                conversion:
+                  type: boolean
+                  default: false
+                  description: Whether this is a conversion event
+                data:
+                  type: string
+                  description: Extended JSON data for automation or dynamic templating
+                ref:
+                  type: string
+                  description: Campaign or mailpiece reference ID; recent communications used if omitted
+      responses:
+        '200':
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: integer
+                    description: New event ID
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.

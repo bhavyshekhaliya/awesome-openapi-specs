@@ -1,0 +1,347 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Recipients API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Recipients
+  description: Manage individual recipients and bulk imports
+paths:
+  /recipients/list:
+    get:
+      operationId: listRecipients
+      summary: List recipients
+      description: Retrieve a paginated list of recipients, optionally filtered by group.
+      tags:
+      - Recipients
+      parameters:
+      - name: group_id
+        in: query
+        schema:
+          type: integer
+        description: Filter by group ID
+      - name: offset
+        in: query
+        schema:
+          type: integer
+        description: Pagination offset
+      - name: limit
+        in: query
+        schema:
+          type: integer
+        description: Number of results to return
+      responses:
+        '200':
+          description: Recipients retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Recipient'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /recipients/get/{id}:
+    get:
+      operationId: getRecipient
+      summary: Get a recipient
+      description: Retrieve details of a single recipient.
+      tags:
+      - Recipients
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Recipient ID
+      responses:
+        '200':
+          description: Recipient retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Recipient'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /recipients/new:
+    post:
+      operationId: createRecipient
+      summary: Create a recipient
+      description: Add a new recipient, optionally to a mailing group.
+      tags:
+      - Recipients
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecipientInput'
+      responses:
+        '200':
+          description: Recipient created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: New recipient ID
+                      valid:
+                        type: boolean
+                        description: Whether the address is valid
+                      created:
+                        type: string
+                        format: date-time
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /recipients/delete:
+    post:
+      operationId: deleteRecipient
+      summary: Delete a recipient
+      description: Permanently delete a recipient record.
+      tags:
+      - Recipients
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Recipient ID to delete
+      responses:
+        '200':
+          description: Recipient deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /recipients/import:
+    post:
+      operationId: importRecipients
+      summary: Import recipients from file
+      description: Bulk import recipients from a CSV or XLS file into a group.
+      tags:
+      - Recipients
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              - group_id
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV or XLS file (binary, base64, or URL)
+                group_id:
+                  type: integer
+                  description: Group to import recipients into
+                duplicates:
+                  type: string
+                  enum:
+                  - update
+                  - ignore
+                  - duplicate
+                  description: How to handle duplicate recipients
+                no_headings:
+                  type: boolean
+                  description: Set true if the file has no header row
+                mappings:
+                  type: string
+                  description: Column remapping instructions
+      responses:
+        '200':
+          description: Import initiated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    RecipientInput:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: Group to add the recipient to
+        title:
+          type: string
+          description: Title (Mr, Mrs, Dr, etc.)
+        firstname:
+          type: string
+        lastname:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        address1:
+          type: string
+          description: First line of address
+        address2:
+          type: string
+        address3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+          description: State or county
+        postcode:
+          type: string
+          description: Postcode or ZIP code
+        zipcode:
+          type: string
+          description: ZIP code (US alternative to postcode)
+        country:
+          type: string
+          description: ISO 3166-1 Alpha-2 country code
+          example: US
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        ref_id:
+          type: string
+          description: Custom external reference ID
+        on_duplicate:
+          type: string
+          enum:
+          - update
+          - ignore
+          - duplicate
+          description: Behaviour when duplicate is found
+        test_level:
+          type: string
+          enum:
+          - email
+          - fullname
+          - initial
+          - ref_id
+          description: Field(s) used to detect duplicates
+    Recipient:
+      type: object
+      properties:
+        id:
+          type: integer
+        account_id:
+          type: integer
+        title:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        address3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+        country:
+          type: string
+        zipcode:
+          type: string
+        dps:
+          type: string
+          description: Delivery Point Suffix
+        email:
+          type: string
+        phone_number:
+          type: string
+        ref_id:
+          type: string
+        blacklist:
+          type: boolean
+          description: Whether recipient is on the block list
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Result value (boolean, integer, or string depending on operation)
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.

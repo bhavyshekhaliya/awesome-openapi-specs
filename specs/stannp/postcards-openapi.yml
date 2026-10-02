@@ -1,0 +1,281 @@
+openapi: 3.2.0
+info:
+  title: Stannp Direct Mail Postcards API
+  description: REST API for programmatically sending physical letters and postcards, managing recipient groups, configuring campaigns, triggering individual mail pieces, and tracking delivery status through webhooks and event callbacks. Authentication uses API key-based HTTP Basic Auth over HTTPS.
+  version: 1.0.0
+  contact:
+    name: Stannp Support
+    url: https://www.stannp.com/us/direct-mail-api/guide
+  termsOfService: https://www.stannp.com
+servers:
+- url: https://api-us1.stannp.com/v1
+  description: US API server
+- url: https://api-eu1.stannp.com/v1
+  description: EU API server
+security:
+- basicAuth: []
+tags:
+- name: Postcards
+  description: Create, retrieve, and cancel postcard mailpieces
+paths:
+  /postcards/create:
+    post:
+      operationId: createPostcard
+      summary: Create a postcard
+      description: Create and dispatch a single postcard. Use test=true to generate a preview PDF without charges.
+      tags:
+      - Postcards
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                size:
+                  type: string
+                  enum:
+                  - 4x6
+                  - 6x9
+                  - 6x11
+                  default: 4x6
+                  description: Postcard size (US formats)
+                test:
+                  type: boolean
+                  description: Produce sample PDF without dispatch or charges
+                template:
+                  type: integer
+                  description: Template ID from the platform
+                recipient:
+                  description: Existing recipient ID or new recipient object
+                  oneOf:
+                  - type: integer
+                    description: Existing recipient ID
+                  - $ref: '#/components/schemas/RecipientInput'
+                message:
+                  type: string
+                  description: Text overlay on postcard back
+                front:
+                  type: string
+                  format: uri
+                  description: URL to JPG, PNG, or PDF for the front design
+                back:
+                  type: string
+                  format: uri
+                  description: URL to JPG, PNG, or PDF for the back design
+                padding:
+                  type: integer
+                  description: White border control; 0 removes the default border
+                post_unverified:
+                  type: boolean
+                  default: true
+                  description: Prevents posting if address is unverified
+                clearzone:
+                  type: boolean
+                  description: Overlays clear zones with white background
+                return_address:
+                  type: string
+                  description: Custom return address
+                tags:
+                  type: string
+                  description: Comma-separated searchable tags
+                addons:
+                  type: string
+                  description: Upgrade codes (e.g. FIRST_CLASS)
+                idempotency_key:
+                  type: string
+                  description: Key for safe request retries
+      responses:
+        '200':
+          description: Postcard created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailpieceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /postcards/get/{id}:
+    get:
+      operationId: getPostcard
+      summary: Get a postcard
+      description: Retrieve details of a single postcard mailpiece.
+      tags:
+      - Postcards
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Mailpiece ID
+      responses:
+        '200':
+          description: Postcard details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailpieceResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /postcards/cancel:
+    post:
+      operationId: cancelPostcard
+      summary: Cancel a postcard
+      description: Cancel a postcard that has not yet been dispatched.
+      tags:
+      - Postcards
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - id
+              properties:
+                id:
+                  type: integer
+                  description: Mailpiece ID to cancel
+      responses:
+        '200':
+          description: Postcard cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    MailpieceResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: Mailpiece ID
+            pdf:
+              type: string
+              format: uri
+              description: URL to the proof PDF
+            created:
+              type: string
+              format: date-time
+            format:
+              type: string
+              description: Mail piece format/size
+            cost:
+              type: string
+              description: Cost of the mailpiece
+            status:
+              type: string
+              description: Current status
+            tracking_reference:
+              type: string
+              description: Carrier tracking reference
+            dispatched:
+              type: string
+              format: date-time
+              description: Dispatch timestamp
+    RecipientInput:
+      type: object
+      properties:
+        group_id:
+          type: integer
+          description: Group to add the recipient to
+        title:
+          type: string
+          description: Title (Mr, Mrs, Dr, etc.)
+        firstname:
+          type: string
+        lastname:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        address1:
+          type: string
+          description: First line of address
+        address2:
+          type: string
+        address3:
+          type: string
+        city:
+          type: string
+        county:
+          type: string
+          description: State or county
+        postcode:
+          type: string
+          description: Postcode or ZIP code
+        zipcode:
+          type: string
+          description: ZIP code (US alternative to postcode)
+        country:
+          type: string
+          description: ISO 3166-1 Alpha-2 country code
+          example: US
+        email:
+          type: string
+          format: email
+        phone_number:
+          type: string
+        ref_id:
+          type: string
+          description: Custom external reference ID
+        on_duplicate:
+          type: string
+          enum:
+          - update
+          - ignore
+          - duplicate
+          description: Behaviour when duplicate is found
+        test_level:
+          type: string
+          enum:
+          - email
+          - fullname
+          - initial
+          - ref_id
+          description: Field(s) used to detect duplicates
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          description: Result value (boolean, integer, or string depending on operation)
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          description: Error message
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Authentication required or API key invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use your API key as the username and leave the password blank.
