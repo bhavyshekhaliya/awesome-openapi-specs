@@ -424,6 +424,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Agorapulse | [API specification](https://api.beta.agorapulse.com/docs/open-api.yml) | YAML | 3.1.0 | `social-media` `experimental` |
 | TwitterShots | [API specification](https://twittershots.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `content-generation` |
 | Publora | [API specification](https://docs.publora.com/openapi.yaml) | YAML | 3.0.3 | `social-media` `scheduling` |
 | Adhook | [API specification](https://app.adhook.io/api/openapi.json) | JSON | 3.0.1 | `social-media` `advertising` |
