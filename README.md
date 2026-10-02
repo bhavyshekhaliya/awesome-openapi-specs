@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Ometria | [Data API specification](https://dash.readme.com/api/v1/api-registry/5ps112umucrtj90) | JSON | 3.0.0 | `official` `e-commerce` `customer-data-platform` `marketing-automation` |
 | Optimizely Campaign | [REST API specification](https://dash.readme.com/api/v1/api-registry/19jhm51im5whcrv5) | JSON | 3.0.1 | `official` `marketing-automation` `email-marketing` |
 | Reteno | [API specification](https://dash.readme.com/api/v1/api-registry/ab41kzmump656n) | JSON | 3.0.1 | `official` `customer-engagement` `marketing-automation` |
 | Yespo | [API specification](https://dash.readme.com/api/v1/api-registry/ab41n1mump656s) | JSON | 3.0.1 | `official` `email-marketing` `marketing-automation` |
