@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -199,6 +199,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
 | Repudoc | [Integration API specification](https://repudoc.com/app/integration/v1/swagger.json) | JSON | 3.0.1 | `official` `reviews` `reputation-management` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
+| RunSignup | [Get Races OpenAPI specification](https://runsignup.com/API/races?viewOpenApiSpec=T&download=T) · [API overview](https://runsignup.com/API/DocOverview) | JSON | 3.0.3 | `official` `focused` `event-management` `registration` |
 | Roaspy | [Public API specification](https://api.roaspy.com/documentation/public.json) | JSON | 3.0.3 | `official` `advertising-analytics` `marketing` |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
 | SendGrid         | [46 API specifications](https://github.com/twilio/sendgrid-oai/tree/main/spec)                                     | JSON, YAML | 3.1.0 | `official` `transactional-email` `email-marketing` |
