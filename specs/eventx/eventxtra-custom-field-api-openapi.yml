@@ -1,0 +1,907 @@
+openapi: 3.2.0
+info:
+  title: Public Custom Field API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Custom Field
+paths:
+  /public-api/v1/event/{eventId}/custom-field/all:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - text
+                          - multipleText
+                          - textArea
+                          - singleCheckbox
+                          - radioGroup
+                          - checkboxGroup
+                          - dropdown
+                          - fileUpload
+                          - datePicker
+                          - phoneField
+                          - timePicker
+                        contentI18n:
+                          type: object
+                          properties:
+                            label:
+                              type: object
+                              properties:
+                                default:
+                                  type: string
+                                  nullable: true
+                                en:
+                                  type: string
+                                  nullable: true
+                                ja:
+                                  type: string
+                                  nullable: true
+                                ko:
+                                  type: string
+                                  nullable: true
+                                vi:
+                                  type: string
+                                  nullable: true
+                                zh-HK:
+                                  type: string
+                                  nullable: true
+                                zh-CN:
+                                  type: string
+                                  nullable: true
+                                es:
+                                  type: string
+                                  nullable: true
+                                th:
+                                  type: string
+                                  nullable: true
+                                pt:
+                                  type: string
+                                  nullable: true
+                              required:
+                              - default
+                              additionalProperties: false
+                          required:
+                          - label
+                          additionalProperties: false
+                        isFilterable:
+                          type: boolean
+                          default: false
+                        config:
+                          type: object
+                          properties: {}
+                          additionalProperties: false
+                          oneOf:
+                          - type: object
+                            properties:
+                              options:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    contentI18n:
+                                      type: object
+                                      properties:
+                                        label:
+                                          type: object
+                                          properties:
+                                            default:
+                                              type: string
+                                              nullable: true
+                                            en:
+                                              type: string
+                                              nullable: true
+                                            ja:
+                                              type: string
+                                              nullable: true
+                                            ko:
+                                              type: string
+                                              nullable: true
+                                            vi:
+                                              type: string
+                                              nullable: true
+                                            zh-HK:
+                                              type: string
+                                              nullable: true
+                                            zh-CN:
+                                              type: string
+                                              nullable: true
+                                            es:
+                                              type: string
+                                              nullable: true
+                                            th:
+                                              type: string
+                                              nullable: true
+                                            pt:
+                                              type: string
+                                              nullable: true
+                                          required:
+                                          - default
+                                          additionalProperties: false
+                                      required:
+                                      - label
+                                      additionalProperties: false
+                                  required:
+                                  - id
+                                  - contentI18n
+                                  additionalProperties: false
+                                uniqueItems: true
+                            required:
+                            - options
+                            additionalProperties: false
+                            x-required: true
+                          - type: object
+                            properties:
+                              minDate:
+                                type: string
+                                format: date
+                              maxDate:
+                                type: string
+                                format: date
+                                oneOf:
+                                - type: string
+                                  format: date
+                            additionalProperties: false
+                          - type: object
+                            properties:
+                              hideMeridiem:
+                                type: boolean
+                            additionalProperties: false
+                        archivedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        rawData:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - text
+                              - multipleText
+                              - textArea
+                              - singleCheckbox
+                              - radioGroup
+                              - checkboxGroup
+                              - dropdown
+                              - fileUpload
+                              - datePicker
+                              - phoneField
+                              - timePicker
+                            contentI18n:
+                              type: object
+                              properties:
+                                label:
+                                  type: object
+                                  properties:
+                                    default:
+                                      type: string
+                                      nullable: true
+                                    en:
+                                      type: string
+                                      nullable: true
+                                    ja:
+                                      type: string
+                                      nullable: true
+                                    ko:
+                                      type: string
+                                      nullable: true
+                                    vi:
+                                      type: string
+                                      nullable: true
+                                    zh-HK:
+                                      type: string
+                                      nullable: true
+                                    zh-CN:
+                                      type: string
+                                      nullable: true
+                                    es:
+                                      type: string
+                                      nullable: true
+                                    th:
+                                      type: string
+                                      nullable: true
+                                    pt:
+                                      type: string
+                                      nullable: true
+                                  required:
+                                  - default
+                                  additionalProperties: false
+                              required:
+                              - label
+                              additionalProperties: false
+                            isFilterable:
+                              type: boolean
+                              default: false
+                            config:
+                              type: object
+                              properties: {}
+                              additionalProperties: false
+                              oneOf:
+                              - type: object
+                                properties:
+                                  options:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        contentI18n:
+                                          type: object
+                                          properties:
+                                            label:
+                                              type: object
+                                              properties:
+                                                default:
+                                                  type: string
+                                                  nullable: true
+                                                en:
+                                                  type: string
+                                                  nullable: true
+                                                ja:
+                                                  type: string
+                                                  nullable: true
+                                                ko:
+                                                  type: string
+                                                  nullable: true
+                                                vi:
+                                                  type: string
+                                                  nullable: true
+                                                zh-HK:
+                                                  type: string
+                                                  nullable: true
+                                                zh-CN:
+                                                  type: string
+                                                  nullable: true
+                                                es:
+                                                  type: string
+                                                  nullable: true
+                                                th:
+                                                  type: string
+                                                  nullable: true
+                                                pt:
+                                                  type: string
+                                                  nullable: true
+                                              required:
+                                              - default
+                                              additionalProperties: false
+                                          required:
+                                          - label
+                                          additionalProperties: false
+                                      required:
+                                      - id
+                                      - contentI18n
+                                      additionalProperties: false
+                                    uniqueItems: true
+                                required:
+                                - options
+                                additionalProperties: false
+                                x-required: true
+                              - type: object
+                                properties:
+                                  minDate:
+                                    type: string
+                                    format: date
+                                  maxDate:
+                                    type: string
+                                    format: date
+                                    oneOf:
+                                    - type: string
+                                      format: date
+                                additionalProperties: false
+                              - type: object
+                                properties:
+                                  hideMeridiem:
+                                    type: boolean
+                                additionalProperties: false
+                          required:
+                          - type
+                          - contentI18n
+                          additionalProperties: false
+                      required:
+                      - id
+                      - type
+                      - contentI18n
+                      - isFilterable
+                      - config
+                      - archivedAt
+                      - rawData
+                      additionalProperties: false
+                      description: Custom field (question) from an event question library
+                      example:
+                        id: 550e8400-e29b-41d4-a716-446655440000
+                        type: TEXT
+                        contentI18n:
+                          label:
+                            default: Company Name
+                        isFilterable: true
+                        archivedAt: null
+                        rawData:
+                          type: TEXT
+                          contentI18n:
+                            label:
+                              default: Company Name
+                          isFilterable: true
+                required:
+                - dataList
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+      security:
+      - bearerAuth: []
+      tags:
+      - Custom Field
+      operationId: getAllCustomFieldByEventId
+      summary: List all custom fields in an event question library
+  /public-api/v1/event/{eventId}/custom-field/bulk-upsert:
+    put:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        type:
+                          type: string
+                          enum:
+                          - text
+                          - multipleText
+                          - textArea
+                          - singleCheckbox
+                          - radioGroup
+                          - checkboxGroup
+                          - dropdown
+                          - fileUpload
+                          - datePicker
+                          - phoneField
+                          - timePicker
+                        contentI18n:
+                          type: object
+                          properties:
+                            label:
+                              type: object
+                              properties:
+                                default:
+                                  type: string
+                                  nullable: true
+                                en:
+                                  type: string
+                                  nullable: true
+                                ja:
+                                  type: string
+                                  nullable: true
+                                ko:
+                                  type: string
+                                  nullable: true
+                                vi:
+                                  type: string
+                                  nullable: true
+                                zh-HK:
+                                  type: string
+                                  nullable: true
+                                zh-CN:
+                                  type: string
+                                  nullable: true
+                                es:
+                                  type: string
+                                  nullable: true
+                                th:
+                                  type: string
+                                  nullable: true
+                                pt:
+                                  type: string
+                                  nullable: true
+                              required:
+                              - default
+                              additionalProperties: false
+                          required:
+                          - label
+                          additionalProperties: false
+                        isFilterable:
+                          type: boolean
+                          default: false
+                        config:
+                          type: object
+                          properties: {}
+                          additionalProperties: false
+                          oneOf:
+                          - type: object
+                            properties:
+                              options:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                    contentI18n:
+                                      type: object
+                                      properties:
+                                        label:
+                                          type: object
+                                          properties:
+                                            default:
+                                              type: string
+                                              nullable: true
+                                            en:
+                                              type: string
+                                              nullable: true
+                                            ja:
+                                              type: string
+                                              nullable: true
+                                            ko:
+                                              type: string
+                                              nullable: true
+                                            vi:
+                                              type: string
+                                              nullable: true
+                                            zh-HK:
+                                              type: string
+                                              nullable: true
+                                            zh-CN:
+                                              type: string
+                                              nullable: true
+                                            es:
+                                              type: string
+                                              nullable: true
+                                            th:
+                                              type: string
+                                              nullable: true
+                                            pt:
+                                              type: string
+                                              nullable: true
+                                          required:
+                                          - default
+                                          additionalProperties: false
+                                      required:
+                                      - label
+                                      additionalProperties: false
+                                  required:
+                                  - id
+                                  - contentI18n
+                                  additionalProperties: false
+                                uniqueItems: true
+                            required:
+                            - options
+                            additionalProperties: false
+                            x-required: true
+                          - type: object
+                            properties:
+                              minDate:
+                                type: string
+                                format: date
+                              maxDate:
+                                type: string
+                                format: date
+                                oneOf:
+                                - type: string
+                                  format: date
+                            additionalProperties: false
+                          - type: object
+                            properties:
+                              hideMeridiem:
+                                type: boolean
+                            additionalProperties: false
+                        archivedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        rawData:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              enum:
+                              - text
+                              - multipleText
+                              - textArea
+                              - singleCheckbox
+                              - radioGroup
+                              - checkboxGroup
+                              - dropdown
+                              - fileUpload
+                              - datePicker
+                              - phoneField
+                              - timePicker
+                            contentI18n:
+                              type: object
+                              properties:
+                                label:
+                                  type: object
+                                  properties:
+                                    default:
+                                      type: string
+                                      nullable: true
+                                    en:
+                                      type: string
+                                      nullable: true
+                                    ja:
+                                      type: string
+                                      nullable: true
+                                    ko:
+                                      type: string
+                                      nullable: true
+                                    vi:
+                                      type: string
+                                      nullable: true
+                                    zh-HK:
+                                      type: string
+                                      nullable: true
+                                    zh-CN:
+                                      type: string
+                                      nullable: true
+                                    es:
+                                      type: string
+                                      nullable: true
+                                    th:
+                                      type: string
+                                      nullable: true
+                                    pt:
+                                      type: string
+                                      nullable: true
+                                  required:
+                                  - default
+                                  additionalProperties: false
+                              required:
+                              - label
+                              additionalProperties: false
+                            isFilterable:
+                              type: boolean
+                              default: false
+                            config:
+                              type: object
+                              properties: {}
+                              additionalProperties: false
+                              oneOf:
+                              - type: object
+                                properties:
+                                  options:
+                                    type: array
+                                    items:
+                                      type: object
+                                      properties:
+                                        id:
+                                          type: string
+                                        contentI18n:
+                                          type: object
+                                          properties:
+                                            label:
+                                              type: object
+                                              properties:
+                                                default:
+                                                  type: string
+                                                  nullable: true
+                                                en:
+                                                  type: string
+                                                  nullable: true
+                                                ja:
+                                                  type: string
+                                                  nullable: true
+                                                ko:
+                                                  type: string
+                                                  nullable: true
+                                                vi:
+                                                  type: string
+                                                  nullable: true
+                                                zh-HK:
+                                                  type: string
+                                                  nullable: true
+                                                zh-CN:
+                                                  type: string
+                                                  nullable: true
+                                                es:
+                                                  type: string
+                                                  nullable: true
+                                                th:
+                                                  type: string
+                                                  nullable: true
+                                                pt:
+                                                  type: string
+                                                  nullable: true
+                                              required:
+                                              - default
+                                              additionalProperties: false
+                                          required:
+                                          - label
+                                          additionalProperties: false
+                                      required:
+                                      - id
+                                      - contentI18n
+                                      additionalProperties: false
+                                    uniqueItems: true
+                                required:
+                                - options
+                                additionalProperties: false
+                                x-required: true
+                              - type: object
+                                properties:
+                                  minDate:
+                                    type: string
+                                    format: date
+                                  maxDate:
+                                    type: string
+                                    format: date
+                                    oneOf:
+                                    - type: string
+                                      format: date
+                                additionalProperties: false
+                              - type: object
+                                properties:
+                                  hideMeridiem:
+                                    type: boolean
+                                additionalProperties: false
+                          required:
+                          - type
+                          - contentI18n
+                          additionalProperties: false
+                      required:
+                      - id
+                      - type
+                      - contentI18n
+                      - isFilterable
+                      - config
+                      - archivedAt
+                      - rawData
+                      additionalProperties: false
+                      description: Custom field (question) from an event question library
+                      example:
+                        id: 550e8400-e29b-41d4-a716-446655440000
+                        type: TEXT
+                        contentI18n:
+                          label:
+                            default: Company Name
+                        isFilterable: true
+                        archivedAt: null
+                        rawData:
+                          type: TEXT
+                          contentI18n:
+                            label:
+                              default: Company Name
+                          isFilterable: true
+                required:
+                - dataList
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                        description: When provide resource Id, it will update the resource, otherwise it will create a new resource
+                      type:
+                        type: string
+                        enum:
+                        - text
+                        - multipleText
+                        - textArea
+                        - singleCheckbox
+                        - radioGroup
+                        - checkboxGroup
+                        - dropdown
+                        - fileUpload
+                        - datePicker
+                        - phoneField
+                        - timePicker
+                      contentI18n:
+                        type: object
+                        properties:
+                          label:
+                            type: object
+                            properties:
+                              default:
+                                type: string
+                                nullable: true
+                              en:
+                                type: string
+                                nullable: true
+                              ja:
+                                type: string
+                                nullable: true
+                              ko:
+                                type: string
+                                nullable: true
+                              vi:
+                                type: string
+                                nullable: true
+                              zh-HK:
+                                type: string
+                                nullable: true
+                              zh-CN:
+                                type: string
+                                nullable: true
+                              es:
+                                type: string
+                                nullable: true
+                              th:
+                                type: string
+                                nullable: true
+                              pt:
+                                type: string
+                                nullable: true
+                            required:
+                            - default
+                            additionalProperties: false
+                        required:
+                        - label
+                        additionalProperties: false
+                      isFilterable:
+                        type: boolean
+                        default: false
+                      config:
+                        type: object
+                        properties: {}
+                        additionalProperties: false
+                        oneOf:
+                        - type: object
+                          properties:
+                            options:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  contentI18n:
+                                    type: object
+                                    properties:
+                                      label:
+                                        type: object
+                                        properties:
+                                          default:
+                                            type: string
+                                            nullable: true
+                                          en:
+                                            type: string
+                                            nullable: true
+                                          ja:
+                                            type: string
+                                            nullable: true
+                                          ko:
+                                            type: string
+                                            nullable: true
+                                          vi:
+                                            type: string
+                                            nullable: true
+                                          zh-HK:
+                                            type: string
+                                            nullable: true
+                                          zh-CN:
+                                            type: string
+                                            nullable: true
+                                          es:
+                                            type: string
+                                            nullable: true
+                                          th:
+                                            type: string
+                                            nullable: true
+                                          pt:
+                                            type: string
+                                            nullable: true
+                                        required:
+                                        - default
+                                        additionalProperties: false
+                                    required:
+                                    - label
+                                    additionalProperties: false
+                                required:
+                                - id
+                                - contentI18n
+                                additionalProperties: false
+                              uniqueItems: true
+                          required:
+                          - options
+                          additionalProperties: false
+                          x-required: true
+                        - type: object
+                          properties:
+                            minDate:
+                              type: string
+                              format: date
+                            maxDate:
+                              type: string
+                              format: date
+                              oneOf:
+                              - type: string
+                                format: date
+                          additionalProperties: false
+                        - type: object
+                          properties:
+                            hideMeridiem:
+                              type: boolean
+                          additionalProperties: false
+                    required:
+                    - type
+                    - contentI18n
+                    additionalProperties: false
+                  uniqueItems: true
+              additionalProperties: false
+              description: Request body for bulk creating or updating custom fields. Include an `id` to update; omit to create.
+              example:
+                data:
+                - id: 550e8400-e29b-41d4-a716-446655440000
+                  type: TEXT
+                  contentI18n:
+                    label:
+                      default: Company Name
+                  isFilterable: false
+                - type: DROPDOWN
+                  contentI18n:
+                    label:
+                      default: Dietary Preference
+                  isFilterable: true
+                  config:
+                    options:
+                    - id: opt-1
+                      contentI18n:
+                        label:
+                          default: Vegetarian
+                    - id: opt-2
+                      contentI18n:
+                        label:
+                          default: Non-Vegetarian
+      security:
+      - bearerAuth: []
+      tags:
+      - Custom Field
+      operationId: bulkUpsertCustomFieldByEventId
+      summary: Bulk create or update custom fields
+      description: 'Idempotent upsert. Items with an id are updated; items without an id are created. Custom fields are always optional (isRequired: false).'
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

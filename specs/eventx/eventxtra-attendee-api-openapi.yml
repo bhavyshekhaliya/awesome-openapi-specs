@@ -1,0 +1,3287 @@
+openapi: 3.2.0
+info:
+  title: Public Attendee API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Attendee
+paths:
+  /public-api/v1/event/{eventId}/attendee:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          nullable: true
+                        firstName:
+                          type: string
+                          nullable: true
+                        lastName:
+                          type: string
+                          nullable: true
+                        invitationEmail:
+                          type: string
+                          nullable: true
+                        jobTitle:
+                          type: string
+                          nullable: true
+                        organization:
+                          type: string
+                          nullable: true
+                        city:
+                          type: string
+                          nullable: true
+                        country:
+                          type: string
+                          nullable: true
+                        areaCode:
+                          type: string
+                          nullable: true
+                        contactNo:
+                          type: string
+                          nullable: true
+                        customCheckInToken:
+                          type: string
+                          nullable: true
+                        qrCodeToken:
+                          type: string
+                          nullable: true
+                        registerUtmParams:
+                          type: object
+                          properties:
+                            utm_source:
+                              type: string
+                            utm_medium:
+                              type: string
+                            utm_campaign:
+                              type: string
+                            utm_term:
+                              type: string
+                            utm_content:
+                              type: string
+                          additionalProperties: false
+                        roleTags:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                            - organizer
+                            - host
+                            - speaker
+                            - exhibitor
+                            - booth-rep
+                            - visitor
+                            - system
+                        status:
+                          type: string
+                          enum:
+                          - invited
+                          - registered
+                          - attended
+                          - magic-link
+                        registrationStatus:
+                          type: string
+                          enum:
+                          - pending
+                          - registered
+                          - not-applicable
+                        firstEnteredWebAppAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        registeredAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        attendedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        checkInMethod:
+                          type: string
+                          enum:
+                          - walk_in
+                          - check_in
+                          - qr_code
+                          - search
+                          nullable: true
+                        checkedInAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        approvalStatus:
+                          type: string
+                          enum:
+                          - waitlisted
+                          - approved
+                          - rejected
+                          nullable: true
+                        approvedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        rejectedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        magicLinkUrl:
+                          type: string
+                          nullable: true
+                        qrCodeLinkUrl:
+                          type: string
+                          nullable: true
+                        ticketClassId:
+                          type: string
+                          format: uuid
+                          nullable: true
+                        addOns:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              ticketClassAddOnId:
+                                type: string
+                                format: uuid
+                              qty:
+                                type: integer
+                            additionalProperties: false
+                        attendeeTagIdList:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+                        customFields:
+                          type: object
+                          properties: {}
+                          additionalProperties:
+                            type: object
+                            properties:
+                              value:
+                                anyOf:
+                                - type: string
+                                  nullable: true
+                                - type: array
+                                  items:
+                                    type: string
+                                    nullable: true
+                                - type: boolean
+                              mediaValues:
+                                type: array
+                                items:
+                                  anyOf:
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - originalFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      cloudflarePlaybackUrl:
+                                        type: string
+                                        nullable: true
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - originalFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      previewFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      previewFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - previewFilename
+                                    - originalFilepath
+                                    - previewFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                            additionalProperties: false
+                          description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                          example:
+                            questionIdString:
+                              value: Some text answer
+                              mediaValues: []
+                            questionIdMc:
+                              value:
+                              - choice-id-1
+                              - choice-id-2
+                              mediaValues: []
+                            questionIdMedia:
+                              value: null
+                              mediaValues:
+                              - id: 123e4567-e89b-12d3-a456-426614174000
+                                originalFilename: photo.jpg
+                                previewFilename: photo-preview.jpg
+                                originalFilepath: /uploads/photo.jpg
+                                previewFilepath: /uploads/photo-preview.jpg
+                                mimeType: image/jpeg
+                                type: image
+                                size: 1024000
+                        rawData:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              nullable: true
+                            firstName:
+                              type: string
+                              nullable: true
+                            lastName:
+                              type: string
+                              nullable: true
+                            invitationEmail:
+                              type: string
+                              nullable: true
+                            jobTitle:
+                              type: string
+                              nullable: true
+                            organization:
+                              type: string
+                              nullable: true
+                            city:
+                              type: string
+                              nullable: true
+                            country:
+                              type: string
+                              nullable: true
+                            areaCode:
+                              type: string
+                              nullable: true
+                            contactNo:
+                              type: string
+                              nullable: true
+                            customCheckInToken:
+                              type: string
+                              nullable: true
+                            customFields:
+                              type: object
+                              properties: {}
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  value:
+                                    anyOf:
+                                    - type: string
+                                      nullable: true
+                                    - type: array
+                                      items:
+                                        type: string
+                                        nullable: true
+                                    - type: boolean
+                                  mediaValues:
+                                    type: array
+                                    items:
+                                      type: string
+                                      format: uuid
+                                additionalProperties: false
+                              description: Only support update with exist (active / archived) custom questions in question library
+                            approvalStatus:
+                              type: string
+                              enum:
+                              - waitlisted
+                              - approved
+                              - rejected
+                            qrCodeToken:
+                              type: string
+                              nullable: true
+                            registrationStatus:
+                              type: string
+                              enum:
+                              - pending
+                              - registered
+                              - not-applicable
+                            registerUtmParams:
+                              type: object
+                              properties:
+                                utm_source:
+                                  type: string
+                                utm_medium:
+                                  type: string
+                                utm_campaign:
+                                  type: string
+                                utm_term:
+                                  type: string
+                                utm_content:
+                                  type: string
+                              additionalProperties: false
+                          additionalProperties: false
+                          description: Attendee profile fields that can be created or updated via the API
+                          example:
+                            firstName: John
+                            lastName: Doe
+                            name: John Doe
+                            invitationEmail: john@example.com
+                            jobTitle: Engineer
+                            organization: Acme Inc
+                            city: Hong Kong
+                            country: HK
+                            areaCode: '852'
+                            contactNo: '98765432'
+                            customFields: {}
+                            registrationStatus: REGISTERED
+                        rsvpStatus:
+                          type: string
+                          enum:
+                          - pending
+                          - invited
+                          - registered
+                          - rejected
+                          - not-applicable
+                          nullable: true
+                        orderId:
+                          type: string
+                          format: uuid
+                          nullable: true
+                      additionalProperties: false
+                      description: Full attendee response object returned by all attendee endpoints
+                      examples:
+                      - firstName: John
+                        lastName: Doe
+                        name: John Doe
+                        invitationEmail: john@example.com
+                        jobTitle: Engineer
+                        organization: Acme Inc
+                        city: Hong Kong
+                        country: HK
+                        areaCode: '852'
+                        contactNo: '98765432'
+                        customFields: {}
+                        registrationStatus: REGISTERED
+                      - id: 550e8400-e29b-41d4-a716-446655440000
+                        name: John Doe
+                        firstName: John
+                        lastName: Doe
+                        invitationEmail: john@example.com
+                        jobTitle: Engineer
+                        organization: Acme Inc
+                        city: Hong Kong
+                        country: HK
+                        areaCode: '852'
+                        contactNo: '98765432'
+                        customFields: {}
+                        roleTags:
+                        - ATTENDEE
+                        status: registered
+                        registrationStatus: REGISTERED
+                        createdAt: '2024-01-01T00:00:00.000Z'
+                        updatedAt: '2024-01-01T00:00:00.000Z'
+                        registeredAt: '2024-01-01T00:00:00.000Z'
+                        attendedAt: null
+                        checkInMethod: null
+                        checkedInAt: null
+                        approvalStatus: null
+                        approvedAt: null
+                        rejectedAt: null
+                        firstEnteredWebAppAt: null
+                        magicLinkUrl: null
+                        qrCodeLinkUrl: null
+                        ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                        addOns: []
+                        attendeeTagIdList: []
+                        rsvpStatus: null
+                        orderId: 550e8400-e29b-41d4-a716-446655440002
+                        customCheckInToken: null
+                        qrCodeToken: null
+                        registerUtmParams: {}
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                        format: float
+                        description: Current page number
+                      pageSize:
+                        type: number
+                        format: float
+                        description: Number of items per page
+                      pageCount:
+                        type: number
+                        format: float
+                        description: Total number of pages
+                      totalCount:
+                        type: number
+                        format: float
+                        description: Total number of items
+                    required:
+                    - page
+                    - pageSize
+                    - pageCount
+                    - totalCount
+                    additionalProperties: false
+                required:
+                - dataList
+                - pagination
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 1
+          default: 1
+      - description: 'Optional inclusive ending page for requesting a range of pages. Maximum page range: 200.'
+        name: pageEnd
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 0
+      - name: pageSize
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 100
+          default: 25
+      - description: 'Multiple Sort syntax "-" DESC, Empty for ASC, Available sorts: id, name, firstName, lastName, createdAt, updatedAt, registeredAt, areaCode, contactNo, email, jobTitle, organization, city, country, suspendStatus, registrationStatus, attendedAt, approvalStatus, approvedAt, rejectedAt, attendee_tag_id'
+        example: -sorterA,sorterB
+        name: sort
+        in: query
+        schema:
+          type: string
+          default: -id
+      - description: JSON array of attendee UUIDs to filter by
+        example: '["550e8400-e29b-41d4-a716-446655440000"]'
+        name: attendeeIds
+        in: query
+        schema:
+          type: string
+      - description: Filter attendees created after this ISO 8601 datetime
+        example: '2024-01-01T00:00:00.000Z'
+        name: createdAt$gt
+        in: query
+        schema:
+          type: string
+          format: date-time
+      - description: JSON object of custom field question IDs to values for exact-match filtering
+        example: '{"question-uuid": "value"}'
+        name: customFields
+        in: query
+        schema:
+          type: string
+      - description: Free-text search across attendee name and email fields
+        example: John
+        name: q
+        in: query
+        schema:
+          type: string
+      - description: JSON object of custom field question IDs to text search terms (only text/textarea type questions supported)
+        example: '{"question-uuid": "search term"}'
+        name: customFieldSearch
+        in: query
+        schema:
+          type: string
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: getPaginatedAttendeeByEventId
+      summary: List attendees for an event
+  /public-api/v1/event/{eventId}/attendee/bulk-upsert:
+    put:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                          nullable: true
+                        firstName:
+                          type: string
+                          nullable: true
+                        lastName:
+                          type: string
+                          nullable: true
+                        invitationEmail:
+                          type: string
+                          nullable: true
+                        jobTitle:
+                          type: string
+                          nullable: true
+                        organization:
+                          type: string
+                          nullable: true
+                        city:
+                          type: string
+                          nullable: true
+                        country:
+                          type: string
+                          nullable: true
+                        areaCode:
+                          type: string
+                          nullable: true
+                        contactNo:
+                          type: string
+                          nullable: true
+                        customCheckInToken:
+                          type: string
+                          nullable: true
+                        qrCodeToken:
+                          type: string
+                          nullable: true
+                        registerUtmParams:
+                          type: object
+                          properties:
+                            utm_source:
+                              type: string
+                            utm_medium:
+                              type: string
+                            utm_campaign:
+                              type: string
+                            utm_term:
+                              type: string
+                            utm_content:
+                              type: string
+                          additionalProperties: false
+                        roleTags:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                            - organizer
+                            - host
+                            - speaker
+                            - exhibitor
+                            - booth-rep
+                            - visitor
+                            - system
+                        status:
+                          type: string
+                          enum:
+                          - invited
+                          - registered
+                          - attended
+                          - magic-link
+                        registrationStatus:
+                          type: string
+                          enum:
+                          - pending
+                          - registered
+                          - not-applicable
+                        firstEnteredWebAppAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        registeredAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        attendedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        checkInMethod:
+                          type: string
+                          enum:
+                          - walk_in
+                          - check_in
+                          - qr_code
+                          - search
+                          nullable: true
+                        checkedInAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        approvalStatus:
+                          type: string
+                          enum:
+                          - waitlisted
+                          - approved
+                          - rejected
+                          nullable: true
+                        approvedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        rejectedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        magicLinkUrl:
+                          type: string
+                          nullable: true
+                        qrCodeLinkUrl:
+                          type: string
+                          nullable: true
+                        ticketClassId:
+                          type: string
+                          format: uuid
+                          nullable: true
+                        addOns:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              ticketClassAddOnId:
+                                type: string
+                                format: uuid
+                              qty:
+                                type: integer
+                            additionalProperties: false
+                        attendeeTagIdList:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+                        customFields:
+                          type: object
+                          properties: {}
+                          additionalProperties:
+                            type: object
+                            properties:
+                              value:
+                                anyOf:
+                                - type: string
+                                  nullable: true
+                                - type: array
+                                  items:
+                                    type: string
+                                    nullable: true
+                                - type: boolean
+                              mediaValues:
+                                type: array
+                                items:
+                                  anyOf:
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - originalFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      cloudflarePlaybackUrl:
+                                        type: string
+                                        nullable: true
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - originalFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                                  - type: object
+                                    properties:
+                                      id:
+                                        type: string
+                                        format: uuid
+                                      originalFilename:
+                                        type: string
+                                      previewFilename:
+                                        type: string
+                                      originalFilepath:
+                                        type: string
+                                      previewFilepath:
+                                        type: string
+                                      mimeType:
+                                        type: string
+                                      type:
+                                        type: string
+                                        enum:
+                                        - image
+                                        - video
+                                        - file
+                                      size:
+                                        type: number
+                                        format: float
+                                    required:
+                                    - id
+                                    - originalFilename
+                                    - previewFilename
+                                    - originalFilepath
+                                    - previewFilepath
+                                    - mimeType
+                                    - size
+                                    additionalProperties: false
+                            additionalProperties: false
+                          description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                          example:
+                            questionIdString:
+                              value: Some text answer
+                              mediaValues: []
+                            questionIdMc:
+                              value:
+                              - choice-id-1
+                              - choice-id-2
+                              mediaValues: []
+                            questionIdMedia:
+                              value: null
+                              mediaValues:
+                              - id: 123e4567-e89b-12d3-a456-426614174000
+                                originalFilename: photo.jpg
+                                previewFilename: photo-preview.jpg
+                                originalFilepath: /uploads/photo.jpg
+                                previewFilepath: /uploads/photo-preview.jpg
+                                mimeType: image/jpeg
+                                type: image
+                                size: 1024000
+                        rawData:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              nullable: true
+                            firstName:
+                              type: string
+                              nullable: true
+                            lastName:
+                              type: string
+                              nullable: true
+                            invitationEmail:
+                              type: string
+                              nullable: true
+                            jobTitle:
+                              type: string
+                              nullable: true
+                            organization:
+                              type: string
+                              nullable: true
+                            city:
+                              type: string
+                              nullable: true
+                            country:
+                              type: string
+                              nullable: true
+                            areaCode:
+                              type: string
+                              nullable: true
+                            contactNo:
+                              type: string
+                              nullable: true
+                            customCheckInToken:
+                              type: string
+                              nullable: true
+                            customFields:
+                              type: object
+                              properties: {}
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  value:
+                                    anyOf:
+                                    - type: string
+                                      nullable: true
+                                    - type: array
+                                      items:
+                                        type: string
+                                        nullable: true
+                                    - type: boolean
+                                  mediaValues:
+                                    type: array
+                                    items:
+                                      type: string
+                                      format: uuid
+                                additionalProperties: false
+                              description: Only support update with exist (active / archived) custom questions in question library
+                            approvalStatus:
+                              type: string
+                              enum:
+                              - waitlisted
+                              - approved
+                              - rejected
+                            qrCodeToken:
+                              type: string
+                              nullable: true
+                            registrationStatus:
+                              type: string
+                              enum:
+                              - pending
+                              - registered
+                              - not-applicable
+                            registerUtmParams:
+                              type: object
+                              properties:
+                                utm_source:
+                                  type: string
+                                utm_medium:
+                                  type: string
+                                utm_campaign:
+                                  type: string
+                                utm_term:
+                                  type: string
+                                utm_content:
+                                  type: string
+                              additionalProperties: false
+                          additionalProperties: false
+                          description: Attendee profile fields that can be created or updated via the API
+                          example:
+                            firstName: John
+                            lastName: Doe
+                            name: John Doe
+                            invitationEmail: john@example.com
+                            jobTitle: Engineer
+                            organization: Acme Inc
+                            city: Hong Kong
+                            country: HK
+                            areaCode: '852'
+                            contactNo: '98765432'
+                            customFields: {}
+                            registrationStatus: REGISTERED
+                        rsvpStatus:
+                          type: string
+                          enum:
+                          - pending
+                          - invited
+                          - registered
+                          - rejected
+                          - not-applicable
+                          nullable: true
+                        orderId:
+                          type: string
+                          format: uuid
+                          nullable: true
+                      additionalProperties: false
+                      description: Full attendee response object returned by all attendee endpoints
+                      examples:
+                      - firstName: John
+                        lastName: Doe
+                        name: John Doe
+                        invitationEmail: john@example.com
+                        jobTitle: Engineer
+                        organization: Acme Inc
+                        city: Hong Kong
+                        country: HK
+                        areaCode: '852'
+                        contactNo: '98765432'
+                        customFields: {}
+                        registrationStatus: REGISTERED
+                      - id: 550e8400-e29b-41d4-a716-446655440000
+                        name: John Doe
+                        firstName: John
+                        lastName: Doe
+                        invitationEmail: john@example.com
+                        jobTitle: Engineer
+                        organization: Acme Inc
+                        city: Hong Kong
+                        country: HK
+                        areaCode: '852'
+                        contactNo: '98765432'
+                        customFields: {}
+                        roleTags:
+                        - ATTENDEE
+                        status: registered
+                        registrationStatus: REGISTERED
+                        createdAt: '2024-01-01T00:00:00.000Z'
+                        updatedAt: '2024-01-01T00:00:00.000Z'
+                        registeredAt: '2024-01-01T00:00:00.000Z'
+                        attendedAt: null
+                        checkInMethod: null
+                        checkedInAt: null
+                        approvalStatus: null
+                        approvedAt: null
+                        rejectedAt: null
+                        firstEnteredWebAppAt: null
+                        magicLinkUrl: null
+                        qrCodeLinkUrl: null
+                        ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                        addOns: []
+                        attendeeTagIdList: []
+                        rsvpStatus: null
+                        orderId: 550e8400-e29b-41d4-a716-446655440002
+                        customCheckInToken: null
+                        qrCodeToken: null
+                        registerUtmParams: {}
+                required:
+                - dataList
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: When provide resource Id, it will update the resource, otherwise it will create a new resource
+                  status:
+                    type: string
+                    enum:
+                    - registered
+                    - invited
+                    description: Deprecated. Will be removed at 2025 July, use `registrationStatus` instead. Can't be used together with `registrationStatus`
+                  name:
+                    type: string
+                    nullable: true
+                  firstName:
+                    type: string
+                    nullable: true
+                  lastName:
+                    type: string
+                    nullable: true
+                  invitationEmail:
+                    type: string
+                    nullable: true
+                  jobTitle:
+                    type: string
+                    nullable: true
+                  organization:
+                    type: string
+                    nullable: true
+                  city:
+                    type: string
+                    nullable: true
+                  country:
+                    type: string
+                    nullable: true
+                  areaCode:
+                    type: string
+                    nullable: true
+                  contactNo:
+                    type: string
+                    nullable: true
+                  customCheckInToken:
+                    type: string
+                    nullable: true
+                  customFields:
+                    type: object
+                    properties: {}
+                    additionalProperties:
+                      type: object
+                      properties:
+                        value:
+                          anyOf:
+                          - type: string
+                            nullable: true
+                          - type: array
+                            items:
+                              type: string
+                              nullable: true
+                          - type: boolean
+                        mediaValues:
+                          type: array
+                          items:
+                            type: string
+                            format: uuid
+                      additionalProperties: false
+                    description: Only support update with exist (active / archived) custom questions in question library
+                  approvalStatus:
+                    type: string
+                    enum:
+                    - waitlisted
+                    - approved
+                    - rejected
+                  qrCodeToken:
+                    type: string
+                    nullable: true
+                  registrationStatus:
+                    type: string
+                    enum:
+                    - pending
+                    - registered
+                    - not-applicable
+                  registerUtmParams:
+                    type: object
+                    properties:
+                      utm_source:
+                        type: string
+                      utm_medium:
+                        type: string
+                      utm_campaign:
+                        type: string
+                      utm_term:
+                        type: string
+                      utm_content:
+                        type: string
+                    additionalProperties: false
+                additionalProperties: false
+                description: Attendee profile fields that can be created or updated via the API
+                example:
+                  firstName: John
+                  lastName: Doe
+                  name: John Doe
+                  invitationEmail: john@example.com
+                  jobTitle: Engineer
+                  organization: Acme Inc
+                  city: Hong Kong
+                  country: HK
+                  areaCode: '852'
+                  contactNo: '98765432'
+                  customFields: {}
+                  registrationStatus: REGISTERED
+              minItems: 1
+              description: Array of attendee objects for bulk creation or update. Include an `id` to update an existing attendee; omit `id` to create a new one.
+              example:
+              - id: 550e8400-e29b-41d4-a716-446655440000
+                firstName: John
+                lastName: Doe
+                invitationEmail: john@example.com
+                registrationStatus: REGISTERED
+              - firstName: Jane
+                lastName: Smith
+                invitationEmail: jane@example.com
+                registrationStatus: INVITED
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: bulkUpsertAttendeeByEventId
+      summary: Bulk create or update attendees
+      description: Accepts an array of attendee objects. Provide an `id` to update an existing attendee; omit it to create a new one. The deprecated `status` field maps to `registrationStatus`. Returns all upserted attendees in a flat list.
+  /public-api/v1/event/{eventId}/attendee/bulk-remove:
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for bulk removing attendees
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: bulkRemoveAttendeeByEventId
+      summary: Remove attendees from an event
+      description: Cancels attendee registrations and marks them as removed. This is a soft delete; attendee records are retained but hidden from normal queries.
+  /public-api/v1/event/{eventId}/attendee/bulk-delete:
+    delete:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for permanently deleting attendees
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: bulkDeleteAttendeeByEventId
+      summary: Permanently delete attendees
+      description: Permanently deletes attendee records from the database. Unlike bulk remove, this is irreversible.
+  /public-api/v1/event/{eventId}/attendee/{attendeeId}:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                        nullable: true
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      invitationEmail:
+                        type: string
+                        nullable: true
+                      jobTitle:
+                        type: string
+                        nullable: true
+                      organization:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                        nullable: true
+                      areaCode:
+                        type: string
+                        nullable: true
+                      contactNo:
+                        type: string
+                        nullable: true
+                      customCheckInToken:
+                        type: string
+                        nullable: true
+                      qrCodeToken:
+                        type: string
+                        nullable: true
+                      registerUtmParams:
+                        type: object
+                        properties:
+                          utm_source:
+                            type: string
+                          utm_medium:
+                            type: string
+                          utm_campaign:
+                            type: string
+                          utm_term:
+                            type: string
+                          utm_content:
+                            type: string
+                        additionalProperties: false
+                      roleTags:
+                        type: array
+                        items:
+                          type: string
+                          enum:
+                          - organizer
+                          - host
+                          - speaker
+                          - exhibitor
+                          - booth-rep
+                          - visitor
+                          - system
+                      status:
+                        type: string
+                        enum:
+                        - invited
+                        - registered
+                        - attended
+                        - magic-link
+                      registrationStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - registered
+                        - not-applicable
+                      firstEnteredWebAppAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      attendedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      checkInMethod:
+                        type: string
+                        enum:
+                        - walk_in
+                        - check_in
+                        - qr_code
+                        - search
+                        nullable: true
+                      checkedInAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      approvalStatus:
+                        type: string
+                        enum:
+                        - waitlisted
+                        - approved
+                        - rejected
+                        nullable: true
+                      approvedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      rejectedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      magicLinkUrl:
+                        type: string
+                        nullable: true
+                      qrCodeLinkUrl:
+                        type: string
+                        nullable: true
+                      ticketClassId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      addOns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketClassAddOnId:
+                              type: string
+                              format: uuid
+                            qty:
+                              type: integer
+                          additionalProperties: false
+                      attendeeTagIdList:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                      customFields:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          type: object
+                          properties:
+                            value:
+                              anyOf:
+                              - type: string
+                                nullable: true
+                              - type: array
+                                items:
+                                  type: string
+                                  nullable: true
+                              - type: boolean
+                            mediaValues:
+                              type: array
+                              items:
+                                anyOf:
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    cloudflarePlaybackUrl:
+                                      type: string
+                                      nullable: true
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    previewFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    previewFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - previewFilename
+                                  - originalFilepath
+                                  - previewFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                          additionalProperties: false
+                        description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                        example:
+                          questionIdString:
+                            value: Some text answer
+                            mediaValues: []
+                          questionIdMc:
+                            value:
+                            - choice-id-1
+                            - choice-id-2
+                            mediaValues: []
+                          questionIdMedia:
+                            value: null
+                            mediaValues:
+                            - id: 123e4567-e89b-12d3-a456-426614174000
+                              originalFilename: photo.jpg
+                              previewFilename: photo-preview.jpg
+                              originalFilepath: /uploads/photo.jpg
+                              previewFilepath: /uploads/photo-preview.jpg
+                              mimeType: image/jpeg
+                              type: image
+                              size: 1024000
+                      rawData:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            nullable: true
+                          firstName:
+                            type: string
+                            nullable: true
+                          lastName:
+                            type: string
+                            nullable: true
+                          invitationEmail:
+                            type: string
+                            nullable: true
+                          jobTitle:
+                            type: string
+                            nullable: true
+                          organization:
+                            type: string
+                            nullable: true
+                          city:
+                            type: string
+                            nullable: true
+                          country:
+                            type: string
+                            nullable: true
+                          areaCode:
+                            type: string
+                            nullable: true
+                          contactNo:
+                            type: string
+                            nullable: true
+                          customCheckInToken:
+                            type: string
+                            nullable: true
+                          customFields:
+                            type: object
+                            properties: {}
+                            additionalProperties:
+                              type: object
+                              properties:
+                                value:
+                                  anyOf:
+                                  - type: string
+                                    nullable: true
+                                  - type: array
+                                    items:
+                                      type: string
+                                      nullable: true
+                                  - type: boolean
+                                mediaValues:
+                                  type: array
+                                  items:
+                                    type: string
+                                    format: uuid
+                              additionalProperties: false
+                            description: Only support update with exist (active / archived) custom questions in question library
+                          approvalStatus:
+                            type: string
+                            enum:
+                            - waitlisted
+                            - approved
+                            - rejected
+                          qrCodeToken:
+                            type: string
+                            nullable: true
+                          registrationStatus:
+                            type: string
+                            enum:
+                            - pending
+                            - registered
+                            - not-applicable
+                          registerUtmParams:
+                            type: object
+                            properties:
+                              utm_source:
+                                type: string
+                              utm_medium:
+                                type: string
+                              utm_campaign:
+                                type: string
+                              utm_term:
+                                type: string
+                              utm_content:
+                                type: string
+                            additionalProperties: false
+                        additionalProperties: false
+                        description: Attendee profile fields that can be created or updated via the API
+                        example:
+                          firstName: John
+                          lastName: Doe
+                          name: John Doe
+                          invitationEmail: john@example.com
+                          jobTitle: Engineer
+                          organization: Acme Inc
+                          city: Hong Kong
+                          country: HK
+                          areaCode: '852'
+                          contactNo: '98765432'
+                          customFields: {}
+                          registrationStatus: REGISTERED
+                      rsvpStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - invited
+                        - registered
+                        - rejected
+                        - not-applicable
+                        nullable: true
+                      orderId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                    additionalProperties: false
+                    description: Full attendee response object returned by all attendee endpoints
+                    examples:
+                    - firstName: John
+                      lastName: Doe
+                      name: John Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      registrationStatus: REGISTERED
+                    - id: 550e8400-e29b-41d4-a716-446655440000
+                      name: John Doe
+                      firstName: John
+                      lastName: Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      roleTags:
+                      - ATTENDEE
+                      status: registered
+                      registrationStatus: REGISTERED
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      updatedAt: '2024-01-01T00:00:00.000Z'
+                      registeredAt: '2024-01-01T00:00:00.000Z'
+                      attendedAt: null
+                      checkInMethod: null
+                      checkedInAt: null
+                      approvalStatus: null
+                      approvedAt: null
+                      rejectedAt: null
+                      firstEnteredWebAppAt: null
+                      magicLinkUrl: null
+                      qrCodeLinkUrl: null
+                      ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                      addOns: []
+                      attendeeTagIdList: []
+                      rsvpStatus: null
+                      orderId: 550e8400-e29b-41d4-a716-446655440002
+                      customCheckInToken: null
+                      qrCodeToken: null
+                      registerUtmParams: {}
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: attendeeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: getAttendeeById
+      summary: Get an attendee by ID
+    patch:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                        nullable: true
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      invitationEmail:
+                        type: string
+                        nullable: true
+                      jobTitle:
+                        type: string
+                        nullable: true
+                      organization:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                        nullable: true
+                      areaCode:
+                        type: string
+                        nullable: true
+                      contactNo:
+                        type: string
+                        nullable: true
+                      customCheckInToken:
+                        type: string
+                        nullable: true
+                      qrCodeToken:
+                        type: string
+                        nullable: true
+                      registerUtmParams:
+                        type: object
+                        properties:
+                          utm_source:
+                            type: string
+                          utm_medium:
+                            type: string
+                          utm_campaign:
+                            type: string
+                          utm_term:
+                            type: string
+                          utm_content:
+                            type: string
+                        additionalProperties: false
+                      roleTags:
+                        type: array
+                        items:
+                          type: string
+                          enum:
+                          - organizer
+                          - host
+                          - speaker
+                          - exhibitor
+                          - booth-rep
+                          - visitor
+                          - system
+                      status:
+                        type: string
+                        enum:
+                        - invited
+                        - registered
+                        - attended
+                        - magic-link
+                      registrationStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - registered
+                        - not-applicable
+                      firstEnteredWebAppAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      attendedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      checkInMethod:
+                        type: string
+                        enum:
+                        - walk_in
+                        - check_in
+                        - qr_code
+                        - search
+                        nullable: true
+                      checkedInAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      approvalStatus:
+                        type: string
+                        enum:
+                        - waitlisted
+                        - approved
+                        - rejected
+                        nullable: true
+                      approvedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      rejectedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      magicLinkUrl:
+                        type: string
+                        nullable: true
+                      qrCodeLinkUrl:
+                        type: string
+                        nullable: true
+                      ticketClassId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      addOns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketClassAddOnId:
+                              type: string
+                              format: uuid
+                            qty:
+                              type: integer
+                          additionalProperties: false
+                      attendeeTagIdList:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                      customFields:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          type: object
+                          properties:
+                            value:
+                              anyOf:
+                              - type: string
+                                nullable: true
+                              - type: array
+                                items:
+                                  type: string
+                                  nullable: true
+                              - type: boolean
+                            mediaValues:
+                              type: array
+                              items:
+                                anyOf:
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    cloudflarePlaybackUrl:
+                                      type: string
+                                      nullable: true
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    previewFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    previewFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - previewFilename
+                                  - originalFilepath
+                                  - previewFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                          additionalProperties: false
+                        description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                        example:
+                          questionIdString:
+                            value: Some text answer
+                            mediaValues: []
+                          questionIdMc:
+                            value:
+                            - choice-id-1
+                            - choice-id-2
+                            mediaValues: []
+                          questionIdMedia:
+                            value: null
+                            mediaValues:
+                            - id: 123e4567-e89b-12d3-a456-426614174000
+                              originalFilename: photo.jpg
+                              previewFilename: photo-preview.jpg
+                              originalFilepath: /uploads/photo.jpg
+                              previewFilepath: /uploads/photo-preview.jpg
+                              mimeType: image/jpeg
+                              type: image
+                              size: 1024000
+                      rawData:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            nullable: true
+                          firstName:
+                            type: string
+                            nullable: true
+                          lastName:
+                            type: string
+                            nullable: true
+                          invitationEmail:
+                            type: string
+                            nullable: true
+                          jobTitle:
+                            type: string
+                            nullable: true
+                          organization:
+                            type: string
+                            nullable: true
+                          city:
+                            type: string
+                            nullable: true
+                          country:
+                            type: string
+                            nullable: true
+                          areaCode:
+                            type: string
+                            nullable: true
+                          contactNo:
+                            type: string
+                            nullable: true
+                          customCheckInToken:
+                            type: string
+                            nullable: true
+                          customFields:
+                            type: object
+                            properties: {}
+                            additionalProperties:
+                              type: object
+                              properties:
+                                value:
+                                  anyOf:
+                                  - type: string
+                                    nullable: true
+                                  - type: array
+                                    items:
+                                      type: string
+                                      nullable: true
+                                  - type: boolean
+                                mediaValues:
+                                  type: array
+                                  items:
+                                    type: string
+                                    format: uuid
+                              additionalProperties: false
+                            description: Only support update with exist (active / archived) custom questions in question library
+                          approvalStatus:
+                            type: string
+                            enum:
+                            - waitlisted
+                            - approved
+                            - rejected
+                          qrCodeToken:
+                            type: string
+                            nullable: true
+                          registrationStatus:
+                            type: string
+                            enum:
+                            - pending
+                            - registered
+                            - not-applicable
+                          registerUtmParams:
+                            type: object
+                            properties:
+                              utm_source:
+                                type: string
+                              utm_medium:
+                                type: string
+                              utm_campaign:
+                                type: string
+                              utm_term:
+                                type: string
+                              utm_content:
+                                type: string
+                            additionalProperties: false
+                        additionalProperties: false
+                        description: Attendee profile fields that can be created or updated via the API
+                        example:
+                          firstName: John
+                          lastName: Doe
+                          name: John Doe
+                          invitationEmail: john@example.com
+                          jobTitle: Engineer
+                          organization: Acme Inc
+                          city: Hong Kong
+                          country: HK
+                          areaCode: '852'
+                          contactNo: '98765432'
+                          customFields: {}
+                          registrationStatus: REGISTERED
+                      rsvpStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - invited
+                        - registered
+                        - rejected
+                        - not-applicable
+                        nullable: true
+                      orderId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                    additionalProperties: false
+                    description: Full attendee response object returned by all attendee endpoints
+                    examples:
+                    - firstName: John
+                      lastName: Doe
+                      name: John Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      registrationStatus: REGISTERED
+                    - id: 550e8400-e29b-41d4-a716-446655440000
+                      name: John Doe
+                      firstName: John
+                      lastName: Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      roleTags:
+                      - ATTENDEE
+                      status: registered
+                      registrationStatus: REGISTERED
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      updatedAt: '2024-01-01T00:00:00.000Z'
+                      registeredAt: '2024-01-01T00:00:00.000Z'
+                      attendedAt: null
+                      checkInMethod: null
+                      checkedInAt: null
+                      approvalStatus: null
+                      approvedAt: null
+                      rejectedAt: null
+                      firstEnteredWebAppAt: null
+                      magicLinkUrl: null
+                      qrCodeLinkUrl: null
+                      ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                      addOns: []
+                      attendeeTagIdList: []
+                      rsvpStatus: null
+                      orderId: 550e8400-e29b-41d4-a716-446655440002
+                      customCheckInToken: null
+                      qrCodeToken: null
+                      registerUtmParams: {}
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: attendeeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  nullable: true
+                firstName:
+                  type: string
+                  nullable: true
+                lastName:
+                  type: string
+                  nullable: true
+                invitationEmail:
+                  type: string
+                  nullable: true
+                jobTitle:
+                  type: string
+                  nullable: true
+                organization:
+                  type: string
+                  nullable: true
+                city:
+                  type: string
+                  nullable: true
+                country:
+                  type: string
+                  nullable: true
+                areaCode:
+                  type: string
+                  nullable: true
+                contactNo:
+                  type: string
+                  nullable: true
+                customCheckInToken:
+                  type: string
+                  nullable: true
+                customFields:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    properties:
+                      value:
+                        anyOf:
+                        - type: string
+                          nullable: true
+                        - type: array
+                          items:
+                            type: string
+                            nullable: true
+                        - type: boolean
+                      mediaValues:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                    additionalProperties: false
+                  description: Only support update with exist (active / archived) custom questions in question library
+                approvalStatus:
+                  type: string
+                  enum:
+                  - waitlisted
+                  - approved
+                  - rejected
+                qrCodeToken:
+                  type: string
+                  nullable: true
+                registrationStatus:
+                  type: string
+                  enum:
+                  - pending
+                  - registered
+                  - not-applicable
+                registerUtmParams:
+                  type: object
+                  properties:
+                    utm_source:
+                      type: string
+                    utm_medium:
+                      type: string
+                    utm_campaign:
+                      type: string
+                    utm_term:
+                      type: string
+                    utm_content:
+                      type: string
+                  additionalProperties: false
+              additionalProperties: false
+              description: Attendee profile fields that can be created or updated via the API
+              example:
+                firstName: John
+                lastName: Doe
+                name: John Doe
+                invitationEmail: john@example.com
+                jobTitle: Engineer
+                organization: Acme Inc
+                city: Hong Kong
+                country: HK
+                areaCode: '852'
+                contactNo: '98765432'
+                customFields: {}
+                registrationStatus: REGISTERED
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: patchAttendeeById
+      summary: Partially update an attendee
+  /public-api/v1/event/{eventId}/attendee/{attendeeId}/attendee-ticket:
+    patch:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                        nullable: true
+                      firstName:
+                        type: string
+                        nullable: true
+                      lastName:
+                        type: string
+                        nullable: true
+                      invitationEmail:
+                        type: string
+                        nullable: true
+                      jobTitle:
+                        type: string
+                        nullable: true
+                      organization:
+                        type: string
+                        nullable: true
+                      city:
+                        type: string
+                        nullable: true
+                      country:
+                        type: string
+                        nullable: true
+                      areaCode:
+                        type: string
+                        nullable: true
+                      contactNo:
+                        type: string
+                        nullable: true
+                      customCheckInToken:
+                        type: string
+                        nullable: true
+                      qrCodeToken:
+                        type: string
+                        nullable: true
+                      registerUtmParams:
+                        type: object
+                        properties:
+                          utm_source:
+                            type: string
+                          utm_medium:
+                            type: string
+                          utm_campaign:
+                            type: string
+                          utm_term:
+                            type: string
+                          utm_content:
+                            type: string
+                        additionalProperties: false
+                      roleTags:
+                        type: array
+                        items:
+                          type: string
+                          enum:
+                          - organizer
+                          - host
+                          - speaker
+                          - exhibitor
+                          - booth-rep
+                          - visitor
+                          - system
+                      status:
+                        type: string
+                        enum:
+                        - invited
+                        - registered
+                        - attended
+                        - magic-link
+                      registrationStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - registered
+                        - not-applicable
+                      firstEnteredWebAppAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      registeredAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      attendedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      checkInMethod:
+                        type: string
+                        enum:
+                        - walk_in
+                        - check_in
+                        - qr_code
+                        - search
+                        nullable: true
+                      checkedInAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      approvalStatus:
+                        type: string
+                        enum:
+                        - waitlisted
+                        - approved
+                        - rejected
+                        nullable: true
+                      approvedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      rejectedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      magicLinkUrl:
+                        type: string
+                        nullable: true
+                      qrCodeLinkUrl:
+                        type: string
+                        nullable: true
+                      ticketClassId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      addOns:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketClassAddOnId:
+                              type: string
+                              format: uuid
+                            qty:
+                              type: integer
+                          additionalProperties: false
+                      attendeeTagIdList:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                      customFields:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          type: object
+                          properties:
+                            value:
+                              anyOf:
+                              - type: string
+                                nullable: true
+                              - type: array
+                                items:
+                                  type: string
+                                  nullable: true
+                              - type: boolean
+                            mediaValues:
+                              type: array
+                              items:
+                                anyOf:
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    cloudflarePlaybackUrl:
+                                      type: string
+                                      nullable: true
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    previewFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    previewFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - previewFilename
+                                  - originalFilepath
+                                  - previewFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                          additionalProperties: false
+                        description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                        example:
+                          questionIdString:
+                            value: Some text answer
+                            mediaValues: []
+                          questionIdMc:
+                            value:
+                            - choice-id-1
+                            - choice-id-2
+                            mediaValues: []
+                          questionIdMedia:
+                            value: null
+                            mediaValues:
+                            - id: 123e4567-e89b-12d3-a456-426614174000
+                              originalFilename: photo.jpg
+                              previewFilename: photo-preview.jpg
+                              originalFilepath: /uploads/photo.jpg
+                              previewFilepath: /uploads/photo-preview.jpg
+                              mimeType: image/jpeg
+                              type: image
+                              size: 1024000
+                      rawData:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            nullable: true
+                          firstName:
+                            type: string
+                            nullable: true
+                          lastName:
+                            type: string
+                            nullable: true
+                          invitationEmail:
+                            type: string
+                            nullable: true
+                          jobTitle:
+                            type: string
+                            nullable: true
+                          organization:
+                            type: string
+                            nullable: true
+                          city:
+                            type: string
+                            nullable: true
+                          country:
+                            type: string
+                            nullable: true
+                          areaCode:
+                            type: string
+                            nullable: true
+                          contactNo:
+                            type: string
+                            nullable: true
+                          customCheckInToken:
+                            type: string
+                            nullable: true
+                          customFields:
+                            type: object
+                            properties: {}
+                            additionalProperties:
+                              type: object
+                              properties:
+                                value:
+                                  anyOf:
+                                  - type: string
+                                    nullable: true
+                                  - type: array
+                                    items:
+                                      type: string
+                                      nullable: true
+                                  - type: boolean
+                                mediaValues:
+                                  type: array
+                                  items:
+                                    type: string
+                                    format: uuid
+                              additionalProperties: false
+                            description: Only support update with exist (active / archived) custom questions in question library
+                          approvalStatus:
+                            type: string
+                            enum:
+                            - waitlisted
+                            - approved
+                            - rejected
+                          qrCodeToken:
+                            type: string
+                            nullable: true
+                          registrationStatus:
+                            type: string
+                            enum:
+                            - pending
+                            - registered
+                            - not-applicable
+                          registerUtmParams:
+                            type: object
+                            properties:
+                              utm_source:
+                                type: string
+                              utm_medium:
+                                type: string
+                              utm_campaign:
+                                type: string
+                              utm_term:
+                                type: string
+                              utm_content:
+                                type: string
+                            additionalProperties: false
+                        additionalProperties: false
+                        description: Attendee profile fields that can be created or updated via the API
+                        example:
+                          firstName: John
+                          lastName: Doe
+                          name: John Doe
+                          invitationEmail: john@example.com
+                          jobTitle: Engineer
+                          organization: Acme Inc
+                          city: Hong Kong
+                          country: HK
+                          areaCode: '852'
+                          contactNo: '98765432'
+                          customFields: {}
+                          registrationStatus: REGISTERED
+                      rsvpStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - invited
+                        - registered
+                        - rejected
+                        - not-applicable
+                        nullable: true
+                      orderId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                    additionalProperties: false
+                    description: Full attendee response object returned by all attendee endpoints
+                    examples:
+                    - firstName: John
+                      lastName: Doe
+                      name: John Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      registrationStatus: REGISTERED
+                    - id: 550e8400-e29b-41d4-a716-446655440000
+                      name: John Doe
+                      firstName: John
+                      lastName: Doe
+                      invitationEmail: john@example.com
+                      jobTitle: Engineer
+                      organization: Acme Inc
+                      city: Hong Kong
+                      country: HK
+                      areaCode: '852'
+                      contactNo: '98765432'
+                      customFields: {}
+                      roleTags:
+                      - ATTENDEE
+                      status: registered
+                      registrationStatus: REGISTERED
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      updatedAt: '2024-01-01T00:00:00.000Z'
+                      registeredAt: '2024-01-01T00:00:00.000Z'
+                      attendedAt: null
+                      checkInMethod: null
+                      checkedInAt: null
+                      approvalStatus: null
+                      approvedAt: null
+                      rejectedAt: null
+                      firstEnteredWebAppAt: null
+                      magicLinkUrl: null
+                      qrCodeLinkUrl: null
+                      ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                      addOns: []
+                      attendeeTagIdList: []
+                      rsvpStatus: null
+                      orderId: 550e8400-e29b-41d4-a716-446655440002
+                      customCheckInToken: null
+                      qrCodeToken: null
+                      registerUtmParams: {}
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: attendeeId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ticketClassId:
+                  type: string
+                  format: uuid
+                addOns:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ticketClassAddOnId:
+                        type: string
+                        format: uuid
+                      qty:
+                        type: integer
+                    required:
+                    - ticketClassAddOnId
+                    - qty
+                    additionalProperties: false
+              additionalProperties: false
+              description: Request body for changing an attendee ticket class and add-ons
+              example:
+                ticketClassId: 550e8400-e29b-41d4-a716-446655440001
+                addOns:
+                - ticketClassAddOnId: 550e8400-e29b-41d4-a716-446655440002
+                  qty: 1
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: patchAttendeeTicketByAttendeeId
+      summary: Change an attendee ticket class and add-ons
+  /public-api/v1/event/{eventId}/attendee/qr-code-token/{qrCodeToken}:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      createdAt:
+                        type: string
+                        format: date-time
+                      customFields:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          type: object
+                          properties:
+                            value:
+                              anyOf:
+                              - type: string
+                                nullable: true
+                              - type: array
+                                items:
+                                  type: string
+                                  nullable: true
+                              - type: boolean
+                            mediaValues:
+                              type: array
+                              items:
+                                anyOf:
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    cloudflarePlaybackUrl:
+                                      type: string
+                                      nullable: true
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    previewFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    previewFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - previewFilename
+                                  - originalFilepath
+                                  - previewFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                          additionalProperties: false
+                        description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                        example:
+                          questionIdString:
+                            value: Some text answer
+                            mediaValues: []
+                          questionIdMc:
+                            value:
+                            - choice-id-1
+                            - choice-id-2
+                            mediaValues: []
+                          questionIdMedia:
+                            value: null
+                            mediaValues:
+                            - id: 123e4567-e89b-12d3-a456-426614174000
+                              originalFilename: photo.jpg
+                              previewFilename: photo-preview.jpg
+                              originalFilepath: /uploads/photo.jpg
+                              previewFilepath: /uploads/photo-preview.jpg
+                              mimeType: image/jpeg
+                              type: image
+                              size: 1024000
+                    additionalProperties: false
+                    description: Attendee lookup result by QR code token or short code
+                    example:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      customFields: {}
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: qrCodeToken
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: getAttendeeByCheckInQRCodeToken
+      summary: Look up an attendee by QR code token
+  /public-api/v1/event/{eventId}/attendee/short-code/{shortCode}:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      createdAt:
+                        type: string
+                        format: date-time
+                      customFields:
+                        type: object
+                        properties: {}
+                        additionalProperties:
+                          type: object
+                          properties:
+                            value:
+                              anyOf:
+                              - type: string
+                                nullable: true
+                              - type: array
+                                items:
+                                  type: string
+                                  nullable: true
+                              - type: boolean
+                            mediaValues:
+                              type: array
+                              items:
+                                anyOf:
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    cloudflarePlaybackUrl:
+                                      type: string
+                                      nullable: true
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - originalFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                                - type: object
+                                  properties:
+                                    id:
+                                      type: string
+                                      format: uuid
+                                    originalFilename:
+                                      type: string
+                                    previewFilename:
+                                      type: string
+                                    originalFilepath:
+                                      type: string
+                                    previewFilepath:
+                                      type: string
+                                    mimeType:
+                                      type: string
+                                    type:
+                                      type: string
+                                      enum:
+                                      - image
+                                      - video
+                                      - file
+                                    size:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - id
+                                  - originalFilename
+                                  - previewFilename
+                                  - originalFilepath
+                                  - previewFilepath
+                                  - mimeType
+                                  - size
+                                  additionalProperties: false
+                          additionalProperties: false
+                        description: 'Map of custom question IDs to their values. Each key is the custom question ID. The `value` field type depends on the question type: a string for text questions, an array of choice IDs for multiple-choice questions, or a boolean for yes/no questions. The `mediaValues` array contains full media response objects (image, file, or video) when media is attached to the field, or an empty array otherwise.'
+                        example:
+                          questionIdString:
+                            value: Some text answer
+                            mediaValues: []
+                          questionIdMc:
+                            value:
+                            - choice-id-1
+                            - choice-id-2
+                            mediaValues: []
+                          questionIdMedia:
+                            value: null
+                            mediaValues:
+                            - id: 123e4567-e89b-12d3-a456-426614174000
+                              originalFilename: photo.jpg
+                              previewFilename: photo-preview.jpg
+                              originalFilepath: /uploads/photo.jpg
+                              previewFilepath: /uploads/photo-preview.jpg
+                              mimeType: image/jpeg
+                              type: image
+                              size: 1024000
+                    additionalProperties: false
+                    description: Attendee lookup result by QR code token or short code
+                    example:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      customFields: {}
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - description: When true, short code lookup is case-insensitive
+        example: false
+        name: isIgnoreCase
+        in: query
+        schema:
+          type: boolean
+      - name: shortCode
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: getAttendeeByShortCode
+      summary: Look up an attendee by short code
+  /public-api/v1/event/{eventId}/attendee-tag/all:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        rawData:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                          required:
+                          - name
+                          additionalProperties: false
+                      required:
+                      - id
+                      - name
+                      - createdAt
+                      - updatedAt
+                      - rawData
+                      additionalProperties: false
+                required:
+                - dataList
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Attendee
+      operationId: getAllAttendeeTagByEventId
+      summary: List all attendee tags for an event
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

@@ -1,0 +1,370 @@
+openapi: 3.2.0
+info:
+  title: Public Registration Order API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Registration Order
+paths:
+  /public-api/v1/reg/event/{eventId}:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          paymentSecret:
+                            type: string
+                          status:
+                            type: string
+                            enum:
+                            - initialized
+                            - pending_payment
+                            - paid
+                            - cancelled
+                            - completed
+                            - refunding
+                            - refunded
+                          orderItems:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  format: uuid
+                                addOns:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      ticketClassAddOnId:
+                                        type: string
+                                        format: uuid
+                                      selectionStatus:
+                                        type: string
+                                        enum:
+                                        - regular
+                                        - waitlisted
+                                        - confirmed
+                                    required:
+                                    - ticketClassAddOnId
+                                    - selectionStatus
+                                    additionalProperties: false
+                              required:
+                              - id
+                              - addOns
+                              additionalProperties: false
+                        required:
+                        - id
+                        - status
+                        - orderItems
+                        additionalProperties: false
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                purchaserEmail:
+                  type: string
+                attendeeTicketOrderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ticketClassId:
+                        type: string
+                      regFormData:
+                        type: object
+                        properties:
+                          email:
+                            type: string
+                            format: email
+                          regFormId:
+                            type: string
+                          rsvpToken:
+                            type: string
+                            format: uuid
+                          eventProspectId:
+                            type: string
+                            format: uuid
+                          magicLinkToken:
+                            type: string
+                            format: uuid
+                          fields:
+                            type: object
+                            properties: {}
+                            additionalProperties:
+                              anyOf:
+                              - type: string
+                              - type: array
+                                items:
+                                  type: string
+                              - type: boolean
+                              - type: object
+                                properties:
+                                  mediaValues:
+                                    type: array
+                                    items:
+                                      type: string
+                                additionalProperties: false
+                        required:
+                        - fields
+                        additionalProperties: false
+                      addOnIds:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                    required:
+                    - ticketClassId
+                    additionalProperties: false
+                stripePaymentMethod:
+                  type: string
+                  enum:
+                  - card
+                  - alipay
+                  - apple_pay
+                  - google_pay
+                promoCodeName:
+                  type: string
+                orderPaymentMethod:
+                  type: string
+                  enum:
+                  - online
+                  - offline
+                offlinePaymentBillingInformation:
+                  type: string
+                paymentBillingInformation:
+                  type: string
+                customUtmParams:
+                  type: object
+                  properties: {}
+                  additionalProperties: false
+                utm_source:
+                  type: string
+                utm_medium:
+                  type: string
+                utm_campaign:
+                  type: string
+                utm_term:
+                  type: string
+                utm_content:
+                  type: string
+              required:
+              - purchaserEmail
+              additionalProperties: false
+      security:
+      - bearerAuth: []
+      tags:
+      - Registration Order
+      operationId: createOrder
+      summary: Create a ticketing order
+      description: Creates an order with validation of registration form and ticketing constraints, promo code resolution, and optionally a Stripe payment intent. Returns the order with its payment secret and add-on selection statuses.
+  /public-api/v1/reg/event/{eventId}/{orderId}/status:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          status:
+                            type: string
+                            enum:
+                            - initialized
+                            - pending_payment
+                            - paid
+                            - cancelled
+                            - completed
+                            - refunding
+                            - refunded
+                        required:
+                        - id
+                        - status
+                        additionalProperties: false
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Registration Order
+      operationId: getOrderStatus
+      summary: Get the status of an order
+  /public-api/v1/reg/event/{eventId}/quotation:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      totalAmount:
+                        type: string
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketClassId:
+                              type: string
+                              format: uuid
+                            unitPrice:
+                              type: string
+                            qty:
+                              type: number
+                              format: float
+                            actualPrice:
+                              type: string
+                            actualTicketPrice:
+                              type: string
+                            originalPrice:
+                              type: string
+                            appliedPromoCode:
+                              type: string
+                            addOns:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    format: uuid
+                                  price:
+                                    type: string
+                                required:
+                                - id
+                                - price
+                                additionalProperties: false
+                          required:
+                          - ticketClassId
+                          - unitPrice
+                          - qty
+                          - actualPrice
+                          - actualTicketPrice
+                          - originalPrice
+                          additionalProperties: false
+                      minCharge:
+                        type: number
+                        format: float
+                    required:
+                    - totalAmount
+                    - minCharge
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      ticketClassId:
+                        type: string
+                        format: uuid
+                      qty:
+                        type: number
+                        format: float
+                        minimum: 1
+                      addOnIds:
+                        type: array
+                        items:
+                          type: string
+                          format: uuid
+                    required:
+                    - ticketClassId
+                    - qty
+                    additionalProperties: false
+                promoCode:
+                  type: string
+              additionalProperties: false
+      security:
+      - bearerAuth: []
+      tags:
+      - Registration Order
+      operationId: getOrderQuotation
+      summary: Get a price quotation without creating an order
+      description: Returns line-item pricing for the requested tickets and add-ons, including promo code discounts if applicable. No order is created. Use this to preview pricing before placing an order.
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

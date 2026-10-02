@@ -1,0 +1,49 @@
+openapi: 3.2.0
+info:
+  title: Public Salesforce API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Salesforce
+paths:
+  /public-api/v1/salesforce-account:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                      refreshToken:
+                        type: string
+                      instanceUrl:
+                        type: string
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      security:
+      - bearerAuth: []
+      tags:
+      - Salesforce
+      operationId: getSalesforceAccount
+      summary: Get salesforce account
+      x-summary-source: derived
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token
