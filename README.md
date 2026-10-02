@@ -62,6 +62,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Mailchimp        | [Marketing API specification](https://github.com/mailchimp/mailchimp-client-lib-codegen/tree/main/spec)          | JSON   | 2.0     | `official` `marketing`                    |
 | Mixpanel          | [14 API specifications](https://docs.mixpanel.com/llms.txt)                                               | JSON, YAML | 3.0.2, 3.0.3, 3.1.0 | `official` `analytics` `product-analytics` |
 | OneSignal        | [API specification](https://raw.githubusercontent.com/OneSignal/api/main/api.json)                              | JSON   | 3.0     | `official` `focused` `customer-engagement` `push` `email` `sms` |
+| OpenPageRank     | [API specification](https://openpagerank.keywordseverywhere.com/v1/openapi.json)                                    | JSON   | 3.0.3   | `official` `seo` `domain-authority` |
 | Outrank | [Community specification](specs/outrank/openapi.yml); [source docs](https://www.outrank.so/docs/api) | YAML | 3.2.1 | `community-maintained` `seo` `content-marketing` |
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
