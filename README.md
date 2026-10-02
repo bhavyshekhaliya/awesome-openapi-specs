@@ -387,6 +387,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Social Media and Online Communities
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| Pinterest | [API specification](https://raw.githubusercontent.com/pinterest/api-description/main/v5/openapi.yaml) | YAML | 3.0.3 | `social-media` `advertising` `open-source` |
 | Hootsuite | [REST API specification](https://apidocs.hootsuite.com/docs/api/swagger.yaml) | YAML | 2.0 | `official` `social-media-management` `analytics` |
 | Sendible | [Zapier API specification](https://assets.sendible.com/api/documentation/swagger/sendible_zapier_api.yaml) | YAML | 3.0.0 | `official` `social-media-management` |
 | Iconosquare | [API specification](https://dash.readme.com/api/v1/api-registry/3ev15rmuo475i6) | JSON | 3.0.3 | `official` `social-media` `analytics` |
