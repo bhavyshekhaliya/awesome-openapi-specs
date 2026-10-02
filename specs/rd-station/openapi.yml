@@ -1,0 +1,621 @@
+openapi: 3.1.0
+info:
+  title: RD Station Marketing API
+  version: "2.0"
+  description: >-
+    Community-maintained OpenAPI subset of the public RD Station Marketing API.
+    It covers contact management, marketing events, conversion submissions, and
+    webhook subscriptions. Event payloads can include configured custom fields
+    whose names start with `cf_`.
+  contact:
+    url: https://www.rdstation.com/contact/
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+  externalDocs:
+    description: RD Station Marketing API documentation
+    url: https://developers.rdstation.com/reference/introducao-rdsm
+servers:
+  - url: https://api.rd.services
+    description: RD Station API
+security:
+  - BearerToken: []
+tags:
+  - name: Contacts
+  - name: Events
+  - name: Webhooks
+paths:
+  /platform/contacts:
+    post:
+      tags: [Contacts]
+      operationId: createContact
+      summary: Create a contact
+      description: >-
+        Creates a new lead contact without registering a conversion event.
+        Existing contacts are rejected. Supply `email` or `phone` (or both).
+        Tags supplied here are added to the new contact.
+      externalDocs:
+        description: Create contact documentation
+        url: https://developers.rdstation.com/reference/post_platform-contacts-1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/ContactWrite'
+                - anyOf:
+                    - required: [email]
+                    - required: [phone]
+      responses:
+        '200':
+          description: Contact created.
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized.
+  /platform/contacts/{identifier}:{value}:
+    parameters:
+      - $ref: '#/components/parameters/ContactIdentifier'
+      - $ref: '#/components/parameters/ContactValue'
+    get:
+      tags: [Contacts]
+      operationId: getContact
+      summary: Get a contact by UUID, email, or phone
+      externalDocs:
+        description: Get contact documentation
+        url: https://developers.rdstation.com/reference/get_platform-contacts-identifier-value-1
+      responses:
+        '200':
+          description: Contact details, including standard fields and configured custom fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Contact not found.
+    patch:
+      tags: [Contacts]
+      operationId: updateContact
+      summary: Create or update a contact
+      description: >-
+        Creates or updates a contact and does not register a conversion event.
+        When `identifier` is `email`, do not include `email` in the request body.
+        Tags sent in the body replace the contact's current tags.
+      externalDocs:
+        description: Update contact documentation
+        url: https://developers.rdstation.com/reference/patch_platform-contacts-identifier-value-1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactWrite'
+      responses:
+        '200':
+          description: Contact created or updated.
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Contact not found.
+    delete:
+      tags: [Contacts]
+      operationId: deleteContact
+      summary: Delete a contact
+      externalDocs:
+        description: Delete contact documentation
+        url: https://developers.rdstation.com/reference/delete_platform-contacts-identifier-value-1
+      responses:
+        '204':
+          description: Contact deleted.
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Contact not found.
+  /platform/contacts/{identifier}:{value}/tag:
+    parameters:
+      - $ref: '#/components/parameters/ContactIdentifier'
+      - $ref: '#/components/parameters/ContactValue'
+    post:
+      tags: [Contacts]
+      operationId: addContactTags
+      summary: Add tags to a contact
+      description: Adds the supplied tags to an existing contact without replacing its current tags.
+      externalDocs:
+        description: Add contact tags documentation
+        url: https://developers.rdstation.com/reference/post_platform-contacts-identifier-value-tag-1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tags]
+              properties:
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: Tags to add to the contact.
+      responses:
+        '200':
+          description: Tags added.
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Contact not found.
+  /platform/events:
+    post:
+      tags: [Events]
+      operationId: createMarketingEvent
+      summary: Register a marketing event
+      description: >-
+        Registers a conversion, opportunity, won deal, lost deal, or another
+        documented Marketing event. Qualification events require a contact that
+        already exists. A successful request returns the event UUID.
+      externalDocs:
+        description: Standard conversion and qualification event documentation
+        url: https://developers.rdstation.com/reference/evento-de-convers%C3%A3o-padr%C3%A3o
+      parameters:
+        - name: event_type
+          in: query
+          required: false
+          description: >-
+            Event discriminator used by the event-specific endpoint examples.
+            When supplied, use the lowercase form shown in the linked event
+            documentation and make it match the `event_type` in the body.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarketingEvent'
+            examples:
+              conversion:
+                summary: Create or update a contact and register a conversion
+                value:
+                  event_type: CONVERSION
+                  event_family: CDP
+                  payload:
+                    conversion_identifier: Newsletter signup
+                    email: person@example.com
+                    name: Alex Example
+              wonDeal:
+                summary: Mark an existing contact as a won deal
+                value:
+                  event_type: SALE
+                  event_family: CDP
+                  payload:
+                    email: person@example.com
+                    funnel_name: default
+                    value: 200
+              lostDeal:
+                summary: Mark an existing contact as a lost deal
+                value:
+                  event_type: OPPORTUNITY_LOST
+                  event_family: CDP
+                  payload:
+                    email: person@example.com
+                    funnel_name: default
+                    reason: Budget
+      responses:
+        '200':
+          description: Event registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized.
+  /platform/conversions:
+    post:
+      tags: [Events]
+      operationId: createConversionWithApiKey
+      summary: Register a conversion with an API key
+      description: >-
+        Creates or updates a contact and registers a conversion. This API-key
+        variant supports conversion events only; it does not use OAuth bearer
+        authentication.
+      externalDocs:
+        description: Conversion via API key documentation
+        url: https://developers.rdstation.com/reference/conversao
+      security:
+        - ConversionApiKey: []
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: API key created for RD Station Marketing conversion integrations.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionEvent'
+      responses:
+        '200':
+          description: Conversion registered.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventResponse'
+        '400':
+          description: Bad request.
+  /integrations/webhooks:
+    get:
+      tags: [Webhooks]
+      operationId: listWebhooks
+      summary: List integration webhooks
+      description: Lists webhooks created by the integration; webhooks created in the Marketing interface are not returned.
+      externalDocs:
+        description: List webhooks documentation
+        url: https://developers.rdstation.com/reference/get_integrations-webhooks
+      responses:
+        '200':
+          description: Integration webhooks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookList'
+        '401':
+          description: Unauthorized.
+    post:
+      tags: [Webhooks]
+      operationId: createWebhook
+      summary: Create a webhook subscription
+      description: >-
+        Creates a webhook subscription. RD Station validates the destination URL
+        during creation; the destination must return a 2xx response. Duplicate
+        URLs for the same event type are not allowed.
+      externalDocs:
+        description: Create webhook documentation
+        url: https://developers.rdstation.com/reference/post_integrations-webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookWrite'
+      responses:
+        '201':
+          description: Webhook subscription created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized.
+  /integrations/webhooks/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/WebhookUuid'
+    get:
+      tags: [Webhooks]
+      operationId: getWebhook
+      summary: Get an integration webhook
+      externalDocs:
+        description: Get webhook documentation
+        url: https://developers.rdstation.com/reference/getonesubscription
+      responses:
+        '200':
+          description: Webhook subscription.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Webhook not found.
+    put:
+      tags: [Webhooks]
+      operationId: updateWebhook
+      summary: Update an integration webhook
+      externalDocs:
+        description: Update webhook documentation
+        url: https://developers.rdstation.com/reference/updatesubscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookWrite'
+      responses:
+        '200':
+          description: Webhook subscription updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webhook'
+        '400':
+          description: Bad request.
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Webhook not found.
+    delete:
+      tags: [Webhooks]
+      operationId: deleteWebhook
+      summary: Delete an integration webhook
+      externalDocs:
+        description: Delete webhook documentation
+        url: https://developers.rdstation.com/reference/delete_integrations-webhooks-uuid
+      responses:
+        '204':
+          description: Webhook subscription deleted.
+        '401':
+          description: Unauthorized.
+        '404':
+          description: Webhook not found.
+components:
+  securitySchemes:
+    BearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: OAuth access token issued by RD Station.
+    ConversionApiKey:
+      type: apiKey
+      in: query
+      name: api_key
+      description: API key used only by the Marketing conversion endpoint.
+  parameters:
+    ContactIdentifier:
+      name: identifier
+      in: path
+      required: true
+      description: Contact key type.
+      schema:
+        type: string
+        enum: [uuid, email, phone]
+    ContactValue:
+      name: value
+      in: path
+      required: true
+      description: Value for the selected contact identifier.
+      schema:
+        type: string
+    WebhookUuid:
+      name: uuid
+      in: path
+      required: true
+      description: UUID of the integration webhook subscription.
+      schema:
+        type: string
+  schemas:
+    ContactWrite:
+      type: object
+      description: >-
+        Contact properties accepted by the Marketing contacts endpoints. Custom
+        fields must already exist in the RD Station account and use their
+        documented `cf_` API identifiers.
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        job_title:
+          type: string
+        birthdate:
+          type: string
+        bio:
+          type: string
+        website:
+          type: string
+          format: uri
+        personal_phone:
+          type: string
+        mobile_phone:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        twitter:
+          type: string
+        facebook:
+          type: string
+        linkedin:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        legal_bases:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalBasis'
+      additionalProperties: true
+    Contact:
+      allOf:
+        - $ref: '#/components/schemas/ContactWrite'
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            links:
+              type: array
+              items:
+                $ref: '#/components/schemas/ContactLink'
+          additionalProperties: true
+    ContactLink:
+      type: object
+      properties:
+        rel:
+          type: string
+        href:
+          type: string
+          format: uri
+        media:
+          type: string
+        type:
+          type: string
+    LegalBasis:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [communications]
+        type:
+          type: string
+          enum: [pre_existent_contract, consent, legitimate_interest, judicial_process, vital_interest, public_interest]
+        status:
+          type: string
+          enum: [granted, declined]
+    MarketingEvent:
+      type: object
+      required: [event_type, event_family, payload]
+      properties:
+        event_type:
+          type: string
+          enum: [CONVERSION, OPPORTUNITY, SALE, OPPORTUNITY_LOST, CHAT_STARTED, CHAT_FINISHED, ECOMMERCE_CHECKOUT_STARTED, ECOMMERCE_CART_ABANDONED, ECOMMERCE_ORDER_PLACED, ECOMMERCE_ORDER_PAID, ECOMMERCE_ORDER_CANCELLED, ECOMMERCE_ORDER_FULFILLED, ECOMMERCE_SHIPMENT_DELIVERED]
+        event_family:
+          type: string
+          enum: [CDP]
+        payload:
+          $ref: '#/components/schemas/EventPayload'
+    ConversionEvent:
+      type: object
+      required: [event_type, event_family, payload]
+      properties:
+        event_type:
+          type: string
+          enum: [CONVERSION]
+        event_family:
+          type: string
+          enum: [CDP]
+        payload:
+          allOf:
+            - $ref: '#/components/schemas/EventPayload'
+            - type: object
+              required: [conversion_identifier]
+    EventPayload:
+      type: object
+      description: >-
+        Event-specific JSON fields. Contact identification uses `email` or
+        `phone`; `personal_phone` and `mobile_phone` alone do not identify a
+        contact for Marketing events. Configured custom fields use `cf_` names.
+      properties:
+        conversion_identifier:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        name:
+          type: string
+        job_title:
+          type: string
+        personal_phone:
+          type: string
+        mobile_phone:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        website:
+          type: string
+          format: uri
+        twitter:
+          type: string
+        facebook:
+          type: string
+        linkedin:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        funnel_name:
+          type: string
+        value:
+          type: number
+        reason:
+          type: string
+        legal_bases:
+          type: array
+          items:
+            $ref: '#/components/schemas/LegalBasis'
+      additionalProperties: true
+    EventResponse:
+      type: object
+      properties:
+        event_uuid:
+          type: string
+          format: uuid
+    WebhookWrite:
+      type: object
+      required: [event_type, entity_type, url, http_method]
+      properties:
+        event_type:
+          type: string
+          enum: [WEBHOOK.CONVERTED, WEBHOOK.MARKED_OPPORTUNITY, crm_deal_created, crm_deal_updated, crm_deal_deleted]
+        entity_type:
+          type: string
+          enum: [CONTACT]
+        event_identifiers:
+          type: array
+          description: Event identifiers to filter on; supported for WEBHOOK.CONVERTED.
+          items:
+            type: string
+        url:
+          type: string
+          format: uri
+        http_method:
+          type: string
+          enum: [POST]
+        include_relations:
+          type: array
+          items:
+            type: string
+            enum: [COMPANY, CONTACT_FUNNEL]
+    Webhook:
+      allOf:
+        - $ref: '#/components/schemas/WebhookWrite'
+        - type: object
+          properties:
+            uuid:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            platform_account_id:
+              type: number
+            source:
+              type: string
+              enum: [MKT, CRM]
+            status:
+              type: string
+    WebhookList:
+      type: object
+      required: [webhooks]
+      properties:
+        webhooks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webhook'

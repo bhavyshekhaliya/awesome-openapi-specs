@@ -197,6 +197,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | People Data Labs | [API specification](https://raw.githubusercontent.com/peopledatalabs/openAPI-specifications/master/pdl-specs.json) | JSON | 3.0.3 | `official` `lead-generation` `enrichment` |
 | PhantomBuster | [API v2 specification](https://raw.githubusercontent.com/phantombuster/public-gists/master/swagger-api-v2.json) | JSON | 3.0.0 | `official` `lead-generation` `automation` `web-scraping` |
 | Reoon | [Community specification](specs/reoon/openapi.yml); [source docs](https://www.reoon.com/articles/api-documentation-of-reoon-email-verifier/) | YAML | 3.2.1 | `community-maintained` `email-verification` |
+| RD Station | [Community specification](specs/rd-station/openapi.yml); [source docs](https://developers.rdstation.com/reference/introducao-rdsm) | YAML | 3.1.0 | `community-maintained` `marketing-automation` `lead-generation` |
 | Repudoc | [Integration API specification](https://repudoc.com/app/integration/v1/swagger.json) | JSON | 3.0.1 | `official` `reviews` `reputation-management` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Roaspy | [Public API specification](https://api.roaspy.com/documentation/public.json) | JSON | 3.0.3 | `official` `advertising-analytics` `marketing` |
