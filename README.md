@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Spotler UK | [API specification](https://communigator.github.io/API-Documentation/swagger.json) | JSON | 2.0 | `email-marketing` `marketing-automation` |
 | Gathr | [API specification](https://gathr.com/assets/downloads/gathr-openapi.yaml) | YAML | 3.0.3 | `event-management` |
 | Topia | [API specification](https://api.topia.io/api-docs/swagger.yaml) | YAML | 3.0.0 | `event-management` `virtual-events` |
 | My Most Trusted Network | [API specification](https://api.mymosttrusted.net/docs/readme.yaml) | YAML | 3.0.0 | `lead-generation` |
