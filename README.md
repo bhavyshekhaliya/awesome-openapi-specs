@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Gathr | [API specification](https://gathr.com/assets/downloads/gathr-openapi.yaml) | YAML | 3.0.3 | `event-management` |
 | Topia | [API specification](https://api.topia.io/api-docs/swagger.yaml) | YAML | 3.0.0 | `event-management` `virtual-events` |
 | My Most Trusted Network | [API specification](https://api.mymosttrusted.net/docs/readme.yaml) | YAML | 3.0.0 | `lead-generation` |
 | SARE | [API specification](https://dev.sare.pl/rest-api/other/swagger.json?version=0.18.0) | JSON | 3.0.3 | `email-marketing` `marketing-automation` |
