@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| beehiiv          | [API specification](https://developers.beehiiv.com/_fern-files/beehiiv.docs.buildwithfern.com/0a003f55c621652234cd8ef8b2460be3ee66bd4de4c707cbfba0e59d3081a847/assets/beehiiv-API-Specification.yaml) | YAML | 3.0.1 | `official` `email-marketing` `newsletter` |
 | Mailmojo | [API specification](https://api.mailmojo.no) | JSON | 2.0 | `official` `email-marketing` |
 | Stage Captions | [API specification](https://api.stagecaptions.io/api-reference/specs/zapier.yaml) | YAML | 3.0.3 | `official` `event-marketing` |
 | Funnelr | [API specification](https://zapier.gappstack.com/api/swagger/v1/swagger.json) | JSON | 3.0.4 | `official` `sales-funnel` `marketing-automation` |
