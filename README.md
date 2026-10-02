@@ -102,6 +102,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
 | Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
+| UTM.io | [OpenAPI specification](specs/utmio/openapi.json); [official API reference](https://www.utm.io/api-docs/) | JSON | 3.0.0 | `official` `url-management` `link-tracking` `marketing-analytics` |
 | Mailchimp Transactional | [API specification](https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json) | JSON | 3.1.0 | `transactional-email` |
 | MailerSend | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1) | JSON | 3.1.0 | `email-delivery` `transactional-email` |
 | Dotdigital | [API specification](https://r1-api.dotdigital.com/contacts/v3/swagger.json) | JSON | 3.0.1 | `marketing-automation` `email-marketing` |

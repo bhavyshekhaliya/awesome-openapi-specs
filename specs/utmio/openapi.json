@@ -1,0 +1,983 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "UTM IO API",
+    "version": "1.0.0",
+    "description": "The UTM.io API is rate limited per account across one-minute and one-day windows, each counted from your first request in that window. Every authenticated response tells you where your account stands in each window: `X-RateLimit-Limit-Minute`, `X-RateLimit-Remaining-Minute` and `X-RateLimit-Reset-Minute` (seconds until that window rolls over), and the same three headers for `-Day`. Read those rather than assuming a figure — your allowance depends on your plan. Contact support if you need it raised. Exceeding either window returns a `429 Too Many Requests` response with a `Retry-After` header giving the number of seconds to wait before retrying; that response carries the rate-limit headers for both windows too, so you can tell a one-minute burst from an exhausted daily allowance."
+  },
+  "servers": [
+    {
+      "url": "https://www.utm.io/api/v2",
+      "description": "API server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "scheme": "bearer",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "CreateLinkOptionBody": {
+        "type": "object",
+        "required": [
+          "name",
+          "workspace"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "workspace": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "parameter",
+              "attribute"
+            ]
+          }
+        }
+      },
+      "UpdateLinkOptionBody": {
+        "type": "object",
+        "required": [
+          "oldProperty",
+          "newProperty",
+          "workspace"
+        ],
+        "properties": {
+          "newProperty": {
+            "type": "string"
+          },
+          "oldProperty": {
+            "type": "string"
+          },
+          "workspace": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateLinkOptionValueBody": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CreateLinkOptionBody"
+          },
+          {
+            "type": "object"
+          }
+        ],
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "prettyName": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "parentName": {
+            "type": "string"
+          },
+          "parentValue": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateLinkOptionValueBody": {
+        "type": "object",
+        "required": [
+          "name",
+          "workspace",
+          "newValue",
+          "oldValue"
+        ],
+        "properties": {
+          "prettyName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "newValue": {
+            "type": "string"
+          },
+          "oldValue": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "parameter",
+              "attribute"
+            ]
+          }
+        }
+      },
+      "LinkOption": {
+        "type": "object",
+        "properties": {
+          "archived": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "prettyName": {
+            "type": "string"
+          },
+          "order": {
+            "type": "number"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "workspaceName": {
+            "type": "string"
+          },
+          "parentName": {
+            "type": "string"
+          },
+          "parentValue": {
+            "type": "string"
+          },
+          "teamId": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "date"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "parameter",
+              "attribute"
+            ]
+          },
+          "usage": {
+            "type": "number"
+          },
+          "_id": {
+            "type": "string"
+          },
+          "workspaceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LinkOptionValue": {
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "string"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "workspaceName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "parentName": {
+            "type": "string"
+          },
+          "parentValue": {
+            "type": "string"
+          }
+        }
+      },
+      "Link": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "workspaceName": {
+            "type": "string"
+          },
+          "templateId": {
+            "type": "string",
+            "required": false
+          },
+          "templateName": {
+            "type": "string",
+            "required": false
+          },
+          "url": {
+            "type": "string"
+          },
+          "longUrl": {
+            "type": "string"
+          },
+          "shortUrl": {
+            "type": "string"
+          },
+          "campaign": {
+            "type": "string"
+          },
+          "medium": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdByDisplayName": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "type": "string"
+          },
+          "updatedBy": {
+            "type": "string"
+          },
+          "updatedByDisplayName": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "clicks": {
+            "type": "number"
+          },
+          "customProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "parameter",
+                    "attribute"
+                  ]
+                },
+                "field": {
+                  "type": "string"
+                },
+                "value": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CreateLinkBody": {
+        "type": "object",
+        "required": [
+          "workspace",
+          "url"
+        ],
+        "properties": {
+          "workspace": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "campaign": {
+            "type": "string"
+          },
+          "medium": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "shortener": {
+            "type": "string"
+          }
+        }
+      },
+      "EditLinkBody": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "campaign": {
+            "type": "string"
+          },
+          "medium": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "term": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "Shortener": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      },
+      "Workspace": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/link-option": {
+      "post": {
+        "summary": "Create parameter/attribute",
+        "tags": [
+          "LinkOption"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLinkOptionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created attribute/parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update parameter/attribute",
+        "tags": [
+          "LinkOption"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLinkOptionBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated attribute/parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get list parameter/attribute",
+        "tags": [
+          "LinkOption"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "workspace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "parameter",
+                "attribute"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List attribute/parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/link-option/value": {
+      "get": {
+        "summary": "List parameter/attribute value",
+        "tags": [
+          "LinkOption"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "workspace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fieldName",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated attribute/parameter value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOptionValue"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create parameter/attribute value",
+        "tags": [
+          "LinkOption"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLinkOptionValueBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Created attribute/parameter value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update parameter/attribute value",
+        "tags": [
+          "LinkOption"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLinkOptionValueBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated attribute/parameter value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LinkOption"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/links": {
+      "get": {
+        "summary": "Returns the list of the links",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "workspace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "workspace slug"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "search by"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page"
+          },
+          {
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Page size"
+          },
+          {
+            "in": "query",
+            "name": "startDate",
+            "schema": {
+              "type": "date"
+            },
+            "description": "Start date"
+          },
+          {
+            "in": "query",
+            "name": "endDate",
+            "schema": {
+              "type": "date"
+            },
+            "description": "End date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "SUCCESS"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Link"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "number",
+                          "description": "Total matching records. OMITTED ENTIRELY on very large workspaces, where the total cannot be derived from an index. Treat a missing `total` as unknown and page until a page returns fewer items than `pageSize` — do not treat it as zero."
+                        },
+                        "currentPage": {
+                          "type": "number"
+                        },
+                        "pageSize": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create links",
+        "tags": [
+          "Links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLinkBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The list of the links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Link"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/links/{linkId}": {
+      "delete": {
+        "summary": "Delete link",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "linkId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "linkId to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Status of operation"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update link",
+        "tags": [
+          "Links"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "linkId",
+            "schema": {
+              "type": "string"
+            },
+            "description": "linkId to update"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditLinkBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update link",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Link"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shorteners/:workspaceId": {
+      "get": {
+        "summary": "Returns the list of the user shorteners",
+        "tags": [
+          "Shorteners"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the user shorteners",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Shortener"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces": {
+      "get": {
+        "summary": "Returns the list of the workspaces",
+        "tags": [
+          "Workspaces"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the workspaces",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Workspace"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspaces/:workspaceId/fields": {
+      "get": {
+        "summary": "Returns the list of the workspaces",
+        "tags": [
+          "Workspaces"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of fields of a workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "result": {
+                      "type": "array",
+                      "items": {
+                        "schema": {
+                          "type": "object"
+                        },
+                        "properties": {
+                          "key": "string",
+                          "name": "string",
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/zapier/subscriptions": {
+      "post": {
+        "summary": "Register a zapier subscription",
+        "tags": [
+          "Zapier subscriptions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "hookUrl": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The list of the links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a registered subscription",
+        "tags": [
+          "Zapier subscriptions"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list of the deleted links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "LinkOption",
+      "description": "The link option config API"
+    },
+    {
+      "name": "Links",
+      "description": "The links API"
+    },
+    {
+      "name": "Shorteners"
+    },
+    {
+      "name": "Workspaces"
+    },
+    {
+      "name": "Zapier subscriptions"
+    }
+  ]
+}
