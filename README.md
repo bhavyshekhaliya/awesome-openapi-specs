@@ -200,6 +200,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Repudoc | [Integration API specification](https://repudoc.com/app/integration/v1/swagger.json) | JSON | 3.0.1 | `official` `reviews` `reputation-management` |
 | Resend           | [API specification](https://raw.githubusercontent.com/resend/resend-openapi/main/resend.yaml)                   | YAML   | 3.1.2   | `official` `email`                        |
 | Roaspy | [Public API specification](https://api.roaspy.com/documentation/public.json) | JSON | 3.0.3 | `official` `advertising-analytics` `marketing` |
+| Modash | [Discovery API](specs/modash/discovery-api.yaml); [RAW API](specs/modash/raw-api.yaml); [Discovery reference](https://docs.modash.io/products/discovery_api/openapi_doc/discovery); [RAW reference](https://docs.modash.io/products/raw_api/openapi_doc/raw) | YAML | 3.1.0 | `community-maintained` `influencer-marketing` `social-media-analytics` |
 | Saleshandy       | [API specification](https://open-api.saleshandy.com/api-doc-json)                                                | JSON   | 3.0.0   | `official` `sales-engagement` `lead-generation` |
 | SendGrid         | [46 API specifications](https://github.com/twilio/sendgrid-oai/tree/main/spec)                                     | JSON, YAML | 3.1.0 | `official` `transactional-email` `email-marketing` |
 | SendPilot        | [API specification](https://docs.sendpilot.ai/api-reference/openapi.yaml)                                       | YAML   | 3.0     | `official` `sales-engagement`             |
