@@ -99,6 +99,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Pulseem | [API specification](https://api.pulseem.com/swagger/v1/swagger.json) | JSON | 3.0.1 | `email-marketing` `marketing-automation` |
 | SendGrid | [API specification](https://raw.githubusercontent.com/twilio/sendgrid-oai/main/spec/yaml/tsg_mail_v3.yaml) | YAML | 3.1.0 | `email` `transactional-email` |
 | BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
+| Sinch Engage | [OpenAPI specification](specs/sinch-engage/openapi.yaml); [official specification](https://developers.app.sinch.com/openapi.yaml); [API reference](https://developers.app.sinch.com/) | YAML | 3.2.0 | `official` `business-messaging` `sms-marketing` |
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
 | Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
