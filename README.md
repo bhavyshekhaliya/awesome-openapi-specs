@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| MailerSend       | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1?resolved=true)       | JSON   | 3.1.0   | `official` `transactional-email`          |
 | Eventbrite       | [Community specification](specs/eventbrite/openapi.yml); [source docs](https://www.eventbrite.com/platform/new/api) | YAML | 3.1.0 | `community-maintained` `event-management` |
 | ActiveCampaign | [API specification](https://dash.readme.com/api/v1/api-registry/21t7f145tmufpfc93) | JSON | 3.1.0 | `official` `marketing-automation` `email-marketing` `crm` |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
