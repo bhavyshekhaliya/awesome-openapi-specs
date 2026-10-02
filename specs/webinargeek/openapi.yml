@@ -1,0 +1,781 @@
+openapi: 3.1.0
+info:
+  title: WebinarGeek API
+  version: "2.0"
+  description: Community-maintained subset of the documented WebinarGeek API v2.
+  contact:
+    url: https://www.webinargeek.com/contact
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+servers:
+  - url: https://app.webinargeek.com/api/v2
+    description: WebinarGeek API v2
+security:
+  - ApiToken: []
+tags:
+  - name: Webinars
+  - name: Broadcasts
+  - name: Subscriptions
+  - name: Payments
+  - name: Messages
+  - name: Questions
+  - name: Account
+paths:
+  /webinars:
+    get:
+      tags: [Webinars]
+      operationId: listWebinars
+      summary: List webinars
+      description: Returns webinars with their documented nested episode and broadcast data.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: include_past
+          in: query
+          description: Include broadcasts from the past.
+          schema:
+            type: boolean
+            default: false
+        - name: series_only
+          in: query
+          description: Return only webinars with at least two episodes.
+          schema:
+            type: boolean
+            default: false
+        - name: language
+          in: query
+          schema:
+            type: string
+            enum: [nl, en, de, fi, fr, it, es, pl, sv, da, no]
+        - name: type
+          in: query
+          description: Filter on one episode type.
+          schema:
+            type: string
+            enum: [live, automated, ondemand]
+        - name: user_id
+          in: query
+          schema:
+            type: integer
+        - name: department_id
+          in: query
+          schema:
+            type: integer
+        - name: nested_resources
+          in: query
+          description: Optional nested resources; multiple values are comma-separated.
+          schema:
+            type: string
+            enum: [team_member]
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at]
+            default: created_at
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Webinar collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebinarList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /webinars/series_subscribe:
+    post:
+      tags: [Subscriptions]
+      operationId: subscribeToWebinarSeries
+      summary: Subscribe a contact to a webinar series
+      description: Creates one subscription for a broadcast in each episode of the series. The API requires a first name and email address; API subscriptions do not validate extra or consent fields.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeriesRegistration'
+      responses:
+        '201':
+          description: Created subscription records.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeriesSubscriptionResult'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /broadcasts:
+    get:
+      tags: [Broadcasts]
+      operationId: listBroadcasts
+      summary: List broadcasts
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: nested_resources
+          in: query
+          description: Optional nested resources; multiple values are comma-separated.
+          schema:
+            type: string
+            enum: [episode, webinar]
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at, date]
+            default: date
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Broadcast collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BroadcastList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /episodes/broadcasts:
+    post:
+      tags: [Broadcasts]
+      operationId: createEpisodeBroadcast
+      summary: Create a broadcast for an episode
+      description: The episode must belong to a live or automated webinar, and the date must be in the future.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBroadcastRequest'
+      responses:
+        '201':
+          description: Created broadcast, or the existing broadcast at that date and time.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Broadcast'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscriptions:
+    get:
+      tags: [Subscriptions]
+      operationId: listSubscriptions
+      summary: List subscriptions
+      description: Lists subscribers for a broadcast, episode, webinar, or account. Subscribers awaiting email verification are excluded.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: email
+          in: query
+          schema:
+            type: string
+            format: email
+        - name: external_id
+          in: query
+          schema:
+            type: string
+        - name: watched_webinar
+          in: query
+          schema:
+            type: boolean
+        - name: watched_replay
+          in: query
+          schema:
+            type: boolean
+        - name: watched_live
+          in: query
+          schema:
+            type: boolean
+        - name: viewer_started_watching
+          in: query
+          schema:
+            type: boolean
+        - name: broadcast_ended
+          in: query
+          schema:
+            type: boolean
+        - name: unsubscribed
+          in: query
+          schema:
+            type: boolean
+        - name: assessment_passed
+          in: query
+          schema:
+            type: boolean
+        - name: episode_id
+          in: query
+          schema:
+            type: integer
+        - name: broadcast_id
+          in: query
+          schema:
+            type: integer
+        - name: webinar_id
+          in: query
+          schema:
+            type: integer
+        - name: watch_end_from
+          in: query
+          description: Must be used together with watch_end_to; only subscriptions with a non-null watch_end are returned.
+          schema:
+            type: string
+            format: date-time
+        - name: watch_end_to
+          in: query
+          description: Must be used together with watch_end_from; only subscriptions with a non-null watch_end are returned.
+          schema:
+            type: string
+            format: date-time
+        - name: nested_resources
+          in: query
+          description: Optional nested resources; multiple values are comma-separated.
+          schema:
+            type: string
+            enum: [broadcast, episode, webinar]
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at, unsubscribed_at, watched_true_set_at, watch_end]
+            default: created_at
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Subscription collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscription_payments:
+    get:
+      tags: [Payments]
+      operationId: listSubscriptionPayments
+      summary: List subscription payments
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: episode_id
+          in: query
+          schema:
+            type: integer
+        - name: broadcast_id
+          in: query
+          schema:
+            type: integer
+        - name: webinar_id
+          in: query
+          schema:
+            type: integer
+        - name: nested_resources
+          in: query
+          description: Optional nested resources; multiple values are comma-separated.
+          schema:
+            type: string
+            enum: [broadcast, episode, webinar]
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at]
+            default: created_at
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Subscription payment collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /messages:
+    get:
+      tags: [Messages]
+      operationId: listMessages
+      summary: List webinar messages
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: episode_id
+          in: query
+          schema:
+            type: integer
+        - name: broadcast_id
+          in: query
+          schema:
+            type: integer
+        - name: webinar_id
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [public, private, question]
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at, recipient_id]
+            default: created_at
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Message collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /questions:
+    get:
+      tags: [Questions]
+      operationId: listQuestions
+      summary: List webinar questions
+      description: The API returns text answers; live answers are not included.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PerPage'
+        - name: episode_id
+          in: query
+          schema:
+            type: integer
+        - name: broadcast_id
+          in: query
+          schema:
+            type: integer
+        - name: webinar_id
+          in: query
+          schema:
+            type: integer
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [created_at]
+            default: created_at
+        - $ref: '#/components/parameters/Sort'
+      responses:
+        '200':
+          description: Question collection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /account:
+    get:
+      tags: [Account]
+      operationId: getAccountMetadata
+      summary: Retrieve account metadata
+      responses:
+        '200':
+          description: Account associated with the API token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        default:
+          $ref: '#/components/responses/ApiError'
+components:
+  securitySchemes:
+    ApiToken:
+      type: apiKey
+      in: header
+      name: Api-Token
+  parameters:
+    Page:
+      name: page
+      in: query
+      description: Page number, starting at 1.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PerPage:
+      name: per_page
+      in: query
+      description: Number of resources per page; maximum 1000.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 50
+    Sort:
+      name: sort
+      in: query
+      description: Sort direction.
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+  responses:
+    ApiError:
+      description: API error response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+  schemas:
+    ApiError:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    PageInfo:
+      type: object
+      properties:
+        next:
+          type: [string, 'null']
+        page:
+          type: integer
+        per_page:
+          type: integer
+        total_pages:
+          type: integer
+    Webinar:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        internal_title:
+          type: [string, 'null']
+        language:
+          type: string
+        url:
+          type: string
+          format: uri
+        ondemand:
+          type: boolean
+        archived:
+          type: boolean
+        created_at:
+          type: integer
+          description: Unix timestamp in UTC.
+        episodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+      additionalProperties: true
+    Broadcast:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: integer
+          description: Unix timestamp in UTC.
+        has_ended:
+          type: boolean
+        cancelled:
+          type: boolean
+        started_at:
+          type: [integer, 'null']
+        ended_at:
+          type: [integer, 'null']
+        duration:
+          type: [integer, 'null']
+        subscriptions_count:
+          type: integer
+        viewers_count:
+          type: integer
+        live_viewers_count:
+          type: integer
+        replay_available:
+          type: boolean
+        replay_available_until:
+          type: [integer, 'null']
+        public_replay_link:
+          type: [string, 'null']
+          format: uri
+        active_jit:
+          type: boolean
+        episode:
+          $ref: '#/components/schemas/Resource'
+        webinar:
+          $ref: '#/components/schemas/Resource'
+      additionalProperties: true
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstname:
+          type: string
+        surname:
+          type: [string, 'null']
+        email:
+          type: string
+          format: email
+        external_id:
+          type: [string, 'null']
+        watched:
+          type: boolean
+        watched_live:
+          type: boolean
+        watched_replay:
+          type: boolean
+        unsubscribed:
+          type: boolean
+        created_at:
+          type: integer
+          description: Unix timestamp in UTC.
+        broadcast:
+          $ref: '#/components/schemas/Resource'
+        episode:
+          $ref: '#/components/schemas/Resource'
+        webinar:
+          $ref: '#/components/schemas/Resource'
+      additionalProperties: true
+    Resource:
+      type: object
+      additionalProperties: true
+    Registration:
+      type: object
+      required: [firstname, email]
+      properties:
+        firstname:
+          type: string
+        surname:
+          type: string
+        company:
+          type: string
+        job_title:
+          type: string
+        email:
+          type: string
+          format: email
+        street:
+          type: string
+        house_number:
+          type: string
+        city:
+          type: string
+        postcode:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        phone:
+          type: string
+        external_id:
+          type: string
+        time_zone:
+          type: string
+        extra_fields:
+          type: object
+          additionalProperties:
+            type: string
+        consent_fields:
+          type: object
+          additionalProperties:
+            type: string
+        custom_field:
+          type: string
+        registration_ip:
+          type: string
+        skip_confirmation_mail:
+          type: boolean
+    SeriesRegistration:
+      allOf:
+        - $ref: '#/components/schemas/Registration'
+        - type: object
+          properties:
+            broadcasts:
+              type: array
+              description: Optional unique broadcast identifiers, exactly one per episode when supplied.
+              items:
+                type: integer
+    CreateBroadcastRequest:
+      type: object
+      required: [episode_id, date]
+      properties:
+        episode_id:
+          type: number
+        date:
+          type: string
+          format: date-time
+    WebinarList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        webinars:
+          type: array
+          items:
+            $ref: '#/components/schemas/Webinar'
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    BroadcastList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        broadcasts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Broadcast'
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    SubscriptionList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    SeriesSubscriptionResult:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    PaymentList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        subscription_payments:
+          type: array
+          items:
+            type: object
+            properties:
+              payment_key:
+                type: string
+              provider_payment_id:
+                type: string
+              provider_payment_state:
+                type: string
+                enum: [paid, refunded]
+              payment_method:
+                type: string
+              amount:
+                type: string
+              amount_paid:
+                type: string
+              currency:
+                type: string
+              created_at:
+                type: integer
+                description: Unix timestamp in UTC.
+            additionalProperties: true
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    MessageList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              type:
+                type: string
+                enum: [public, private, question]
+              message:
+                type: string
+              recipient_id:
+                type: integer
+              is_viewer:
+                type: boolean
+              is_reply:
+                type: boolean
+              reply_to_id:
+                type: integer
+              reply_to_name:
+                type: string
+              reply_to_message:
+                type: string
+              created_at:
+                type: integer
+                description: Unix timestamp in UTC.
+              subscription:
+                $ref: '#/components/schemas/Subscription'
+            additionalProperties: true
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    QuestionList:
+      type: object
+      properties:
+        total_count:
+          type: integer
+        questions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              broadcast_id:
+                type: integer
+              question:
+                type: string
+              upvotes_count:
+                type: integer
+              subscription_name:
+                type: string
+              subscription_email:
+                type: string
+                format: email
+              subscription_level:
+                type: string
+              created_at:
+                type: integer
+                description: Unix timestamp in UTC.
+              answers:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    answer:
+                      type: string
+                    subscription_name:
+                      type: string
+                    subscription_email:
+                      type: string
+                      format: email
+                    subscription_level:
+                      type: string
+                    created_at:
+                      type: integer
+                      description: Unix timestamp in UTC.
+                  additionalProperties: true
+            additionalProperties: true
+        pages:
+          $ref: '#/components/schemas/PageInfo'
+    Account:
+      type: object
+      properties:
+        company:
+          type: string
+        email:
+          type: string
+          format: email
+      additionalProperties: true
+externalDocs:
+  description: Official WebinarGeek API v2 reference
+  url: https://static.webinargeek.com/api-documentation.html

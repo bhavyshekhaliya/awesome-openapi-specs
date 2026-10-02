@@ -1,0 +1,552 @@
+openapi: 3.1.0
+info:
+  title: Zoho Campaigns API
+  version: "1.1"
+  description: Community-maintained JSON subset of the Zoho Campaigns API v1.1.
+  contact:
+    url: https://www.zoho.com/campaigns/contact.html
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+servers:
+  - url: https://campaigns.zoho.com/api/v1.1
+    description: Zoho Campaigns API v1.1 (US data center)
+security:
+  - ZohoAccessToken: []
+tags:
+  - name: Mailing Lists
+  - name: Contacts
+  - name: Tags
+  - name: Campaigns
+paths:
+  /getmailinglists:
+    get:
+      tags: [Mailing Lists]
+      operationId: getMailingLists
+      summary: Get mailing lists
+      description: Requires the contact READ scope. List-management calls use a list key only when a specific list is being accessed.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/get-mailing-lists.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: fromindex
+          in: query
+          schema:
+            type: integer
+        - name: range
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Mailing lists and list metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingListsResponse'
+  /getlistsubscribers:
+    get:
+      tags: [Contacts]
+      operationId: getListContacts
+      summary: Get contacts in a mailing list
+      description: Requires the contact READ scope and the list key for the mailing list.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/get-list-subscribers.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - $ref: '#/components/parameters/ListKey'
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: fromindex
+          in: query
+          schema:
+            type: integer
+        - name: range
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, recent, mostrecent, unsub, bounce]
+      responses:
+        '200':
+          description: Contacts matching the requested list status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsResponse'
+  /json/listsubscribe:
+    post:
+      tags: [Contacts]
+      operationId: subscribeContact
+      summary: Add or update a contact in a mailing list
+      description: Adds a contact or updates fields for an existing contact. A confirmation email is sent when the mailing list has its signup form enabled.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/contact-subscribe.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - $ref: '#/components/parameters/ListKey'
+        - name: contactinfo
+          in: query
+          required: true
+          description: URL-encoded JSON contact fields, including the contact email.
+          schema:
+            type: string
+        - name: source
+          in: query
+          schema:
+            type: string
+        - name: topic_id
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Contact subscription result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /json/listunsubscribe:
+    post:
+      tags: [Contacts]
+      operationId: unsubscribeContact
+      summary: Unsubscribe a contact from a mailing list
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/contact-unsubscribe.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - $ref: '#/components/parameters/ListKey'
+        - name: contactinfo
+          in: query
+          required: true
+          description: URL-encoded JSON contact fields, including the contact email.
+          schema:
+            type: string
+        - name: topic_id
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Unsubscribe result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /tag/associate:
+    get:
+      tags: [Tags]
+      operationId: associateTag
+      summary: Associate a tag with a contact
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/tag-management/associate-tag.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: tagName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lead_email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Tag association result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /tag/add:
+    get:
+      tags: [Tags]
+      operationId: createTag
+      summary: Create a tag
+      description: Creates a tag that can be associated with contacts.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/tag-management/create-tag.html
+      parameters:
+        - name: tagName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: tagDesc
+          in: query
+          schema:
+            type: string
+        - name: color
+          in: query
+          description: Hex color code for the tag; Zoho documents #ec676c as the default.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tag creation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /tag/deassociate:
+    get:
+      tags: [Tags]
+      operationId: deassociateTag
+      summary: Remove a tag from a contact
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/tag-management/deassociate-tag.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: tagName
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: lead_email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+      responses:
+        '200':
+          description: Tag removal result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /tag/getalltags:
+    get:
+      tags: [Tags]
+      operationId: getAllTags
+      summary: Get tags
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/tag-management/get-all-tags.html
+      responses:
+        '200':
+          description: Tags and their contact associations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagsResponse'
+  /createCampaign:
+    post:
+      tags: [Campaigns]
+      operationId: createCampaign
+      summary: Create a campaign draft
+      description: Creates a draft campaign. Topic ID is required for accounts using the updated topic management version; either list details or segments may be used as the recipients source.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/create-campaign.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: campaignname
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: from_email
+          in: query
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: from_name
+          in: query
+          schema:
+            type: string
+        - name: subject
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: content_url
+          in: query
+          description: Public URL containing the campaign HTML content.
+          schema:
+            type: string
+            format: uri
+        - name: list_details
+          in: query
+          description: URL-encoded JSON mapping mailing-list keys to segment identifiers.
+          schema:
+            type: string
+        - name: segments
+          in: query
+          description: Segment identifiers, in the format documented by the provider.
+          schema:
+            type: string
+        - name: topicId
+          in: query
+          description: Required by accounts using updated topic management.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign creation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCreateResult'
+  /sendcampaign:
+    post:
+      tags: [Campaigns]
+      operationId: sendCampaign
+      summary: Send a campaign
+      description: Sends the campaign identified by its campaign key. Requires the campaign UPDATE scope.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/send-campaign.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: campaignkey
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign sending status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSendResult'
+  /json/clonecampaign:
+    post:
+      tags: [Campaigns]
+      operationId: cloneCampaign
+      summary: Clone a campaign
+      description: The provider documents GET and POST for this action; this spec describes the POST JSON form. The campaign information object must be URL encoded.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/clone-campaign.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - name: campaigninfo
+          in: query
+          required: true
+          description: URL-encoded JSON object with the new campaign details and source campaign key.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Campaign cloning result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+  /deletemailinglist:
+    get:
+      tags: [Mailing Lists]
+      operationId: deleteMailingList
+      summary: Delete a mailing list
+      description: This documented API method uses GET. The deletecontacts option controls whether contacts are also deleted from the organization.
+      externalDocs:
+        url: https://www.zoho.com/campaigns/help/developers/delete-list.html
+      parameters:
+        - $ref: '#/components/parameters/ResponseFormat'
+        - $ref: '#/components/parameters/ListKey'
+        - name: deletecontacts
+          in: query
+          schema:
+            type: string
+            enum: [on, off]
+      responses:
+        '200':
+          description: Mailing list deletion result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResult'
+components:
+  securitySchemes:
+    ZohoAccessToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Provide `Zoho-oauthtoken <access_token>` as documented by Zoho Campaigns.
+  parameters:
+    ResponseFormat:
+      name: resfmt
+      in: query
+      description: JSON output is modeled by this specification.
+      schema:
+        type: string
+        enum: [JSON]
+        default: JSON
+    ListKey:
+      name: listkey
+      in: query
+      required: true
+      description: Mailing-list key used by list-management endpoints.
+      schema:
+        type: string
+  schemas:
+    ApiResult:
+      type: object
+      properties:
+        status:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+        uri:
+          type: string
+        version:
+          type: string
+      additionalProperties: true
+    MailingList:
+      type: object
+      properties:
+        listkey:
+          type: string
+        listname:
+          type: string
+        listunino:
+          type: string
+        noofcontacts:
+          type: string
+        noofunsubcnt:
+          type: string
+        noofbouncecnt:
+          type: string
+        is_public:
+          type: string
+        lockstatus:
+          type: string
+        created_date:
+          type: string
+        date:
+          type: string
+      additionalProperties: true
+    Contact:
+      type: object
+      properties:
+        contact_email:
+          type: string
+          format: email
+        firstname:
+          type: string
+        lastname:
+          type: string
+        companyname:
+          type: string
+        phone:
+          type: string
+        zuid:
+          type: string
+      additionalProperties: true
+    TagInfo:
+      type: object
+      properties:
+        tagowner:
+          type: string
+        tag_created_time:
+          type: string
+        tag_name:
+          type: string
+        tag_color:
+          type: string
+        tag_desc:
+          type: string
+        tagged_contact_count:
+          type: string
+        is_crm_tag:
+          type: string
+        zuid:
+          type: string
+      additionalProperties: true
+    TagRecord:
+      type: object
+      description: Zoho returns each tag as an object keyed by its tag ID.
+      additionalProperties:
+        $ref: '#/components/schemas/TagInfo'
+    MailingListsResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResult'
+        - type: object
+          properties:
+            requestdetails:
+              type: object
+              properties:
+                sort:
+                  type: string
+                range:
+                  type: integer
+                fromindex:
+                  type: integer
+            list_of_details:
+              type: array
+              items:
+                $ref: '#/components/schemas/MailingList'
+    ContactsResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResult'
+        - type: object
+          properties:
+            requestdetails:
+              type: object
+              properties:
+                sort:
+                  type: string
+                range:
+                  type: integer
+                status:
+                  type: string
+                fromindex:
+                  type: integer
+            list_of_details:
+              type: array
+              items:
+                $ref: '#/components/schemas/Contact'
+    TagsResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResult'
+        - type: object
+          properties:
+            requestdetails:
+              description: Zoho returns this as a JSON-encoded string.
+              type: string
+            tags:
+              type: array
+              items:
+                $ref: '#/components/schemas/TagRecord'
+    CampaignCreateResult:
+      allOf:
+        - $ref: '#/components/schemas/ApiResult'
+        - type: object
+          properties:
+            campaignKey:
+              type: string
+    CampaignSendResult:
+      type: object
+      properties:
+        response:
+          type: object
+          properties:
+            uri:
+              type: string
+            code:
+              type: string
+            version:
+              type: string
+            message:
+              type: string
+            campaign_status:
+              type: string
+          additionalProperties: true
+      additionalProperties: true
+externalDocs:
+  description: Official Zoho Campaigns API v1.1 reference
+  url: https://www.zoho.com/campaigns/help/developers/

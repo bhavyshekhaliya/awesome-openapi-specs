@@ -1,0 +1,755 @@
+openapi: 3.1.0
+info:
+  title: Eventbrite API
+  version: "3"
+  description: Community-maintained subset of the Eventbrite API v3 for organizations, events, attendees, orders, and ticket classes.
+  contact:
+    url: https://www.eventbrite.com/platform/api-keys/
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+servers:
+  - url: https://www.eventbriteapi.com/v3
+    description: Eventbrite Platform API v3
+security:
+  - BearerToken: []
+tags:
+  - name: Users and organizations
+  - name: Events
+  - name: Attendees
+  - name: Orders
+  - name: Ticket classes
+paths:
+  /users/me/:
+    get:
+      tags: [Users and organizations]
+      operationId: getCurrentUser
+      summary: Get the authenticated user
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: The authenticated user's account information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/me/organizations/:
+    get:
+      tags: [Users and organizations]
+      operationId: listMyOrganizations
+      summary: List organizations for the authenticated user
+      description: Returns the organizations to which the authenticated user belongs.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A paginated organization list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /organizations/{organization_id}/events/:
+    parameters:
+      - $ref: '#/components/parameters/OrganizationId'
+    get:
+      tags: [Events]
+      operationId: listOrganizationEvents
+      summary: List events for an organization
+      description: Supports the name filter used to find an event and the documented pagination fields. The legacy public event-search endpoint is intentionally not included because Eventbrite shut it down.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+        - name: name_filter
+          in: query
+          description: Filter the organization's events by name.
+          schema:
+            type: string
+        - name: currency_filter
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Comma-delimited event statuses.
+          schema:
+            type: string
+        - name: time_filter
+          in: query
+          description: Limit results to past or current and future events.
+          schema:
+            type: string
+        - name: order_by
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A paginated list of events.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Events]
+      operationId: createEvent
+      summary: Create an event for an organization
+      description: Creates an event that occurs once by default. The provider documents a separate schedule operation for adding occurrences to a series parent. The request schema remains open because the generated reference does not expose a complete create-body schema.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventCreateRequest'
+      responses:
+        '200':
+          description: The created event.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /events/{event_id}/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Events]
+      operationId: getEvent
+      summary: Retrieve an event
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: The requested event.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /events/{event_id}/publish/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    post:
+      tags: [Events]
+      operationId: publishEvent
+      summary: Publish an event
+      description: An event must have its required details, organizer, at least one ticket, and valid payment options before it can be published.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: Whether the event was published.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /events/{event_id}/attendees/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Attendees]
+      operationId: listEventAttendees
+      summary: List attendees for an event
+      description: Returns a paginated list. The changed-since filter can be used to observe attendee updates, including check-in changes.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [attending, not attending, unpaid]
+        - name: changed_since
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: last_item_seen
+          in: query
+          description: Use with changed_since to continue filtering after an attendee ID.
+          schema:
+            type: string
+        - name: attendee_ids
+          in: query
+          description: Attendee IDs to include, encoded in the format accepted by Eventbrite.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A paginated attendee list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendeesResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /events/{event_id}/attendees/{attendee_id}/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+      - $ref: '#/components/parameters/AttendeeId'
+    get:
+      tags: [Attendees]
+      operationId: getAttendee
+      summary: Retrieve an attendee
+      description: Attendee details are private and are available only to authorized users and the order owner.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: The requested attendee.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendee'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organizations/{organization_id}/attendees/:
+    parameters:
+      - $ref: '#/components/parameters/OrganizationId'
+    get:
+      tags: [Attendees]
+      operationId: listOrganizationAttendees
+      summary: List attendees across an organization's events
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          description: Filter by attending or not attending status.
+          schema:
+            type: string
+            enum: [attending, not_attending]
+        - name: changed_since
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: A paginated attendee list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendeesResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /events/{event_id}/orders/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Orders]
+      operationId: listEventOrders
+      summary: List orders for an event
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: changed_since
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: last_item_seen
+          in: query
+          schema:
+            type: string
+        - name: only_emails
+          in: query
+          description: Limit results to orders placed by the specified email address or addresses.
+          schema:
+            type: string
+        - name: exclude_emails
+          in: query
+          description: Exclude orders placed by the specified email address or addresses.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A paginated order list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrdersResponse'
+  /orders/{order_id}/:
+    parameters:
+      - $ref: '#/components/parameters/OrderId'
+    get:
+      tags: [Orders]
+      operationId: getOrder
+      summary: Retrieve an order
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: The requested order.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /events/{event_id}/ticket_classes/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+    get:
+      tags: [Ticket classes]
+      operationId: listTicketClasses
+      summary: List ticket classes for an event
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      parameters:
+        - $ref: '#/components/parameters/Continuation'
+        - $ref: '#/components/parameters/PageSize'
+        - name: pos
+          in: query
+          schema:
+            type: string
+        - name: include_holds
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: A paginated ticket-class list.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketClassesResponse'
+    post:
+      tags: [Ticket classes]
+      operationId: createTicketClass
+      summary: Create a ticket class
+      description: The Eventbrite reference lists a ticket_class_id query parameter for this route but does not explain how it applies to creation; it is omitted here pending clarification. Tiered events may require an inventory_tier_id.
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketClassCreateRequest'
+      responses:
+        '200':
+          description: The created ticket class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketClass'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+  /events/{event_id}/ticket_classes/{ticket_class_id}/:
+    parameters:
+      - $ref: '#/components/parameters/EventId'
+      - $ref: '#/components/parameters/TicketClassId'
+    get:
+      tags: [Ticket classes]
+      operationId: getTicketClass
+      summary: Retrieve a ticket class
+      externalDocs:
+        url: https://www.eventbrite.com/platform/new/api
+      responses:
+        '200':
+          description: The requested ticket class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketClass'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    BearerToken:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+      description: Eventbrite accepts a private token or an OAuth user token in the Authorization header as a Bearer token.
+  parameters:
+    OrganizationId:
+      name: organization_id
+      in: path
+      required: true
+      schema:
+        type: string
+    EventId:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+    AttendeeId:
+      name: attendee_id
+      in: path
+      required: true
+      schema:
+        type: string
+    OrderId:
+      name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+    TicketClassId:
+      name: ticket_class_id
+      in: path
+      required: true
+      schema:
+        type: string
+    Continuation:
+      name: continuation
+      in: query
+      description: Pagination continuation token returned by a previous response.
+      schema:
+        type: string
+    PageSize:
+      name: page_size
+      in: query
+      description: Maximum number of items to return in a page.
+      schema:
+        type: integer
+        minimum: 1
+  responses:
+    BadRequest:
+      description: The request contains invalid arguments or data.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The user is not authorized to access this resource.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Authentication is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+        status_code:
+          type: integer
+      additionalProperties: true
+    Pagination:
+      type: object
+      properties:
+        object_count:
+          type: integer
+        continuation:
+          type: string
+        page_count:
+          type: integer
+        page_size:
+          type: integer
+        has_more_items:
+          type: boolean
+        page_number:
+          type: integer
+      additionalProperties: true
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        emails:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image_id:
+          type: string
+        vertical:
+          type: string
+      additionalProperties: true
+    EventDateTime:
+      type: object
+      properties:
+        local:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+        utc:
+          type: string
+          format: date-time
+      additionalProperties: true
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          description: Eventbrite documents the event name as multipart text; the response structure may vary by API version.
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+        summary:
+          type: string
+        description:
+          description: Event description; the field is deprecated in favor of the newer structured-content workflow.
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+        url:
+          type: string
+          format: uri
+        start:
+          $ref: '#/components/schemas/EventDateTime'
+        end:
+          $ref: '#/components/schemas/EventDateTime'
+        created:
+          type: string
+          format: date-time
+        changed:
+          type: string
+          format: date-time
+        published:
+          type: string
+          format: date-time
+        currency:
+          type: string
+        listed:
+          type: boolean
+        online_event:
+          type: boolean
+        organizer_id:
+          type: string
+        venue_id:
+          type: string
+        status:
+          type: string
+      additionalProperties: true
+    Attendee:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        changed:
+          type: string
+          format: date-time
+        ticket_class_id:
+          type: string
+        ticket_class_name:
+          type: string
+        quantity:
+          type: integer
+        profile:
+          type: object
+          additionalProperties: true
+        addresses:
+          type: object
+          additionalProperties: true
+        checked_in:
+          type: boolean
+        cancelled:
+          type: boolean
+        refunded:
+          type: boolean
+        status:
+          type: string
+        event_id:
+          type: string
+        order_id:
+          type: string
+        delivery_method:
+          type: string
+      additionalProperties: true
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        changed:
+          type: string
+          format: date-time
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        status:
+          type: string
+        event_id:
+          type: string
+      additionalProperties: true
+    TicketClass:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        sorting:
+          type: integer
+        cost:
+          type: object
+          additionalProperties: true
+        fee:
+          type: object
+          additionalProperties: true
+        donation:
+          type: boolean
+        free:
+          type: boolean
+        minimum_quantity:
+          type: integer
+        maximum_quantity:
+          type: integer
+        capacity:
+          type: integer
+        hidden:
+          type: boolean
+        sales_start:
+          type: string
+          format: date-time
+        sales_end:
+          type: string
+          format: date-time
+        has_pdf_ticket:
+          type: boolean
+        delivery_methods:
+          type: array
+          items:
+            type: string
+            enum: [electronic, will_call, standard_shipping, third_party_shipping]
+        include_fee:
+          type: boolean
+        split_fee:
+          type: boolean
+        inventory_tier_id:
+          type: string
+      additionalProperties: true
+    EventCreateRequest:
+      type: object
+      description: Open request object for the provider's documented Event Create operation; accepted properties are described in the Event Object section of the linked reference.
+      additionalProperties: true
+    TicketClassCreateRequest:
+      type: object
+      description: Open request object based on documented Ticket Class fields. Tiered events may require inventory_tier_id.
+      additionalProperties: true
+    OrganizationsResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        organizations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organization'
+      additionalProperties: true
+    EventsResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+      additionalProperties: true
+    AttendeesResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        attendees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attendee'
+      additionalProperties: true
+    OrdersResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+      additionalProperties: true
+    TicketClassesResponse:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        ticket_classes:
+          type: array
+          items:
+            $ref: '#/components/schemas/TicketClass'
+      additionalProperties: true
+    PublishResult:
+      type: object
+      properties:
+        published:
+          type: boolean
+      additionalProperties: true
+externalDocs:
+  description: Official Eventbrite API v3 reference
+  url: https://www.eventbrite.com/platform/new/api

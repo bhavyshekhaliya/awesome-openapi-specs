@@ -1,0 +1,326 @@
+openapi: 3.1.0
+info:
+  title: Open Library Web API
+  version: 1.0.0
+  description: |-
+    Community-maintained description of documented, public read-only search and
+    book lookup endpoints. Open Library asks clients to make useful requests
+    for human users, cache responses, and identify applications with a
+    User-Agent containing contact information. Unidentified clients are limited
+    to 1 request per second; identified clients to 3 requests per second.
+    These APIs are not intended as data backends for third-party services or
+    for bulk/high-traffic commercial infrastructure; use the monthly data dumps
+    for bulk access.
+externalDocs:
+  description: Open Library API documentation and usage guidelines
+  url: https://openlibrary.org/developers/api
+servers:
+  - url: https://openlibrary.org
+    description: Open Library
+security: []
+tags:
+  - name: Search
+    externalDocs:
+      description: Search API documentation
+      url: https://openlibrary.org/dev/docs/api/search
+  - name: Books
+    externalDocs:
+      description: Books API documentation
+      url: https://openlibrary.org/dev/docs/api/books
+  - name: Authors
+    externalDocs:
+      description: Authors API documentation
+      url: https://openlibrary.org/dev/docs/api/authors
+paths:
+  /search.json:
+    get:
+      operationId: searchBooks
+      summary: Search books
+      description: Search can return multiple works and edition data in one response. Result fields vary by request and may change.
+      tags: [Search]
+      externalDocs:
+        description: Search API documentation
+        url: https://openlibrary.org/dev/docs/api/search
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: q
+          in: query
+          description: Solr query string.
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Fields to return. The special values `*` and `availability` are documented; use `availability` to request archive.org availability data.
+          schema:
+            type: string
+          example: title,author_name,first_publish_year
+        - name: sort
+          in: query
+          description: Sort facet. Documented examples include `new`, `old`, `random`, and `key`; relevance is the default.
+          schema:
+            type: string
+        - name: lang
+          in: query
+          description: Two-letter ISO 639-1 language code used to prefer matching editions.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 2
+        - name: offset
+          in: query
+          description: Result offset for pagination.
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of results per page.
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page number for pagination; page numbering starts at 1.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Search results. Available document fields depend on the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /search/authors.json:
+    get:
+      operationId: searchAuthors
+      summary: Search authors
+      tags: [Authors]
+      externalDocs:
+        description: Authors API documentation
+        url: https://openlibrary.org/dev/docs/api/authors
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: q
+          in: query
+          description: Author search query.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Matching authors.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /works/{workKey}.json:
+    get:
+      operationId: getWork
+      summary: Get a work
+      tags: [Books]
+      externalDocs:
+        description: Books API documentation
+        url: https://openlibrary.org/dev/docs/api/books
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: workKey
+          in: path
+          required: true
+          description: Open Library work identifier.
+          schema:
+            type: string
+          example: OL45804W
+      responses:
+        '200':
+          description: Work data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+  /works/{workKey}/editions.json:
+    get:
+      operationId: listWorkEditions
+      summary: List editions of a work
+      tags: [Books]
+      externalDocs:
+        description: Books API documentation
+        url: https://openlibrary.org/dev/docs/api/books
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: workKey
+          in: path
+          required: true
+          description: Open Library work identifier.
+          schema:
+            type: string
+          example: OL45804W
+      responses:
+        '200':
+          description: Edition data for the work.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+  /books/{editionKey}.json:
+    get:
+      operationId: getEdition
+      summary: Get an edition
+      tags: [Books]
+      externalDocs:
+        description: Books API documentation
+        url: https://openlibrary.org/dev/docs/api/books
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: editionKey
+          in: path
+          required: true
+          description: Open Library edition identifier.
+          schema:
+            type: string
+          example: OL7353617M
+      responses:
+        '200':
+          description: Edition data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+  /isbn/{isbn}.json:
+    get:
+      operationId: getBookByIsbn
+      summary: Get an edition by ISBN
+      description: The ISBN route can redirect to the matching edition.
+      tags: [Books]
+      externalDocs:
+        description: Books API documentation
+        url: https://openlibrary.org/dev/docs/api/books
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: isbn
+          in: path
+          required: true
+          description: ISBN-10 or ISBN-13.
+          schema:
+            type: string
+          example: '9780140328721'
+      responses:
+        '200':
+          description: Edition data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+        '302':
+          description: Redirect to the matching edition page.
+          headers:
+            Location:
+              schema:
+                type: string
+  /authors/{authorKey}.json:
+    get:
+      operationId: getAuthor
+      summary: Get an author
+      tags: [Authors]
+      externalDocs:
+        description: Authors API documentation
+        url: https://openlibrary.org/dev/docs/api/authors
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: authorKey
+          in: path
+          required: true
+          description: Open Library author identifier.
+          schema:
+            type: string
+          example: OL23919A
+      responses:
+        '200':
+          description: Author data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+  /authors/{authorKey}/works.json:
+    get:
+      operationId: listAuthorWorks
+      summary: List works by an author
+      description: The documented default response contains 50 works. Use limit and offset to paginate.
+      tags: [Authors]
+      externalDocs:
+        description: Authors API documentation
+        url: https://openlibrary.org/dev/docs/api/authors
+      parameters:
+        - $ref: '#/components/parameters/UserAgent'
+        - name: authorKey
+          in: path
+          required: true
+          description: Open Library author identifier.
+          schema:
+            type: string
+          example: OL23919A
+        - name: limit
+          in: query
+          description: Number of works to return.
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Starting offset for pagination.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Author work data in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JsonObject'
+components:
+  parameters:
+    UserAgent:
+      name: User-Agent
+      in: header
+      required: false
+      description: Identify the application and include a contact email to receive the higher documented rate limit.
+      schema:
+        type: string
+      example: MyLibraryApp (contact@example.org)
+  schemas:
+    SearchResponse:
+      type: object
+      description: Search result fields vary by endpoint and requested fields.
+      properties:
+        start:
+          type: integer
+        num_found:
+          type: integer
+        numFound:
+          type: integer
+        docs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchDocument'
+      additionalProperties: true
+    SearchDocument:
+      type: object
+      description: Search document fields are configurable and are not guaranteed to remain stable.
+      properties:
+        key:
+          type: string
+        title:
+          type: string
+        author_name:
+          type: array
+          items:
+            type: string
+        author_key:
+          type: array
+          items:
+            type: string
+        first_publish_year:
+          type: integer
+        edition_count:
+          type: integer
+      additionalProperties: true
+    JsonObject:
+      type: object
+      description: Open Library record fields depend on the work, edition, or author.
+      additionalProperties: true

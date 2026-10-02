@@ -1,0 +1,1804 @@
+openapi: 3.1.0
+info:
+  title: Campaign Monitor API
+  version: '3.3'
+  summary: Manage clients, email lists, subscribers, campaigns, and transactional messages.
+  description: Community-maintained JSON OpenAPI description based on Campaign Monitor public v3.3 REST
+    documentation. Marketing API routes use the documented .json suffix; transactional routes are JSON-only.
+    Authentication supports OAuth 2.0 bearer access tokens or HTTP Basic authentication with the API key
+    as username and an unused password. List custom fields vary per list and are represented as key/value
+    pairs. The public docs do not enumerate every optional response property.
+externalDocs:
+  description: Campaign Monitor API documentation
+  url: https://www.campaignmonitor.com/api/
+servers:
+- url: https://api.createsend.com/api/v3.3
+  description: Campaign Monitor production API
+security:
+- bearerAuth: []
+- basicAuth: []
+tags:
+- name: Clients
+- name: Lists
+- name: Subscribers
+- name: Campaigns
+- name: Transactional Email
+paths:
+  /clients.json:
+    get:
+      tags:
+      - Clients
+      operationId: listClients
+      summary: List clients
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientSummary'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags:
+      - Clients
+      operationId: createClient
+      summary: Create a client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+      responses:
+        '201':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The new client ID.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /clients/{clientid}.json:
+    get:
+      tags:
+      - Clients
+      operationId: getClient
+      summary: Get client details
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /clients/{clientid}/lists.json:
+    get:
+      tags:
+      - Lists
+      operationId: listClientLists
+      summary: List a client's subscriber lists
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClientList'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /clients/{clientid}/campaigns.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listSentCampaigns
+      summary: List sent campaigns
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      - name: sentFromDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: sentToDate
+        in: query
+        required: false
+        schema:
+          type: string
+          format: date
+      - name: tags
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Comma-separated tags; campaigns must match all supplied tags.
+      - &id001
+        name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+        description: One-based page number.
+      - &id002
+        name: pagesize
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1000
+          minimum: 1
+          maximum: 1000
+        description: Number of results per page; usually capped at 1000.
+      - name: orderdirection
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: desc
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedCampaigns'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /clients/{clientid}/scheduled.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listScheduledCampaigns
+      summary: List scheduled campaigns
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CampaignRecord'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /clients/{clientid}/drafts.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listDraftCampaigns
+      summary: List draft campaigns
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CampaignRecord'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{clientid}.json:
+    post:
+      tags:
+      - Lists
+      operationId: createList
+      summary: Create a subscriber list
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListCreate'
+      responses:
+        '201':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The new list ID.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}.json:
+    get:
+      tags:
+      - Lists
+      operationId: getList
+      summary: Get list settings
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberList'
+        default:
+          $ref: '#/components/responses/ApiError'
+    put:
+      tags:
+      - Lists
+      operationId: updateList
+      summary: Update list settings
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListUpdate'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      tags:
+      - Lists
+      operationId: deleteList
+      summary: Delete a subscriber list
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/stats.json:
+    get:
+      tags:
+      - Lists
+      operationId: getListStats
+      summary: Get list statistics
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListStats'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/active.json:
+    get:
+      tags:
+      - Lists
+      operationId: listActiveSubscribers
+      summary: List active subscribers
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - &id003
+        name: date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Only records from this date forward; use YYYY-MM-DD.
+      - *id001
+      - *id002
+      - &id004
+        name: orderfield
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - email
+          - name
+          - date
+      - &id005
+        name: orderdirection
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      - &id006
+        name: includetrackingpreference
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - &id007
+        name: includesmspreference
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSubscribers'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/unconfirmed.json:
+    get:
+      tags:
+      - Lists
+      operationId: listUnconfirmedSubscribers
+      summary: List unconfirmed subscribers
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - *id003
+      - *id001
+      - *id002
+      - *id004
+      - *id005
+      - *id006
+      - *id007
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSubscribers'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/unsubscribed.json:
+    get:
+      tags:
+      - Lists
+      operationId: listUnsubscribedSubscribers
+      summary: List unsubscribed subscribers
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - *id003
+      - *id001
+      - *id002
+      - *id004
+      - *id005
+      - *id006
+      - *id007
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSubscribers'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/bounced.json:
+    get:
+      tags:
+      - Lists
+      operationId: listBouncedSubscribers
+      summary: List bounced subscribers
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - *id003
+      - *id001
+      - *id002
+      - *id004
+      - *id005
+      - *id006
+      - *id007
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSubscribers'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/deleted.json:
+    get:
+      tags:
+      - Lists
+      operationId: listDeletedSubscribers
+      summary: List deleted subscribers
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - *id003
+      - *id001
+      - *id002
+      - *id004
+      - *id005
+      - *id006
+      - *id007
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedSubscribers'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/customfields.json:
+    get:
+      tags:
+      - Lists
+      operationId: listCustomFields
+      summary: List a list's custom fields
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomFieldDefinition'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/segments.json:
+    get:
+      tags:
+      - Lists
+      operationId: listSegments
+      summary: List segments
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SegmentSummary'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/webhooks.json:
+    get:
+      tags:
+      - Lists
+      operationId: listWebhooks
+      summary: List subscriber-list webhooks
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListWebhook'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags:
+      - Lists
+      operationId: createListWebhook
+      summary: Create a subscriber-list webhook
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListWebhookCreate'
+      responses:
+        '201':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The new webhook ID.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/webhooks/{webhookid}.json:
+    delete:
+      tags:
+      - Lists
+      operationId: deleteListWebhook
+      summary: Delete a list webhook
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/webhooks/{webhookid}/activate.json:
+    put:
+      tags:
+      - Lists
+      operationId: activateListWebhook
+      summary: Activate a list webhook
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /lists/{listid}/webhooks/{webhookid}/deactivate.json:
+    put:
+      tags:
+      - Lists
+      operationId: deactivateListWebhook
+      summary: Deactivate a list webhook
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - $ref: '#/components/parameters/WebhookId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscribers/{listid}.json:
+    get:
+      tags:
+      - Subscribers
+      operationId: getSubscriber
+      summary: Find a subscriber in a list
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          format: email
+      - name: includetrackingpreference
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscriber'
+        default:
+          $ref: '#/components/responses/ApiError'
+    post:
+      tags:
+      - Subscribers
+      operationId: addSubscriber
+      summary: Add a subscriber to a list
+      description: Adds a subscriber or updates an existing subscriber with the same email address.
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberWrite'
+      responses:
+        '201':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                format: email
+                description: Email address added to the list.
+        default:
+          $ref: '#/components/responses/ApiError'
+    put:
+      tags:
+      - Subscribers
+      operationId: updateSubscriber
+      summary: Update a subscriber
+      description: Use EmailAddress in the body to change the subscriber email address.
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          format: email
+        description: Current email address identifying the existing subscriber.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberWrite'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+    delete:
+      tags:
+      - Subscribers
+      operationId: deleteSubscriber
+      summary: Delete a subscriber from a list
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscribers/{listid}/unsubscribe.json:
+    post:
+      tags:
+      - Subscribers
+      operationId: unsubscribeSubscriber
+      summary: Unsubscribe an email address
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnsubscribeRequest'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscribers/{listid}/import.json:
+    post:
+      tags:
+      - Subscribers
+      operationId: importSubscribers
+      summary: Import subscribers in bulk
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberImport'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/ApiError'
+  /subscribers/{listid}/history.json:
+    get:
+      tags:
+      - Subscribers
+      operationId: getSubscriberHistory
+      summary: Get subscriber campaign history
+      parameters:
+      - $ref: '#/components/parameters/ListId'
+      - name: email
+        in: query
+        required: true
+        schema:
+          type: string
+          format: email
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{clientid}.json:
+    post:
+      tags:
+      - Campaigns
+      operationId: createDraftCampaign
+      summary: Create a draft campaign
+      description: Creates a draft; the campaign is not sent.
+      parameters:
+      - $ref: '#/components/parameters/ClientId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignCreate'
+      responses:
+        '201':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: The new campaign ID.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/send.json:
+    post:
+      tags:
+      - Campaigns
+      operationId: sendDraftCampaign
+      summary: Schedule a draft campaign for sending
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignSend'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/sendpreview.json:
+    post:
+      tags:
+      - Campaigns
+      operationId: sendCampaignPreview
+      summary: Send a draft campaign preview
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignPreview'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}.json:
+    delete:
+      tags:
+      - Campaigns
+      operationId: deleteCampaign
+      summary: Delete a campaign
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/unschedule.json:
+    post:
+      tags:
+      - Campaigns
+      operationId: unscheduleCampaign
+      summary: Return a scheduled campaign to drafts
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Request completed successfully.
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/recipients.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listCampaignRecipients
+      summary: List campaign recipients
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      - *id001
+      - *id002
+      - name: orderfield
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - email
+          - list
+      - name: orderdirection
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResult'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/bounces.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listCampaignBounces
+      summary: List campaign bounces
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      - &id008
+        name: date
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Only events from this date forward; use YYYY-MM-DD HH:MM.
+      - *id001
+      - *id002
+      - &id009
+        name: orderfield
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - email
+          - list
+          - date
+      - &id010
+        name: orderdirection
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+          default: asc
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResult'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/opens.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listCampaignOpens
+      summary: List campaign opens
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      - *id008
+      - *id001
+      - *id002
+      - *id009
+      - *id010
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResult'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/clicks.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: listCampaignClicks
+      summary: List campaign clicks
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      - *id008
+      - *id001
+      - *id002
+      - *id009
+      - *id010
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedResult'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /campaigns/{campaignid}/summary.json:
+    get:
+      tags:
+      - Campaigns
+      operationId: getCampaignSummary
+      summary: Get sent campaign results
+      parameters:
+      - $ref: '#/components/parameters/CampaignId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignSummary'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/smartEmail:
+    get:
+      tags:
+      - Transactional Email
+      operationId: listSmartEmails
+      summary: List smart transactional emails
+      parameters:
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - all
+          - draft
+          - active
+          default: all
+      - name: clientID
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Required with account-level credentials when selecting a client.
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SmartEmailSummary'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/smartEmail/{smartEmailID}:
+    get:
+      tags:
+      - Transactional Email
+      operationId: getSmartEmail
+      summary: Get a smart transactional email
+      parameters:
+      - $ref: '#/components/parameters/SmartEmailId'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/smartEmail/{smartEmailID}/send:
+    post:
+      tags:
+      - Transactional Email
+      operationId: sendSmartEmail
+      summary: Send a smart transactional email
+      parameters:
+      - $ref: '#/components/parameters/SmartEmailId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmartEmailSend'
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/messages:
+    get:
+      tags:
+      - Transactional Email
+      operationId: listTransactionalMessages
+      summary: List transactional messages
+      description: Use status=bounced to retrieve bounced transactional messages.
+      parameters:
+      - name: group
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sentBeforeID
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sentAfterID
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: count
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 50
+          minimum: 1
+          maximum: 200
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - delivered
+          - bounced
+          - spam
+          - all
+          default: all
+      - name: smartEmailID
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: clientID
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TransactionalMessage'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/messages/{messageID}:
+    get:
+      tags:
+      - Transactional Email
+      operationId: getTransactionalMessage
+      summary: Get a transactional message
+      parameters:
+      - $ref: '#/components/parameters/MessageId'
+      - name: statistics
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: excludeMessageBody
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionalMessageDetail'
+        default:
+          $ref: '#/components/responses/ApiError'
+  /transactional/messages/{messageID}/resend:
+    post:
+      tags:
+      - Transactional Email
+      operationId: resendTransactionalMessage
+      summary: Resend a transactional message
+      parameters:
+      - $ref: '#/components/parameters/MessageId'
+      responses:
+        '202':
+          description: Request completed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendMessageResponse'
+        default:
+          $ref: '#/components/responses/ApiError'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+    basicAuth:
+      type: http
+      scheme: basic
+      description: Use the API key as username; the password is unused.
+  parameters:
+    ClientId:
+      name: clientid
+      in: path
+      required: true
+      schema:
+        type: string
+    ListId:
+      name: listid
+      in: path
+      required: true
+      schema:
+        type: string
+    CampaignId:
+      name: campaignid
+      in: path
+      required: true
+      schema:
+        type: string
+    WebhookId:
+      name: webhookid
+      in: path
+      required: true
+      schema:
+        type: string
+    SmartEmailId:
+      name: smartEmailID
+      in: path
+      required: true
+      schema:
+        type: string
+    MessageId:
+      name: messageID
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    ApiError:
+      description: Campaign Monitor API error; error codes vary by endpoint.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  schemas:
+    ClientSummary:
+      type: object
+      required:
+      - ClientID
+      - Name
+      properties:
+        ClientID:
+          type: string
+        Name:
+          type: string
+    ClientCreate:
+      type: object
+      required:
+      - CompanyName
+      - Country
+      - TimeZone
+      properties:
+        CompanyName:
+          type: string
+        Country:
+          type: string
+        TimeZone:
+          type: string
+    Client:
+      type: object
+      description: Client profile and account settings; optional properties depend on the account.
+      properties:
+        ClientID:
+          type: string
+        Name:
+          type: string
+        CompanyName:
+          type: string
+        Country:
+          type: string
+        TimeZone:
+          type: string
+      additionalProperties: true
+    ClientList:
+      type: object
+      required:
+      - ListID
+      - Name
+      properties:
+        ListID:
+          type: string
+        Name:
+          type: string
+    CampaignRecord:
+      type: object
+      properties:
+        CampaignID:
+          type: string
+        Name:
+          type: string
+        Subject:
+          type: string
+        SentDate:
+          type: string
+        CreatedAt:
+          type: string
+          format: date-time
+        ScheduledDate:
+          type: string
+        FromName:
+          type: string
+        FromEmail:
+          type: string
+          format: email
+        ReplyTo:
+          type: string
+          format: email
+        WebVersionURL:
+          type: string
+          format: uri
+        Tags:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    PagedCampaigns:
+      allOf:
+      - $ref: '#/components/schemas/PagedResult'
+      - type: object
+        properties:
+          Results:
+            type: array
+            items:
+              $ref: '#/components/schemas/CampaignRecord'
+    SubscriberList:
+      type: object
+      properties:
+        ListID:
+          type: string
+        Title:
+          type: string
+        ConfirmedOptIn:
+          type: boolean
+        UnsubscribePage:
+          type: string
+          format: uri
+        UnsubscribeSetting:
+          type: string
+          enum:
+          - AllClientLists
+          - OnlyThisList
+        ConfirmationSuccessPage:
+          type: string
+          format: uri
+      additionalProperties: true
+    ListCreate:
+      type: object
+      required:
+      - Title
+      - UnsubscribeSetting
+      properties:
+        Title:
+          type: string
+        UnsubscribePage:
+          type: string
+          format: uri
+        UnsubscribeSetting:
+          type: string
+          enum:
+          - AllClientLists
+          - OnlyThisList
+        ConfirmedOptIn:
+          type: boolean
+        ConfirmationSuccessPage:
+          type: string
+          format: uri
+    ListUpdate:
+      allOf:
+      - $ref: '#/components/schemas/ListCreate'
+      - type: object
+        properties:
+          AddUnsubscribesToSuppList:
+            type: boolean
+          ScrubActiveWithSuppList:
+            type: boolean
+    ListStats:
+      type: object
+      properties:
+        TotalActiveSubscribers:
+          type: integer
+        NewActiveSubscribersToday:
+          type: integer
+        NewActiveSubscribersYesterday:
+          type: integer
+        NewActiveSubscribersThisWeek:
+          type: integer
+        NewActiveSubscribersThisMonth:
+          type: integer
+        NewActiveSubscribersThisYear:
+          type: integer
+        TotalUnsubscribes:
+          type: integer
+        TotalDeleted:
+          type: integer
+        TotalBounces:
+          type: integer
+      additionalProperties: true
+    CustomField:
+      type: object
+      properties:
+        Key:
+          type: string
+        Value:
+          type: string
+        Clear:
+          type: boolean
+    Subscriber:
+      type: object
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+        Name:
+          type: string
+        MobileNumber:
+          type: string
+        State:
+          type: string
+          enum:
+          - Active
+          - Unconfirmed
+          - Unsubscribed
+          - Bounced
+          - Deleted
+        Date:
+          type: string
+        ListJoinedDate:
+          type: string
+        ConsentToTrack:
+          type: string
+          enum:
+          - 'Yes'
+          - 'No'
+          - Unchanged
+        ConsentToSendSms:
+          type: string
+          enum:
+          - 'Yes'
+          - 'No'
+          - Unchanged
+        CustomFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+      additionalProperties: true
+    SubscriberWrite:
+      type: object
+      required:
+      - EmailAddress
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+        Name:
+          type: string
+        MobileNumber:
+          type: string
+        CustomFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomField'
+        Resubscribe:
+          type: boolean
+        RestartSubscriptionBasedAutoresponders:
+          type: boolean
+        ConsentToTrack:
+          type: string
+          enum:
+          - 'Yes'
+          - 'No'
+          - Unchanged
+        ConsentToSendSms:
+          type: string
+          enum:
+          - 'Yes'
+          - 'No'
+          - Unchanged
+      additionalProperties: true
+    UnsubscribeRequest:
+      type: object
+      required:
+      - EmailAddress
+      properties:
+        EmailAddress:
+          type: string
+          format: email
+    SubscriberImport:
+      type: object
+      required:
+      - Subscribers
+      properties:
+        Subscribers:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriberWrite'
+        Resubscribe:
+          type: boolean
+        QueueSubscriptionBasedAutoresponders:
+          type: boolean
+        RestartSubscriptionBasedAutoresponders:
+          type: boolean
+    PagedResult:
+      type: object
+      required:
+      - Results
+      properties:
+        Results:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        ResultsOrderedBy:
+          type: string
+        OrderDirection:
+          type: string
+        PageNumber:
+          type: integer
+        PageSize:
+          type: integer
+        RecordsOnThisPage:
+          type: integer
+        TotalNumberOfRecords:
+          type: integer
+        NumberOfPages:
+          type: integer
+    PagedSubscribers:
+      allOf:
+      - $ref: '#/components/schemas/PagedResult'
+      - type: object
+        properties:
+          Results:
+            type: array
+            items:
+              $ref: '#/components/schemas/Subscriber'
+    CustomFieldDefinition:
+      type: object
+      properties:
+        Key:
+          type: string
+        DataType:
+          type: string
+        FieldOptions:
+          type: array
+          items:
+            type: string
+        VisibleInPreferenceCenter:
+          type: boolean
+      additionalProperties: true
+    SegmentSummary:
+      type: object
+      properties:
+        ListID:
+          type: string
+        SegmentID:
+          type: string
+        Title:
+          type: string
+    ListWebhook:
+      type: object
+      properties:
+        WebhookID:
+          type: string
+        Events:
+          type: array
+          items:
+            type: string
+            enum:
+            - Subscribe
+            - Deactivate
+            - Update
+        Url:
+          type: string
+          format: uri
+        Status:
+          type: string
+        PayloadFormat:
+          type: string
+          enum:
+          - Json
+          - Xml
+          - json
+          - xml
+    ListWebhookCreate:
+      type: object
+      required:
+      - Events
+      - Url
+      - PayloadFormat
+      properties:
+        Events:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            enum:
+            - Subscribe
+            - Deactivate
+            - Update
+        Url:
+          type: string
+          format: uri
+        PayloadFormat:
+          type: string
+          enum:
+          - json
+          - xml
+    CampaignCreate:
+      type: object
+      required:
+      - Name
+      - Subject
+      - FromName
+      - FromEmail
+      - ReplyTo
+      - HtmlUrl
+      description: Set ListIDs or SegmentIDs to choose recipients; the provider documents using one collection
+        or the other.
+      properties:
+        Name:
+          type: string
+        Subject:
+          type: string
+        FromName:
+          type: string
+        FromEmail:
+          type: string
+          format: email
+        ReplyTo:
+          type: string
+          format: email
+        HtmlUrl:
+          type: string
+          format: uri
+        TextUrl:
+          type: string
+          format: uri
+        ListIDs:
+          type: array
+          items:
+            type: string
+        SegmentIDs:
+          type: array
+          items:
+            type: string
+        InlineCss:
+          type: boolean
+          default: true
+      additionalProperties: true
+    CampaignSend:
+      type: object
+      required:
+      - SendDate
+      properties:
+        ConfirmationEmail:
+          type: string
+          description: One address or up to five comma-separated addresses.
+        SendDate:
+          type: string
+          description: Use Immediately or a client-time-zone timestamp in YYYY-MM-DD HH:MM format.
+    CampaignPreview:
+      type: object
+      properties:
+        PreviewRecipients:
+          type: array
+          items:
+            type: string
+            format: email
+        Personalize:
+          type: boolean
+          deprecated: true
+          description: Deprecated; values are ignored and personalization uses fallback values.
+      additionalProperties: true
+    CampaignSummary:
+      type: object
+      properties:
+        Name:
+          type: string
+        Recipients:
+          type: integer
+        TotalOpened:
+          type: integer
+        Clicks:
+          type: integer
+        Unsubscribed:
+          type: integer
+        Bounced:
+          type: integer
+        UniqueOpened:
+          type: integer
+        SpamComplaints:
+          type: integer
+        WebVersionURL:
+          type: string
+          format: uri
+        WebVersionTextURL:
+          type: string
+          format: uri
+        WorldviewURL:
+          type: string
+          format: uri
+        Forwards:
+          type: integer
+        Likes:
+          type: integer
+        Mentions:
+          type: integer
+      additionalProperties: true
+    SmartEmailSummary:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+        CreatedAt:
+          type: string
+          format: date-time
+        Status:
+          type: string
+          enum:
+          - Active
+          - Draft
+    SmartEmailSend:
+      type: object
+      required:
+      - To
+      properties:
+        To:
+          type: array
+          items:
+            type: string
+        CC:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        BCC:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        Attachments:
+          type: array
+          items:
+            type: object
+            required:
+            - Content
+            - Name
+            - Type
+            properties:
+              Content:
+                type: string
+                description: Base64-encoded file data.
+              Name:
+                type: string
+              Type:
+                type: string
+        Data:
+          type: object
+          additionalProperties: true
+        AddRecipientsToList:
+          type: boolean
+          default: false
+        ConsentToTrack:
+          type: string
+          enum:
+          - 'Yes'
+          - 'No'
+          - Unchanged
+      additionalProperties: true
+    TransactionalMessage:
+      type: object
+      properties:
+        MessageID:
+          type: string
+        Status:
+          type: string
+        SentAt:
+          type: string
+          format: date-time
+        Recipient:
+          type: string
+        From:
+          type: string
+        Subject:
+          type: string
+        TotalOpens:
+          type: integer
+        TotalClicks:
+          type: integer
+        CanBeResent:
+          type: boolean
+        BounceType:
+          type: string
+        BounceCategory:
+          type: string
+        SmartEmailID:
+          type: string
+        Group:
+          type: string
+      additionalProperties: true
+    TransactionalMessageDetail:
+      allOf:
+      - $ref: '#/components/schemas/TransactionalMessage'
+      - type: object
+        properties:
+          Message:
+            type: object
+            additionalProperties: true
+          Opens:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+          Clicks:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+    ResendMessageResponse:
+      type: object
+      required:
+      - Status
+      - Recipient
+      - MessageID
+      properties:
+        Status:
+          type: string
+        Recipient:
+          type: string
+        MessageID:
+          type: string
