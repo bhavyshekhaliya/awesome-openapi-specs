@@ -1,0 +1,753 @@
+openapi: 3.2.0
+info:
+  title: Public Order API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Order
+paths:
+  /public-api/v1/event/{eventId}/order:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dataList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        stripeAccountId:
+                          type: string
+                          format: uuid
+                          nullable: true
+                        userId:
+                          type: string
+                          format: uuid
+                        currency:
+                          type: string
+                          enum:
+                          - USD
+                          - HKD
+                          - THB
+                          - VND
+                          - IDR
+                          - MYR
+                          - PHP
+                          - TWD
+                          - SGD
+                          - KRW
+                          - JPY
+                          - CNY
+                          - AUD
+                        amount:
+                          type: string
+                        status:
+                          type: string
+                          enum:
+                          - initialized
+                          - pending_payment
+                          - paid
+                          - cancelled
+                          - completed
+                          - refunding
+                          - refunded
+                        txRef:
+                          type: string
+                          nullable: true
+                        orderUtmParams:
+                          type: object
+                          properties:
+                            utm_source:
+                              type: string
+                            utm_medium:
+                              type: string
+                            utm_campaign:
+                              type: string
+                            utm_term:
+                              type: string
+                            utm_content:
+                              type: string
+                          additionalProperties: false
+                        promoCodeSnapshot:
+                          type: object
+                          properties: {}
+                          additionalProperties: false
+                          nullable: true
+                        orderItems:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              orderId:
+                                type: string
+                                format: uuid
+                              ticketClassId:
+                                type: string
+                                format: uuid
+                                nullable: true
+                              unitPrice:
+                                type: string
+                                pattern: ^-?\d+(\.\d+)?$
+                              qty:
+                                type: number
+                                format: float
+                              regFormDataSnapshot:
+                                type: object
+                                properties: {}
+                                additionalProperties: false
+                              addOns:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    ticketClassAddOnId:
+                                      type: string
+                                      format: uuid
+                                    snapshot:
+                                      type: object
+                                      properties: {}
+                                      additionalProperties: false
+                                    qty:
+                                      type: number
+                                      format: float
+                                  required:
+                                  - ticketClassAddOnId
+                                  - snapshot
+                                  - qty
+                                  additionalProperties: false
+                              associatedAttendeeId:
+                                type: string
+                                format: uuid
+                                nullable: true
+                            required:
+                            - orderId
+                            - ticketClassId
+                            - unitPrice
+                            - qty
+                            - regFormDataSnapshot
+                            - addOns
+                            - associatedAttendeeId
+                            additionalProperties: false
+                        paymentMethod:
+                          type: string
+                          enum:
+                          - online
+                          - offline
+                          nullable: true
+                        paymentBillingInformation:
+                          type: string
+                          nullable: true
+                        offlinePaymentInvoiceId:
+                          type: string
+                          nullable: true
+                        offlinePaymentBillingInformation:
+                          type: string
+                          nullable: true
+                        offlinePaymentInvoiceDueAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        offlinePaymentApprovalStatus:
+                          type: string
+                          enum:
+                          - pending
+                          - approved
+                          - cancelled
+                          nullable: true
+                        tax:
+                          type: string
+                          nullable: true
+                        isTaxInclusive:
+                          type: boolean
+                          nullable: true
+                        orderSummaryEmailSentAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        purchasedAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        cancelledAt:
+                          type: string
+                          format: date-time
+                          nullable: true
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                        user:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            email:
+                              type: string
+                            name:
+                              type: string
+                          required:
+                          - id
+                          - email
+                          - name
+                          additionalProperties: false
+                      required:
+                      - id
+                      - stripeAccountId
+                      - userId
+                      - currency
+                      - amount
+                      - status
+                      - txRef
+                      - orderUtmParams
+                      - promoCodeSnapshot
+                      - orderItems
+                      - paymentMethod
+                      - paymentBillingInformation
+                      - offlinePaymentInvoiceDueAt
+                      - offlinePaymentApprovalStatus
+                      - tax
+                      - isTaxInclusive
+                      - orderSummaryEmailSentAt
+                      - purchasedAt
+                      - cancelledAt
+                      - createdAt
+                      - updatedAt
+                      - user
+                      additionalProperties: false
+                      description: Order response object returned by order endpoints
+                      example:
+                        id: 550e8400-e29b-41d4-a716-446655440000
+                        stripeAccountId: null
+                        userId: 550e8400-e29b-41d4-a716-446655440001
+                        currency: HKD
+                        amount: '100.00'
+                        status: CONFIRMED
+                        txRef: EVT-2024-001
+                        orderUtmParams: {}
+                        promoCodeSnapshot: null
+                        orderItems:
+                        - orderId: 550e8400-e29b-41d4-a716-446655440000
+                          ticketClassId: 550e8400-e29b-41d4-a716-446655440002
+                          unitPrice: '100.00'
+                          qty: 1
+                          regFormDataSnapshot: {}
+                          addOns: []
+                          associatedAttendeeId: 550e8400-e29b-41d4-a716-446655440003
+                        paymentMethod: CREDIT_CARD
+                        paymentBillingInformation: null
+                        offlinePaymentInvoiceId: null
+                        offlinePaymentBillingInformation: null
+                        offlinePaymentInvoiceDueAt: null
+                        offlinePaymentApprovalStatus: null
+                        tax: null
+                        isTaxInclusive: false
+                        orderSummaryEmailSentAt: null
+                        purchasedAt: '2024-01-01T00:00:00.000Z'
+                        cancelledAt: null
+                        createdAt: '2024-01-01T00:00:00.000Z'
+                        updatedAt: '2024-01-01T00:00:00.000Z'
+                        user:
+                          id: 550e8400-e29b-41d4-a716-446655440001
+                          email: user@example.com
+                          name: John Doe
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: number
+                        format: float
+                        description: Current page number
+                      pageSize:
+                        type: number
+                        format: float
+                        description: Number of items per page
+                      pageCount:
+                        type: number
+                        format: float
+                        description: Total number of pages
+                      totalCount:
+                        type: number
+                        format: float
+                        description: Total number of items
+                    required:
+                    - page
+                    - pageSize
+                    - pageCount
+                    - totalCount
+                    additionalProperties: false
+                required:
+                - dataList
+                - pagination
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 1
+          default: 1
+      - description: 'Optional inclusive ending page for requesting a range of pages. Maximum page range: 200.'
+        name: pageEnd
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 0
+      - name: pageSize
+        in: query
+        schema:
+          type: number
+          format: float
+          minimum: 1
+          maximum: 100
+          default: 25
+      - description: 'Multiple Sort syntax "-" DESC, Empty for ASC, Available sorts: createdAt, offlinePaymentInvoiceDueAt, purchasedAt, orderSummaryEmailSentAt, userName, userEmail'
+        example: -sorterA,sorterB
+        name: sort
+        in: query
+        schema:
+          type: string
+          default: -createdAt
+      - properties:
+          orderIds:
+            type: array
+            items:
+              type: string
+              format: uuid
+            description: JSON array of order UUIDs to filter by
+            example:
+            - 550e8400-e29b-41d4-a716-446655440000
+          status:
+            type: array
+            items:
+              type: string
+              enum:
+              - initialized
+              - pending_payment
+              - paid
+              - cancelled
+              - completed
+              - refunding
+              - refunded
+            description: Filter by order statuses
+            example:
+            - confirmed
+          paymentMethod:
+            type: array
+            items:
+              type: string
+              enum:
+              - online
+              - offline
+            description: Filter by payment methods
+            example:
+            - credit-card
+          offlinePaymentApprovalStatus:
+            type: array
+            items:
+              type: string
+              enum:
+              - pending
+              - approved
+              - cancelled
+            description: Filter by offline payment approval statuses
+            example:
+            - pending
+          emails:
+            type: array
+            items:
+              type: string
+              nullable: true
+            description: JSON array of purchaser email addresses to filter by
+            example:
+            - user@example.com
+          q:
+            type: string
+            description: Free-text search across order reference and purchaser fields
+            example: EVT-001
+        description: This key can be provided in the body with key "filter" or query with stringified & encodeURIComponent format, e.g. query.filter = encodeURIComponent(JSON.stringify(filter)). Please refer to schema in body and do not provide both at the same time.
+        name: filter
+        in: query
+        schema:
+          type: object
+          additionalProperties: false
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filter:
+                  type: object
+                  properties:
+                    orderIds:
+                      type: array
+                      items:
+                        type: string
+                        format: uuid
+                      description: JSON array of order UUIDs to filter by
+                      example:
+                      - 550e8400-e29b-41d4-a716-446655440000
+                    status:
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                        - initialized
+                        - pending_payment
+                        - paid
+                        - cancelled
+                        - completed
+                        - refunding
+                        - refunded
+                      description: Filter by order statuses
+                      example:
+                      - confirmed
+                    paymentMethod:
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                        - online
+                        - offline
+                      description: Filter by payment methods
+                      example:
+                      - credit-card
+                    offlinePaymentApprovalStatus:
+                      type: array
+                      items:
+                        type: string
+                        enum:
+                        - pending
+                        - approved
+                        - cancelled
+                      description: Filter by offline payment approval statuses
+                      example:
+                      - pending
+                    emails:
+                      type: array
+                      items:
+                        type: string
+                        nullable: true
+                      description: JSON array of purchaser email addresses to filter by
+                      example:
+                      - user@example.com
+                    q:
+                      type: string
+                      description: Free-text search across order reference and purchaser fields
+                      example: EVT-001
+                  additionalProperties: false
+              additionalProperties: false
+      security:
+      - bearerAuth: []
+      tags:
+      - Order
+      operationId: getPaginatedOrderByEventId
+      summary: List orders for an event
+  /public-api/v1/event/{eventId}/order/{orderId}:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      stripeAccountId:
+                        type: string
+                        format: uuid
+                        nullable: true
+                      userId:
+                        type: string
+                        format: uuid
+                      currency:
+                        type: string
+                        enum:
+                        - USD
+                        - HKD
+                        - THB
+                        - VND
+                        - IDR
+                        - MYR
+                        - PHP
+                        - TWD
+                        - SGD
+                        - KRW
+                        - JPY
+                        - CNY
+                        - AUD
+                      amount:
+                        type: string
+                      status:
+                        type: string
+                        enum:
+                        - initialized
+                        - pending_payment
+                        - paid
+                        - cancelled
+                        - completed
+                        - refunding
+                        - refunded
+                      txRef:
+                        type: string
+                        nullable: true
+                      orderUtmParams:
+                        type: object
+                        properties:
+                          utm_source:
+                            type: string
+                          utm_medium:
+                            type: string
+                          utm_campaign:
+                            type: string
+                          utm_term:
+                            type: string
+                          utm_content:
+                            type: string
+                        additionalProperties: false
+                      promoCodeSnapshot:
+                        type: object
+                        properties: {}
+                        additionalProperties: false
+                        nullable: true
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            orderId:
+                              type: string
+                              format: uuid
+                            ticketClassId:
+                              type: string
+                              format: uuid
+                              nullable: true
+                            unitPrice:
+                              type: string
+                              pattern: ^-?\d+(\.\d+)?$
+                            qty:
+                              type: number
+                              format: float
+                            regFormDataSnapshot:
+                              type: object
+                              properties: {}
+                              additionalProperties: false
+                            addOns:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  ticketClassAddOnId:
+                                    type: string
+                                    format: uuid
+                                  snapshot:
+                                    type: object
+                                    properties: {}
+                                    additionalProperties: false
+                                  qty:
+                                    type: number
+                                    format: float
+                                required:
+                                - ticketClassAddOnId
+                                - snapshot
+                                - qty
+                                additionalProperties: false
+                            associatedAttendeeId:
+                              type: string
+                              format: uuid
+                              nullable: true
+                          required:
+                          - orderId
+                          - ticketClassId
+                          - unitPrice
+                          - qty
+                          - regFormDataSnapshot
+                          - addOns
+                          - associatedAttendeeId
+                          additionalProperties: false
+                      paymentMethod:
+                        type: string
+                        enum:
+                        - online
+                        - offline
+                        nullable: true
+                      paymentBillingInformation:
+                        type: string
+                        nullable: true
+                      offlinePaymentInvoiceId:
+                        type: string
+                        nullable: true
+                      offlinePaymentBillingInformation:
+                        type: string
+                        nullable: true
+                      offlinePaymentInvoiceDueAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      offlinePaymentApprovalStatus:
+                        type: string
+                        enum:
+                        - pending
+                        - approved
+                        - cancelled
+                        nullable: true
+                      tax:
+                        type: string
+                        nullable: true
+                      isTaxInclusive:
+                        type: boolean
+                        nullable: true
+                      orderSummaryEmailSentAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      purchasedAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      cancelledAt:
+                        type: string
+                        format: date-time
+                        nullable: true
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      user:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          email:
+                            type: string
+                          name:
+                            type: string
+                        required:
+                        - id
+                        - email
+                        - name
+                        additionalProperties: false
+                    required:
+                    - id
+                    - stripeAccountId
+                    - userId
+                    - currency
+                    - amount
+                    - status
+                    - txRef
+                    - orderUtmParams
+                    - promoCodeSnapshot
+                    - orderItems
+                    - paymentMethod
+                    - paymentBillingInformation
+                    - offlinePaymentInvoiceDueAt
+                    - offlinePaymentApprovalStatus
+                    - tax
+                    - isTaxInclusive
+                    - orderSummaryEmailSentAt
+                    - purchasedAt
+                    - cancelledAt
+                    - createdAt
+                    - updatedAt
+                    - user
+                    additionalProperties: false
+                    description: Order response object returned by order endpoints
+                    example:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      stripeAccountId: null
+                      userId: 550e8400-e29b-41d4-a716-446655440001
+                      currency: HKD
+                      amount: '100.00'
+                      status: CONFIRMED
+                      txRef: EVT-2024-001
+                      orderUtmParams: {}
+                      promoCodeSnapshot: null
+                      orderItems:
+                      - orderId: 550e8400-e29b-41d4-a716-446655440000
+                        ticketClassId: 550e8400-e29b-41d4-a716-446655440002
+                        unitPrice: '100.00'
+                        qty: 1
+                        regFormDataSnapshot: {}
+                        addOns: []
+                        associatedAttendeeId: 550e8400-e29b-41d4-a716-446655440003
+                      paymentMethod: CREDIT_CARD
+                      paymentBillingInformation: null
+                      offlinePaymentInvoiceId: null
+                      offlinePaymentBillingInformation: null
+                      offlinePaymentInvoiceDueAt: null
+                      offlinePaymentApprovalStatus: null
+                      tax: null
+                      isTaxInclusive: false
+                      orderSummaryEmailSentAt: null
+                      purchasedAt: '2024-01-01T00:00:00.000Z'
+                      cancelledAt: null
+                      createdAt: '2024-01-01T00:00:00.000Z'
+                      updatedAt: '2024-01-01T00:00:00.000Z'
+                      user:
+                        id: 550e8400-e29b-41d4-a716-446655440001
+                        email: user@example.com
+                        name: John Doe
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Order
+      operationId: getOrderById
+      summary: Get an order by ID
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

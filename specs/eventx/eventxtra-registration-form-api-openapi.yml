@@ -1,0 +1,547 @@
+openapi: 3.2.0
+info:
+  title: Public Registration Form API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Registration Form
+paths:
+  /public-api/v1/event/{eventId}/registration-form:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      name:
+                        type: string
+                      isEnabled:
+                        type: boolean
+                      fields:
+                        type: array
+                        items:
+                          anyOf:
+                          - type: object
+                            properties:
+                              id:
+                                type: string
+                              type:
+                                type: string
+                                enum:
+                                - text
+                                - multipleText
+                                - textArea
+                                - singleCheckbox
+                                - radioGroup
+                                - checkboxGroup
+                                - dropdown
+                                - fileUpload
+                                - datePicker
+                                - phoneField
+                                - timePicker
+                              label:
+                                type: string
+                              isRequired:
+                                type: boolean
+                              contentI18n:
+                                type: object
+                                properties:
+                                  label:
+                                    type: object
+                                    properties:
+                                      default:
+                                        type: string
+                                        nullable: true
+                                      en:
+                                        type: string
+                                        nullable: true
+                                      ja:
+                                        type: string
+                                        nullable: true
+                                      ko:
+                                        type: string
+                                        nullable: true
+                                      vi:
+                                        type: string
+                                        nullable: true
+                                      zh-HK:
+                                        type: string
+                                        nullable: true
+                                      zh-CN:
+                                        type: string
+                                        nullable: true
+                                      es:
+                                        type: string
+                                        nullable: true
+                                      th:
+                                        type: string
+                                        nullable: true
+                                      pt:
+                                        type: string
+                                        nullable: true
+                                    required:
+                                    - default
+                                    additionalProperties: false
+                                additionalProperties: false
+                            required:
+                            - id
+                            - type
+                            - isRequired
+                            - contentI18n
+                            additionalProperties: false
+                          - type: object
+                            properties:
+                              id:
+                                type: string
+                                enum:
+                                - name
+                                - firstName
+                                - lastName
+                                - email
+                                - secondaryEmails
+                                - jobTitle
+                                - organization
+                                - contactNo
+                                - city
+                                - country
+                              type:
+                                type: string
+                                enum:
+                                - text
+                                - multipleText
+                                - textArea
+                                - singleCheckbox
+                                - radioGroup
+                                - checkboxGroup
+                                - dropdown
+                                - fileUpload
+                                - datePicker
+                                - phoneField
+                                - timePicker
+                              isRequired:
+                                type: boolean
+                            required:
+                            - id
+                            - type
+                            - isRequired
+                            additionalProperties: false
+                        minItems: 0
+                      conditionalLogics:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            action:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                targetQuestionId:
+                                  type: string
+                                  format: uuid
+                              required:
+                              - type
+                              - targetQuestionId
+                              additionalProperties: false
+                            condition:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                questionOptionId:
+                                  type: string
+                                  format: uuid
+                              required:
+                              - type
+                              - questionOptionId
+                              additionalProperties: false
+                            sourceField:
+                              type: string
+                              format: uuid
+                          required:
+                          - id
+                          - action
+                          - condition
+                          - sourceField
+                          additionalProperties: false
+                        minItems: 0
+                      tickets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            ticketAvailableCount:
+                              type: number
+                              format: float
+                            currency:
+                              type: string
+                            qty:
+                              type: number
+                              format: float
+                            price:
+                              type: string
+                            saleStartsAt:
+                              type: string
+                              format: date-time
+                            saleEndsAt:
+                              type: string
+                              format: date-time
+                              nullable: true
+                            minAddOnQty:
+                              type: number
+                              format: float
+                            maxAddOnQty:
+                              type: number
+                              format: float
+                              nullable: true
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            message:
+                              type: string
+                            addOns:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    format: uuid
+                                  name:
+                                    type: string
+                                  description:
+                                    type: string
+                                  price:
+                                    type: string
+                                  type:
+                                    type: string
+                                  stockQty:
+                                    type: number
+                                    format: float
+                                  addOnAvailableCount:
+                                    type: number
+                                    format: float
+                                  startDateTime:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                  endDateTime:
+                                    type: string
+                                    format: date-time
+                                    nullable: true
+                                required:
+                                - id
+                                - name
+                                - price
+                                - type
+                                - stockQty
+                                - addOnAvailableCount
+                                - startDateTime
+                                - endDateTime
+                                additionalProperties: false
+                              minItems: 0
+                            addOnGroups:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                    format: uuid
+                                  name:
+                                    type: string
+                                  minQty:
+                                    type: integer
+                                    minimum: 0
+                                  maxQty:
+                                    type: integer
+                                    minimum: 0
+                                    nullable: true
+                                  addOnIds:
+                                    type: array
+                                    items:
+                                      type: string
+                                      format: uuid
+                                required:
+                                - id
+                                - name
+                                - minQty
+                                - maxQty
+                                - addOnIds
+                                additionalProperties: false
+                          required:
+                          - id
+                          - ticketAvailableCount
+                          - currency
+                          - qty
+                          - price
+                          - saleStartsAt
+                          - saleEndsAt
+                          - minAddOnQty
+                          - maxAddOnQty
+                          - name
+                          - addOns
+                          - addOnGroups
+                          additionalProperties: false
+                        minItems: 0
+                      isAddOnGroupDisplayEnabled:
+                        type: boolean
+                    required:
+                    - id
+                    - name
+                    - isEnabled
+                    - fields
+                    - conditionalLogics
+                    - tickets
+                    - isAddOnGroupDisplayEnabled
+                    additionalProperties: false
+                    description: Registration form response including fields, tickets, and conditional logic
+                    example:
+                      id: 550e8400-e29b-41d4-a716-446655440000
+                      name: Standard Registration
+                      isEnabled: true
+                      fields:
+                      - id: fullName
+                        type: TEXT
+                        isRequired: true
+                      - id: 550e8400-e29b-41d4-a716-446655440001
+                        type: TEXT
+                        label: Company Name
+                        isRequired: false
+                        contentI18n:
+                          label:
+                            default: Company Name
+                      conditionalLogics: []
+                      tickets:
+                      - id: 550e8400-e29b-41d4-a716-446655440002
+                        ticketAvailableCount: 500
+                        currency: HKD
+                        qty: 500
+                        price: '100.00'
+                        saleStartsAt: '2024-01-01T00:00:00.000Z'
+                        saleEndsAt: null
+                        minAddOnQty: 0
+                        maxAddOnQty: null
+                        name: General Admission
+                        addOns: []
+                        addOnGroups: []
+                      isAddOnGroupDisplayEnabled: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                isEnabled:
+                  type: boolean
+                fields:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        anyOf:
+                        - type: string
+                          enum:
+                          - name
+                          - firstName
+                          - lastName
+                          - email
+                          - secondaryEmails
+                          - jobTitle
+                          - organization
+                          - contactNo
+                          - city
+                          - country
+                        - type: string
+                          format: uuid
+                      isRequired:
+                        type: boolean
+                      contentI18n:
+                        type: object
+                        properties:
+                          label:
+                            type: object
+                            properties:
+                              default:
+                                type: string
+                                nullable: true
+                              en:
+                                type: string
+                                nullable: true
+                              ja:
+                                type: string
+                                nullable: true
+                              ko:
+                                type: string
+                                nullable: true
+                              vi:
+                                type: string
+                                nullable: true
+                              zh-HK:
+                                type: string
+                                nullable: true
+                              zh-CN:
+                                type: string
+                                nullable: true
+                              es:
+                                type: string
+                                nullable: true
+                              th:
+                                type: string
+                                nullable: true
+                              pt:
+                                type: string
+                                nullable: true
+                            required:
+                            - default
+                            additionalProperties: false
+                        additionalProperties: false
+                    required:
+                    - id
+                    - isRequired
+                    additionalProperties: false
+                conditionalLogics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        format: uuid
+                      sourceField:
+                        type: string
+                        format: uuid
+                      condition:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - optionEqualsTo
+                            - equalsTo
+                          questionOptionId:
+                            type: string
+                            format: uuid
+                        required:
+                        - type
+                        - questionOptionId
+                        additionalProperties: false
+                      action:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                            - show
+                            - hide
+                          targetQuestionId:
+                            type: string
+                        required:
+                        - type
+                        - targetQuestionId
+                        additionalProperties: false
+                    required:
+                    - id
+                    - sourceField
+                    additionalProperties: false
+                  uniqueItems: true
+                ticketClassIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                isUniqueAttendeeEmailRequired:
+                  type: boolean
+                  default: false
+                isCheckInQRCodeVisibleOnCompletion:
+                  type: boolean
+                  default: false
+                isPromoCodeFieldEnabled:
+                  type: boolean
+                  default: true
+                isPurchaserEmailFieldEnabled:
+                  type: boolean
+                  default: true
+                isAddOnGroupDisplayEnabled:
+                  type: boolean
+                  default: false
+                minTicketQtyPerOrder:
+                  type: number
+                  format: float
+                  default: 1
+                maxTicketQtyPerOrder:
+                  type: number
+                  format: float
+                  default: 10
+              required:
+              - name
+              - isEnabled
+              - fields
+              - conditionalLogics
+              - ticketClassIds
+              additionalProperties: false
+              description: Request body for creating a registration form
+              example:
+                name: Standard Registration
+                isEnabled: true
+                fields:
+                - id: fullName
+                  isRequired: true
+                - id: email
+                  isRequired: true
+                conditionalLogics: []
+                ticketClassIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+                isUniqueAttendeeEmailRequired: false
+                isCheckInQRCodeVisibleOnCompletion: false
+                isPromoCodeFieldEnabled: true
+                isPurchaserEmailFieldEnabled: true
+                isAddOnGroupDisplayEnabled: false
+                minTicketQtyPerOrder: 1
+                maxTicketQtyPerOrder: 10
+      security:
+      - bearerAuth: []
+      tags:
+      - Registration Form
+      operationId: createRegForm
+      summary: Create a registration form for an event
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

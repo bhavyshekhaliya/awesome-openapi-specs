@@ -1,0 +1,666 @@
+openapi: 3.2.0
+info:
+  title: Public Invoice API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Invoice
+paths:
+  /public-api/v1/event/{eventId}/invoice/details:
+    post:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      orderId:
+                        type: string
+                      eventName:
+                        type: string
+                      organizerName:
+                        type: string
+                        nullable: true
+                      eventDateTime:
+                        type: string
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketName:
+                              type: string
+                            ticket:
+                              type: object
+                              properties:
+                                contentI18n:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                    description:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                    message:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                  additionalProperties: false
+                              required:
+                              - contentI18n
+                              additionalProperties: false
+                            price:
+                              type: string
+                            qty:
+                              type: number
+                              format: float
+                            codeName:
+                              type: string
+                            discount:
+                              type: number
+                              format: float
+                            addOns:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  contentI18n:
+                                    type: object
+                                    properties:
+                                      name:
+                                        type: object
+                                        properties:
+                                          default:
+                                            type: string
+                                            nullable: true
+                                          en:
+                                            type: string
+                                            nullable: true
+                                          ja:
+                                            type: string
+                                            nullable: true
+                                          ko:
+                                            type: string
+                                            nullable: true
+                                          vi:
+                                            type: string
+                                            nullable: true
+                                          zh-HK:
+                                            type: string
+                                            nullable: true
+                                          zh-CN:
+                                            type: string
+                                            nullable: true
+                                          es:
+                                            type: string
+                                            nullable: true
+                                          th:
+                                            type: string
+                                            nullable: true
+                                          pt:
+                                            type: string
+                                            nullable: true
+                                        required:
+                                        - default
+                                        additionalProperties: false
+                                      description:
+                                        type: object
+                                        properties:
+                                          default:
+                                            type: string
+                                            nullable: true
+                                          en:
+                                            type: string
+                                            nullable: true
+                                          ja:
+                                            type: string
+                                            nullable: true
+                                          ko:
+                                            type: string
+                                            nullable: true
+                                          vi:
+                                            type: string
+                                            nullable: true
+                                          zh-HK:
+                                            type: string
+                                            nullable: true
+                                          zh-CN:
+                                            type: string
+                                            nullable: true
+                                          es:
+                                            type: string
+                                            nullable: true
+                                          th:
+                                            type: string
+                                            nullable: true
+                                          pt:
+                                            type: string
+                                            nullable: true
+                                        required:
+                                        - default
+                                        additionalProperties: false
+                                    additionalProperties: false
+                                  price:
+                                    type: string
+                                  qty:
+                                    type: number
+                                    format: float
+                                required:
+                                - id
+                                - contentI18n
+                                - qty
+                                additionalProperties: false
+                          required:
+                          - ticketName
+                          - ticket
+                          - qty
+                          - addOns
+                          additionalProperties: false
+                      subTotal:
+                        type: string
+                      currency:
+                        type: string
+                      purchaserName:
+                        type: string
+                      paymentMethod:
+                        type: string
+                        enum:
+                        - online
+                        - offline
+                        nullable: true
+                      invoiceId:
+                        type: string
+                      invoiceDate:
+                        type: string
+                        format: date-time
+                      invoiceDueAt:
+                        type: string
+                        format: date-time
+                      invoiceBillingInformation:
+                        type: string
+                        nullable: true
+                      paymentDescription:
+                        type: string
+                      eventTimezone:
+                        type: string
+                      purchaseOrganization:
+                        type: string
+                        nullable: true
+                    required:
+                    - orderId
+                    - eventName
+                    - eventDateTime
+                    - orderItems
+                    - subTotal
+                    - currency
+                    - purchaserName
+                    - paymentMethod
+                    - eventTimezone
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                  format: uuid
+              required:
+              - userId
+              additionalProperties: false
+      security:
+      - bearerAuth: []
+      tags:
+      - Invoice
+      operationId: invoiceDetails
+      summary: Get invoice details for a user
+      description: Uses POST with a userId in the body to resolve an attendee, their ticket, and the associated order to construct invoice details. For offline payments, includes invoice ID, due date, and payment description.
+  /public-api/v1/event/{eventId}/invoice/{orderId}:
+    get:
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      orderId:
+                        type: string
+                      eventName:
+                        type: string
+                      organizerName:
+                        type: string
+                        nullable: true
+                      eventDateTime:
+                        type: string
+                      orderItems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            ticketName:
+                              type: string
+                            ticket:
+                              type: object
+                              properties:
+                                contentI18n:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                    description:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                    message:
+                                      type: object
+                                      properties:
+                                        default:
+                                          type: string
+                                          nullable: true
+                                        en:
+                                          type: string
+                                          nullable: true
+                                        ja:
+                                          type: string
+                                          nullable: true
+                                        ko:
+                                          type: string
+                                          nullable: true
+                                        vi:
+                                          type: string
+                                          nullable: true
+                                        zh-HK:
+                                          type: string
+                                          nullable: true
+                                        zh-CN:
+                                          type: string
+                                          nullable: true
+                                        es:
+                                          type: string
+                                          nullable: true
+                                        th:
+                                          type: string
+                                          nullable: true
+                                        pt:
+                                          type: string
+                                          nullable: true
+                                      required:
+                                      - default
+                                      additionalProperties: false
+                                  additionalProperties: false
+                              required:
+                              - contentI18n
+                              additionalProperties: false
+                            price:
+                              type: string
+                            qty:
+                              type: number
+                              format: float
+                            codeName:
+                              type: string
+                            discount:
+                              type: number
+                              format: float
+                            addOns:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  id:
+                                    type: string
+                                  contentI18n:
+                                    type: object
+                                    properties:
+                                      name:
+                                        type: object
+                                        properties:
+                                          default:
+                                            type: string
+                                            nullable: true
+                                          en:
+                                            type: string
+                                            nullable: true
+                                          ja:
+                                            type: string
+                                            nullable: true
+                                          ko:
+                                            type: string
+                                            nullable: true
+                                          vi:
+                                            type: string
+                                            nullable: true
+                                          zh-HK:
+                                            type: string
+                                            nullable: true
+                                          zh-CN:
+                                            type: string
+                                            nullable: true
+                                          es:
+                                            type: string
+                                            nullable: true
+                                          th:
+                                            type: string
+                                            nullable: true
+                                          pt:
+                                            type: string
+                                            nullable: true
+                                        required:
+                                        - default
+                                        additionalProperties: false
+                                      description:
+                                        type: object
+                                        properties:
+                                          default:
+                                            type: string
+                                            nullable: true
+                                          en:
+                                            type: string
+                                            nullable: true
+                                          ja:
+                                            type: string
+                                            nullable: true
+                                          ko:
+                                            type: string
+                                            nullable: true
+                                          vi:
+                                            type: string
+                                            nullable: true
+                                          zh-HK:
+                                            type: string
+                                            nullable: true
+                                          zh-CN:
+                                            type: string
+                                            nullable: true
+                                          es:
+                                            type: string
+                                            nullable: true
+                                          th:
+                                            type: string
+                                            nullable: true
+                                          pt:
+                                            type: string
+                                            nullable: true
+                                        required:
+                                        - default
+                                        additionalProperties: false
+                                    additionalProperties: false
+                                  price:
+                                    type: string
+                                  qty:
+                                    type: number
+                                    format: float
+                                required:
+                                - id
+                                - contentI18n
+                                - qty
+                                additionalProperties: false
+                          required:
+                          - ticketName
+                          - ticket
+                          - qty
+                          - addOns
+                          additionalProperties: false
+                      subTotal:
+                        type: string
+                      currency:
+                        type: string
+                      purchaserName:
+                        type: string
+                      paymentMethod:
+                        type: string
+                        enum:
+                        - online
+                        - offline
+                        nullable: true
+                      invoiceId:
+                        type: string
+                      invoiceDate:
+                        type: string
+                        format: date-time
+                      invoiceDueAt:
+                        type: string
+                        format: date-time
+                      invoiceBillingInformation:
+                        type: string
+                        nullable: true
+                      paymentDescription:
+                        type: string
+                      eventTimezone:
+                        type: string
+                      purchaseOrganization:
+                        type: string
+                        nullable: true
+                    required:
+                    - orderId
+                    - eventName
+                    - eventDateTime
+                    - orderItems
+                    - subTotal
+                    - currency
+                    - purchaserName
+                    - paymentMethod
+                    - eventTimezone
+                    additionalProperties: false
+                required:
+                - data
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: orderId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      security:
+      - bearerAuth: []
+      tags:
+      - Invoice
+      operationId: getOneOrderInvoice
+      summary: Get invoice details for an order
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

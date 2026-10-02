@@ -1,0 +1,337 @@
+openapi: 3.2.0
+info:
+  title: Public Outreach API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Outreach
+paths:
+  /public-api/v1/event/{eventId}/outreach/email-template/confirmation-email/send:
+    post:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for sending confirmation emails
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: bulkSendConfirmationEmailByEventId
+      summary: Send confirmation emails to attendees
+  /public-api/v1/event/{eventId}/outreach/email-template/{emailTemplateType}/test:
+    post:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: emailTemplateType
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - confirmation-email
+          - confirmation-email-with-ticket-summary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                testEmails:
+                  type: array
+                  items:
+                    type: string
+                    format: email
+                  minItems: 1
+                  maxItems: 5
+              required:
+              - testEmails
+              additionalProperties: false
+              description: Request body for sending test confirmation emails to up to 5 recipients
+              example:
+                testEmails:
+                - test@example.com
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: sendTestConfirmationEmailByEventId
+      summary: Send test confirmation emails
+  /public-api/v1/event/{eventId}/outreach/email-template/{emailTemplateType}:
+    put:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: emailTemplateType
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - attendee-approval-acknowledgement-email
+          - attendee-invitation-email
+          - attendee-rsvp-email
+          - confirmation-email
+          - confirmation-email-with-ticket-summary
+          - event-manager-invitation
+          - offline-payment-invoice-email
+          - order-summary-email
+          - reminder-24H-email
+          - reminder-1H-email
+          - special-role-invitation-email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                senderId:
+                  type: string
+                  format: uuid
+                contentHtml:
+                  type: string
+                design:
+                  type: object
+                  properties: {}
+                  additionalProperties: false
+                senderName:
+                  type: string
+                subject:
+                  type: string
+                shouldAttachCalendarFile:
+                  type: boolean
+                shouldAttachCheckInQRCodeFile:
+                  type: boolean
+                isDisabled:
+                  type: boolean
+                replyToEmail:
+                  type: string
+                  nullable: true
+              additionalProperties: false
+              description: Request body for creating or updating an email template
+              example:
+                senderName: EventX Team
+                subject: Your Registration Confirmation
+                contentHtml: <p>Thank you for registering!</p>
+                shouldAttachCalendarFile: true
+                shouldAttachCheckInQRCodeFile: true
+                isDisabled: false
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: upsertEmailTemplateByType
+      summary: Create or update an email template
+  /public-api/v1/event/{eventId}/outreach/sms-template/confirmation-sms/send:
+    post:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for sending confirmation SMS
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: bulkSendConfirmationSmsByEventId
+      summary: Send confirmation SMS to attendees
+  /public-api/v1/event/{eventId}/outreach/whatsapp-template/confirmation-message/send:
+    post:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for sending confirmation WhatsApp messages
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: bulkSendConfirmationWhatsAppMessageByEventId
+      summary: Send confirmation WhatsApp messages to attendees
+  /public-api/v1/outreach/{eventId}/manual-email/{outreachEmailId}/send:
+    post:
+      responses:
+        '204':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+                additionalProperties: false
+        '500':
+          description: ERROR
+      parameters:
+      - name: eventId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: outreachEmailId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                attendeeIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  uniqueItems: true
+              required:
+              - attendeeIds
+              additionalProperties: false
+              description: Request body for sending a manual email to attendees
+              example:
+                attendeeIds:
+                - 550e8400-e29b-41d4-a716-446655440000
+      security:
+      - bearerAuth: []
+      tags:
+      - Outreach
+      operationId: sendManualEmailByEventId
+      summary: Send a draft manual email to attendees
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token

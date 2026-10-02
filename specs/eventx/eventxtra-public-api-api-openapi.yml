@@ -1,0 +1,284 @@
+openapi: 3.2.0
+info:
+  title: Public API
+  version: beta
+  description: 'Response bodies vary by endpoint and may return `{ data }`, `{ dataList }`, `{ dataList, pagination }`, or no body for status-only operations. Successful responses use the HTTP status defined on each operation. Error responses return `{ error: { code, message, status, meta } }` with the corresponding HTTP status code.'
+servers:
+- url: https://esaas-api.eventx.io
+tags:
+- name: Public API
+paths:
+  /public-api/v1/org/{orgId}/custom-domains:
+    get:
+      responses: {}
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum:
+          - pending
+          - active
+          - pending_ssl
+          - moved
+          - failed
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: listCustomDomains
+      summary: List custom domains for an organization
+      tags:
+      - Public API
+    post:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                domain:
+                  type: string
+                defaultRedirectUrl:
+                  type: string
+              required:
+              - domain
+              - defaultRedirectUrl
+              additionalProperties: false
+      operationId: createCustomDomain
+      summary: Create a custom domain via Cloudflare
+      tags:
+      - Public API
+  /public-api/v1/org/{orgId}/custom-domains/{customDomainId}:
+    get:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: getCustomDomainDetail
+      summary: Get custom domain details with DNS records
+      tags:
+      - Public API
+    put:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                defaultRedirectUrl:
+                  type: string
+              required:
+              - defaultRedirectUrl
+              additionalProperties: false
+      operationId: updateCustomDomain
+      summary: Update the default redirect URL of a custom domain
+      tags:
+      - Public API
+    delete:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: deleteCustomDomain
+      summary: Delete a custom domain
+      tags:
+      - Public API
+  /public-api/v1/org/{orgId}/custom-domains/{customDomainId}/verify:
+    put:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: verifyCustomDomain
+      summary: Trigger DNS verification for a custom domain
+      description: Initiates DNS ownership and SSL verification checks. Idempotent — can be called multiple times to refresh the verification status.
+      tags:
+      - Public API
+  /public-api/v1/org/{orgId}/custom-domains/{customDomainId}/path-mappings:
+    get:
+      responses: {}
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 25
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: listPathMappings
+      summary: List path mappings for a custom domain
+      tags:
+      - Public API
+    post:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                eventRegFormId:
+                  type: string
+                pathName:
+                  type: string
+              required:
+              - eventId
+              - pathName
+              additionalProperties: false
+      operationId: createPathMapping
+      summary: Create a path mapping for a custom domain
+      tags:
+      - Public API
+  /public-api/v1/org/{orgId}/custom-domains/{customDomainId}/path-mappings/{pathMappingId}:
+    put:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pathMappingId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                eventRegFormId:
+                  type: string
+                  nullable: true
+                pathName:
+                  type: string
+              additionalProperties: false
+      operationId: updatePathMapping
+      summary: Update a path mapping
+      tags:
+      - Public API
+    delete:
+      responses: {}
+      parameters:
+      - name: orgId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customDomainId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pathMappingId
+        in: path
+        required: true
+        schema:
+          type: string
+      operationId: deletePathMapping
+      summary: Delete a path mapping
+      tags:
+      - Public API
+components:
+  securitySchemes:
+    bearerAuth:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: Bearer Authorization with jwt token
