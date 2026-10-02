@@ -1,0 +1,634 @@
+openapi: 3.1.0
+info:
+  title: Moosend API
+  version: "3"
+  description: Community-maintained JSON subset of the Moosend API v3.
+  contact:
+    url: https://moosend.com/contact/
+  license:
+    name: CC0-1.0
+    url: https://creativecommons.org/publicdomain/zero/1.0/
+servers:
+  - url: https://api.moosend.com/v3
+    description: Moosend API v3
+security:
+  - ApiKey: []
+tags:
+  - name: Mailing Lists
+  - name: Subscribers
+  - name: Campaigns
+paths:
+  /lists.json:
+    get:
+      tags: [Mailing Lists]
+      operationId: listActiveMailingLists
+      summary: Get active mailing lists
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54568-Get-all-active-mailing-lists?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - name: WithStatistics
+          in: query
+          schema:
+            type: boolean
+            default: true
+        - name: SortBy
+          in: query
+          schema:
+            type: string
+            enum: [Name, Subject, Status, DeliveredOn, CreatedOn]
+            default: CreatedOn
+        - name: SortMethod
+          in: query
+          schema:
+            type: string
+            enum: [DESC, ASC]
+            default: ASC
+      responses:
+        '200':
+          description: Active mailing lists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingListsResponse'
+  /lists/{Page}/{PageSize}.json:
+    get:
+      tags: [Mailing Lists]
+      operationId: listActiveMailingListsByPage
+      summary: Get active mailing lists with paging
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54562-Get-all-active-mailing-lists-with-paging?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - name: SortBy
+          in: query
+          schema:
+            type: string
+            enum: [Name, Subject, Status, DeliveredOn, CreatedOn]
+            default: CreatedOn
+        - name: SortMethod
+          in: query
+          schema:
+            type: string
+            enum: [DESC, ASC]
+            default: ASC
+      responses:
+        '200':
+          description: Paged active mailing lists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailingListsResponse'
+  /lists/{MailingListID}/subscribers/{Status}.json:
+    get:
+      tags: [Subscribers]
+      operationId: listSubscribers
+      summary: Get subscribers by list and status
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54575-Get-all-subscribers?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/MailingListID'
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/PageQuery'
+        - $ref: '#/components/parameters/PageSizeQuery'
+      responses:
+        '200':
+          description: Subscriber records for the selected list and status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscribersResponse'
+  /subscribers/{MailingListID}/subscribe.json:
+    post:
+      tags: [Subscribers]
+      operationId: addOrUpdateSubscriber
+      summary: Add a subscriber to a mailing list
+      description: Adds a subscriber, or updates the existing subscriber with the same email in the selected list.
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54573-Add-a-new-subscriber?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/ContentTypeJson'
+        - $ref: '#/components/parameters/MailingListID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberRequest'
+      responses:
+        '200':
+          description: Subscriber added or updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberResponse'
+  /subscribers/{MailingListID}/update/{SubscriberID}.json:
+    post:
+      tags: [Subscribers]
+      operationId: updateSubscriber
+      summary: Update a subscriber
+      description: Updates subscriber details in a specific mailing list. The email address is required.
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54578-Update-a-subscriber?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/ContentTypeJson'
+        - $ref: '#/components/parameters/MailingListID'
+        - $ref: '#/components/parameters/SubscriberID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriberRequest'
+      responses:
+        '200':
+          description: Updated subscriber.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriberResponse'
+  /subscribers/{MailingListID}/unsubscribe.json:
+    post:
+      tags: [Subscribers]
+      operationId: unsubscribeSubscriberFromMailingList
+      summary: Unsubscribe a subscriber from a mailing list
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54577-Unsubscribe-a-subscriber-from-a-mailing-list?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/ContentTypeJson'
+        - $ref: '#/components/parameters/MailingListID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailRequest'
+      responses:
+        '200':
+          description: Unsubscribe result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyContextResponse'
+  /subscribers/{MailingListID}/{CampaignID}/unsubscribe.json:
+    post:
+      tags: [Subscribers]
+      operationId: unsubscribeSubscriberFromCampaign
+      summary: Unsubscribe a subscriber from a campaign
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54590-Unsubscribe-a-subscriber-from-a-mailing-list-and-a-campaign?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/ContentTypeJson'
+        - $ref: '#/components/parameters/MailingListID'
+        - $ref: '#/components/parameters/CampaignID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailRequest'
+      responses:
+        '200':
+          description: Unsubscribe result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyContextResponse'
+  /lists/{MailingListID}/delete.json:
+    delete:
+      tags: [Mailing Lists]
+      operationId: deleteMailingList
+      summary: Delete a mailing list
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54569-Delete-a-mailing-list?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/MailingListID'
+      responses:
+        '200':
+          description: Delete result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyContextResponse'
+  /campaigns/{Page}.json:
+    get:
+      tags: [Campaigns]
+      operationId: listCampaignsByPage
+      summary: Get campaigns by page
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54583-Get-all-campaigns-by-page?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/Page'
+      responses:
+        '200':
+          description: Campaigns and paging metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsResponse'
+  /campaigns/{CampaignID}/view.json:
+    get:
+      tags: [Campaigns]
+      operationId: getCampaignDetails
+      summary: Get campaign details
+      description: Returns campaign details without campaign statistics.
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54586-Get-campaign-details?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/CampaignID'
+      responses:
+        '200':
+          description: Campaign detail record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignResponse'
+  /campaigns/{CampaignID}/send.json:
+    post:
+      tags: [Campaigns]
+      operationId: sendCampaign
+      summary: Send a draft campaign
+      description: Immediately sends a draft campaign to its selected recipients.
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54595-Send-a-campaign?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/CampaignID'
+      responses:
+        '200':
+          description: Send result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyContextResponse'
+  /campaigns/{CampaignID}/schedule.json:
+    post:
+      tags: [Campaigns]
+      operationId: scheduleCampaign
+      summary: Schedule campaign delivery
+      description: Assigns a scheduled delivery date and time. This operation does not send the campaign.
+      externalDocs:
+        url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54609-Schedule-a-campaign?lang=en_US
+      parameters:
+        - $ref: '#/components/parameters/AcceptJson'
+        - $ref: '#/components/parameters/ContentTypeJson'
+        - $ref: '#/components/parameters/CampaignID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleCampaignRequest'
+      responses:
+        '200':
+          description: Schedule result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmptyContextResponse'
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: query
+      name: apikey
+  parameters:
+    AcceptJson:
+      name: Accept
+      in: header
+      required: true
+      schema:
+        type: string
+        enum: [application/json]
+    ContentTypeJson:
+      name: Content-Type
+      in: header
+      required: true
+      schema:
+        type: string
+        enum: [application/json]
+    Page:
+      name: Page
+      in: path
+      required: true
+      description: Page number.
+      schema:
+        type: integer
+        minimum: 1
+    PageSize:
+      name: PageSize
+      in: path
+      required: true
+      description: Number of results per page.
+      schema:
+        type: integer
+        minimum: 1
+    PageQuery:
+      name: Page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+    PageSizeQuery:
+      name: PageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+    MailingListID:
+      name: MailingListID
+      in: path
+      required: true
+      schema:
+        type: string
+    SubscriberID:
+      name: SubscriberID
+      in: path
+      required: true
+      schema:
+        type: string
+    CampaignID:
+      name: CampaignID
+      in: path
+      required: true
+      schema:
+        type: string
+    Status:
+      name: Status
+      in: path
+      required: true
+      schema:
+        type: string
+        enum: [Subscribed, Unsubscribed, Bounced, Removed]
+  schemas:
+    ApiResponse:
+      type: object
+      required: [Code, Error, Context]
+      properties:
+        Code:
+          type: integer
+          description: Zero indicates a successful API result.
+        Error:
+          type: [string, 'null']
+        Context: {}
+    EmptyContextResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              type: 'null'
+    Paging:
+      type: object
+      properties:
+        PageSize:
+          type: integer
+        CurrentPage:
+          type: integer
+        TotalResults:
+          type: integer
+        TotalPageCount:
+          type: integer
+        SortExpression:
+          type: [string, 'null']
+        SortIsAscending:
+          type: boolean
+      additionalProperties: true
+    MailingList:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+        ActiveMemberCount:
+          type: integer
+        BouncedMemberCount:
+          type: integer
+        RemovedMemberCount:
+          type: integer
+        UnsubscribedMemberCount:
+          type: integer
+        Status:
+          type: integer
+        CustomFieldsDefinition:
+          type: array
+          items:
+            type: object
+            properties:
+              ID:
+                type: string
+              Name:
+                type: string
+              Context:
+                type: [string, 'null']
+              IsRequired:
+                type: boolean
+              Type:
+                type: integer
+            additionalProperties: true
+      additionalProperties: true
+    Subscriber:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+        Email:
+          type: string
+          format: email
+        CreatedOn:
+          type: string
+        UnsubscribedOn:
+          type: [string, 'null']
+        UnsubscribedFromID:
+          type: [string, 'null']
+        SubscribeType:
+          type: integer
+        SubscribeMethod:
+          type: integer
+        CustomFields:
+          type: array
+          items:
+            type: object
+            properties:
+              CustomFieldID:
+                type: string
+              Name:
+                type: string
+              Value:
+                type: string
+            additionalProperties: true
+        RemovedOn:
+          type: [string, 'null']
+        Tags:
+          type: array
+          items:
+            type: string
+        Preferences:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+    Campaign:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+        Subject:
+          type: string
+        Status:
+          type: integer
+        CreatedOn:
+          type: string
+        DeliveredOn:
+          type: [string, 'null']
+        ScheduledFor:
+          type: [string, 'null']
+        CampaignType:
+          type: string
+        IsTransactional:
+          type: boolean
+        TotalSent:
+          type: integer
+        TotalOpens:
+          type: integer
+        UniqueOpens:
+          type: integer
+        TotalLinkClicks:
+          type: integer
+        UniqueLinkClicks:
+          type: integer
+        RecipientsCount:
+          type: integer
+      additionalProperties: true
+    MailingListsResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              type: object
+              properties:
+                Paging:
+                  $ref: '#/components/schemas/Paging'
+                MailingLists:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/MailingList'
+              additionalProperties: true
+    SubscribersResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              type: object
+              properties:
+                Paging:
+                  $ref: '#/components/schemas/Paging'
+                Subscribers:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Subscriber'
+              additionalProperties: true
+    SubscriberResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              $ref: '#/components/schemas/Subscriber'
+    CampaignsResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              type: object
+              properties:
+                Paging:
+                  $ref: '#/components/schemas/Paging'
+                Campaigns:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Campaign'
+              additionalProperties: true
+    CampaignResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            Context:
+              allOf:
+                - $ref: '#/components/schemas/Campaign'
+                - type: object
+                  properties:
+                    WebLocation:
+                      type: [string, 'null']
+                    HTMLContent:
+                      type: [string, 'null']
+                    PlainContent:
+                      type: [string, 'null']
+                    Sender:
+                      type: object
+                      additionalProperties: true
+                    TimeZone:
+                      type: string
+                    FormatType:
+                      type: integer
+              additionalProperties: true
+    SubscriberRequest:
+      type: object
+      required: [Email]
+      properties:
+        Name:
+          type: string
+        Email:
+          type: string
+          format: email
+        HasExternalDoubleOptIn:
+          type: boolean
+        CustomFields:
+          type: array
+          items:
+            type: string
+        Tags:
+          type: array
+          items:
+            type: string
+        Preferences:
+          type: array
+          items:
+            type: string
+    EmailRequest:
+      type: object
+      required: [Email]
+      properties:
+        Email:
+          type: string
+          format: email
+    ScheduleCampaignRequest:
+      type: object
+      required: [DateTime, Timezone]
+      properties:
+        DateTime:
+          type: string
+        Timezone:
+          type: string
+externalDocs:
+  description: Official Moosend API reference
+  url: https://docs.moosend.com/api-documentation/articles/KnowledgeBase/54561-Introduction-to-the-Moosend-API?lang=en_US

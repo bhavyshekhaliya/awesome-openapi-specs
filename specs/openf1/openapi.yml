@@ -1,2227 +1,360 @@
 openapi: 3.1.0
 info:
-  title: OpenF1 REST API
+  title: OpenF1 API
   version: 1.0.0
-  description: Community-maintained definition of the 18 documented v1 dataset routes. Historical data from 2023
-    onward is available without authentication; authenticated real-time data requires a paid subscription. This
-    definition covers REST dataset reads and JSON/CSV responses, not MQTT or WebSocket streaming.
-  externalDocs:
-    description: OpenF1 API documentation
-    url: https://openf1.org/docs/
+  description: >-
+    Community-maintained coverage of the documented OpenF1 v1 endpoints.
+    The provider makes historical data from 2023 onward available without
+    authentication; real-time access requires a paid subscription. Response
+    record fields vary by endpoint and are left open. The API can filter by
+    scalar record attributes, but this specification lists common selectors
+    and documented examples rather than every endpoint-specific filter.
 servers:
-- url: https://api.openf1.org/v1
-  description: OpenF1 v1 REST API
+  - url: https://api.openf1.org/v1
+externalDocs:
+  description: OpenF1 API documentation
+  url: https://openf1.org/docs/
 tags:
-- name: race-data
-  description: Formula 1 sessions, timing, telemetry, and results.
+  - name: Formula 1 data
 paths:
   /car_data:
     get:
-      operationId: getCarData
-      summary: Car data
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#car-data
+      operationId: listCarData
+      summary: Retrieve car telemetry
+      description: Returns telemetry samples for cars in a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: brake
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: drs
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: n_gear
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: rpm
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: speed
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: throttle
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    brake:
-                      type: integer
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    drs:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    n_gear:
-                      type: integer
-                    rpm:
-                      type: integer
-                    session_key:
-                      type: integer
-                    speed:
-                      type: integer
-                    throttle:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /championship_drivers:
     get:
-      operationId: getDriversChampionshipBeta
-      summary: Drivers championship (beta)
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#drivers-championship-beta
+      operationId: listDriverChampionshipStandings
+      summary: Retrieve driver championship standings
+      description: Returns driver championship standings for a race session.
+      tags: [Formula 1 data]
       parameters:
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        style: form
-        explode: true
-        schema:
-          type: array
-          items:
-            type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: points_current
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: points_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: position_current
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: position_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumbers'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    driver_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    points_current:
-                      type: integer
-                    points_start:
-                      type: integer
-                    position_current:
-                      type: integer
-                    position_start:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /championship_teams:
     get:
-      operationId: getTeamsChampionshipBeta
-      summary: Teams championship (beta)
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#teams-championship-beta
+      operationId: listTeamChampionshipStandings
+      summary: Retrieve team championship standings
+      description: Returns team championship standings for a race session.
+      tags: [Formula 1 data]
       parameters:
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: points_current
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: points_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: position_current
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: position_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: team_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/TeamName'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    meeting_key:
-                      type: integer
-                    points_current:
-                      type: integer
-                    points_start:
-                      type: integer
-                    position_current:
-                      type: integer
-                    position_start:
-                      type: integer
-                    session_key:
-                      type: integer
-                    team_name:
-                      type: string
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /drivers:
     get:
-      operationId: getDrivers
-      summary: Drivers
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#drivers
+      operationId: listDrivers
+      summary: Retrieve driver information
+      description: Returns information about drivers participating in a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: broadcast_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: country_code
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-        deprecated: true
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: first_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: full_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: headshot_url
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: last_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: name_acronym
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: team_colour
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: team_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    broadcast_name:
-                      type: string
-                    country_code:
-                      type: string
-                      deprecated: true
-                    driver_number:
-                      type: integer
-                    first_name:
-                      type: string
-                    full_name:
-                      type: string
-                    headshot_url:
-                      type: string
-                    last_name:
-                      type: string
-                    meeting_key:
-                      type: integer
-                    name_acronym:
-                      type: string
-                    session_key:
-                      type: integer
-                    team_colour:
-                      type: string
-                    team_name:
-                      type: string
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /intervals:
     get:
-      operationId: getIntervals
-      summary: Intervals
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#intervals
+      operationId: listIntervals
+      summary: Retrieve driver interval data
+      description: Returns time gaps between drivers and the race leader during a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: gap_to_leader
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: interval
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    gap_to_leader:
-                      type: number
-                    interval:
-                      type: number
-                    meeting_key:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /laps:
     get:
-      operationId: getLaps
-      summary: Laps
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#laps
+      operationId: listLaps
+      summary: Retrieve lap data
+      description: Returns lap timing and sector data for a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: date_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: duration_sector_1
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: duration_sector_2
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: duration_sector_3
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: i1_speed
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: i2_speed
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: is_pit_out_lap
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: lap_duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: lap_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: st_speed
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/LapNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date_start:
-                      type: string
-                    driver_number:
-                      type: integer
-                    duration_sector_1:
-                      type: number
-                    duration_sector_2:
-                      type: number
-                    duration_sector_3:
-                      type: number
-                    i1_speed:
-                      type: integer
-                    i2_speed:
-                      type: integer
-                    is_pit_out_lap:
-                      type: boolean
-                    lap_duration:
-                      type: number
-                    lap_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    segments_sector_1:
-                      type: array
-                      items: {}
-                    segments_sector_2:
-                      type: array
-                      items: {}
-                    segments_sector_3:
-                      type: array
-                      items: {}
-                    session_key:
-                      type: integer
-                    st_speed:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /location:
     get:
-      operationId: getLocation
-      summary: Location
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#location
+      operationId: listLocations
+      summary: Retrieve car location samples
+      description: Returns approximate car coordinates recorded during a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: x
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: y
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: z
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    session_key:
-                      type: integer
-                    x:
-                      type: integer
-                    y:
-                      type: integer
-                    z:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /meetings:
     get:
-      operationId: getMeetings
-      summary: Meetings
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#meetings
+      operationId: listMeetings
+      summary: Retrieve meeting and event information
+      description: Returns Formula 1 meeting details and schedule information.
+      tags: [Formula 1 data]
       parameters:
-      - name: circuit_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: circuit_image
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: circuit_info_url
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: circuit_short_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: circuit_type
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: country_code
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-        deprecated: true
-      - name: country_flag
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: country_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: country_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: date_end
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: date_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: gmt_offset
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: is_cancelled
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: location
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: meeting_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: meeting_official_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: year
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/Year'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    circuit_key:
-                      type: integer
-                    circuit_image:
-                      type: string
-                    circuit_info_url:
-                      type: string
-                    circuit_short_name:
-                      type: string
-                    circuit_type:
-                      type: string
-                    country_code:
-                      type: string
-                      deprecated: true
-                    country_flag:
-                      type: string
-                    country_key:
-                      type: integer
-                    country_name:
-                      type: string
-                    date_end:
-                      type: string
-                    date_start:
-                      type: string
-                    gmt_offset:
-                      type: string
-                    is_cancelled:
-                      type: boolean
-                    location:
-                      type: string
-                    meeting_key:
-                      type: integer
-                    meeting_name:
-                      type: string
-                    meeting_official_name:
-                      type: string
-                    year:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /overtakes:
     get:
-      operationId: getOvertakes
-      summary: Overtakes
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#overtakes
+      operationId: listOvertakes
+      summary: Retrieve overtake records
+      description: >-
+        Returns position exchanges recorded during races. The provider notes
+        that this data may be incomplete.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: overtaken_driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: overtaking_driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: position
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/OvertakingDriverNumber'
+        - $ref: '#/components/parameters/OvertakenDriverNumber'
+        - $ref: '#/components/parameters/Position'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    meeting_key:
-                      type: integer
-                    overtaken_driver_number:
-                      type: integer
-                    overtaking_driver_number:
-                      type: integer
-                    position:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /pit:
     get:
-      operationId: getPit
-      summary: Pit
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#pit
+      operationId: listPitStops
+      summary: Retrieve pit stop data
+      description: Returns records of cars going through the pit lane.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: lane_duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: lap_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: pit_duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-        deprecated: true
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: stop_duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    lane_duration:
-                      type: number
-                    lap_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    pit_duration:
-                      type: number
-                      deprecated: true
-                    session_key:
-                      type: integer
-                    stop_duration:
-                      type: number
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /position:
     get:
-      operationId: getPosition
-      summary: Position
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#position
+      operationId: listPositions
+      summary: Retrieve driver position data
+      description: Returns recorded driver positions during a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: position
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    position:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /race_control:
     get:
-      operationId: getRaceControl
-      summary: Race control
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#race-control
+      operationId: listRaceControlMessages
+      summary: Retrieve race control messages
+      description: Returns messages and flag information issued by race control.
+      tags: [Formula 1 data]
       parameters:
-      - name: category
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: flag
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: lap_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: message
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: qualifying_phase
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: scope
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: sector
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    category:
-                      type: string
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    flag:
-                      type: string
-                    lap_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    message:
-                      type: string
-                    qualifying_phase: {}
-                    scope:
-                      type: string
-                    sector: {}
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
-  /session_result:
-    get:
-      operationId: getSessionResult
-      summary: Session result
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#session-result
-      parameters:
-      - name: dnf
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: dns
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: dsq
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: gap_to_leader
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: number_of_laps
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: position
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
-      responses:
-        '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    dnf:
-                      type: boolean
-                    dns:
-                      type: boolean
-                    dsq:
-                      type: boolean
-                    driver_number:
-                      type: integer
-                    duration:
-                      type: number
-                    gap_to_leader:
-                      type: integer
-                    number_of_laps:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    position:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /sessions:
     get:
-      operationId: getSessions
-      summary: Sessions
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#sessions
+      operationId: listSessions
+      summary: Retrieve session and schedule information
+      description: Returns Formula 1 session details, including scheduled sessions.
+      tags: [Formula 1 data]
       parameters:
-      - name: circuit_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: circuit_short_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: country_code
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-        deprecated: true
-      - name: country_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: country_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: date_end
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: date_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: gmt_offset
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: is_cancelled
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: boolean
-      - name: location
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_name
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: session_type
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: year
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/SessionName'
+        - $ref: '#/components/parameters/SessionType'
+        - $ref: '#/components/parameters/Year'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    circuit_key:
-                      type: integer
-                    circuit_short_name:
-                      type: string
-                    country_code:
-                      type: string
-                      deprecated: true
-                    country_key:
-                      type: integer
-                    country_name:
-                      type: string
-                    date_end:
-                      type: string
-                    date_start:
-                      type: string
-                    gmt_offset:
-                      type: string
-                    is_cancelled:
-                      type: boolean
-                    location:
-                      type: string
-                    meeting_key:
-                      type: integer
-                    session_key:
-                      type: integer
-                    session_name:
-                      type: string
-                    session_type:
-                      type: string
-                    year:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
+  /session_result:
+    get:
+      operationId: listSessionResults
+      summary: Retrieve session standings
+      description: Returns driver standings after results are published.
+      tags: [Formula 1 data]
+      parameters:
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
+      responses:
+        '200':
+          $ref: '#/components/responses/Records'
   /starting_grid:
     get:
-      operationId: getStartingGrid
-      summary: Starting grid
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#starting-grid
+      operationId: listStartingGrid
+      summary: Retrieve starting grid positions
+      description: Returns starting grid information for a race.
+      tags: [Formula 1 data]
       parameters:
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: lap_duration
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: position
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    driver_number:
-                      type: integer
-                    lap_duration:
-                      type: number
-                    meeting_key:
-                      type: integer
-                    position:
-                      type: integer
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /stints:
     get:
-      operationId: getStints
-      summary: Stints
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#stints
+      operationId: listStints
+      summary: Retrieve tyre stint data
+      description: Returns tyre stint information for drivers in a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: compound
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: lap_end
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: lap_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: stint_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: tyre_age_at_start
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    compound:
-                      type: string
-                    driver_number:
-                      type: integer
-                    lap_end:
-                      type: integer
-                    lap_start:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    session_key:
-                      type: integer
-                    stint_number:
-                      type: integer
-                    tyre_age_at_start:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /team_radio:
     get:
-      operationId: getTeamRadio
-      summary: Team radio
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#team-radio
+      operationId: listTeamRadio
+      summary: Retrieve team radio records
+      description: Returns team radio records associated with a session and driver.
+      tags: [Formula 1 data]
       parameters:
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: driver_number
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: recording_url
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/DriverNumber'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    date:
-                      type: string
-                    driver_number:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    recording_url:
-                      type: string
-                    session_key:
-                      type: integer
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
   /weather:
     get:
-      operationId: getWeather
-      summary: Weather
-      description: Returns matching records. Each documented scalar attribute can be used as a filter; array-valued
-        attributes are not filterable. The provider docs also describe comparison filters and CSV output.
-      externalDocs:
-        description: OpenF1 endpoint documentation
-        url: https://openf1.org/docs/#weather
+      operationId: listWeather
+      summary: Retrieve session weather data
+      description: Returns weather observations recorded during a session.
+      tags: [Formula 1 data]
       parameters:
-      - name: air_temperature
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: date
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: string
-      - name: humidity
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: meeting_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: pressure
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: rainfall
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: session_key
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key. The value `latest` is also supported.
-        schema:
-          oneOf:
-          - type: integer
-          - type: string
-      - name: track_temperature
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: wind_direction
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: integer
-      - name: wind_speed
-        in: query
-        required: false
-        description: Filter records by this field. The provider documents comparison operators for range filters;
-          encode operator characters in the query key.
-        schema:
-          type: number
-      - name: csv
-        in: query
-        required: false
-        description: Set to true to request CSV output instead of the default JSON.
-        schema:
-          type: boolean
-          default: false
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/MeetingKey'
+        - $ref: '#/components/parameters/Csv'
       responses:
         '200':
-          description: Matching records as a JSON array, or CSV text when `csv=true`.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    air_temperature:
-                      type: number
-                    date:
-                      type: string
-                    humidity:
-                      type: integer
-                    meeting_key:
-                      type: integer
-                    pressure:
-                      type: number
-                    rainfall:
-                      type: integer
-                    session_key:
-                      type: integer
-                    track_temperature:
-                      type: number
-                    wind_direction:
-                      type: integer
-                    wind_speed:
-                      type: number
-                  additionalProperties: true
-            text/csv:
-              schema:
-                type: string
-      security:
-      - {}
-      - bearerAuth: []
-      tags:
-      - race-data
+          $ref: '#/components/responses/Records'
 components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      description: OpenF1 access token for authenticated real-time data.
+  parameters:
+    SessionKey:
+      name: session_key
+      in: query
+      description: Session identifier; the value latest selects the latest/current session.
+      schema:
+        type: string
+    MeetingKey:
+      name: meeting_key
+      in: query
+      description: Meeting identifier; the value latest selects the latest/current meeting.
+      schema:
+        type: string
+    DriverNumber:
+      name: driver_number
+      in: query
+      schema:
+        type: integer
+    DriverNumbers:
+      name: driver_number
+      in: query
+      description: One or more driver numbers; repeat this parameter to select multiple drivers.
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: integer
+    TeamName:
+      name: team_name
+      in: query
+      schema:
+        type: string
+    LapNumber:
+      name: lap_number
+      in: query
+      schema:
+        type: integer
+    OvertakingDriverNumber:
+      name: overtaking_driver_number
+      in: query
+      schema:
+        type: integer
+    OvertakenDriverNumber:
+      name: overtaken_driver_number
+      in: query
+      schema:
+        type: integer
+    Position:
+      name: position
+      in: query
+      schema:
+        type: integer
+    SessionName:
+      name: session_name
+      in: query
+      schema:
+        type: string
+    SessionType:
+      name: session_type
+      in: query
+      schema:
+        type: string
+    Year:
+      name: year
+      in: query
+      schema:
+        type: integer
+    Csv:
+      name: csv
+      in: query
+      description: Set to true to return CSV instead of JSON.
+      schema:
+        type: boolean
+  responses:
+    Records:
+      description: A list of records; result fields depend on the selected endpoint.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              additionalProperties: true
+        text/csv:
+          schema:
+            type: string

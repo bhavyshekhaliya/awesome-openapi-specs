@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: Lazada Open Platform Order API
+  version: 1.0.0
+  description: >-
+    Community-maintained, read-only subset for listing orders and retrieving a
+    single order. Lazada requires a developer account, application and API
+    category approval, seller authorization, and signed requests. Fields not
+    fully described in the public order guide remain open in the response
+    schemas. API access and available data depend on the seller's region and
+    granted permissions.
+  termsOfService: https://open.lazada.com/apps/doc/doc?docId=120731&nodeId=30412
+externalDocs:
+  description: Lazada's public order API guide
+  url: https://open.lazada.com/apps/doc/doc?docId=121327&nodeId=29616
+servers:
+  - url: https://api.lazada.sg/rest
+    description: Singapore
+  - url: https://api.lazada.co.th/rest
+    description: Thailand
+  - url: https://api.lazada.com.my/rest
+    description: Malaysia
+  - url: https://api.lazada.vn/rest
+    description: Vietnam
+  - url: https://api.lazada.com.ph/rest
+    description: Philippines
+  - url: https://api.lazada.co.id/rest
+    description: Indonesia
+tags:
+  - name: Orders
+    description: Read orders belonging to a seller-authorized store.
+paths:
+  /orders/get:
+    parameters:
+      - $ref: '#/components/parameters/appKey'
+      - $ref: '#/components/parameters/accessToken'
+      - $ref: '#/components/parameters/timestamp'
+      - $ref: '#/components/parameters/signMethod'
+      - $ref: '#/components/parameters/signature'
+    get:
+      tags: [Orders]
+      operationId: getOrders
+      summary: List a seller's orders
+      description: >-
+        Returns orders for the authorized store. The provider recommends using
+        order notifications for new orders instead of repeatedly polling this
+        operation. `offset` is limited to 5000; continue older pagination by
+        advancing the creation-time filter.
+      externalDocs:
+        description: Lazada's GetOrders guide and field notes
+        url: https://open.lazada.com/apps/doc/doc?docId=121327&nodeId=29616
+      parameters:
+        - name: created_after
+          in: query
+          description: Lower creation-time bound used to search orders.
+          required: false
+          schema:
+            type: string
+            example: '2018-02-10T16:00:00+08:00'
+        - name: status
+          in: query
+          description: Order status filter; use `all` to include all statuses.
+          required: false
+          schema:
+            type: string
+            example: all
+        - name: limit
+          in: query
+          description: Maximum orders to return; the documented maximum is 100.
+          required: false
+          schema:
+            type: string
+            example: '100'
+        - name: offset
+          in: query
+          description: Number of orders to skip; the documented maximum is 5000.
+          required: false
+          schema:
+            type: string
+            example: '0'
+      responses:
+        '200':
+          description: Order list response. The provider documents a total count and order fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+  /order/get:
+    parameters:
+      - $ref: '#/components/parameters/appKey'
+      - $ref: '#/components/parameters/accessToken'
+      - $ref: '#/components/parameters/timestamp'
+      - $ref: '#/components/parameters/signMethod'
+      - $ref: '#/components/parameters/signature'
+    get:
+      tags: [Orders]
+      operationId: getOrder
+      summary: Retrieve an order
+      description: Returns order information for an order in the authorized store.
+      externalDocs:
+        description: Lazada's signed HTTP request example for GetOrder
+        url: https://open.lazada.com/apps/doc/doc?docId=108069&nodeId=10400
+      parameters:
+        - name: order_id
+          in: query
+          description: Order identifier within the authorized store.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order response; the provider's order fields are left open here.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+components:
+  parameters:
+    appKey:
+      name: app_key
+      in: query
+      description: Application key issued by the Lazada Open Platform.
+      required: true
+      schema:
+        type: string
+    accessToken:
+      name: access_token
+      in: query
+      description: Access token granted by an authorized seller.
+      required: true
+      schema:
+        type: string
+    timestamp:
+      name: timestamp
+      in: query
+      description: Millisecond timestamp; requests must be within 7200 seconds of UTC.
+      required: true
+      schema:
+        type: string
+    signMethod:
+      name: sign_method
+      in: query
+      description: HMAC signature algorithm used for the request.
+      required: true
+      schema:
+        type: string
+    signature:
+      name: sign
+      in: query
+      description: Signature generated using the application secret and request parameters.
+      required: true
+      schema:
+        type: string
+  schemas:
+    OrderListResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+        code:
+          type: string
+        data:
+          type: object
+          description: >-
+            Includes the documented `countTotal` field and returned orders;
+            the public guide does not fully define the nested response types.
+          additionalProperties: true
+      additionalProperties: true
+    OrderResponse:
+      type: object
+      properties:
+        request_id:
+          type: string
+        code:
+          type: string
+        data:
+          type: object
+          description: Order data; see the provider's field guide.
+          additionalProperties: true
+      additionalProperties: true

@@ -1,106 +1,232 @@
 openapi: 3.1.0
 info:
-  title: openFDA Drug Adverse Event API
+  title: openFDA Drug API
   version: 1.0.0
   description: >-
-    Focused community-maintained specification for the documented Drug
-    Adverse Event endpoint. The public endpoint can be used without an API
-    key; a free key raises the documented request limits. Returned report
-    fields vary. openFDA says not to rely on its data to make medical-care
-    decisions.
-  externalDocs:
-    description: Drug Adverse Event API documentation
-    url: https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/
+    Community-maintained coverage of six public openFDA drug data endpoints.
+    Result records vary by dataset, and the count query returns aggregate
+    results, so record properties are left open. This is not a complete
+    description of every openFDA endpoint or response field.
 servers:
   - url: https://api.fda.gov
-    description: openFDA API
+externalDocs:
+  description: openFDA API documentation
+  url: https://open.fda.gov/apis/
 paths:
   /drug/event.json:
     get:
-      operationId: queryDrugAdverseEvents
+      operationId: searchDrugAdverseEvents
       summary: Search drug adverse event reports
       description: >-
-        Searches public drug adverse event reports or counts unique field
-        values. The report fields and their order can vary. These reports are
-        not a basis for medical-care decisions.
+        Searches public adverse event reports from the FDA Adverse Event
+        Reporting System. Reports are not verified for causality and should
+        not be used as the sole basis for clinical decisions.
       externalDocs:
-        description: Endpoint instructions, searchable fields, and examples
         url: https://open.fda.gov/apis/drug/event/how-to-use-the-endpoint/
       parameters:
-        - name: search
-          in: query
-          required: false
-          description: >-
-            openFDA query expression. Field names and searchable values are
-            documented for this endpoint.
-          schema:
-            type: string
-        - name: sort
-          in: query
-          required: false
-          description: >-
-            Sort a search result by a field, using `:asc` or `:desc` as the
-            documented order modifier.
-          schema:
-            type: string
-        - name: count
-          in: query
-          required: false
-          description: >-
-            Count unique values of the specified field for matching records.
-            Count results contain `term` and `count` values.
-          schema:
-            type: string
-        - name: limit
-          in: query
-          required: false
-          description: Number of matching records to return; the maximum is 1000.
-          schema:
-            type: integer
-            maximum: 1000
-        - name: skip
-          in: query
-          required: false
-          description: >-
-            Number of matching records to skip before returning results; the
-            maximum is 25000.
-          schema:
-            type: integer
-            maximum: 25000
-        - name: api_key
-          in: query
-          required: false
-          description: >-
-            Optional free API key. Without a key, the documented limit is
-            1000 requests per day per IP address; with a key, it is 120000
-            requests per day per key.
-          schema:
-            type: string
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
       responses:
         '200':
-          description: Matching adverse event reports or count results.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  meta:
-                    type: object
-                    description: Response metadata; fields vary by query.
-                    additionalProperties: true
-                  results:
-                    type: array
-                    items:
-                      type: object
-                      description: >-
-                        A report with documented header, patient, drug, and
-                        reaction sections, or a count result containing term
-                        and count. Report fields vary.
-                      properties:
-                        term:
-                          type: string
-                          description: Counted unique value, when count is used.
-                        count:
-                          type: integer
-                          description: Number of records for the counted value.
-                      additionalProperties: true
+          $ref: '#/components/responses/QueryResult'
+  /drug/label.json:
+    get:
+      operationId: searchDrugLabels
+      summary: Search drug product labels
+      description: >-
+        Searches prescription and over-the-counter drug labeling data. Label
+        content varies by product and may not reflect currently distributed
+        products or labeling approved by FDA.
+      externalDocs:
+        url: https://open.fda.gov/apis/drug/label/how-to-use-the-endpoint/
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+  /drug/ndc.json:
+    get:
+      operationId: searchDrugNdcDirectory
+      summary: Search the National Drug Code Directory
+      description: >-
+        Searches drug listing information submitted by labelers. An NDC number
+        or directory listing does not indicate FDA approval of a product.
+      externalDocs:
+        url: https://open.fda.gov/apis/drug/ndc/how-to-use-the-endpoint/
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/NdcLimit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+  /drug/enforcement.json:
+    get:
+      operationId: searchDrugRecallEnforcementReports
+      summary: Search drug recall enforcement reports
+      description: Searches FDA drug recall enforcement report data.
+      externalDocs:
+        url: https://open.fda.gov/apis/drug/enforcement/how-to-use-the-endpoint/
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+  /drug/drugsfda.json:
+    get:
+      operationId: searchDrugsAtFda
+      summary: Search Drugs@FDA records
+      description: Searches FDA approval information for human drug products.
+      externalDocs:
+        url: https://open.fda.gov/apis/drug/drugsfda/how-to-use-the-endpoint/
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/DrugsFdaLimit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+  /drug/shortages.json:
+    get:
+      operationId: searchDrugShortages
+      summary: Search drug shortage records
+      description: Searches the FDA drug shortages data.
+      externalDocs:
+        url: https://open.fda.gov/apis/drug/drugshortages/how-to-use-the-endpoint/
+      parameters:
+        - $ref: '#/components/parameters/Search'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Count'
+        - $ref: '#/components/parameters/ShortageLimit'
+        - $ref: '#/components/parameters/Skip'
+        - $ref: '#/components/parameters/ApiKey'
+      responses:
+        '200':
+          $ref: '#/components/responses/QueryResult'
+components:
+  parameters:
+    Search:
+      name: search
+      in: query
+      description: >-
+        Filter records using openFDA query syntax. A query may identify a
+        searchable field and term, for example field:term.
+      schema:
+        type: string
+    Sort:
+      name: sort
+      in: query
+      description: Sort matching records by a field using the :asc or :desc suffix.
+      schema:
+        type: string
+    Count:
+      name: count
+      in: query
+      description: Count unique values in a field instead of returning matching records.
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of matching records to return; defaults to one.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+    NdcLimit:
+      name: limit
+      in: query
+      description: Maximum number of matching records to return; defaults to one.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    DrugsFdaLimit:
+      name: limit
+      in: query
+      description: Maximum number of matching records to return; defaults to one.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 99
+    ShortageLimit:
+      name: limit
+      in: query
+      description: Maximum number of matching records to return; defaults to one.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+    Skip:
+      name: skip
+      in: query
+      description: Number of matching records to skip; combine with limit for paging.
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 25000
+    ApiKey:
+      name: api_key
+      in: query
+      description: Optional free API key; the provider documents limited no-key access.
+      schema:
+        type: string
+  responses:
+    QueryResult:
+      description: Query result. Record fields vary by endpoint and by query type.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QueryResponse'
+  schemas:
+    QueryResponse:
+      type: object
+      required:
+        - results
+      properties:
+        meta:
+          type: object
+          properties:
+            disclaimer:
+              type: string
+            license:
+              type: string
+            last_updated:
+              type: string
+            results:
+              type: object
+              properties:
+                skip:
+                  type: integer
+                limit:
+                  type: integer
+                total:
+                  type: integer
+              additionalProperties: true
+          additionalProperties: true
+        results:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+      additionalProperties: true
