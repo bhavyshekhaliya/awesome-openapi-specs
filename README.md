@@ -285,6 +285,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
 | Geoapify | [Forward Geocoding API specification](https://raw.githubusercontent.com/geoapify/geoapify-openapi-specs/refs/heads/main/api-specs/geocoding/forward_geocoding.yaml) | YAML | 3.0.0 | `official` `geocoding` `routing` `open-source` |
+| OpenRouteService | [Community specification](specs/openrouteservice/openapi.yml); [source docs](https://giscience.github.io/openrouteservice/api-reference/) | YAML | 3.1.0 | `community-maintained` `routing` `geospatial` `open-source` |
 | OpenStreetMap | [Editing API community specification](specs/openstreetmap/openapi.yml); [source docs](https://wiki.openstreetmap.org/wiki/API_v0.6); [usage policy](https://operations.osmfoundation.org/policies/api/) | YAML | 3.1.0 | `community-maintained` `map-editing` `open-source` |
 
 ## Security and Compliance
