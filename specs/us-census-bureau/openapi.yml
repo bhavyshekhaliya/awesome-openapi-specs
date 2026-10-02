@@ -1,0 +1,81 @@
+openapi: 3.1.0
+info:
+  title: U.S. Census Data API — ACS 1-Year
+  version: 1.0.0
+  description: >-
+    Focused community-maintained specification for queries against the
+    American Community Survey 1-year dataset. Census API keys are available
+    free of charge. The variables and supported geographies depend on the
+    selected year and dataset. JSON responses are tabular arrays whose first
+    row contains column names and later rows contain data values.
+  externalDocs:
+    description: Census Data API User Guide
+    url: https://www.census.gov/data/developers/guidance/api-user-guide.html
+servers:
+  - url: https://api.census.gov
+    description: U.S. Census Bureau Data API
+security:
+  - censusApiKey: []
+paths:
+  /data/{year}/acs/acs1:
+    get:
+      operationId: queryAcsOneYearData
+      summary: Query American Community Survey 1-year data
+      description: >-
+        Queries variables and geographies for a selected ACS 1-year vintage.
+        Use only variables and geography predicates listed for that dataset in
+        the Census discovery tool.
+      parameters:
+        - name: year
+          in: path
+          required: true
+          description: Data year, for example 2023.
+          schema:
+            type: string
+        - name: get
+          in: query
+          required: true
+          description: >-
+            Comma-separated Census variable names to return, such as `NAME`.
+          schema:
+            type: string
+        - name: for
+          in: query
+          required: true
+          description: >-
+            Geography predicate, such as `state:*`; supported geographies vary
+            by dataset and year.
+          schema:
+            type: string
+        - name: in
+          in: query
+          required: false
+          description: Optional parent-geography predicate used with `for`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tabular results with a column-name row followed by data rows.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CensusTable'
+components:
+  securitySchemes:
+    censusApiKey:
+      type: apiKey
+      in: query
+      name: key
+      description: Free API key requested through the Census developer site.
+  schemas:
+    CensusTable:
+      type: array
+      description: >-
+        Two-dimensional JSON array. The first row contains column names;
+        subsequent rows contain values, which may be null when unavailable.
+      items:
+        type: array
+        items:
+          type:
+            - string
+            - 'null'

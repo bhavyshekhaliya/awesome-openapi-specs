@@ -1,0 +1,127 @@
+openapi: 3.1.0
+info:
+  title: ClinicalTrials.gov API v2
+  version: 2.0.5
+  description: >-
+    Focused community-maintained specification for public study search,
+    individual study retrieval, and study-field metadata. Read requests do not
+    require authentication. ClinicalTrials.gov cautions that the U.S.
+    government does not review or approve the safety and science of every
+    listed study; sponsors or investigators are responsible for submitted
+    record accuracy.
+  externalDocs:
+    description: ClinicalTrials.gov API v2 documentation
+    url: https://clinicaltrials.gov/data-api/about-api
+servers:
+  - url: https://clinicaltrials.gov/api/v2
+    description: ClinicalTrials.gov API v2
+paths:
+  /studies:
+    get:
+      operationId: searchStudies
+      summary: Search clinical studies
+      description: >-
+        Returns studies matching the supplied condition or status filters.
+        Use `pageSize` and the returned `nextPageToken` to paginate results.
+      externalDocs:
+        description: API v2 guide
+        url: https://clinicaltrials.gov/data-api/about-api
+      parameters:
+        - name: query.cond
+          in: query
+          required: false
+          description: Condition or disease search term.
+          schema:
+            type: string
+        - name: filter.overallStatus
+          in: query
+          required: false
+          description: Filter by a study's overall status.
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          required: false
+          description: Maximum number of studies to return in this page.
+          schema:
+            type: integer
+        - name: pageToken
+          in: query
+          required: false
+          description: Continuation token returned with the preceding page.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/StudiesPage'
+        default:
+          $ref: '#/components/responses/APIError'
+  /studies/{nctId}:
+    get:
+      operationId: getStudy
+      summary: Get a study by NCT ID
+      parameters:
+        - name: nctId
+          in: path
+          required: true
+          description: ClinicalTrials.gov study identifier, for example NCT04852770.
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/StudyRecord'
+        default:
+          $ref: '#/components/responses/APIError'
+  /studies/metadata:
+    get:
+      operationId: getStudyMetadata
+      summary: Get study data model metadata
+      description: Returns metadata describing the API's study fields.
+      responses:
+        '200':
+          description: Study field metadata.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        default:
+          $ref: '#/components/responses/APIError'
+components:
+  responses:
+    StudiesPage:
+      description: A page of matching studies.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/StudiesPage'
+    StudyRecord:
+      description: A clinical study record.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+    APIError:
+      description: API error response.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+  schemas:
+    StudiesPage:
+      type: object
+      required:
+        - studies
+      properties:
+        studies:
+          type: array
+          items:
+            type: object
+            description: Study fields vary; see the provider's data model documentation.
+            additionalProperties: true
+        nextPageToken:
+          type: string
+          description: Token for the next page when more results are available.
+      additionalProperties: true
