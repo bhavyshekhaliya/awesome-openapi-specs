@@ -1,0 +1,242 @@
+openapi: 3.1.0
+info:
+  title: Open Trivia Database API
+  version: 1.0.0
+  description: >-
+    Free JSON trivia API. Requests require no API key. A call can return up to
+    50 questions, and each IP can make one API request every five seconds.
+    Session tokens avoid repeated questions and expire after six hours of
+    inactivity.
+externalDocs:
+  description: Open Trivia Database API documentation
+  url: https://opentdb.com/api_config.php
+servers:
+  - url: https://opentdb.com
+tags:
+  - name: Questions
+  - name: Categories
+  - name: Session tokens
+paths:
+  /api.php:
+    get:
+      tags:
+        - Questions
+      operationId: getTriviaQuestions
+      summary: Retrieve trivia questions
+      description: >-
+        Returns questions filtered by amount, category, difficulty, and type.
+        Only one category can be requested per call. Omit category to include
+        questions from any category. The provider documents a maximum of 50
+        questions per call and a one-request-per-five-seconds limit per IP.
+      parameters:
+        - name: amount
+          in: query
+          required: true
+          description: Number of questions to retrieve.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+        - name: category
+          in: query
+          description: Category ID returned by the category lookup endpoint.
+          schema:
+            type: integer
+        - name: difficulty
+          in: query
+          description: Omit this parameter to allow any difficulty.
+          schema:
+            type: string
+            enum: [easy, medium, hard]
+        - name: type
+          in: query
+          description: Question type.
+          schema:
+            type: string
+            enum: [multiple, boolean]
+        - name: encode
+          in: query
+          description: >-
+            Response encoding. If omitted, the API uses its default HTML
+            entity encoding.
+          schema:
+            type: string
+            enum: [urlLegacy, url3986, base64]
+        - name: token
+          in: query
+          description: Session token used to avoid returning the same question twice.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: >-
+            Question results or an API response code describing why results
+            could not be returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TriviaResponse'
+  /api_token.php:
+    get:
+      tags:
+        - Session tokens
+      operationId: manageSessionToken
+      summary: Request or reset a session token
+      description: >-
+        Request a token to avoid duplicate questions, or reset a token after
+        its available questions have been exhausted. A token expires after six
+        hours of inactivity. Supply token when command is reset.
+      parameters:
+        - name: command
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [request, reset]
+        - name: token
+          in: query
+          description: Existing session token; required when command is reset.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token operation result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /api_category.php:
+    get:
+      tags:
+        - Categories
+      operationId: getCategories
+      summary: List trivia categories
+      description: Returns the available trivia category names and IDs.
+      responses:
+        '200':
+          description: Available categories.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+  /api_count.php:
+    get:
+      tags:
+        - Categories
+      operationId: getCategoryQuestionCount
+      summary: Get the question count for a category
+      parameters:
+        - name: category
+          in: query
+          required: true
+          description: Category ID.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Question count for the requested category.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryQuestionCountResponse'
+  /api_count_global.php:
+    get:
+      tags:
+        - Categories
+      operationId: getGlobalQuestionCount
+      summary: Get global question counts
+      description: Returns total, pending, verified, and rejected question counts.
+      responses:
+        '200':
+          description: Global and per-category question counts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalQuestionCountResponse'
+components:
+  schemas:
+    TriviaResponse:
+      type: object
+      required: [response_code, results]
+      properties:
+        response_code:
+          type: integer
+          enum: [0, 1, 2, 3, 4, 5]
+          description: >-
+            0 success, 1 no results, 2 invalid parameter, 3 token not found,
+            4 token exhausted, 5 rate limit reached.
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriviaQuestion'
+    TriviaQuestion:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [multiple, boolean]
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        category:
+          type: string
+        question:
+          type: string
+        correct_answer:
+          type: string
+        incorrect_answers:
+          type: array
+          items:
+            type: string
+    TokenResponse:
+      type: object
+      properties:
+        response_code:
+          type: integer
+        response_message:
+          type: string
+        token:
+          type: string
+    CategoryListResponse:
+      type: object
+      required: [trivia_categories]
+      properties:
+        trivia_categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/TriviaCategory'
+    TriviaCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    CategoryQuestionCountResponse:
+      type: object
+      properties:
+        category_id:
+          type: integer
+        category_question_count:
+          type: integer
+    GlobalQuestionCountResponse:
+      type: object
+      properties:
+        overall:
+          $ref: '#/components/schemas/QuestionCounts'
+        categories:
+          type: object
+          description: Map of category IDs to their question counts.
+          additionalProperties:
+            $ref: '#/components/schemas/QuestionCounts'
+    QuestionCounts:
+      type: object
+      properties:
+        total_num_of_questions:
+          type: integer
+        total_num_of_pending_questions:
+          type: integer
+        total_num_of_verified_questions:
+          type: integer
+        total_num_of_rejected_questions:
+          type: integer
