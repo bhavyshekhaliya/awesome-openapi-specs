@@ -44,13 +44,13 @@ tags:
 
       - **`summary`**: Returns extended statistics, including the number of
       referring domains, IPs, top anchors, TLDs, and more.
-          
+
       - **`metrics`**: Retrieves a set of key metrics, such as the total number
       of backlinks, referring domains, and dofollow/nofollow link counts.
-          
+
       - **`count`**: Provides a simple count of the total number of live
       backlinks for a target.
-          
+
 
       ### Detailed Backlink Retrieval
 
@@ -62,15 +62,15 @@ tags:
       - **`all`**: Fetches a detailed list of backlinks with powerful filtering
       and sorting options. This is ideal for getting the "top" backlinks based
       on criteria like InLink Rank.
-          
+
       - **`raw`**: Retrieves a complete, unfiltered list of all backlinks using
       efficient cursor-based pagination. This is best for fetching an entire
       dataset in batches.
-          
+
       - **`export`**: Exports all backlinks for a target into a downloadable
       `.csv.gz` file. This process is asynchronous and designed for very
       large-scale data retrieval.
-          
+
 
       ### Historical Data & Trends
 
@@ -80,13 +80,13 @@ tags:
 
       - **`history`**: Get a list of new and lost backlinks within a specified
       date range.
-          
+
       - **`history/count`**: Returns the number of new or lost backlinks for
       each day in a given period.
-          
+
       - **`history/cumulative`**: Provides the total number of live backlinks
       for each day in a given period.
-          
+
 
       ### Analyze Specific Backlink Aspects
 
@@ -96,16 +96,16 @@ tags:
 
       - **`anchors`**: Returns information about the anchor texts used in links
       pointing to a target.
-          
+
       - **`refdomains`**: Provides details on the unique referring domains,
       including their authority and the number of links from each.
-          
+
       - **`referring-ips`** **&** **`subnets`**: Analyzes the network
       distribution of backlinks by IP address and C-class subnets.
-          
+
       - **`indexed-pages`**: Lists the pages on the target site that have
       received one or more backlinks.
-          
+
 
       ### Authority Scores
 
@@ -115,10 +115,10 @@ tags:
 
       - **`authority`**: Retrieves both the InLink Rank (Page Authority) and
       Domain InLink Rank (Domain Authority).
-          
+
       - **`authority/domain`**: Focuses specifically on Domain Authority,
       including its distribution and historical values.
-          
+
       - **`authority/page`**: Focuses specifically on Page Authority and its
       historical values.
   - name: Domain Analysis
@@ -137,13 +137,13 @@ tags:
 
       - **Regional database**: Get detailed organic and paid stats for a domain
       within a single, selected regional database.
-          
+
       - **Worldwide aggregate**: Aggregate a domain's global search performance
       metrics for the current month.
-          
+
       - **History trends**: Track historical trends for keywords, traffic, and
       cost for organic or paid search within a specific region.
-          
+
 
       ### Keyword Analysis
 
@@ -153,10 +153,10 @@ tags:
 
       - **Domain keywords**: Fetch a filterable and sortable list of all organic
       or paid keywords for a domain.
-          
+
       - **Domain keywords comparison**: Compare two domains to find common
       keywords (overlap) or identify keyword gaps.
-          
+
 
       ### Competitor & Ad Analysis
 
@@ -166,7 +166,7 @@ tags:
 
       - **Competitors**: Discover a domain's top organic or paid competitors and
       see the number of keywords you have in common.
-          
+
       - **Paid ads**: Analyze paid ads either by keyword (to see who is bidding)
       or by domain (to see what a specific domain is bidding on).
   - name: Keyword Research
@@ -187,7 +187,7 @@ tags:
       get detailed data points for each, including search volume, CPC,
       competition score, keyword difficulty, and historical search volume
       trends. This is ideal for bulk analysis and data enrichment.
-          
+
 
       ### Keyword Discovery
 
@@ -198,13 +198,13 @@ tags:
 
       - **Get Similar Keywords**: Find keywords that are semantically similar to
       your seed keyword, including synonyms and close variations.
-          
+
       - **Get Related Keywords**: Discover keywords that are topically related,
       based on having a high number of overlapping URLs in their search results.
-          
+
       - **Get Question Keywords**: Generate a list of keywords phrased as common
       user questions, perfect for content marketing and FAQ creation.
-          
+
       - **Get Longtail Keywords**: Find longer, more specific keyword phrases
       that often have lower competition and higher conversion rates.
   - name: AI search
@@ -222,11 +222,11 @@ tags:
       - **Overview**: Get a high-level summary of a domain's performance and
       historical trends within a specific LLM, including metrics like link
       presence, average position, and AI-driven traffic.
-          
+
       - **Discover Brand by URL**: A utility endpoint to identify the primary
       brand name associated with a target domain, useful for subsequent
       brand-based queries.
-          
+
 
       ### Prompt Analysis
 
@@ -234,7 +234,7 @@ tags:
       - **Get Prompts by Target**: Retrieve a list of all prompts where a
       specific domain, subdomain, or URL is featured as a link or mention in an
       LLM's answer.
-          
+
       - **Get Prompts by Brand**: Find all prompts where a specific brand name
       is mentioned in an LLM's answer, allowing you to track brand visibility
       and context.
@@ -255,13 +255,13 @@ tags:
 
       1. **Add SERP Tasks**: Submit one or more keywords to the processing queue
       to initiate a SERP scrape.
-          
+
       2. **Get SERP Task Status and Results**: Use the `task_id` from the
       previous step to check if the task is complete and retrieve the SERP data.
-          
+
       3. **List SERP Tasks**: View a list of all tasks you have submitted in the
       last 24 hours.
-          
+
 
       Results include the URL, title, and snippet for each of the top 100
       positions and are stored for 24 hours after collection.
@@ -279,10 +279,10 @@ tags:
 
 
       - **Standard Audits:** 2 credits per crawled page.
-          
+
       - **Advanced Audits (with JavaScript rendering):** 20 credits per crawled
       page.
-          
+
 
       ### 1\. Create & Manage Audits
 
@@ -294,19 +294,19 @@ tags:
       - **Create Audits**: Launch a new **Standard** (HTML crawl) or
       **Advanced** (JavaScript rendering) audit with highly customizable
       settings.
-          
+
       - **List Audits**: Retrieve a paginated list of all audits associated with
       your account.
-          
+
       - **Update Audit Title**: Change the display title of an existing audit
       report.
-          
+
       - **Delete Audit**: Permanently remove an audit and all of its associated
       data.
-          
+
       - **Recheck Audit**: Initiate a new crawl for a completed audit using its
       original settings.
-          
+
 
       ### 2\. Monitor & Retrieve Data
 
@@ -316,22 +316,22 @@ tags:
 
 
       - **Get Audit Status**: Check the real-time progress of an ongoing audit.
-          
+
       - **Get Audit Report**: Fetch the full, high-level report for a completed
       audit, including the overall health score and a summary of issues.
-          
+
       - **Get Audit History**: Retrieve a historical snapshot of a specific
       audit run from a particular date.
-          
+
       - **Get All Crawled Pages**: Return a complete, paginated list of every
       URL discovered during an audit.
-          
+
       - **Get Audit Pages by Issue**: Get a list of all URLs affected by a
       single, specific issue.
-          
+
       - **Get All Issues for a Specific URL**: Retrieve all errors, warnings,
       and notices found on a single page.
-          
+
       - **Get All Found Links**: Fetch a complete list of every internal and
       external link discovered across the entire site during the audit.
   - name: Account & system
@@ -348,7 +348,7 @@ tags:
       - **Get Subscription Info**: Returns detailed information about your
       current API subscription plan, including its status (e.g., active,
       expired), validity dates, and the total and remaining API units available.
-          
+
       - **Get Credit Balance**: Returns the current account-wide credit balance,
       showing the total limit and the amount of credits that have been used.
 paths:
