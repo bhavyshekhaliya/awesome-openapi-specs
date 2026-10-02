@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| Mailsoftly | [API specification](https://app.mailsoftly.com/developers/openapi.json) | JSON | 3.0.3 | `email-marketing` |
 | Adrapid | [API specification](https://api.adrapid.com/spec/v1/client-api.yaml) | YAML | 3.0.0 | `advertising` `creative-automation` |
 | Oracle Eloqua | [API specification](https://docs.oracle.com/en/cloud/saas/marketing/eloqua-rest-api/swagger.json) | JSON | 2.0 | `marketing-automation` `enterprise` |
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
