@@ -1,0 +1,1065 @@
+openapi: 3.1.0
+info:
+  version: v2.14.0
+  title: Calendar and Event API
+  contact:
+    name: AddEvent Inc
+    email: support@addevent.com
+externalDocs:
+  url: https://docs.addevent.com/reference/getting-started
+servers:
+- url: https://api.addevent.com/calevent/v2
+security:
+- bearerAuth: []
+paths:
+  /calendars:
+    post:
+      operationId: create-calendar
+      tags:
+      - Calendars
+      requestBody:
+        $ref: '#/components/requestBodies/calendar-create'
+      responses:
+        '201':
+          $ref: '#/components/responses/20x-calendar'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+    get:
+      operationId: search-calendars
+      tags:
+      - Calendars
+      parameters:
+      - $ref: '#/components/parameters/calendar-ids'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/page-size'
+      - $ref: '#/components/parameters/calendar-sort'
+      - $ref: '#/components/parameters/sort-order'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-calendar-search'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /calendars/templates:
+    get:
+      operationId: list-calendar-templates
+      tags:
+      - Templates
+      parameters:
+      - $ref: '#/components/parameters/calendar-template-type'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-calendar-templates'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /calendars/{calendar_id}:
+    delete:
+      operationId: delete-calendar
+      tags:
+      - Calendars
+      parameters:
+      - $ref: '#/components/parameters/calendar-id'
+      responses:
+        '204':
+          $ref: '#/components/responses/204-deleted'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    get:
+      operationId: retrieve-calendar
+      tags:
+      - Calendars
+      parameters:
+      - $ref: '#/components/parameters/calendar-id'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-calendar'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    patch:
+      operationId: update-calendar
+      tags:
+      - Calendars
+      parameters:
+      - $ref: '#/components/parameters/calendar-id'
+      requestBody:
+        $ref: '#/components/requestBodies/calendar-update'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-calendar'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+  /events:
+    post:
+      operationId: create-event
+      tags:
+      - Events
+      requestBody:
+        $ref: '#/components/requestBodies/event-create'
+      responses:
+        '201':
+          $ref: '#/components/responses/20x-event'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+    get:
+      operationId: search-events
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/calendar-ids'
+      - $ref: '#/components/parameters/event-ids'
+      - $ref: '#/components/parameters/datetime-min'
+      - $ref: '#/components/parameters/datetime-max'
+      - $ref: '#/components/parameters/search'
+      - $ref: '#/components/parameters/custom-data-key'
+      - $ref: '#/components/parameters/custom-data-value'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/page-size'
+      - $ref: '#/components/parameters/event-sort'
+      - $ref: '#/components/parameters/sort-order'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-event-search'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /events/rsvp-forms:
+    get:
+      operationId: list-rsvp-forms
+      tags:
+      - Templates
+      responses:
+        '200':
+          $ref: '#/components/responses/200-rsvp-forms'
+  /events/templates:
+    get:
+      operationId: list-event-templates
+      tags:
+      - Templates
+      parameters:
+      - $ref: '#/components/parameters/event-template-type'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-event-templates'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /events/{event_id}:
+    delete:
+      operationId: delete-event
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/event-id'
+      responses:
+        '204':
+          $ref: '#/components/responses/204-deleted'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    get:
+      operationId: retrieve-event
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/event-id'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-event'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    patch:
+      operationId: update-event
+      tags:
+      - Events
+      parameters:
+      - $ref: '#/components/parameters/event-id'
+      requestBody:
+        $ref: '#/components/requestBodies/event-update'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-event'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+  /events/{event_id}/rsvps:
+    post:
+      operationId: create-rsvp-attendee
+      tags:
+      - RSVP attendees
+      parameters:
+      - $ref: '#/components/parameters/event-id'
+      requestBody:
+        $ref: '#/components/requestBodies/attendee-create'
+      responses:
+        '201':
+          $ref: '#/components/responses/20x-attendee'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+  /rsvps:
+    get:
+      operationId: search-rsvp-attendees
+      tags:
+      - RSVP attendees
+      parameters:
+      - $ref: '#/components/parameters/calendar-ids'
+      - $ref: '#/components/parameters/event-ids'
+      - $ref: '#/components/parameters/attendee-response'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/page-size'
+      - $ref: '#/components/parameters/attendee-sort'
+      - $ref: '#/components/parameters/sort-order'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-attendee-search'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /rsvps/{attendee_id}:
+    delete:
+      operationId: delete-rsvp-attendee
+      tags:
+      - RSVP attendees
+      parameters:
+      - $ref: '#/components/parameters/attendee-id'
+      responses:
+        '204':
+          $ref: '#/components/responses/204-deleted'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    get:
+      operationId: retrieve-rsvp-attendee
+      tags:
+      - RSVP attendees
+      parameters:
+      - $ref: '#/components/parameters/attendee-id'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-attendee'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    patch:
+      operationId: update-rsvp-attendee
+      tags:
+      - RSVP attendees
+      parameters:
+      - $ref: '#/components/parameters/attendee-id'
+      requestBody:
+        $ref: '#/components/requestBodies/attendee-update'
+      responses:
+        '200':
+          $ref: '#/components/responses/20x-attendee'
+        '400':
+          $ref: '#/components/responses/400-invalid-request-body'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+  /subscribers:
+    get:
+      operationId: search-calendar-subscribers
+      tags:
+      - Calendar subscribers
+      parameters:
+      - $ref: '#/components/parameters/calendar-ids'
+      - $ref: '#/components/parameters/subscriber-status'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/page-size'
+      - $ref: '#/components/parameters/subscriber-sort'
+      - $ref: '#/components/parameters/sort-order'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-subscriber-search'
+        '400':
+          $ref: '#/components/responses/400-invalid-query-parameters'
+  /subscribers/{subscriber_id}:
+    delete:
+      operationId: delete-calendar-subscriber
+      tags:
+      - Calendar subscribers
+      parameters:
+      - $ref: '#/components/parameters/subscriber-id'
+      responses:
+        '204':
+          $ref: '#/components/responses/204-deleted'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+    get:
+      operationId: retrieve-calendar-subscriber
+      tags:
+      - Calendar subscribers
+      parameters:
+      - $ref: '#/components/parameters/subscriber-id'
+      responses:
+        '200':
+          $ref: '#/components/responses/200-subscriber'
+        '404':
+          $ref: '#/components/responses/404-not-found'
+  /timezones:
+    get:
+      operationId: list-timezones
+      tags:
+      - Timezones
+      security:
+      - {}
+      responses:
+        '200':
+          $ref: '#/components/responses/200-timezones'
+components:
+  requestBodies:
+    calendar-create:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/calendar-input'
+            required:
+            - title
+    event-create:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/event-input'
+            required:
+            - title
+            - datetime_start
+    attendee-create:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/attendee-input'
+            required:
+            - email
+    calendar-update:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/calendar-input'
+    event-update:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/event-input-update'
+    attendee-update:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/attendee-input'
+  schemas:
+    calendar-input:
+      type: object
+      properties:
+        title:
+          type: string
+          pattern: ^(?!\s*$).+
+        timezone:
+          type: string
+          pattern: ^(?!\s*$).+
+          default: America/Los_Angeles
+        weekday_begin:
+          type: string
+          enum:
+          - sunday
+          - monday
+          default: sunday
+        internal_name:
+          type: string
+        calendar_color:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 1
+        landing_page_template_id:
+          type: string
+          pattern: ^(?!\s*$).+
+          default: default
+        embeddable_calendar_template_id:
+          type: string
+          pattern: ^(?!\s*$).+
+          default: default
+        custom_data:
+          type: object
+    calendar:
+      type: object
+      properties:
+        id:
+          type: string
+        unique_key:
+          type: string
+        title:
+          type: string
+        timezone:
+          type: string
+        weekday_begin:
+          type: string
+        is_default_calendar:
+          type: boolean
+        internal_name:
+          type: string
+        calendar_color:
+          type: integer
+        palette_id:
+          type: string
+        landing_page_template_id:
+          type: string
+        embeddable_calendar_template_id:
+          type: string
+        stats:
+          $ref: '#/components/schemas/calendar-stats'
+        custom_data:
+          type: object
+        link_long:
+          type: string
+        link_short:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+    calendar-stats:
+      type: object
+      properties:
+        subscriber_active_count:
+          type: integer
+        subscribers_all_count:
+          type: integer
+        events_count:
+          type: integer
+    event-input:
+      type: object
+      properties:
+        title:
+          type: string
+          pattern: ^(?!\s*$).+
+        calendar_id:
+          type: string
+          pattern: ^(?!\s*$).+
+        datetime_start:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}(:\d{2})?)?$
+        datetime_end:
+          type: string
+          pattern: ^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}(:\d{2})?)?$
+        all_day_event:
+          type: boolean
+          default: false
+        timezone:
+          type: string
+          pattern: ^(?!\s*$).+
+        recurring_rule:
+          type: string
+          pattern: (?:(\w+)=((?:(?:[^;,=]+,?)*[^;,=])|"(?:[^"]|"")*");?)+
+        internal_name:
+          type: string
+        location:
+          type: string
+        location_id:
+          type: integer
+          minimum: 0
+        organizer_name:
+          type: string
+        organizer_email:
+          type: string
+          format: email
+          pattern: ^$|^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+        reminder:
+          type: integer
+          minimum: 0
+          maximum: 10800
+          default: 30
+        color:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 1
+        free_busy:
+          type: string
+          enum:
+          - free
+          - busy
+          - default
+          default: default
+        landing_page_template_id:
+          type: string
+          pattern: ^(?!\s*$).+
+          default: default
+        rsvp_enabled:
+          type: boolean
+          default: false
+        rsvp_form_id:
+          type: string
+          pattern: ^(?!\s*$).+
+          default: default
+        custom_data:
+          type: object
+    event:
+      type: object
+      properties:
+        id:
+          type: string
+        unique_key:
+          type: string
+        title:
+          type: string
+        calendar_id:
+          type: string
+        datetime_start:
+          type: string
+        datetime_end:
+          type: string
+        all_day_event:
+          type: boolean
+        timezone:
+          type: string
+        recurring_rule:
+          type: string
+        internal_name:
+          type: string
+        location:
+          type: string
+        location_id:
+          type: integer
+        organizer_name:
+          type: string
+        organizer_email:
+          type: string
+          format: email
+        reminder:
+          type: integer
+        color:
+          type: integer
+        free_busy:
+          type: string
+        landing_page_template_id:
+          type: string
+        rsvp_enabled:
+          type: boolean
+        rsvp:
+          type: object
+          properties:
+            settings:
+              $ref: '#/components/schemas/event-rsvp-settings'
+            stats:
+              $ref: '#/components/schemas/event-rsvp-stats'
+        custom_data:
+          type: object
+        link_long:
+          type: string
+        link_short:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+    event-rsvp-settings:
+      type: object
+      properties:
+        rsvp_form_id:
+          type: string
+        seats_limited:
+          type: boolean
+        seats_limit:
+          type: integer
+        inactive:
+          type: boolean
+        notify_emails:
+          type: string
+        notify_frequency:
+          type: string
+    event-rsvp-stats:
+      type: object
+      properties:
+        seats_left:
+          type: integer
+        count_total:
+          type: integer
+        count_going:
+          type: integer
+        count_maybe:
+          type: integer
+        count_cantgo:
+          type: integer
+    attendee-input:
+      type: object
+      properties:
+        email:
+          type: string
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          format: email
+        attending:
+          type: string
+          enum:
+          - going
+          - maybe
+          - not-going
+          default: going
+        notify:
+          type: string
+          enum:
+          - active
+        rsvp_form_data:
+          type: object
+    attendee:
+      type: object
+      properties:
+        id:
+          type: string
+        event_id:
+          type: string
+        email:
+          type: string
+          format: email
+        attending:
+          type: string
+        rsvp_form_data:
+          type: object
+        rsvp_form_labels:
+          type: object
+        geo_location:
+          $ref: '#/components/schemas/geolocation'
+        created:
+          type: string
+        modified:
+          type: string
+    geolocation:
+      type: object
+      properties:
+        ip:
+          type: string
+          format: ipv4
+        city:
+          type: string
+        region:
+          type: string
+        country:
+          type: string
+        location:
+          type: string
+        postal:
+          type: string
+    template:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        template_type:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+    rsvp-form:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        created:
+          type: string
+        modified:
+          type: string
+    timezone:
+      type: object
+      properties:
+        name:
+          type: string
+        local_time:
+          type: string
+        is_dst:
+          type: boolean
+        utc_offset:
+          type: integer
+        utc_offset_hours:
+          type: string
+        tzid_abbr:
+          type: string
+    subscriber:
+      type: object
+      properties:
+        id:
+          type: string
+        calendar_id:
+          type: string
+        subscriber_status:
+          type: string
+        calendar_type:
+          type: string
+        sync_count:
+          type: integer
+        synced:
+          type: string
+        subscriber_form_data:
+          type: object
+        subscriber_form_labels:
+          type: object
+        geo_location:
+          $ref: '#/components/schemas/geolocation'
+        created:
+          type: string
+    pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        next_page:
+          type: integer
+        previous_page:
+          type: integer
+        total_items:
+          type: integer
+        total_pages:
+          type: integer
+        page_size:
+          type: integer
+    links:
+      type: object
+      properties:
+        next_page_url:
+          type: string
+        previous_page_url:
+          type: string
+    event-input-update:
+      allOf:
+      - $ref: '#/components/schemas/event-input'
+      - type: object
+        properties:
+          datetime_end:
+            type: string
+            pattern: ^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}(:\d{2})?)?$
+          calendar_id:
+            type: string
+            pattern: ^(?!\s*$).+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: APIkey
+  responses:
+    20x-calendar:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/calendar'
+    400-invalid-request-body:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error_id:
+                type: string
+              error_message:
+                type: string
+              property_validation_errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    reason:
+                      type: string
+    20x-event:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/event'
+    20x-attendee:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/attendee'
+    204-deleted: {}
+    404-not-found: {}
+    200-calendar-templates:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/template'
+    400-invalid-query-parameters:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error_id:
+                type: string
+              error_message:
+                type: string
+              property_validation_errors:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    reason:
+                      type: string
+    200-event-templates:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/template'
+    200-rsvp-forms:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/rsvp-form'
+    200-timezones:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/timezone'
+    200-subscriber:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/subscriber'
+    200-subscriber-search:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: '#/components/schemas/pagination'
+              links:
+                $ref: '#/components/schemas/links'
+              subscribers:
+                type: array
+                items:
+                  $ref: '#/components/schemas/subscriber'
+    200-calendar-search:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: '#/components/schemas/pagination'
+              links:
+                $ref: '#/components/schemas/links'
+              calendars:
+                type: array
+                items:
+                  $ref: '#/components/schemas/calendar'
+    200-event-search:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: '#/components/schemas/pagination'
+              links:
+                $ref: '#/components/schemas/links'
+              events:
+                type: array
+                items:
+                  $ref: '#/components/schemas/event'
+    200-attendee-search:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: '#/components/schemas/pagination'
+              links:
+                $ref: '#/components/schemas/links'
+              rsvps:
+                type: array
+                items:
+                  $ref: '#/components/schemas/attendee'
+  parameters:
+    event-id:
+      name: event_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^\S+$
+    subscriber-id:
+      name: subscriber_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^\S+$
+    calendar-id:
+      name: calendar_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^\S+$
+    attendee-id:
+      name: attendee_id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^\S+$
+    calendar-template-type:
+      name: type
+      in: query
+      schema:
+        type: string
+        enum:
+        - calendar-landing
+        - calendar-embed
+        default: calendar-landing
+    event-template-type:
+      name: type
+      in: query
+      schema:
+        type: string
+        enum:
+        - event-landing
+        default: event-landing
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    page-size:
+      name: page_size
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 20
+        default: 10
+    sort-order:
+      name: sort_order
+      in: query
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: desc
+    subscriber-sort:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - synced
+        - calendar_id
+        default: created
+    subscriber-status:
+      name: status
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - active
+          - inactive
+          - blocked
+        default: active
+    calendar-ids:
+      name: calendar_ids
+      in: query
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: ^\S+$
+    calendar-sort:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - title
+        default: created
+    event-sort:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - title
+        - calendar_id
+        - datetime_start
+        default: created
+    event-ids:
+      name: event_ids
+      in: query
+      style: form
+      explode: false
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: ^\S+$
+    datetime-min:
+      name: datetime_min
+      in: query
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}(:\d{2})?)?$
+    datetime-max:
+      name: datetime_max
+      in: query
+      schema:
+        type: string
+        pattern: ^\d{4}-\d{2}-\d{2}(\s\d{2}:\d{2}(:\d{2})?)?$
+    search:
+      name: search
+      in: query
+      schema:
+        type: string
+    custom-data-key:
+      name: custom_data_key
+      in: query
+      schema:
+        type: string
+    custom-data-value:
+      name: custom_data_value
+      in: query
+      schema:
+        type: string
+    attendee-sort:
+      name: sort_by
+      in: query
+      schema:
+        type: string
+        enum:
+        - created
+        - event_id
+        - attending
+        - email
+        default: created
+    attendee-response:
+      name: attending
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          enum:
+          - going
+          - maybe
+          - not-going

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://awesome.re"><img alt="Awesome" src="https://awesome.re/badge.svg"></a>
-  <img alt="149 specifications" src="https://img.shields.io/badge/specifications-149-13795b">
+  <img alt="150 specifications" src="https://img.shields.io/badge/specifications-150-13795b">
   <img alt="26 categories" src="https://img.shields.io/badge/categories-26-2563eb">
   <img alt="OpenAPI 2.0, 3.0, 3.1, and 3.2" src="https://img.shields.io/badge/OpenAPI-2.0%20%7C%203.0%20%7C%203.1%20%7C%203.2-6ba539">
   <a href="LICENSE"><img alt="CC0 1.0 license" src="https://img.shields.io/badge/license-CC0%201.0-555555"></a>
@@ -87,6 +87,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Endless Fairs | [API specification](https://app.endlessfairs.com/docs.openapi) | JSON | 3.0.3 | `event-management` `virtual-events` |
 | Super Send | [API specification](https://docs.supersend.io/openapi.yaml) | YAML | 3.0.3 | `sales-engagement` `email-marketing` |
 | Mailsoftly | [API specification](https://app.mailsoftly.com/developers/openapi.json) | JSON | 3.0.3 | `email-marketing` |
+| AddEvent | [Community specification](specs/addevent/openapi.yml); [source docs](https://docs.addevent.com/reference/getting-started) | YAML | 3.1.0 | `community-maintained` `event-management` `marketing` |
 | Adrapid | [API specification](https://api.adrapid.com/spec/v1/client-api.yaml) | YAML | 3.0.0 | `advertising` `creative-automation` |
 | Oracle Eloqua | [API specification](https://docs.oracle.com/en/cloud/saas/marketing/eloqua-rest-api/swagger.json) | JSON | 2.0 | `marketing-automation` `enterprise` |
 | Constant Contact | [API specification](https://api.cc.email/v3/swagger.yaml) | YAML | 2.0 | `email-marketing` |
