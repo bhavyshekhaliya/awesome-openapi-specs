@@ -49,6 +49,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Sales and Marketing
 | Provider         | OpenAPI spec                                                                                                      | Format | Version | Tags                                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ------ | ------- | ----------------------------------------- |
+| BotConversa | [API specification](https://backend.botconversa.com.br/swagger/?format=openapi) | JSON | 2.0 | `chat-marketing` |
 | Iterable | [API specification](https://api.iterable.com/api-docs) | JSON | 2.0 | `marketing-automation` `lifecycle-marketing` |
 | Livestorm | [API specification](https://api.livestorm.co/api-docs/v1/swagger.yaml) | YAML | 3.0.3 | `event-management` `webinars` |
 | Rebrandly | [API specification](https://developers.rebrandly.com/openapi/openapi.public.yaml) | YAML | 3.0.3 | `url-management` `link-tracking` |
