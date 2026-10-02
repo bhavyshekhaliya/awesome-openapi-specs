@@ -1,0 +1,373 @@
+openapi: 3.1.0
+info:
+  title: OpenRouteService Core API
+  version: 1.0.0
+  description: >-
+    Community-maintained subset of the public OpenRouteService API, derived from
+    the provider's API reference and interactive API documentation. Requests
+    require an API key; send the key directly in the Authorization header.
+servers:
+  - url: https://api.heigit.org/openrouteservice
+    description: Current public OpenRouteService API host
+security:
+  - apiKey: []
+externalDocs:
+  description: Official OpenRouteService API reference
+  url: https://giscience.github.io/openrouteservice/api-reference/
+tags:
+  - name: Directions
+  - name: Isochrones
+  - name: Matrix
+  - name: Snapping
+paths:
+  /v2/directions/{profile}:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Directions]
+      summary: Calculate directions as JSON
+      description: The default POST response is JSON.
+      operationId: calculateDirectionsJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectionsRequest'
+      responses:
+        '200':
+          description: Route response with route geometry and metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectionsResponse'
+  /v2/directions/{profile}/json:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Directions]
+      summary: Calculate directions as JSON
+      operationId: calculateDirectionsJsonFormat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectionsRequest'
+      responses:
+        '200':
+          description: Route response with route geometry and metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DirectionsResponse'
+  /v2/directions/{profile}/geojson:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Directions]
+      summary: Calculate directions as GeoJSON
+      operationId: calculateDirectionsGeoJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectionsRequest'
+      responses:
+        '200':
+          description: Route geometry as a GeoJSON feature collection.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+  /v2/directions/{profile}/gpx:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Directions]
+      summary: Calculate directions as GPX
+      operationId: calculateDirectionsGpx
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DirectionsRequest'
+      responses:
+        '200':
+          description: Route and instructions in the provider's GPX format.
+          content:
+            application/gpx+xml:
+              schema:
+                type: string
+  /v2/isochrones/{profile}:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Isochrones]
+      summary: Calculate reachable areas
+      operationId: calculateIsochrones
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IsochronesRequest'
+      responses:
+        '200':
+          description: Reachability polygons as a GeoJSON feature collection.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+  /v2/matrix/{profile}:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Matrix]
+      summary: Calculate travel time or distance matrices
+      operationId: calculateMatrix
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatrixRequest'
+      responses:
+        '200':
+          description: Requested durations and/or distances for each location pair.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatrixResponse'
+  /v2/snap/{profile}:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Snapping]
+      summary: Snap locations to the street network
+      operationId: snapLocations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapRequest'
+      responses:
+        '200':
+          description: Snapped locations in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapResponse'
+  /v2/snap/{profile}/json:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Snapping]
+      summary: Snap locations to the street network as JSON
+      operationId: snapLocationsJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapRequest'
+      responses:
+        '200':
+          description: Snapped locations in JSON format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapResponse'
+  /v2/snap/{profile}/geojson:
+    parameters:
+      - $ref: '#/components/parameters/profile'
+    post:
+      tags: [Snapping]
+      summary: Snap locations to the street network as GeoJSON
+      operationId: snapLocationsGeoJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapRequest'
+      responses:
+        '200':
+          description: Snapped locations as GeoJSON features.
+          content:
+            application/geo+json:
+              schema:
+                $ref: '#/components/schemas/FeatureCollection'
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Send the API key directly; do not prefix it with Bearer.
+  parameters:
+    profile:
+      name: profile
+      in: path
+      required: true
+      description: Routing profile, such as driving-car or foot-walking.
+      schema:
+        type: string
+  schemas:
+    Coordinate:
+      type: array
+      description: Longitude and latitude, in that order.
+      minItems: 2
+      maxItems: 2
+      prefixItems:
+        - type: number
+        - type: number
+      items: false
+    Coordinates:
+      type: array
+      items:
+        $ref: '#/components/schemas/Coordinate'
+    DirectionsRequest:
+      type: object
+      required: [coordinates]
+      properties:
+        coordinates:
+          allOf:
+            - $ref: '#/components/schemas/Coordinates'
+          minItems: 2
+          description: Ordered coordinate pairs for the route.
+      additionalProperties: true
+    DirectionsResponse:
+      type: object
+      properties:
+        bbox:
+          type: array
+          items:
+            type: number
+        routes:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        metadata:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    IsochronesRequest:
+      type: object
+      required: [locations, range]
+      properties:
+        locations:
+          $ref: '#/components/schemas/Coordinates'
+        range:
+          type: array
+          description: Exact distance or time ranges for the requested isochrones.
+          items:
+            type: number
+        range_type:
+          type: string
+          enum: [time, distance]
+        interval:
+          type: integer
+          description: Interval used to segment an isochrone range.
+      additionalProperties: true
+    MatrixRequest:
+      type: object
+      required: [locations]
+      properties:
+        locations:
+          $ref: '#/components/schemas/Coordinates'
+        sources:
+          type: array
+          description: Location indexes to use as sources; omitted means all locations.
+          items:
+            oneOf:
+              - type: integer
+              - type: string
+                pattern: '^\d+$'
+        destinations:
+          type: array
+          description: Location indexes to use as destinations; omitted means all locations.
+          items:
+            oneOf:
+              - type: integer
+              - type: string
+                pattern: '^\d+$'
+        metrics:
+          type: array
+          items:
+            type: string
+            enum: [duration, distance]
+        units:
+          type: string
+          enum: [m, km, mi]
+          description: Unit for returned distances; durations are in seconds.
+      additionalProperties: true
+    MatrixResponse:
+      type: object
+      properties:
+        durations:
+          $ref: '#/components/schemas/NumberMatrix'
+        distances:
+          $ref: '#/components/schemas/NumberMatrix'
+      additionalProperties: true
+    NumberMatrix:
+      type: array
+      items:
+        type: array
+        items:
+          type: [number, 'null']
+    SnapRequest:
+      type: object
+      required: [locations, radius]
+      properties:
+        locations:
+          $ref: '#/components/schemas/Coordinates'
+        radius:
+          type: number
+          description: Maximum search radius in meters.
+        id:
+          type: string
+          description: Optional request identifier echoed in response metadata.
+      additionalProperties: true
+    SnapResponse:
+      type: object
+      properties:
+        locations:
+          type: array
+          items:
+            anyOf:
+              - type: 'null'
+              - $ref: '#/components/schemas/SnappedLocation'
+        metadata:
+          type: object
+          additionalProperties: true
+      additionalProperties: true
+    SnappedLocation:
+      type: object
+      properties:
+        location:
+          $ref: '#/components/schemas/Coordinate'
+        name:
+          type: string
+        snapped_distance:
+          type: number
+      additionalProperties: true
+    FeatureCollection:
+      type: object
+      properties:
+        type:
+          const: FeatureCollection
+        features:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        bbox:
+          type: array
+          items:
+            type: number
+      additionalProperties: true
