@@ -1,0 +1,309 @@
+openapi: 3.1.0
+info:
+  title: Instagram Graph API (Zapier Instagram for Business subset)
+  version: '26.0'
+  summary: Community-maintained OpenAPI subset for Instagram for Business workflows.
+  description: >-
+    Covers documented Instagram for Business workflows for reading account media
+    and tagged media, creating photo, carousel, or Reel media containers, checking
+    container status, and publishing a container. This is a focused subset of the
+    Instagram Graph API; Meta's documentation remains authoritative for supported
+    fields, permissions, and behavior.
+  contact:
+    name: Meta for Developers
+    url: https://developers.facebook.com/
+  externalDocs:
+    description: Official Meta Instagram API collection and documentation
+    url: https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api
+servers:
+  - url: https://graph.facebook.com/v{api_version}
+    description: Meta Graph API
+    variables:
+      api_version:
+        default: '26.0'
+        description: Meta Graph API version.
+security:
+  - bearerAuth: []
+tags:
+  - name: Media
+    description: Read Instagram media and create or publish media containers.
+  - name: Tagged media
+    description: Read media that tags the connected Instagram professional account.
+paths:
+  /{ig-user-id}/media:
+    get:
+      tags: [Media]
+      operationId: listInstagramUserMedia
+      summary: List media published by an Instagram professional account
+      description: Returns media published by the specified Instagram professional account.
+      externalDocs:
+        description: Meta Instagram User media edge
+        url: https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/media/
+      parameters:
+        - $ref: '#/components/parameters/InstagramUserId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+        - $ref: '#/components/parameters/Before'
+      responses:
+        '200':
+          description: A page of published media.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPage'
+    post:
+      tags: [Media]
+      operationId: createInstagramMediaContainer
+      summary: Create a photo, carousel, or Reel media container
+      description: >-
+        Creates a media container that must be published separately with
+        POST /{ig-user-id}/media_publish. Supply image_url for a photo, media_type
+        CAROUSEL and children for a carousel, or media_type REELS and video_url for
+        a Reel. Media URLs must be publicly accessible to Meta while the container
+        is processed.
+      externalDocs:
+        description: Meta Instagram content publishing collection
+        url: https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api
+      parameters:
+        - $ref: '#/components/parameters/InstagramUserId'
+        - name: image_url
+          in: query
+          description: Public URL of the image for a photo container.
+          schema:
+            type: string
+            format: uri
+        - name: video_url
+          in: query
+          description: Public URL of the video for a Reel container.
+          schema:
+            type: string
+            format: uri
+        - name: media_type
+          in: query
+          description: Set to REELS for video publishing or CAROUSEL for a carousel.
+          schema:
+            type: string
+            enum: [REELS, CAROUSEL]
+        - name: caption
+          in: query
+          description: Caption for the published media.
+          schema:
+            type: string
+        - name: share_to_feed
+          in: query
+          description: For Reels, whether the Reel should also appear in the feed.
+          schema:
+            type: boolean
+        - name: children
+          in: query
+          description: Comma-separated IDs of child media containers for a carousel.
+          schema:
+            type: string
+        - name: location_id
+          in: query
+          description: Instagram location ID to associate with the media.
+          schema:
+            type: string
+        - name: user_tags
+          in: query
+          description: JSON-encoded user tag data for the media.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The newly created media container.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatedMediaContainer'
+  /{ig-user-id}/tags:
+    get:
+      tags: [Tagged media]
+      operationId: listInstagramTaggedMedia
+      summary: List media that tags an Instagram professional account
+      description: Returns media in which the specified account is tagged.
+      externalDocs:
+        description: Meta Instagram User tags edge
+        url: https://developers.facebook.com/docs/instagram-platform/instagram-graph-api/reference/ig-user/tags/
+      parameters:
+        - $ref: '#/components/parameters/InstagramUserId'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/After'
+        - $ref: '#/components/parameters/Before'
+      responses:
+        '200':
+          description: A page of media that tags the account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaPage'
+  /{ig-user-id}/media_publish:
+    post:
+      tags: [Media]
+      operationId: publishInstagramMediaContainer
+      summary: Publish a media container
+      description: Publishes a previously created media container to the account.
+      externalDocs:
+        description: Meta Instagram media publishing collection
+        url: https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api
+      parameters:
+        - $ref: '#/components/parameters/InstagramUserId'
+        - name: creation_id
+          in: query
+          required: true
+          description: ID of the media container to publish.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The published Instagram media.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishedMedia'
+  /{ig-container-id}:
+    get:
+      tags: [Media]
+      operationId: getInstagramMediaContainerStatus
+      summary: Get media container processing status
+      description: Returns the status of a media container before it is published.
+      externalDocs:
+        description: Meta Instagram Reels publishing collection
+        url: https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api
+      parameters:
+        - name: ig-container-id
+          in: path
+          required: true
+          description: ID returned when the media container was created.
+          schema:
+            type: string
+        - name: fields
+          in: query
+          description: Comma-separated fields to return for the container.
+          schema:
+            type: string
+            default: status_code,status
+      responses:
+        '200':
+          description: Container status and processing information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaContainerStatus'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Meta user or Page access token with the required Instagram permissions.
+  parameters:
+    InstagramUserId:
+      name: ig-user-id
+      in: path
+      required: true
+      description: ID of the Instagram professional account.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      description: Comma-separated media fields to return.
+      schema:
+        type: string
+        default: id,caption,media_type,media_url,permalink,timestamp,username
+    Limit:
+      name: limit
+      in: query
+      description: Maximum number of media objects to return in the page.
+      schema:
+        type: integer
+        minimum: 1
+    After:
+      name: after
+      in: query
+      description: Cursor for the next page of results.
+      schema:
+        type: string
+    Before:
+      name: before
+      in: query
+      description: Cursor for the previous page of results.
+      schema:
+        type: string
+  schemas:
+    MediaPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstagramMedia'
+        paging:
+          $ref: '#/components/schemas/Paging'
+    InstagramMedia:
+      type: object
+      properties:
+        id:
+          type: string
+        caption:
+          type: string
+        media_type:
+          type: string
+          description: Media type returned by the Instagram Graph API.
+        media_url:
+          type: string
+          format: uri
+        permalink:
+          type: string
+          format: uri
+        timestamp:
+          type: string
+          format: date-time
+        username:
+          type: string
+        thumbnail_url:
+          type: string
+          format: uri
+    Paging:
+      type: object
+      properties:
+        cursors:
+          type: object
+          properties:
+            before:
+              type: string
+            after:
+              type: string
+        next:
+          type: string
+          format: uri
+        previous:
+          type: string
+          format: uri
+    CreatedMediaContainer:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: Media container ID used as creation_id when publishing.
+    PublishedMedia:
+      type: object
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: ID of the published Instagram media object.
+    MediaContainerStatus:
+      type: object
+      properties:
+        id:
+          type: string
+        status_code:
+          type: string
+          description: Container processing state, such as IN_PROGRESS or FINISHED.
+        status:
+          type: string
+          description: Human-readable processing state.

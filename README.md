@@ -151,6 +151,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 | Campaign Monitor | [Community specification](specs/campaignmonitor/openapi.yml) Â· [source docs](https://www.campaignmonitor.com/api/) | YAML | 3.1.0 | `community-maintained` `email-marketing` `transactional-email` |
 | MailerSend       | [API specification](https://api.swaggerhub.com/apis/MailerSend/mailersend-api/1.0.0-oas3.1?resolved=true)       | JSON   | 3.1.0   | `official` `transactional-email`          |
 | Eventbrite       | [Community specification](specs/eventbrite/openapi.yml); [source docs](https://www.eventbrite.com/platform/new/api) | YAML | 3.1.0 | `community-maintained` `event-management` |
+| Instagram for Business | [Community specification](specs/instagram-for-business/openapi.yml) · [source docs](https://www.postman.com/meta/instagram/documentation/6yqw8pt/instagram-api) | YAML | 3.1.0 | `community-maintained` `social-media` `marketing` |
 | ActiveCampaign | [API specification](https://dash.readme.com/api/v1/api-registry/21t7f145tmufpfc93) | JSON | 3.1.0 | `official` `marketing-automation` `email-marketing` `crm` |
 | Apify            | [API specification](https://docs.apify.com/api/openapi.json)                                                      | JSON   | 3.1.2   | `official` `web-research` `lead-generation` |
 | AWeber           | [API specification](https://api.aweber.com/swagger.yaml)                                                           | YAML   | 3.0.2   | `official` `email-marketing`                |
