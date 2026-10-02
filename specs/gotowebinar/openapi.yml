@@ -1,0 +1,1674 @@
+openapi: 3.1.0
+info:
+  title: GoTo Webinar REST API
+  version: 2.0.0
+  summary: Manage GoTo webinars, registrants, sessions, attendees, and webinar collaborators.
+  description: |
+    Community-maintained OpenAPI description based on GoTo's public GoTo Webinar v2 REST API
+    reference. Authentication uses a GoTo OAuth 2.0 access token sent as a bearer token; GoTo's
+    getting-started guide specifies the `collab:` scope for tokens used with this API.
+
+    GoTo documents both basic and extended registrant creation. The extended form accepts the
+    registration fields configured for each webinar, so custom registration responses are not
+    fully statically enumerable here. Webinar-list pagination and attendee/session response
+    envelopes follow the public reference. Zapier's integration includes webinar and registrant
+    search steps; the API exposes date-range listing rather than a dedicated find-by-email or
+    find-by-title endpoint, so clients must match returned records themselves.
+externalDocs:
+  description: GoTo Webinar 2.0 REST API documentation
+  url: https://developer.goto.com/GoToWebinarV2
+servers:
+  - url: https://api.getgo.com/G2W/rest/v2
+    description: GoTo Webinar production API
+security:
+  - bearerAuth: []
+tags:
+  - name: Webinars
+    description: Create, list, update, and cancel webinars.
+  - name: Registrants
+    description: Register attendees and manage webinar registrants.
+  - name: Sessions
+    description: Retrieve completed sessions and session reports.
+  - name: Attendees
+    description: Retrieve webinar attendance and attendee answers.
+  - name: Panelists
+    description: Manage webinar panelists and their invitations.
+  - name: Co-organizers
+    description: Manage webinar co-organizers and their invitations.
+paths:
+  /accounts/{accountKey}/webinars:
+    get:
+      tags: [Webinars]
+      operationId: listAccountWebinars
+      summary: List webinars for an account
+      description: Returns webinars in the required date range, optionally paginated.
+      parameters:
+        - $ref: '#/components/parameters/AccountKey'
+        - $ref: '#/components/parameters/FromTime'
+        - $ref: '#/components/parameters/ToTime'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Webinar collection and page metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebinars'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars:
+    parameters:
+      - $ref: '#/components/parameters/OrganizerKey'
+    get:
+      tags: [Webinars]
+      operationId: listOrganizerWebinars
+      summary: List an organizer's webinars
+      description: Returns upcoming and past webinars scheduled within the required date range.
+      parameters:
+        - $ref: '#/components/parameters/FromTime'
+        - $ref: '#/components/parameters/ToTime'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Webinar collection and page metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWebinars'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Webinars]
+      operationId: createWebinar
+      summary: Create a webinar
+      description: Creates a single-session webinar or a multi-session webinar type supported by the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebinarCreate'
+      responses:
+        '201':
+          description: Webinar created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateWebinarResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}:
+    parameters:
+      - $ref: '#/components/parameters/OrganizerKey'
+      - $ref: '#/components/parameters/WebinarKey'
+    get:
+      tags: [Webinars]
+      operationId: getWebinar
+      summary: Get a webinar
+      responses:
+        '200':
+          description: Webinar details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Webinar'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Webinars]
+      operationId: updateWebinar
+      summary: Update a webinar
+      description: The update replaces the existing session or series definition; include the full schedule definition.
+      parameters:
+        - name: notifyParticipants
+          in: query
+          required: false
+          description: Whether GoTo sends update emails to registrants.
+          schema:
+            type: boolean
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebinarUpdate'
+      responses:
+        '2XX':
+          description: Webinar updated.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Webinars]
+      operationId: cancelWebinar
+      summary: Cancel a webinar
+      parameters:
+        - name: sendCancellationEmails
+          in: query
+          required: false
+          description: Whether to send cancellation notices to registrants; defaults to false.
+          schema:
+            type: boolean
+            default: false
+        - name: deleteAll
+          in: query
+          required: false
+          description: Whether to delete all scheduled sessions of a series; defaults to true.
+          schema:
+            type: boolean
+            default: true
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/meetingtimes:
+    get:
+      tags: [Webinars]
+      operationId: getWebinarMeetingTimes
+      summary: List webinar meeting times
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: Webinar start and end times.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DateTimeRange'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /webinars/{webinarKey}/startUrl:
+    get:
+      tags: [Webinars]
+      operationId: getWebinarStartUrl
+      summary: Get the organizer start URL
+      parameters:
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: URL that launches the webinar for its organizer.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [startUrl]
+                properties:
+                  startUrl:
+                    type: string
+                    format: uri
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/attendees:
+    get:
+      tags: [Attendees]
+      operationId: listWebinarAttendees
+      summary: List attendees across all webinar sessions
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Attendee participation records and page metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAttendees'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/registrants:
+    get:
+      tags: [Registrants]
+      operationId: listWebinarRegistrants
+      summary: List webinar registrants
+      description: Returns registrants; when pagination parameters are supplied, GoTo returns its paginated response form.
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/RegistrantPage'
+        - $ref: '#/components/parameters/RegistrantLimit'
+      responses:
+        '200':
+          description: Registrant array or provider-defined paginated response, depending on query parameters.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/Registrant'
+                  - type: object
+                    description: GoTo's paginated registrant response; its envelope is not fully specified in the public reference.
+                    additionalProperties: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Registrants]
+      operationId: createRegistrant
+      summary: Register an attendee for a webinar
+      description: The extended request can include default and custom fields configured in the webinar registration form.
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - name: resendConfirmation
+          in: query
+          required: false
+          description: Whether to resend a confirmation when the registrant is registered again; defaults to false.
+          schema:
+            type: boolean
+            default: false
+        - name: Accept
+          in: header
+          required: false
+          description: Use application/json for the extended registration fields, or the legacy media type for the basic three fields.
+          schema:
+            type: string
+            enum:
+              - application/json
+              - application/vnd.citrix.g2wapi-v1.1+json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrantCreate'
+      responses:
+        '201':
+          description: Registrant created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRegistrantResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/AlreadyRegistered'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/registrants/fields:
+    get:
+      tags: [Registrants]
+      operationId: getRegistrationFields
+      summary: Get registration fields
+      description: Returns default fields and custom questions configured for a webinar's registration form.
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: Registration fields and custom questions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RegistrationFields'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/registrants/{registrantKey}:
+    parameters:
+      - $ref: '#/components/parameters/OrganizerKey'
+      - $ref: '#/components/parameters/WebinarKey'
+      - $ref: '#/components/parameters/RegistrantKey'
+    get:
+      tags: [Registrants]
+      operationId: getRegistrant
+      summary: Get a registrant
+      responses:
+        '200':
+          description: Full registration details for the registrant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Registrant'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Registrants]
+      operationId: deleteRegistrant
+      summary: Remove a registrant
+      description: Removes a registrant from a scheduled future webinar.
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/sessions:
+    get:
+      tags: [Sessions]
+      operationId: listOrganizerSessions
+      summary: List completed organizer sessions
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/FromTime'
+        - $ref: '#/components/parameters/ToTime'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Completed sessions and page metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions:
+    get:
+      tags: [Sessions]
+      operationId: listWebinarSessions
+      summary: List past sessions of a webinar
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: Webinar sessions and page metadata.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSessions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}:
+    get:
+      tags: [Sessions]
+      operationId: getSessionAttendance
+      summary: Get attendance for a completed session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Attendance records for the session.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attendee'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees:
+    get:
+      tags: [Attendees]
+      operationId: listSessionAttendees
+      summary: List attendees for a session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Attendees and their time in the session.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Attendee'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees/{registrantKey}:
+    get:
+      tags: [Attendees]
+      operationId: getSessionAttendee
+      summary: Get an attendee for a session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/RegistrantKey'
+      responses:
+        '200':
+          description: Attendee registration details for the session.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttendeeIdentity'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees/{registrantKey}/polls:
+    get:
+      tags: [Attendees]
+      operationId: getAttendeePollAnswers
+      summary: Get an attendee's poll answers
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/RegistrantKey'
+      responses:
+        '200':
+          description: Answers submitted by the attendee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendeeAnswer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees/{registrantKey}/surveys:
+    get:
+      tags: [Attendees]
+      operationId: getAttendeeSurveyAnswers
+      summary: Get an attendee's survey answers
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/RegistrantKey'
+      responses:
+        '200':
+          description: Answers submitted by the attendee.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendeeAnswer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/attendees/{registrantKey}/questions:
+    get:
+      tags: [Attendees]
+      operationId: getAttendeeQuestions
+      summary: Get questions asked by an attendee
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+        - $ref: '#/components/parameters/RegistrantKey'
+      responses:
+        '200':
+          description: Questions asked by the attendee and any recorded answers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendeeQuestion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/polls:
+    get:
+      tags: [Sessions]
+      operationId: getSessionPolls
+      summary: Get poll results for a session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Collated poll questions and responses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PollResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/surveys:
+    get:
+      tags: [Sessions]
+      operationId: getSessionSurveys
+      summary: Get survey results for a session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Collated survey questions and responses.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PollResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/questions:
+    get:
+      tags: [Sessions]
+      operationId: getSessionQuestions
+      summary: Get questions asked during a session
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Attendee questions and any recorded answers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttendeeQuestion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/sessions/{sessionKey}/performance:
+    get:
+      tags: [Sessions]
+      operationId: getSessionPerformance
+      summary: Get session performance statistics
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/SessionKey'
+      responses:
+        '200':
+          description: Performance report containing session, attendance, and poll or survey statistics.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sessionInfo, attendance, pollsAndSurveys]
+                properties:
+                  sessionInfo:
+                    type: object
+                    additionalProperties: true
+                  attendance:
+                    type: object
+                    additionalProperties: true
+                  pollsAndSurveys:
+                    type: object
+                    additionalProperties: true
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/performance:
+    get:
+      tags: [Sessions]
+      operationId: getWebinarPerformance
+      summary: Get performance for all webinar sessions
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: Performance details for webinar sessions; the public reference does not enumerate the complete response schema.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/panelists:
+    get:
+      tags: [Panelists]
+      operationId: listPanelists
+      summary: List webinar panelists
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: Panelists assigned to the webinar.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Panelist'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Panelists]
+      operationId: createPanelists
+      summary: Add webinar panelists
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/PanelistCreate'
+      responses:
+        '201':
+          description: Created panelists with invitation links.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PanelistCreated'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/panelists/{panelistKey}:
+    delete:
+      tags: [Panelists]
+      operationId: deletePanelist
+      summary: Remove a webinar panelist
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/PanelistKey'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/panelists/{panelistKey}/resendInvitation:
+    post:
+      tags: [Panelists]
+      operationId: resendPanelistInvitation
+      summary: Resend a panelist invitation
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/PanelistKey'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/coorganizers:
+    get:
+      tags: [Co-organizers]
+      operationId: listCoOrganizers
+      summary: List webinar co-organizers
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      responses:
+        '200':
+          description: Co-organizers assigned to the webinar.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoOrganizer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Co-organizers]
+      operationId: createCoOrganizers
+      summary: Add webinar co-organizers
+      description: Internal co-organizers use organizerKey; external co-organizers use givenName and email.
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoOrganizerCreate'
+      responses:
+        '201':
+          description: Created co-organizers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CoOrganizer'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/coorganizers/{coorganizerKey}:
+    delete:
+      tags: [Co-organizers]
+      operationId: deleteCoOrganizer
+      summary: Remove a co-organizer
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/CoOrganizerKey'
+        - name: external
+          in: query
+          required: false
+          description: Set true when deleting an external co-organizer; defaults to internal co-organizers.
+          schema:
+            type: boolean
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /organizers/{organizerKey}/webinars/{webinarKey}/coorganizers/{coorganizerKey}/resendInvitation:
+    post:
+      tags: [Co-organizers]
+      operationId: resendCoOrganizerInvitation
+      summary: Resend a co-organizer invitation
+      parameters:
+        - $ref: '#/components/parameters/OrganizerKey'
+        - $ref: '#/components/parameters/WebinarKey'
+        - $ref: '#/components/parameters/CoOrganizerKey'
+        - name: external
+          in: query
+          required: false
+          description: Set true to resend an invitation to an external co-organizer.
+          schema:
+            type: boolean
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: OAuth 2.0 access token
+  parameters:
+    AccountKey:
+      name: accountKey
+      in: path
+      required: true
+      description: GoTo account key.
+      schema:
+        type: integer
+        format: int64
+    OrganizerKey:
+      name: organizerKey
+      in: path
+      required: true
+      description: GoTo organizer key.
+      schema:
+        type: integer
+        format: int64
+    WebinarKey:
+      name: webinarKey
+      in: path
+      required: true
+      description: GoTo webinar key.
+      schema:
+        type: integer
+        format: int64
+    SessionKey:
+      name: sessionKey
+      in: path
+      required: true
+      description: GoTo webinar session key.
+      schema:
+        type: integer
+        format: int64
+    RegistrantKey:
+      name: registrantKey
+      in: path
+      required: true
+      description: GoTo registrant key.
+      schema:
+        type: integer
+        format: int64
+    PanelistKey:
+      name: panelistKey
+      in: path
+      required: true
+      description: GoTo panelist key.
+      schema:
+        type: integer
+        format: int64
+    CoOrganizerKey:
+      name: coorganizerKey
+      in: path
+      required: true
+      description: Internal organizer key or external co-organizer member key.
+      schema:
+        type: integer
+        format: int64
+    FromTime:
+      name: fromTime
+      in: query
+      required: true
+      description: Inclusive start of the date range, in ISO 8601 UTC format.
+      schema:
+        type: string
+        format: date-time
+    ToTime:
+      name: toTime
+      in: query
+      required: true
+      description: End of the date range, in ISO 8601 UTC format.
+      schema:
+        type: string
+        format: date-time
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Zero-based page number.
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+        default: 0
+    Size:
+      name: size
+      in: query
+      required: false
+      description: Number of results per page; GoTo documents a maximum of 200.
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 200
+    RegistrantPage:
+      name: page
+      in: query
+      required: false
+      description: Zero-based page number. Supplying pagination selects the paginated response form.
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+    RegistrantLimit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of registrants to return. Supplying pagination selects the paginated response form.
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+  responses:
+    NoContent:
+      description: The request completed successfully with no response body.
+    BadRequest:
+      description: The request was invalid.
+    Forbidden:
+      description: The authenticated user is not allowed to perform this operation.
+    NotFound:
+      description: The requested webinar or related resource was not found.
+    Conflict:
+      description: The webinar cannot be cancelled while it is in session.
+    AlreadyRegistered:
+      description: The registrant is already registered for the webinar.
+  schemas:
+    DateTimeRange:
+      type: object
+      required: [startTime, endTime]
+      properties:
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    Page:
+      type: object
+      required: [size, totalElements, totalPages, number]
+      properties:
+        size:
+          type: integer
+        totalElements:
+          type: integer
+        totalPages:
+          type: integer
+        number:
+          type: integer
+    WebinarSummary:
+      type: object
+      properties:
+        webinarKey:
+          type: string
+        webinarID:
+          type: string
+        organizerKey:
+          type: string
+        accountKey:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+        times:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateTimeRange'
+        timeZone:
+          type: string
+        locale:
+          type: string
+        approvalType:
+          type: string
+        registrationUrl:
+          type: string
+          format: uri
+        impromptu:
+          type: boolean
+        isPasswordProtected:
+          type: boolean
+        recurrenceType:
+          type: string
+        experienceType:
+          type: string
+    PaginatedWebinars:
+      type: object
+      required: [_embedded, page]
+      properties:
+        _embedded:
+          type: object
+          required: [webinars]
+          properties:
+            webinars:
+              type: array
+              items:
+                $ref: '#/components/schemas/WebinarSummary'
+        page:
+          $ref: '#/components/schemas/Page'
+    Webinar:
+      type: object
+      required: [webinarKey, webinarID, subject, description, organizerKey, organizerEmail, organizerName, times, registrationUrl, inSession, impromptu]
+      properties:
+        webinarKey:
+          type: integer
+          format: int64
+        webinarID:
+          type: string
+        subject:
+          type: string
+        description:
+          type: string
+        organizerKey:
+          type: integer
+          format: int64
+        organizerEmail:
+          type: string
+          format: email
+        organizerName:
+          type: string
+        times:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateTimeRange'
+        registrationUrl:
+          type: string
+          format: uri
+        inSession:
+          type: boolean
+        impromptu:
+          type: boolean
+        timeZone:
+          type: string
+        experienceType:
+          type: string
+        isOndemand:
+          type: boolean
+        isPasswordProtected:
+          type: boolean
+        coorganizers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CoOrganizer'
+    WebinarCreate:
+      type: object
+      required: [subject, times]
+      properties:
+        subject:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          maxLength: 2048
+        times:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/DateTimeRange'
+        timeZone:
+          type: string
+          description: Valid time zone identifier; defaults to the organizer profile time zone.
+        type:
+          type: string
+          enum: [single_session, series, sequence]
+          default: single_session
+        locale:
+          type: string
+          enum: [en_US, de_DE, es_ES, fr_FR, it_IT, zh_CN]
+        isPasswordProtected:
+          type: boolean
+        recordingAssetKey:
+          type: string
+        isOndemand:
+          type: boolean
+          default: false
+        isBreakout:
+          type: boolean
+          default: false
+        experienceType:
+          type: string
+          enum: [CLASSIC, BROADCAST, SIMULIVE]
+          default: CLASSIC
+        emailSettings:
+          $ref: '#/components/schemas/WebinarEmailSettings'
+    WebinarUpdate:
+      type: object
+      description: Webinar fields to update. Include the full schedule definition because updates replace the existing session or series definition.
+      properties:
+        subject:
+          type: string
+          maxLength: 128
+        description:
+          type: string
+          maxLength: 2048
+        times:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateTimeRange'
+        timeZone:
+          type: string
+        type:
+          type: string
+          enum: [single_session, series, sequence]
+        locale:
+          type: string
+          enum: [en_US, de_DE, es_ES, fr_FR, it_IT, zh_CN]
+        isPasswordProtected:
+          type: boolean
+        recordingAssetKey:
+          type: string
+        isOndemand:
+          type: boolean
+        isBreakout:
+          type: boolean
+        experienceType:
+          type: string
+          enum: [CLASSIC, BROADCAST, SIMULIVE]
+        emailSettings:
+          $ref: '#/components/schemas/WebinarEmailSettings'
+    WebinarEmailSettings:
+      type: object
+      properties:
+        confirmationEmail:
+          $ref: '#/components/schemas/EmailSetting'
+        reminderEmail:
+          $ref: '#/components/schemas/EmailSetting'
+        absenteeFollowUpEmail:
+          $ref: '#/components/schemas/EmailSetting'
+        attendeeFollowUpEmail:
+          allOf:
+            - $ref: '#/components/schemas/EmailSetting'
+            - type: object
+              properties:
+                includeCertificate:
+                  type: boolean
+    EmailSetting:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+    CreateWebinarResponse:
+      type: object
+      required: [webinarKey]
+      properties:
+        webinarKey:
+          type: string
+        recurrenceKey:
+          type: string
+    Registrant:
+      type: object
+      required: [lastName, email, firstName, registrantKey, registrationDate, status, joinUrl, timeZone]
+      properties:
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+        registrantKey:
+          type: integer
+          format: int64
+        registrationDate:
+          type: string
+          format: date-time
+        source:
+          type: string
+        status:
+          type: string
+          enum: [APPROVED, DENIED, WAITING]
+        joinUrl:
+          type: string
+          format: uri
+        timeZone:
+          type: string
+        phone:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        organization:
+          type: string
+        zipCode:
+          type: string
+        numberOfEmployees:
+          type: string
+        industry:
+          type: string
+        jobTitle:
+          type: string
+        purchasingRole:
+          type: string
+        implementationTimeFrame:
+          type: string
+        purchasingTimeFrame:
+          type: string
+        questionsAndComments:
+          type: string
+        employeeCount:
+          type: string
+        country:
+          type: string
+        address:
+          type: string
+        type:
+          type: string
+          description: May be LATE for registrants who register for a past webinar; omitted for webinar series.
+        unsubscribed:
+          type: boolean
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomAnswer'
+    RegistrantCreate:
+      type: object
+      required: [firstName, lastName, email]
+      description: Custom registration fields depend on the webinar form; use the registration-fields endpoint to discover them.
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        source:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zipCode:
+          type: string
+        country:
+          type: string
+        phone:
+          type: string
+        organization:
+          type: string
+        jobTitle:
+          type: string
+        questionsAndComments:
+          type: string
+        industry:
+          type: string
+        numberOfEmployees:
+          type: string
+        purchasingTimeFrame:
+          type: string
+        purchasingRole:
+          type: string
+        responses:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrantQuestionResponse'
+      additionalProperties: true
+    RegistrantQuestionResponse:
+      type: object
+      properties:
+        questionKey:
+          type: integer
+          format: int64
+        responseText:
+          type: string
+        answerKey:
+          type: integer
+          format: int64
+    CustomAnswer:
+      type: object
+      properties:
+        answer:
+          type: string
+        question:
+          type: string
+    CreateRegistrantResponse:
+      type: object
+      required: [registrantKey, joinUrl]
+      properties:
+        registrantKey:
+          type: integer
+          format: int64
+        joinUrl:
+          type: string
+          format: uri
+    RegistrationFields:
+      type: object
+      required: [questions, fields]
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrationQuestion'
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegistrationField'
+    RegistrationQuestion:
+      type: object
+      required: [questionKey, question, required, type, maxSize, answers]
+      properties:
+        questionKey:
+          type: integer
+          format: int64
+        question:
+          type: string
+        required:
+          type: boolean
+        type:
+          type: string
+        maxSize:
+          type: integer
+        answers:
+          type: array
+          items:
+            type: object
+            required: [answer, answerKey]
+            properties:
+              answer:
+                type: string
+              answerKey:
+                type: integer
+                format: int64
+    RegistrationField:
+      type: object
+      required: [field, answers, required, maxSize]
+      properties:
+        field:
+          type: string
+        answers:
+          type: array
+          items:
+            type: string
+        required:
+          type: boolean
+        maxSize:
+          type: integer
+    AttendanceInterval:
+      type: object
+      properties:
+        joinTime:
+          type: string
+          format: date-time
+        leaveTime:
+          type: string
+          format: date-time
+    Attendee:
+      type: object
+      required: [registrantKey, firstName, lastName, email, attendanceTimeInSeconds, sessionKey, attendance]
+      properties:
+        registrantKey:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        attendanceTimeInSeconds:
+          type: integer
+          format: int64
+        sessionKey:
+          type: integer
+          format: int64
+        attendance:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttendanceInterval'
+    AttendeeIdentity:
+      type: object
+      required: [lastName, email, firstName]
+      properties:
+        lastName:
+          type: string
+        email:
+          type: string
+          format: email
+        firstName:
+          type: string
+    PaginatedAttendees:
+      type: object
+      required: [_embedded, page]
+      properties:
+        _embedded:
+          type: object
+          required: [attendeeParticipationResponses]
+          properties:
+            attendeeParticipationResponses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Attendee'
+        page:
+          $ref: '#/components/schemas/Page'
+    PaginatedSessions:
+      type: object
+      required: [_embedded, page]
+      properties:
+        _embedded:
+          type: object
+          description: Session collection; the public reference identifies this envelope but does not enumerate each session field.
+          additionalProperties: true
+        page:
+          $ref: '#/components/schemas/Page'
+    AttendeeAnswer:
+      type: object
+      required: [answers, question]
+      properties:
+        answer:
+          type: string
+          deprecated: true
+        answers:
+          type: array
+          items:
+            type: string
+        question:
+          type: string
+    PollResult:
+      type: object
+      required: [responses, question, numberOfResponses]
+      properties:
+        responses:
+          type: array
+          items:
+            type: object
+            required: [text, percentage]
+            properties:
+              text:
+                type: string
+              percentage:
+                type: number
+        question:
+          type: string
+        numberOfResponses:
+          type: integer
+          format: int32
+    AttendeeQuestion:
+      type: object
+      required: [answers, question, askedBy, askerKey, dateAsked]
+      properties:
+        answers:
+          type: array
+          items:
+            type: object
+            properties:
+              answer:
+                type: string
+              answeredBy:
+                type: string
+              answererRole:
+                type: string
+              answerTime:
+                type: string
+              answererEmail:
+                type: string
+                format: email
+        question:
+          type: string
+        askedBy:
+          type: string
+          format: email
+        askerKey:
+          type: string
+        dateAsked:
+          type: string
+          format: date-time
+    Panelist:
+      type: object
+      required: [joinLink, email, name, panelistId, firstName, lastName]
+      properties:
+        joinLink:
+          type: string
+          format: uri
+        lastName:
+          type: string
+          deprecated: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        panelistId:
+          type: integer
+          format: int64
+        firstName:
+          type: string
+          deprecated: true
+    PanelistCreate:
+      type: object
+      required: [email, name]
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+    PanelistCreated:
+      type: object
+      required: [name, email, joinLink, panelistKey]
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        joinLink:
+          type: string
+          format: uri
+        panelistKey:
+          type: string
+    CoOrganizer:
+      type: object
+      required: [joinLink, email, memberKey, external, givenName]
+      properties:
+        joinLink:
+          type: string
+          format: uri
+        email:
+          type: string
+          format: email
+        memberKey:
+          type: string
+        external:
+          type: boolean
+        surname:
+          type: string
+        givenName:
+          type: string
+    CoOrganizerCreate:
+      type: object
+      required: [external]
+      properties:
+        external:
+          type: boolean
+        organizerKey:
+          type: string
+        givenName:
+          type: string
+        email:
+          type: string
+          format: email
