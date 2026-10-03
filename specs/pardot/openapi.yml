@@ -1,0 +1,398 @@
+openapi: 3.1.0
+info:
+  title: Salesforce Account Engagement API - Prospect Operations
+  version: 1.0.0
+  description: >-
+    Focused, community-maintained OpenAPI description of the documented
+    Account Engagement API v5 prospect create, query, read, update, and delete
+    operations. It covers standard prospect fields and the query filters
+    documented by Salesforce; custom fields and other Account Engagement
+    resources are outside this subset.
+externalDocs:
+  description: Official Salesforce Account Engagement API v5 prospect documentation
+  url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+servers:
+  - url: https://pi.pardot.com/api/v5
+    description: Production Account Engagement API
+  - url: https://pi.demo.pardot.com/api/v5
+    description: Developer and sandbox Account Engagement API
+tags:
+  - name: Prospects
+    description: Create, find, retrieve, update, and delete prospects.
+security:
+  - SalesforceOAuthAccessToken: []
+    businessUnitId: []
+paths:
+  /objects/prospects:
+    get:
+      operationId: queryProspects
+      tags: [Prospects]
+      summary: Query prospects
+      description: >-
+        Return prospects matching the documented filters. The fields parameter
+        is required. When using nextPageToken, send that token with fields and
+        omit the other query parameters, as required by the v5 pagination rules.
+      externalDocs:
+        description: Prospect query operations and filters
+        url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+      parameters:
+        - $ref: '#/components/parameters/Fields'
+        - name: id
+          in: query
+          description: Return prospects with this Account Engagement prospect ID.
+          schema:
+            type: integer
+        - name: idList
+          in: query
+          description: Return prospects whose IDs are included in this list of IDs.
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Return prospects matching this email address.
+          schema:
+            type: string
+            format: email
+        - name: limit
+          in: query
+          description: Number of records to return; defaults to 200.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 200
+        - name: offset
+          in: query
+          description: >-
+            Deprecated offset pagination. Values are limited to 2000; using an
+            offset prevents the response from returning a nextPageToken.
+          deprecated: true
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 2000
+            default: 0
+        - name: orderBy
+          in: query
+          description: >-
+            Sort by id, lastActivityAt, createdAt, or updatedAt. ASC and DESC
+            direction qualifiers are supported.
+          schema:
+            type: string
+        - name: nextPageToken
+          in: query
+          description: Token returned by a previous query; expires after four hours.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Query results and pagination information.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProspectQueryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '405':
+          $ref: '#/components/responses/ForbiddenOperation'
+    post:
+      operationId: createProspect
+      tags: [Prospects]
+      summary: Create a prospect
+      description: >-
+        Create a prospect. Email is required; other documented editable fields
+        are optional. If campaignId is omitted, the oldest campaign is assigned.
+      externalDocs:
+        description: Create prospect operation and fields
+        url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+      parameters:
+        - $ref: '#/components/parameters/ReturnFields'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectInput'
+      responses:
+        '201':
+          description: Prospect created. The Location header identifies the new record.
+          headers:
+            Location:
+              description: URL of the created prospect.
+              schema:
+                type: string
+                format: uri-reference
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prospect'
+        '204':
+          description: Prospect created, but the API user cannot read the record.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '405':
+          $ref: '#/components/responses/ForbiddenOperation'
+  /objects/prospects/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Account Engagement prospect ID.
+        schema:
+          type: integer
+    get:
+      operationId: getProspect
+      tags: [Prospects]
+      summary: Retrieve a prospect
+      description: Retrieve one prospect by ID. The fields parameter is required.
+      externalDocs:
+        description: Read prospect operation
+        url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+      parameters:
+        - $ref: '#/components/parameters/ReadFields'
+        - name: deleted
+          in: query
+          description: Include the prospect when it is in the recycle bin.
+          schema:
+            type: boolean
+            default: false
+        - name: If-Modified-Since
+          in: header
+          description: Return 304 when the prospect has not changed since this HTTP date.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Prospect fields requested in the fields parameter.
+          headers:
+            Last-Modified:
+              description: Date the prospect was last modified.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prospect'
+        '304':
+          description: Prospect has not changed since If-Modified-Since.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/ForbiddenOperation'
+    patch:
+      operationId: updateProspect
+      tags: [Prospects]
+      summary: Update a prospect
+      description: Update the supplied editable fields; omitted fields are unchanged.
+      externalDocs:
+        description: Update prospect operation and fields
+        url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+      parameters:
+        - $ref: '#/components/parameters/ReturnFields'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProspectUpdate'
+      responses:
+        '200':
+          description: Prospect updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prospect'
+        '204':
+          description: Prospect updated without a response body.
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/ForbiddenOperation'
+    delete:
+      operationId: deleteProspect
+      tags: [Prospects]
+      summary: Delete a prospect
+      description: Delete a prospect; depending on the object, deletion may move it to the recycle bin.
+      externalDocs:
+        description: Delete prospect operation
+        url: https://developer.salesforce.com/docs/marketing/pardot/guide/prospect-v5.html
+      responses:
+        '204':
+          description: Prospect deleted.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/ForbiddenOperation'
+components:
+  securitySchemes:
+    SalesforceOAuthAccessToken:
+      type: http
+      scheme: bearer
+      description: Access token obtained through a Salesforce OAuth flow.
+    businessUnitId:
+      type: apiKey
+      in: header
+      name: Pardot-Business-Unit-Id
+      description: 18-character Account Engagement Business Unit ID beginning with 0Uv.
+  parameters:
+    Fields:
+      name: fields
+      in: query
+      required: true
+      description: Comma-delimited list of prospect fields to return.
+      schema:
+        type: string
+    ReadFields:
+      name: fields
+      in: query
+      required: true
+      description: Comma-delimited list of prospect fields to return.
+      schema:
+        type: string
+    ReturnFields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-delimited list of fields to return; defaults to id on create.
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Invalid request or missing required parameters.
+    NotFound:
+      description: Prospect does not exist or is in the recycle bin.
+    ForbiddenOperation:
+      description: Insufficient access rights or an operation the current record does not allow.
+  schemas:
+    ProspectFields:
+      type: object
+      description: >-
+        Editable standard prospect fields documented by Salesforce.
+      properties:
+        email:
+          type: string
+          format: email
+        addressOne:
+          type: string
+        addressTwo:
+          type: string
+        annualRevenue:
+          type: string
+        campaignId:
+          type: integer
+        city:
+          type: string
+        comments:
+          type: string
+        company:
+          type: string
+        country:
+          type: string
+        department:
+          type: string
+        employees:
+          type: string
+        fax:
+          type: string
+        firstName:
+          type: string
+        industry:
+          type: string
+        isDoNotCall:
+          type: boolean
+        isDoNotEmail:
+          type: boolean
+        isReviewed:
+          type: boolean
+        isStarred:
+          type: boolean
+        jobTitle:
+          type: string
+        lastName:
+          type: string
+        notes:
+          type: string
+        optedOut:
+          type: boolean
+        phone:
+          type: string
+        prospectAccountId:
+          type: integer
+          description: Can be specified only when there is no CRM connector.
+        salesforceId:
+          type: string
+          description: Salesforce ID; unique to a single prospect.
+        salesforceOwnerId:
+          type: integer
+          description: Requires the Prospects > Prospects > Assign ability.
+        profileId:
+          type: integer
+        salutation:
+          type: string
+        score:
+          type: integer
+        source:
+          type: string
+        state:
+          type: string
+        territory:
+          type: string
+        userId:
+          type: integer
+          description: Requires the Prospects > Prospects > Assign ability.
+        website:
+          type: string
+        yearsInBusiness:
+          type: string
+        zip:
+          type: string
+    ProspectInput:
+      allOf:
+        - $ref: '#/components/schemas/ProspectFields'
+      required: [email]
+    ProspectUpdate:
+      allOf:
+        - $ref: '#/components/schemas/ProspectFields'
+      description: >-
+        Partial update body. Omit fields that should remain unchanged. The
+        source documentation lists email as required for create; this update
+        schema permits partial updates by leaving all fields optional.
+    Prospect:
+      type: object
+      description: A prospect object containing the fields selected in the request.
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        company:
+          type: string
+        phone:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      additionalProperties: true
+    ProspectQueryResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Prospect'
+        nextPageToken:
+          type: [string, 'null']
+        nextPageUrl:
+          type: [string, 'null']
+      additionalProperties: true
