@@ -495,6 +495,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Healthcare and Life Sciences
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| CareJobs.Now | [Official OpenAPI specification](https://raw.githubusercontent.com/yumaheymans/carejobs-mcp/main/openapi.yaml) · [API documentation](https://carejobs.now/data) | YAML | 3.1.0 | `official` `healthcare` `jobs` `public-data` `open-source` |
 | ClinicalTrials.gov | [Community specification](specs/clinicaltrials-gov/openapi.yml) Â· [API v2 documentation](https://clinicaltrials.gov/data-api/about-api) | YAML | 3.1.0 | `community-maintained` `focused` `clinical-trials` `public-data` |
 | NCBI Datasets API | [Official OpenAPI specification](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/openapi3/openapi3.docs.yaml); [API documentation](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/api/rest-api/) | YAML | 3.0.1 | `official` `life-sciences` `genomics` `public-data` |
 | openEHR EHR API | [Official OpenAPI specification](https://raw.githubusercontent.com/openEHR/specifications-ITS-REST/Release-1.1.0/computable/OAS/ehr-codegen.openapi.yaml) Â· [EHR API documentation](https://specifications.openehr.org/releases/ITS-REST/latest/ehr.html) | YAML | 3.0.3 | `official` `healthcare` `ehr` `interoperability` |
