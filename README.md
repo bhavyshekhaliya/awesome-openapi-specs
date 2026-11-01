@@ -583,6 +583,7 @@ Created and maintained by [NativeShip.io](https://nativeship.io).
 ## Media and Entertainment
 | Provider | OpenAPI spec | Format | Version | Tags |
 | --- | --- | --- | --- | --- |
+| [Arcmira](https://arcmira.com) | [Official OpenAPI specification](https://api.arcmira.com/v1/openapi.json); [API docs](https://arcmira.com/docs) | JSON | 3.1.0 | `official` `youtube` `podcasts` `transcript-search` |
 | Bungie | [API specification](https://raw.githubusercontent.com/Bungie-net/api/master/openapi.json) Â· [API documentation](https://bungie-net.github.io/multi/index.html) | JSON | 3.0.0 | `official` `gaming` `destiny` |
 | College Football Data | [API specification](https://api.collegefootballdata.com/api-docs.json) Â· [API documentation](https://apinext.collegefootballdata.com/getting-started) | JSON | 3.0.0 | `official` `sports` `public-data` |
 | D&D 5e SRD API (2014) | [API specification](https://raw.githubusercontent.com/5e-bits/5e-srd-api/main/apps/docs/openapi.json); [API documentation](https://docs.dnd5eapi.co/introduction) | JSON | 3.0.1 | `official` `open-source` `gaming` `reference-data` |
